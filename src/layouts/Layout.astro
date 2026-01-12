@@ -1,0 +1,12 @@
+// This creates a subtle moving gradient background that feels like "fluid"
+<div className="absolute inset-0 -z-10 overflow-hidden">
+  <motion.div 
+    animate={{ 
+      scale: [1, 1.2, 1],
+      rotate: [0, 10, 0],
+      x: [0, 50, 0] 
+    }}
+    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+    className="absolute -top-[10%] -left-[10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,#ebf4ff_0%,#ffffff_100%)] opacity-50"
+  />
+</div>
