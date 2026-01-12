@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm: dev",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "env": {
+                    "PATH": "C:\\GitRepos\\node-v24.12.0-win-x64;${env:PATH}"
+                }
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*astro dev.*",
+                    "endsPattern": "Network"
+                }
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "npm: install",
+            "type": "shell",
+            "command": "C:\\GitRepos\\node-v24.12.0-win-x64\\npm.cmd install",
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}

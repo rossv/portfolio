@@ -1,12 +1,70 @@
-// This creates a subtle moving gradient background that feels like "fluid"
-<div className="absolute inset-0 -z-10 overflow-hidden">
-  <motion.div 
-    animate={{ 
-      scale: [1, 1.2, 1],
-      rotate: [0, 10, 0],
-      x: [0, 50, 0] 
-    }}
-    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-    className="absolute -top-[10%] -left-[10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,#ebf4ff_0%,#ffffff_100%)] opacity-50"
-  />
-</div>
+---
+import FluidBackground from '../components/FluidBackground';
+import ThemeToggle from '../components/ThemeToggle';
+import Cursor from '../components/Cursor';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Ross Volkwein - Professional Portfolio" />
+		<meta name="viewport" content="width=device-width" />
+        <meta name="theme-color" content="#F4F3F1" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+    
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+	</head>
+	<body class="font-mono bg-canvas dark:bg-slate-950 text-slate-900 dark:text-slate-50 antialiased selection:bg-blue-200 selection:text-slate-900 dark:selection:bg-blue-900 dark:selection:text-white transition-colors duration-300">
+    <FluidBackground client:load />
+    <Cursor client:only="react" />
+    <div class="fixed top-4 right-4 z-50">
+      <ThemeToggle client:load />
+    </div>
+    <div class="fixed inset-0 z-[-1] pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] dark:opacity-20"></div>
+		<main class="relative">
+      <slot />
+    </main>
+	</body>
+</html>
+
+<style is:global>
+  /* Global styles */
+  html {
+    scroll-behavior: smooth;
+    background-color: #F4F3F1;
+    color-scheme: light;
+  }
+  html.dark {
+    background-color: #020617; /* slate-950 */
+    color-scheme: dark;
+  }
+</style>

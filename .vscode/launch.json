@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome via NPM",
+            "url": "http://localhost:4321",
+            "webRoot": "${workspaceFolder}/src",
+            "preLaunchTask": "npm: dev",
+            "serverReadyAction": {
+                "pattern": "Local\\s+http://localhost:([0-9]+)",
+                "uriFormat": "http://localhost:%s",
+                "action": "debugWithChrome"
+            }
+        },
+        {
+            "name": "Astro: Dev (Server Side)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "C:\\GitRepos\\node-v24.12.0-win-x64\\node.exe",
+            "program": "${workspaceFolder}/node_modules/astro/astro.js",
+            "args": [
+                "dev"
+            ],
+            "console": "integratedTerminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        }
+    ]
+}
