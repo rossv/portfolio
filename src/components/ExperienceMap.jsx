@@ -3,7 +3,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { useState } from 'react';
 import projects from '../data/projects.json';
 
-const MAPBOX_TOKEN = 'YOUR_MAPBOX_ACCESS_TOKEN'; // Recommend using an .env file later
+const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 export default function ExperienceMap() {
   const [selectedProject, setSelectedProject] = useState(null);
