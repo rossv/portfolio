@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Wet Weather Program Manager",
+    "client": "PWSA",
+    "location": "Pittsburgh, PA",
+    "coords": [-79.9959, 40.4406],
+    "category": "H&H Modeling",
+    "year": "2021-Present",
+    "tags": ["SWMM", "Flow Monitoring", "QA/QC"],
+    "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion."
+  },
+  {
+    "name": "Hydraulic Model Modernization",
+    "client": "Cleveland Water",
+    "location": "Cleveland, OH",
+    "coords": [-81.6944, 41.4993],
+    "category": "H&H Modeling",
+    "year": "2021",
+    "tags": ["InfoWater Pro", "SOP", "Staff Training"],
+    "description": "Embedded onsite to document distribution modeling practices and SOPs during staffing transitions."
+  },
+  {
+    "name": "Saddle Creek Groundwater Dashboard",
+    "client": "City of Omaha",
+    "location": "Omaha, NE",
+    "coords": [-95.9345, 41.2565],
+    "category": "Coding/GIS",
+    "year": "2021",
+    "tags": ["Power BI", "IoT", "Data Science"],
+    "description": "Built a Power BI dashboard to ingest groundwater well readings from IoT sensors."
+  },
+  {
+    "name": "Resiliency Analysis",
+    "client": "City of St. Petersburg",
+    "location": "St. Petersburg, FL",
+    "coords": [-82.6401, 27.7676],
+    "category": "H&H Modeling",
+    "year": "2022",
+    "tags": ["Resiliency", "LOS", "Hydraulics"],
+    "description": "Level of Service and Resiliency analysis for municipal water systems."
+  }
+]
