@@ -110,7 +110,7 @@ export default function ProjectDashboard() {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[800px]">
+        <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[900px]">
 
             {/* Search Header - Fixed at Top */}
             <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md z-10 sticky top-0">
@@ -147,7 +147,7 @@ export default function ProjectDashboard() {
                 </div>
             </div>
 
-            <div className="flex-1 p-6 md:p-8 bg-slate-50/30 dark:bg-slate-900/10">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/30 dark:bg-slate-900/10">
                 {/* Stats Dashboard */}
                 <ProjectStats projects={filteredProjects} />
 

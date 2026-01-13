@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import portrait from '../assets/portrait.png';
 import StatsCounter from './StatsCounter';
+import LicenseBadge from './LicenseBadge';
 
 export default function Hero() {
     const targetRef = useRef(null);
@@ -48,8 +49,19 @@ export default function Hero() {
                     transition={{ duration: 0.8, delay: 0.6 }}
                     className="flex flex-wrap justify-center md:justify-start gap-4 mb-8"
                 >
-                    <span className="font-mono bg-indigo-600 text-white px-4 py-1.5 text-sm md:text-base font-bold shadow-lg shadow-indigo-600/30 transform hover:-translate-y-1 transition-transform">PE</span>
-                    <span className="font-mono bg-sky-500 text-white px-4 py-1.5 text-sm md:text-base font-bold shadow-lg shadow-sky-500/30 transform hover:-translate-y-1 transition-transform">GISP</span>
+                    <LicenseBadge
+                        label="PE"
+                        number="PE087020"
+                        since="2017"
+                        location="PA"
+                        bgColor="bg-indigo-600 shadow-indigo-600/30"
+                    />
+                    <LicenseBadge
+                        label="GISP"
+                        number="161338"
+                        since="2022"
+                        bgColor="bg-sky-500 shadow-sky-500/30"
+                    />
                 </motion.div>
 
                 <motion.p

@@ -20,7 +20,7 @@ const careerData = [
         year: "April 2021 – Present",
         location: "Pittsburgh, PA",
         fullAddress: "444 Liberty Avenue, Suite 300, Pittsburgh, PA 15222",
-        coords: [-80.0034, 40.4422], // Approx coords for address
+        coords: [-80.00485997060412, 40.44081394317524], // Approx coords for address
         description: "Leading Hydrologic & Hydraulic modeling for large utilities. Developing innovative tools under the Office of Applied Technology and leading GIS Community of Practice.",
         details: [
             "Conduct Hydrologic and Hydraulic modeling for large utilities in multiple metro areas.",
@@ -40,7 +40,7 @@ const careerData = [
         year: "May 2016 – March 2021",
         location: "Pittsburgh, PA",
         fullAddress: "5173 Campbell's Run Road, Pittsburgh, PA 15205",
-        coords: [-80.1362, 40.4367],
+        coords: [-80.15526074663305, 40.44078119201674],
         description: "Principle engineer for H&H modeling, flow monitoring plans, and GIS asset management. Modernized company software and methods for efficiency.",
         details: [
             "Principle engineer for developing, updating, and maintaining H&H models.",
@@ -61,7 +61,7 @@ const careerData = [
         year: "Jan 2015 - Apr 2016",
         location: "Pittsburgh, PA",
         fullAddress: "333 Baldwin Road, Pittsburgh, PA 15205",
-        coords: [-80.1176, 40.4283],
+        coords: [-80.10060670990161, 40.424593291706955],
         description: "Civil/Site development including grading, utilities, and stormwater design. Facilitated regulatory submissions (NPDES, HOP, PCSM).",
         details: [
             "Prepare land development plans in C3D including layout, grading, utilities, and E&S controls.",
@@ -78,7 +78,7 @@ const careerData = [
         year: "Dec 2012 – Jan 2015",
         location: "Pittsburgh, PA",
         fullAddress: "5173 Campbell's Run Road, Pittsburgh, PA 15205",
-        coords: [-80.1362, 40.4367],
+        coords: [-80.15526074663305, 40.44078119201674],
         description: "Experience in water, wastewater, and stormwater from site-scale to system-wide. NPDES and other permitting for construction.",
         details: [
             "NPDES and other permitting for construction including stormwater and E&S design.",
@@ -95,11 +95,27 @@ const careerData = [
         year: "May 2010 – Dec 2012",
         location: "Pittsburgh, PA",
         fullAddress: "University of Pittsburgh, Pittsburgh, PA",
-        coords: [-79.9608, 40.4442],
+        coords: [-79.95863716325252, 40.44363087984247],
         description: "Conducted research for the Earth Processes & Environmental Flows Group. Comparison and Analysis of Hydrodynamic Models for Restoration Projects.",
         details: [
             "Research under Dr. Jorge D. Abad, Earth Processes & Environmental Flows Group.",
             "Comparison and Analysis of Hydrodynamic Models for Restoration Projects: The Case of Pool-Riffle Structures."
+        ],
+        color: "#083b97"
+    },
+    {
+        id: 'pitt-ms',
+        title: "M.S. Civil & Environmental Engineering",
+        company: "University of Pittsburgh",
+        logo: pittLogo,
+        year: "2011 – 2012",
+        location: "Pittsburgh, PA",
+        fullAddress: "University of Pittsburgh, Pittsburgh, PA",
+        coords: [-79.95863716325252, 40.44363087984247],
+        description: "Master of Science in Civil & Environmental Engineering.",
+        details: [
+            "Advanced specialization in environmental engineering and water resources.",
+            "Concurrent research with the Earth Processes & Environmental Flows Group."
         ],
         color: "#083b97"
     },
@@ -111,7 +127,7 @@ const careerData = [
         year: "2009 – 2010",
         location: "Pittsburgh, PA",
         fullAddress: "626 Cochrans Mill Rd, Pittsburgh, PA 15236",
-        coords: [-79.9678, 40.3011], // NETL Pittsburgh
+        coords: [-79.9780268797734, 40.30597821094191], // NETL Pittsburgh
         description: "Conducted methane gas surveys in the Allegheny National Forest. Used GIS to process and visualize air quality data sets.",
         details: [
             "Conducted methane gas surveys in the Allegheny National Forest.",
@@ -119,6 +135,22 @@ const careerData = [
             "Assembled and integrated a $200,000 visualization lab."
         ],
         color: "#3e3e3e"
+    },
+    {
+        id: 'pitt-bs',
+        title: "B.S. Civil & Environmental Engineering",
+        company: "University of Pittsburgh",
+        logo: pittLogo,
+        year: "2007 – 2011",
+        location: "Pittsburgh, PA",
+        fullAddress: "University of Pittsburgh, Pittsburgh, PA",
+        coords: [-79.95863716325252, 40.44363087984247],
+        description: "Bachelor of Science in Civil & Environmental Engineering.",
+        details: [
+            "Comprehensive foundation in civil and environmental engineering principles.",
+            "Focus on fluid mechanics, hydraulics, and environmental systems."
+        ],
+        color: "#083b97"
     }
 ];
 

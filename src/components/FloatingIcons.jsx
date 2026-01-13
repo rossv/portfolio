@@ -117,29 +117,29 @@ const Bubble = ({ x, y, size, delay, duration }) => (
 export default function FloatingIcons() {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-            {/* Python - Top Leftish */}
-            <FloatingItem x="5%" y="15%" delay={0} duration={6}>
+            {/* Python - Top Left */}
+            <FloatingItem x="4%" y="15%" delay={0} duration={6}>
                 <PythonLogo className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
-            {/* Map - Middle Right */}
-            <FloatingItem x="80%" y="30%" delay={1.5} duration={5} size="w-20 h-20">
-                <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
-            </FloatingItem>
-
-            {/* Pipe Section - Bottom Left */}
-            <FloatingItem x="12%" y="65%" delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
-                <PipeSection className="w-full h-full drop-shadow-md" />
-            </FloatingItem>
-
-            {/* Sewer Network (Trunk & Feeder) - Top Rightish */}
-            <FloatingItem x="70%" y="10%" delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
+            {/* Sewer Network - Top Right */}
+            <FloatingItem x="85%" y="12%" delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
                 <SewerNetwork className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
-            {/* App Dashboard - Bottom Right */}
-            <FloatingItem x="85%" y="75%" delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
+            {/* Pipe Section - Upper Left (Staggered) */}
+            <FloatingItem x="12%" y="22%" delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
+                <PipeSection className="w-full h-full drop-shadow-md" />
+            </FloatingItem>
+
+            {/* App Dashboard - Upper Right (Staggered) */}
+            <FloatingItem x="80%" y="22%" delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
                 <AppDashboard className="w-full h-full drop-shadow-md" />
+            </FloatingItem>
+
+            {/* Map - Lower Right */}
+            <FloatingItem x="82%" y="45%" delay={1.5} duration={5} size="w-20 h-20">
+                <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
             </FloatingItem>
 
             {/* Bubbles */}

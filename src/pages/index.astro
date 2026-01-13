@@ -8,7 +8,9 @@ import SkillsRadar from '../components/SkillsRadar';
 import CareerTimeline from '../components/CareerTimeline';
 
 
+
 import FloatingIcons from '../components/FloatingIcons';
+import HexGridSection from '../components/HexGridSection';
 import Footer from '../components/Footer';
 ---
 
@@ -18,10 +20,14 @@ import Footer from '../components/Footer';
 
 
 
-  <section id="skills" class="py-10 relative z-10 overflow-hidden min-h-[600px] flex items-center">
+  <section id="skills" class="py-10 relative z-10 overflow-hidden min-h-[600px] flex flex-col items-center gap-20">
       <FloatingIcons client:visible />
       <div class="container mx-auto px-6 flex justify-center relative z-10">
         <SkillsRadar client:visible />
+      </div>
+      
+      <div class="w-full relative z-10">
+        <HexGridSection client:visible />
       </div>
   </section>
 
