@@ -1,91 +1,299 @@
-import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Map, { Marker } from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
+
+import wadeTrimLogo from '../assets/logos/wade-trim.png';
+import klhLogo from '../assets/logos/klh.png';
+import cecLogo from '../assets/logos/cec.png';
+import pittLogo from '../assets/logos/pitt.png';
+import netlLogo from '../assets/logos/netl.png';
 
 const careerData = [
     {
+        id: 'wade-trim',
         title: "Professional Engineer",
         company: "Wade Trim",
-        year: "2021 - Present",
-        description: "Leading Hydrologic & Hydraulic modeling for large utilities. Developing innovative tools under the Office of Applied Technology and leading GIS Community of Practice."
+        logo: wadeTrimLogo,
+        year: "April 2021 – Present",
+        location: "Pittsburgh, PA",
+        fullAddress: "444 Liberty Avenue, Suite 300, Pittsburgh, PA 15222",
+        coords: [-80.0034, 40.4422], // Approx coords for address
+        description: "Leading Hydrologic & Hydraulic modeling for large utilities. Developing innovative tools under the Office of Applied Technology and leading GIS Community of Practice.",
+        details: [
+            "Conduct Hydrologic and Hydraulic modeling for large utilities in multiple metro areas.",
+            "Plan and manage flow monitoring program comprised of one hundred flow monitors.",
+            "Collaborate with staff and consultants to build tools under the Office of Applied Technology.",
+            "Lead new GIS Community of Practice to promote and implement the latest technology.",
+            "Develop time saving scripting tools for use company-wide.",
+            "Instruct and develop GIS skills across staff."
+        ],
+        color: "#43b02a"
     },
     {
+        id: 'klh-senior',
         title: "Senior Project Engineer",
         company: "KLH Engineers",
-        year: "2016-2021",
-        description: "Principle engineer for H&H modeling, flow monitoring plans, and GIS asset management. Modernized company software and methods for efficiency."
+        logo: klhLogo,
+        year: "May 2016 – March 2021",
+        location: "Pittsburgh, PA",
+        fullAddress: "5173 Campbell's Run Road, Pittsburgh, PA 15205",
+        coords: [-80.1362, 40.4367],
+        description: "Principle engineer for H&H modeling, flow monitoring plans, and GIS asset management. Modernized company software and methods for efficiency.",
+        details: [
+            "Principle engineer for developing, updating, and maintaining H&H models.",
+            "Experience in water, wastewater, and stormwater from site-scale to system-wide.",
+            "Develop flow monitoring plans and perform flow data QA/QC and calibration.",
+            "Develop and maintain asset management for clients utilizing latest GIS tools.",
+            "Modernized company software and methods for efficiency and quality.",
+            "Automate routine GIS and engineering tasks with Python and other scripting tools.",
+            "Manage infrastructure and technology, deploy new services and business processes."
+        ],
+        color: "#496980"
     },
     {
+        id: 'cec',
         title: "Project Consultant",
         company: "Civil & Environmental Consultants",
-        year: "2015-2016",
-        description: "Civil/Site development including grading, utilities, and stormwater design. Facilitated regulatory submissions (NPDES, HOP, PCSM)."
+        logo: cecLogo,
+        year: "Jan 2015 - Apr 2016",
+        location: "Pittsburgh, PA",
+        fullAddress: "333 Baldwin Road, Pittsburgh, PA 15205",
+        coords: [-80.1176, 40.4283],
+        description: "Civil/Site development including grading, utilities, and stormwater design. Facilitated regulatory submissions (NPDES, HOP, PCSM).",
+        details: [
+            "Prepare land development plans in C3D including layout, grading, utilities, and E&S controls.",
+            "Stormwater design and modeling using HydroCAD and Hydraflow.",
+            "Facilitate timely regulatory submissions (SFPM, HOP, PCSM, NPDES)."
+        ],
+        color: "#fcb900"
     },
     {
+        id: 'klh-project',
         title: "Project Engineer",
         company: "KLH Engineers",
-        year: "2012-2015",
-        description: "Experience in water, wastewater, and stormwater from site-scale to system-wide. Developed flow monitoring plans and performed data QA/QC."
+        logo: klhLogo,
+        year: "Dec 2012 – Jan 2015",
+        location: "Pittsburgh, PA",
+        fullAddress: "5173 Campbell's Run Road, Pittsburgh, PA 15205",
+        coords: [-80.1362, 40.4367],
+        description: "Experience in water, wastewater, and stormwater from site-scale to system-wide. NPDES and other permitting for construction.",
+        details: [
+            "NPDES and other permitting for construction including stormwater and E&S design.",
+            "MS4 program management and permitting including PRPs.",
+            "3D modeling and rendering for business development and presentations."
+        ],
+        color: "#496980"
     },
     {
+        id: 'pitt',
         title: "Research Assistant",
         company: "University of Pittsburgh",
-        year: "2010-2012",
-        description: "Conducted research for the Earth Processes & Environmental Flows Group. Comparison and Analysis of Hydrodynamic Models for Restoration Projects."
+        logo: pittLogo,
+        year: "May 2010 – Dec 2012",
+        location: "Pittsburgh, PA",
+        fullAddress: "University of Pittsburgh, Pittsburgh, PA",
+        coords: [-79.9608, 40.4442],
+        description: "Conducted research for the Earth Processes & Environmental Flows Group. Comparison and Analysis of Hydrodynamic Models for Restoration Projects.",
+        details: [
+            "Research under Dr. Jorge D. Abad, Earth Processes & Environmental Flows Group.",
+            "Comparison and Analysis of Hydrodynamic Models for Restoration Projects: The Case of Pool-Riffle Structures."
+        ],
+        color: "#083b97"
     },
     {
+        id: 'netl',
         title: "Intern",
         company: "National Energy Technology Laboratory (U.S. DOE)",
-        year: "2009 - 2010",
-        description: "Conducted methane gas surveys in the Allegheny National Forest. Used GIS to process and visualize air quality data sets. Assembled and integrated a $200,000 visualization lab."
+        logo: netlLogo,
+        year: "2009 – 2010",
+        location: "Pittsburgh, PA",
+        fullAddress: "626 Cochrans Mill Rd, Pittsburgh, PA 15236",
+        coords: [-79.9678, 40.3011], // NETL Pittsburgh
+        description: "Conducted methane gas surveys in the Allegheny National Forest. Used GIS to process and visualize air quality data sets.",
+        details: [
+            "Conducted methane gas surveys in the Allegheny National Forest.",
+            "Used GIS to process and visualize air quality data sets.",
+            "Assembled and integrated a $200,000 visualization lab."
+        ],
+        color: "#3e3e3e"
     }
 ];
 
 export default function CareerTimeline() {
+    const [selectedJob, setSelectedJob] = useState(careerData[0]);
+    const mapRef = useRef(null);
+
+    // Update map view when selection changes
+    useEffect(() => {
+        if (mapRef.current && selectedJob) {
+            mapRef.current.flyTo({
+                center: selectedJob.coords,
+                zoom: 14,
+                pitch: 45,
+                duration: 2000
+            });
+        }
+    }, [selectedJob]);
+
     return (
-        <div className="max-w-4xl mx-auto py-20 px-6 font-sans">
+        <div className="w-full py-20 px-6 font-sans">
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 text-center mb-16 uppercase tracking-tight"
+                className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 text-center mb-20 uppercase tracking-tight"
             >
                 Professional Journey
             </motion.h2>
 
-            <div className="relative text-left">
-                {/* Vertical Line Container */}
-                <div className="absolute left-[39px] md:left-[49px] top-4 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-800">
-                    <motion.div
-                        initial={{ height: 0 }}
-                        whileInView={{ height: "100%" }}
-                        transition={{ duration: 1.5, ease: "easeInOut" }}
-                        className="w-full bg-indigo-500 absolute top-0"
-                    />
+            <div className="flex flex-col lg:flex-row gap-8">
+                {/* Left Column: Timeline List */}
+                <div className="lg:w-1/2 relative pr-4 lg:max-h-full h-auto">
+
+
+                    <div className="space-y-12 pb-12">
+                        {careerData.map((item, index) => (
+                            <motion.div
+                                key={item.id}
+                                initial={{ opacity: 0, x: -30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.4, delay: index * 0.1 }}
+                                onClick={() => setSelectedJob(item)}
+                                className={`
+                                    relative cursor-pointer group transition-all duration-300
+                                    ${selectedJob.id === item.id ? 'opacity-100 scale-[1.02]' : 'opacity-70 hover:opacity-100'}
+                                `}
+                            >
+
+
+                                {/* Card */}
+                                <div
+                                    className={`
+                                        p-6 rounded-2xl border transition-all duration-300 border-l-4 shadow-sm relative overflow-hidden
+                                        ${selectedJob.id === item.id
+                                            ? 'bg-white dark:bg-slate-800 shadow-xl border-slate-200 dark:border-slate-700 translate-x-2'
+                                            : 'bg-white/50 dark:bg-slate-900/50 border-transparent hover:bg-white hover:dark:bg-slate-800 hover:shadow-md'
+                                        }
+                                    `}
+                                    style={{ borderLeftColor: item.color }}
+                                >
+                                    <div className="flex justify-between items-center gap-4">
+                                        <div className="flex-1">
+                                            <span className="inline-block px-3 py-1 mb-2 text-xs font-bold text-white bg-slate-900 dark:bg-slate-700 rounded-full font-mono tracking-widest">
+                                                {item.year}
+                                            </span>
+                                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1.5 leading-snug">{item.title}</h3>
+                                            <p className="font-bold text-base mt-2" style={{ color: item.color }}>{item.company}</p>
+                                        </div>
+                                        <div className="h-20 flex items-center justify-center shrink-0 ml-4 hidden md:flex">
+                                            <img
+                                                src={item.logo.src || item.logo}
+                                                alt={item.company}
+                                                className="h-full w-auto object-contain max-w-[140px]"
+                                            />
+                                        </div>
+                                        <div className="w-16 h-16 rounded-xl bg-white p-2 flex md:hidden items-center justify-center shadow-sm shrink-0 border border-slate-100 dark:border-slate-700">
+                                            <img
+                                                src={item.logo.src || item.logo}
+                                                alt={item.company}
+                                                className="max-w-full max-h-full object-contain"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
 
-                {careerData.map((item, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.5, delay: index * 0.3 }}
-                        className="mb-12 ml-6 md:ml-10 relative pl-12 md:pl-16 group"
+                {/* Right Column: Sticky Details Panel */}
+                <div className="lg:w-1/2 relative h-auto">
+                    <div
+                        className="sticky top-24 h-fit bg-slate-50 dark:bg-slate-900 rounded-3xl border-2 overflow-hidden shadow-2xl flex flex-col transition-colors duration-300"
+                        style={{ borderColor: selectedJob.color }}
                     >
-                        {/* Node Dot */}
-                        <div className="absolute left-[26px] md:left-[36px] top-6 w-7 h-7 -ml-3.5 z-10 flex items-center justify-center">
-                            <span className="w-3 h-3 bg-indigo-600 rounded-full group-hover:scale-150 transition-transform duration-300"></span>
-                            <span className="absolute w-full h-full border-2 border-indigo-600 rounded-full animate-ping opacity-20"></span>
-                        </div>
 
-                        {/* Card */}
-                        <div className="bg-white/80 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-lg hover:shadow-xl hover:translate-x-1 transition-all duration-300">
-                            <span className="inline-block px-3 py-1 mb-2 text-xs font-bold text-white bg-slate-900 dark:bg-slate-700 rounded-full font-mono tracking-widest">{item.year}</span>
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">{item.title}</h3>
-                            <p className="text-indigo-600 dark:text-indigo-400 font-bold mb-3">{item.company}</p>
-                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-mono text-sm">{item.description}</p>
-                        </div>
-                    </motion.div>
-                ))}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={selectedJob.id}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="flex-1 flex flex-col h-full"
+                            >
+                                {/* Map Header */}
+                                <div className="h-64 md:h-80 w-full relative z-0 shrink-0">
+                                    <Map
+                                        ref={mapRef}
+                                        initialViewState={{
+                                            longitude: selectedJob.coords[0],
+                                            latitude: selectedJob.coords[1],
+                                            zoom: 14,
+                                            pitch: 45
+                                        }}
+                                        mapStyle="mapbox://styles/mapbox/dark-v11"
+                                        mapboxAccessToken={MAPBOX_TOKEN}
+                                        attributionControl={false}
+                                        scrollZoom={false} // Disable scroll zoom for better UX in panel
+                                    >
+                                        <Marker
+                                            longitude={selectedJob.coords[0]}
+                                            latitude={selectedJob.coords[1]}
+                                            anchor="bottom"
+                                        >
+                                            <div className="relative">
+                                                <div className="w-12 h-12 rounded-full border-4 border-white shadow-xl z-20 relative flex items-center justify-center bg-white overflow-hidden p-1">
+                                                    <img src={selectedJob.logo.src || selectedJob.logo} alt="marker" className="w-full h-full object-contain" />
+                                                </div>
+                                                <div className="absolute -inset-4 rounded-full animate-ping opacity-30" style={{ backgroundColor: selectedJob.color }}></div>
+                                                {/* Pin Stand */}
+                                                <div className="w-1 h-4 bg-white/80 absolute left-1/2 -bottom-3 -translate-x-1/2 rounded-full" />
+                                            </div>
+                                        </Marker>
+                                    </Map>
+
+                                    {/* Gradient Overlay for Text Readability */}
+                                    <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-50 dark:from-slate-900 via-transparent to-transparent h-full z-10" />
+
+                                    <div className="absolute bottom-4 left-6 z-20 pr-4">
+                                        <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white drop-shadow-sm">{selectedJob.company}</h3>
+                                        <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 text-xs md:text-sm font-bold bg-white/80 dark:bg-black/50 backdrop-blur px-3 py-1 rounded-full w-fit mt-2">
+                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                            <span className="truncate max-w-[200px] md:max-w-none">{selectedJob.fullAddress}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Content Body */}
+                                <div className="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar">
+                                    <div className="mb-6">
+                                        <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-2 transition-colors duration-300" style={{ color: selectedJob.color }}>Role Overview</h4>
+                                        <p className="text-base md:text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                                            {selectedJob.description}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-3 transition-colors duration-300" style={{ color: selectedJob.color }}>Key Achievements & Responsibilities</h4>
+                                        <ul className="space-y-3">
+                                            {selectedJob.details.map((point, i) => (
+                                                <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base group/item">
+                                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 group-hover/item:bg-indigo-500" style={{ backgroundColor: selectedJob.color }}></span>
+                                                    <span>{point}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                </div>
             </div>
         </div>
     );

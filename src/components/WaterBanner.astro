@@ -1,0 +1,60 @@
+---
+import waterVideo from '../assets/water2.mp4';
+---
+
+<div class="water-banner-container absolute top-[5vh] left-0 w-full overflow-hidden pointer-events-none z-0" aria-hidden="true">
+  <video
+    autoplay
+    loop
+    muted
+    playsinline
+    class="water-video w-full h-full object-cover"
+    style={{ objectPosition: "50% 20%" }}
+  >
+    <source src={waterVideo} type="video/mp4" />
+  </video>
+</div>
+
+<style>
+  .water-banner-container {
+    /* Adjusted height: slightly larger minimum to avoid "thin strip" blurry look */
+    height: clamp(250px, 30vh, 450px);
+    
+    /* 
+       Mask the bottom edge to fade into transparency.
+       Fade starts at 40% down.
+    */
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+
+  .water-video {
+    /*
+      Dark Mode Strategy:
+      Background is dark. Video is black bg + light ripples.
+      'screen' blend mode: Black becomes transparent, Light stays.
+    */
+    mix-blend-mode: screen;
+    opacity: 1.0; /* Increased to max for visibility */
+  }
+
+  /* 
+     Light Mode Strategy:
+     Background is light. We need dark ripples on transparent/white.
+     Video is Black Bg + Light Ripples.
+     1. Invert video -> White Bg + Dark Ripples.
+     2. 'multiply' blend mode -> White becomes transparent, Dark stays.
+  */
+  :global(html:not(.dark)) .water-video {
+    filter: invert(1);
+    mix-blend-mode: multiply;
+    opacity: 0.8; /* Increased for visibility */
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .water-banner-container {
+      display: none;
+    }
+  }
+</style>

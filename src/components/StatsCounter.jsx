@@ -18,11 +18,11 @@ function Counter({ value, suffix = "" }) {
     return <motion.span ref={ref}>{display}</motion.span>;
 }
 
-export default function StatsCounter() {
+export default function StatsCounter({ className = "" }) {
     const yearsOfExperience = new Date().getFullYear() - 2012;
 
     return (
-        <div className="flex flex-row gap-12 mt-8 items-center justify-start">
+        <div className={`flex flex-row gap-12 items-center ${className}`}>
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}

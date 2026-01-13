@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 export default function FluidBackground() {
     const canvasRef = useRef(null);
+    const mouseRef = useRef({ x: -1000, y: -1000 });
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -15,30 +16,71 @@ export default function FluidBackground() {
         canvas.height = height;
 
         const particles = [];
-        const particleCount = 100; // Adjust for density
+        const particleCount = 120; // Increased density slightly
+
+        // Water-themed palette (Cyan, Sky, Blue, Teal)
+        const colors = [
+            'rgba(6, 182, 212, ', // cyan-500
+            'rgba(59, 130, 246, ', // blue-500
+            'rgba(14, 165, 233, ', // sky-500
+            'rgba(20, 184, 166, '  // teal-500
+        ];
 
         class Particle {
             constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
-                this.color = Math.random() > 0.5 ? 'rgba(99, 102, 241, ' : 'rgba(14, 165, 233, '; // indigo or sky
-                this.alpha = Math.random() * 0.5 + 0.1;
-                this.flowSpeed = Math.random() * 0.5 + 0.2;
+                this.reset(true);
             }
 
-            update() {
-                // Flow effect - slight movement to the right/down like a slow river or data stream
-                this.x += this.vx + this.flowSpeed;
-                this.y += this.vy + this.flowSpeed * 0.5;
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : height + 20;
+                this.vx = (Math.random() - 0.5) * 0.5; // Gentle horizontal drift
+                this.vy = -(Math.random() * 0.5 + 0.3); // Upward buoyancy
+                this.size = Math.random() * 4 + 2; // Increased size: 2-6px
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.alpha = Math.random() * 0.5 + 0.4; // Increased opacity: 0.4-0.9
+                this.friction = 0.96; // For mouse interaction decay
+            }
 
-                // Wrap around screen
-                if (this.x > width) this.x = 0;
-                if (this.x < 0) this.x = width;
-                if (this.y > height) this.y = 0;
-                if (this.y < 0) this.y = height;
+            update(mouseX, mouseY) {
+                // Basic movement
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Mouse Interaction (Attraction field)
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const interactionRadius = 200;
+
+                if (distance < interactionRadius) {
+                    const force = (interactionRadius - distance) / interactionRadius;
+                    const angle = Math.atan2(dy, dx);
+
+                    // Gentle attraction
+                    const pull = force * 0.8;
+                    this.vx += Math.cos(angle) * pull;
+                    this.vy += Math.sin(angle) * pull;
+                }
+
+                // Friction to stabilize velocity after interaction
+                this.vx *= this.friction;
+
+                // Apply buoyancy force constantly to ensure they eventually go up
+                // Use a soft target velocity for Y to simulate terminal velocity in water
+                if (this.vy > -0.5) {
+                    this.vy -= 0.02;
+                }
+
+                // Reset when out of bounds
+                if (this.y < -20 || this.x < -20 || this.x > width + 20) {
+                    // Check if strictly out of view
+                    if (this.y < -20) {
+                        this.reset();
+                    }
+                    else if (this.x < -20) this.x = width + 20;
+                    else if (this.x > width + 20) this.x = -20;
+                }
             }
 
             draw() {
@@ -54,35 +96,30 @@ export default function FluidBackground() {
             particles.push(new Particle());
         }
 
-        // Connections
-        const drawConnections = () => {
-            particles.forEach((p1, i) => {
-                particles.slice(i + 1).forEach(p2 => {
-                    const dx = p1.x - p2.x;
-                    const dy = p1.y - p2.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 150) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(148, 163, 184, ${0.15 * (1 - distance / 150)})`; // slate-400 equivalent
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(p1.x, p1.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                });
-            });
-        };
-
         const render = () => {
             ctx.clearRect(0, 0, width, height);
 
             particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+                p.update(mouseRef.current.x, mouseRef.current.y);
 
-            drawConnections();
+                // Fade out particles near the top (approaching water surface at y=0)
+                // Strict fade out: Ensure bubbles are invisible above the video banner (approx 450px)
+                const surfaceY = 450; // Bubbles fully disappear above this Y
+                const fadeZone = 400; // Distance over which they fade out
+
+                let fadeFactor = 0;
+                if (p.y > surfaceY) {
+                    fadeFactor = Math.min(1, (p.y - surfaceY) / fadeZone);
+                }
+
+                // Transient alpha for drawing only
+                const drawAlpha = p.alpha * fadeFactor;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + drawAlpha + ')';
+                ctx.fill();
+            });
 
             animationFrameId = requestAnimationFrame(render);
         };
@@ -94,11 +131,27 @@ export default function FluidBackground() {
             canvas.height = height;
         };
 
+        const handleMouseMove = (e) => {
+            mouseRef.current.x = e.clientX;
+            mouseRef.current.y = e.clientY;
+        };
+
+        const handleTouchMove = (e) => {
+            if (e.touches.length > 0) {
+                mouseRef.current.x = e.touches[0].clientX;
+                mouseRef.current.y = e.touches[0].clientY;
+            }
+        };
+
         window.addEventListener('resize', handleResize);
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchmove', handleTouchMove);
         render();
 
         return () => {
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('touchmove', handleTouchMove);
             cancelAnimationFrame(animationFrameId);
         };
     }, []);
@@ -110,7 +163,7 @@ export default function FluidBackground() {
 
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full opacity-60 dark:opacity-30"
+                className="absolute inset-0 w-full h-full opacity-70 dark:opacity-50"
             />
         </div>
     );

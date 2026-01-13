@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import portrait from '../assets/portrait.png';
+import StatsCounter from './StatsCounter';
 
 export default function Hero() {
     const targetRef = useRef(null);
@@ -19,17 +20,9 @@ export default function Hero() {
             {/* Text Content - Left/Top */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center md:items-start z-20 text-center md:text-left pt-20 md:pt-0"
+                className="flex-1 flex flex-col items-center md:items-start z-20 text-center md:text-left pt-52 md:pt-40"
             >
-                <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <div className="inline-block font-mono text-xs md:text-sm font-bold tracking-[0.2em] uppercase border border-slate-900 dark:border-slate-400 rounded-full px-4 py-2 mb-6 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md text-slate-900 dark:text-slate-200">
-                        Professional Portfolio
-                    </div>
-                </motion.div>
+
 
                 <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tighter leading-[0.9]">
                     <motion.div
@@ -66,14 +59,25 @@ export default function Hero() {
                     className="font-mono text-sm md:text-lg text-slate-700 dark:text-slate-300 max-w-lg leading-relaxed relative"
                 >
                     <span className="absolute -left-4 top-0 text-slate-300 dark:text-slate-700 text-4xl -z-10 animate-pulse"></span>
-                    Solving complex water challenges through <span className="font-bold text-slate-900 dark:text-white">Civil Engineering</span> & <span className="font-bold text-slate-900 dark:text-white">Applied Tech</span>.
+                    Delivering technical solutions driven by emerging technologies. <br />
+                    Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
+                    <span className="text-xs md:text-sm opacity-75 mt-2 block">Technologist • Space Nerd • Pittsburgh</span>
                 </motion.p>
+
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1.0 }}
+                    className="mt-8"
+                >
+                    <StatsCounter />
+                </motion.div>
             </motion.div>
 
             {/* Image Content - Right/Bottom */}
             <motion.div
                 style={{ y: yImage, opacity }}
-                className="flex-1 w-full max-w-[500px] md:max-w-none relative mt-12 md:mt-0 flex justify-center md:justify-end"
+                className="flex-1 w-full max-w-[500px] md:max-w-none relative mt-16 md:mt-20 flex justify-center md:justify-end"
             >
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -100,14 +104,18 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 animate-bounce cursor-pointer z-20"
-                onClick={() => document.querySelector('#expertise')?.scrollIntoView({ behavior: 'smooth' })}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20"
             >
-                <div className="font-mono text-[10px] tracking-[0.2em] text-slate-500 dark:text-slate-400 uppercase flex flex-col items-center gap-2">
-                    Explore
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
+                <div
+                    className="animate-bounce cursor-pointer"
+                    onClick={() => document.querySelector('#timeline')?.scrollIntoView({ behavior: 'smooth' })}
+                >
+                    <div className="font-mono text-[10px] tracking-[0.2em] text-slate-500 dark:text-slate-400 uppercase flex flex-col items-center gap-2">
+                        Explore
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                    </div>
                 </div>
             </motion.div>
         </section>
