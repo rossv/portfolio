@@ -17,6 +17,7 @@ jobs:
       - name: Install, build, and upload
         uses: withastro/action@v2
         env:
+          BASE_PATH: /${{ github.event.repository.name }}/
           PUBLIC_MAPBOX_ACCESS_TOKEN: ${{ secrets.PUBLIC_MAPBOX_ACCESS_TOKEN }}
   deploy:
     needs: build_site
