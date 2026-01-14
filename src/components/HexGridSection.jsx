@@ -108,10 +108,10 @@ const icons = [
     { id: 'hyd', icon: hydrantIcon, label: "Hydrant Testing", group: "eng", isImage: true },
 ];
 
-const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup, setActiveGroup, lockedGroup, setLockedGroup }) => {
+const Hexagon = ({ icon: IconOrImage, id, label, delay, isImage, group, activeGroup, setActiveGroup, lockedGroup, setLockedGroup, activeTileId, setActiveTileId }) => {
     const isHoveredGroup = activeGroup === group;
     const isDimmed = activeGroup && activeGroup !== group;
-    const showAllTooltips = lockedGroup === group && activeGroup === group;
+    const showActiveTooltip = activeTileId === id;
 
     return (
         <motion.div
@@ -125,11 +125,14 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
             onClick={(e) => {
                 e.stopPropagation();
                 // Toggle group active on click for mobile
-                if (lockedGroup === group) {
+                if (lockedGroup === group && activeTileId === id) {
                     setLockedGroup(null);
+                    setActiveGroup(null);
+                    setActiveTileId(null);
                 } else {
                     setLockedGroup(group);
                     setActiveGroup(group);
+                    setActiveTileId(id);
                 }
             }}
         >
@@ -169,7 +172,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
             </div>
 
             <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 transition-opacity duration-300 z-50 pointer-events-none translate-y-2 group-hover:translate-y-0
-                ${showAllTooltips ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
+                ${showActiveTooltip ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
             `}>
                 <div className="bg-slate-900/95 text-white text-[10px] md:text-sm py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
                     {label}
@@ -182,6 +185,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
 export default function HexGridSection() {
     const [activeGroup, setActiveGroup] = useState(null);
     const [lockedGroup, setLockedGroup] = useState(null);
+    const [activeTileId, setActiveTileId] = useState(null);
 
     const chunks = [];
     let i = 0;
@@ -212,7 +216,12 @@ export default function HexGridSection() {
 
                 <div
                     className="flex flex-col items-center justify-center w-full max-w-6xl mx-auto select-none"
-                    onMouseLeave={() => setActiveGroup(lockedGroup)}
+                    onMouseLeave={() => {
+                        setActiveGroup(lockedGroup);
+                        if (!lockedGroup) {
+                            setActiveTileId(null);
+                        }
+                    }}
                 >
                     {chunks.map((rowIcons, rowIndex) => (
                         <div
@@ -238,6 +247,8 @@ export default function HexGridSection() {
                                     setActiveGroup={setActiveGroup}
                                     lockedGroup={lockedGroup}
                                     setLockedGroup={setLockedGroup}
+                                    activeTileId={activeTileId}
+                                    setActiveTileId={setActiveTileId}
                                 />
                             ))}
                         </div>
