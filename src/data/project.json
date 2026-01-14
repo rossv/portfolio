@@ -278,7 +278,7 @@
             "Dashboard",
             "GIS"
         ],
-        "description": "Developed Survey123 Form with data validation and dependencies along with a Dashboard and desktop web map for office management. Process allowed Zoning Officer and staff to create violation reports which were stored in an ArcGIS Online feature service. This was consumed by Dashboards and web maps to give ingith to office staff and allow updates to violations. Individual violation letters were automatically generated along with summary reports for board meetings.",
+        "description": "Developed Survey123 Form with data validation and dependencies along with a dashboard and desktop web map for office management. Process allowed Zoning Officer and staff to create violation reports which were stored in an ArcGIS Online feature service. This was consumed by dashboards and web maps to give insight to office staff and allow updates to violations. Individual violation letters were automatically generated along with summary reports for board meetings.",
         "role": "Senior Project Engineer",
         "project_role": "Task Lead",
         "image": "/src/assets/projects/zoning-violation-program.jpg"
@@ -302,7 +302,7 @@
             "GIS",
             "GNSS"
         ],
-        "description": "Georeferencing old paper maps into a GIS system map, configuration of GIS databases for using in ArcGIS Online. Lead the acquisition of new equipment to utilize ArcGIS Online and the Collector app for high accuracy GNSS survey. Developed Dashboard to track survey crews progress in real-time.",
+        "description": "Georeferencing old paper maps into a GIS system map and configuration of GIS databases for use in ArcGIS Online. Led the acquisition of new equipment to utilize ArcGIS Online and the Collector app for high accuracy GNSS survey. Developed a dashboard to track survey crews' progress in real time.",
         "role": "Senior Project Engineer",
         "project_role": "Developer",
         "image": "/src/assets/projects/ggsa-gis-system-map-and-survey.jpg"
@@ -1146,7 +1146,7 @@
             "Google Forms",
             "Javascript"
         ],
-        "description": "The existing Order Entry system to start new projects consisted of paper forms being filled out by hand and delivered to various personnel by hand or via email with multiple copies. To organize this process I utilized Google Forms and Javascript to build an online Order Entry system. New jobs could be opened, assigned project numbers and engineers from any device with an internet connect. Emails and PDF were automatically generated and a master tracking spreadsheet was appended so that all open project could be reviewed in monthly meetings.",
+        "description": "The existing Order Entry system for starting new projects consisted of paper forms being filled out by hand and delivered to various personnel by hand or via email with multiple copies. To organize this process I utilized Google Forms and JavaScript to build an online Order Entry system. New jobs could be opened, assigned project numbers and engineers from any device with an internet connection. Emails and PDFs were automatically generated and a master tracking spreadsheet was appended so that all open projects could be reviewed in monthly meetings.",
         "role": "Project Engineer",
         "project_role": "Task Lead",
         "image": "/src/assets/projects/order-entry-system.jpg"
@@ -1329,7 +1329,7 @@
             "LTS",
             "Calibration"
         ],
-        "description": "Supported the development of a Erie Water Works Master Plan as part of the modeling team. The system was comprised of 11 booster stations, 14 tanks and reservoirs and 2 WTPs. Worked with Innovyze to develop a detailed InfoWater model. Assisted in calibration and utilized GIS tools to keep the model updated throughout the process. Created extensive exhibits based on modeling results and planning to determine areas of growth in and around the county that could be served by EWW.",
+        "description": "Supported the development of an Erie Water Works Master Plan as part of the modeling team. The system was comprised of 11 booster stations, 14 tanks and reservoirs and 2 WTPs. Worked with Innovyze to develop a detailed InfoWater model. Assisted in calibration and utilized GIS tools to keep the model updated throughout the process. Created extensive exhibits based on modeling results and planning analysis to determine areas of growth in and around the county that could be served by EWW.",
         "role": "Project Engineer",
         "project_role": "Task Lead",
         "image": "/src/assets/projects/erie-water-works-master-plan-exhibits.jpg"
@@ -1500,7 +1500,7 @@
             "Wincan",
             "GIS"
         ],
-        "description": "The Clairton Municipal Authority contracted with a pipe televising company to produce a city-wide database of pipe inspections of their combined sewer system. The deliverable was a hard drive containing hundreds of gigabytes of photos and video for each pipe in the system. Additionally, the inspections were conducted without a clear agreement of maps to be used to identifying structures and pipes. As a result the Authority had a huge amount of disorganized data that was difficult to access and extract actionable information from. To solve this, I obtained various paper and digital maps that were available and processed them into one GIS with clear and logical naming conventions. I then utilized commercial software to create geolocated features for each pipe defect that was recorded by the contractor. I then linked the CCTV photos and video the the actual inspection locations. The deliverable product was a free to use GIS map that the Authority could use to identify exactly where problems were located in their collection system and then view the inspection video without using additional software.",
+        "description": "The Clairton Municipal Authority contracted with a pipe televising company to produce a city-wide database of pipe inspections of their combined sewer system. The deliverable was a hard drive containing hundreds of gigabytes of photos and video for each pipe in the system. Additionally, the inspections were conducted without a clear agreement of maps to be used to identify structures and pipes. As a result the Authority had a huge amount of disorganized data that was difficult to access and extract actionable information from. To solve this, I obtained various paper and digital maps that were available and processed them into one GIS with clear and logical naming conventions. I then utilized commercial software to create geolocated features for each pipe defect that was recorded by the contractor. I then linked the CCTV photos and video to the actual inspection locations. The deliverable product was a free-to-use GIS map that the Authority could use to identify exactly where problems were located in their collection system and then view the inspection video without using additional software.",
         "role": "Project Engineer",
         "project_role": "",
         "image": "/src/assets/projects/clairton-gis-cctv-integration.jpg"
