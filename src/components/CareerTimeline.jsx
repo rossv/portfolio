@@ -239,6 +239,8 @@ export default function CareerTimeline() {
         }
     }, [selectedJob]);
 
+
+
     return (
         <div id="timeline" className="w-full py-20 px-6 font-sans scroll-mt-20">
             <motion.h2
@@ -307,19 +309,21 @@ export default function CareerTimeline() {
                                 </div>
 
                                 {/* Mobile/Tablet Details (Accordion style) */}
-                                <AnimatePresence>
-                                    {selectedJob.id === item.id && (
-                                        <motion.div
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="lg:hidden overflow-hidden rounded-3xl mt-4 mb-8 border border-slate-200 dark:border-slate-800 shadow-lg"
-                                        >
-                                            <JobDetails job={selectedJob} mapRef={mapRef} mapToken={MAPBOX_TOKEN} />
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                <div className="lg:!hidden">
+                                    <AnimatePresence>
+                                        {selectedJob.id === item.id && (
+                                            <motion.div
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="overflow-hidden rounded-3xl mt-4 mb-8 border border-slate-200 dark:border-slate-800 shadow-lg"
+                                            >
+                                                <JobDetails job={selectedJob} mapRef={mapRef} mapToken={MAPBOX_TOKEN} />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
                             </motion.div>
                         ))}
                     </div>

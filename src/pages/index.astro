@@ -6,6 +6,7 @@ import ProjectDashboard from '../components/ProjectDashboard';
 import ExperienceMap from '../components/ExperienceMap';
 import SkillsRadar from '../components/SkillsRadar';
 import CareerTimeline from '../components/CareerTimeline';
+import Achievements from '../components/Achievements';
 
 
 
@@ -34,6 +35,8 @@ import Footer from '../components/Footer';
   <section id="timeline" class="py-10 bg-gradient-to-b from-transparent to-white/50 dark:to-slate-900/50">
     <CareerTimeline client:visible />
   </section>
+
+  <Achievements client:visible />
 
   <section id="projects" class="py-20">
     <div class="w-full max-w-[95%] mx-auto px-6">

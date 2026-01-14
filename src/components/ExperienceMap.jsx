@@ -60,7 +60,12 @@ export default function ExperienceMap() {
           >
             <div className="p-3 font-sans min-w-[200px]">
               <h4 className="font-bold text-slate-900 text-lg mb-1">{selectedProject.name}</h4>
-              <p className="text-sm font-mono text-indigo-600 font-bold mb-2">{selectedProject.client}</p>
+              <div className="mb-2">
+                {selectedProject.company && <p className="text-sm font-bold text-slate-800">{selectedProject.company}</p>}
+                {selectedProject.client && selectedProject.client !== selectedProject.company && (
+                  <p className="text-xs font-mono text-indigo-600 font-semibold">{selectedProject.client}</p>
+                )}
+              </div>
               <p className="text-xs text-slate-500 leading-tight">Click outside to close</p>
             </div>
           </Popup>

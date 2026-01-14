@@ -54,6 +54,8 @@ export default function ProjectDashboard() {
                 project.description,
                 project.category,
                 project.location,
+                project.project_role, // Add project_role to search
+                project.role, // Add role to search
                 ...(project.tags || [])
             ].join(' ').toLowerCase();
 
@@ -189,13 +191,29 @@ function ProjectCard({ project }) {
 
             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1 group-hover:text-blue-600 transition-colors">{project.name}</h3>
 
-            {(project.client || project.role) && (
-                <div className="text-sm text-slate-600 dark:text-slate-400 mb-3 font-medium">
-                    {project.client && <span className="text-indigo-600 dark:text-indigo-400">{project.client}</span>}
-                    {project.client && project.role && <span className="mx-2">•</span>}
-                    {project.role && <span>{project.role}</span>}
-                </div>
-            )}
+            <div className="text-sm text-slate-600 dark:text-slate-400 mb-3 flex flex-col gap-1">
+                {(project.company || project.client) && (
+                    <div className="font-medium flex flex-wrap gap-2 items-center">
+                        {project.company && <span className="font-bold text-slate-700 dark:text-slate-300">{project.company}</span>}
+                        {project.company && project.client && project.client !== project.company && (
+                            <>
+                                <span className="text-slate-300">|</span>
+                                <span className="text-indigo-600 dark:text-indigo-400">{project.client}</span>
+                            </>
+                        )}
+                        {/* Fallback if no company but client exists */}
+                        {!project.company && project.client && <span className="text-indigo-600 dark:text-indigo-400">{project.client}</span>}
+                    </div>
+                )}
+
+                {(project.role || project.project_role) && (
+                    <div className="text-xs flex flex-wrap gap-1 items-center">
+                        {project.role && <span className="font-semibold">{project.role}</span>}
+                        {project.role && project.project_role && <span className="text-slate-300">•</span>}
+                        {project.project_role && <span className="italic text-slate-500">{project.project_role}</span>}
+                    </div>
+                )}
+            </div>
 
             {project.location && <p className="text-sm text-slate-500 dark:text-slate-500 mb-4 italic flex items-center gap-1">
                 <span className="w-1 h-1 bg-slate-400 rounded-full inline-block"></span>
