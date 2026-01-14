@@ -108,6 +108,23 @@ const presentations = [
     }
 ];
 
+const positionGradientMap = {
+    Leadership: "bg-gradient-to-br from-indigo-50 via-white to-white dark:from-indigo-950/30 dark:via-slate-900 dark:to-slate-900",
+    Innovation: "bg-gradient-to-br from-amber-50 via-white to-white dark:from-amber-950/25 dark:via-slate-900 dark:to-slate-900",
+    Strategy: "bg-gradient-to-br from-emerald-50 via-white to-white dark:from-emerald-950/25 dark:via-slate-900 dark:to-slate-900",
+    Committee: "bg-gradient-to-br from-sky-50 via-white to-white dark:from-sky-950/25 dark:via-slate-900 dark:to-slate-900",
+};
+
+const getPresentationGradient = (types) => {
+    if (types.includes("Paper") && types.includes("Presentation")) {
+        return "bg-gradient-to-br from-purple-50 via-white to-emerald-50 dark:from-purple-950/25 dark:via-slate-900 dark:to-emerald-950/20";
+    }
+    if (types.includes("Paper")) {
+        return "bg-gradient-to-br from-emerald-50 via-white to-white dark:from-emerald-950/25 dark:via-slate-900 dark:to-slate-900";
+    }
+    return "bg-gradient-to-br from-purple-50 via-white to-white dark:from-purple-950/25 dark:via-slate-900 dark:to-slate-900";
+};
+
 const BentoItem = ({ children, className = "", delay = 0 }) => (
     <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -185,7 +202,11 @@ export default function Achievements() {
                     </BentoItem>
 
                     {positions.map((pos, i) => (
-                        <BentoItem key={i} delay={0.1 + (i * 0.05)} className="flex flex-col justify-between group hover:border-indigo-200 dark:hover:border-indigo-700 transition-colors">
+                        <BentoItem
+                            key={i}
+                            delay={0.1 + (i * 0.05)}
+                            className={`flex flex-col justify-between group hover:border-indigo-200 dark:hover:border-indigo-700 transition-colors ${positionGradientMap[pos.category] || ""}`}
+                        >
                             <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                                 {pos.icon}
                             </div>
@@ -218,7 +239,7 @@ export default function Achievements() {
                         <BentoItem
                             key={i + "paper"}
                             delay={0.3 + (i * 0.05)}
-                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700`}
+                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700 ${getPresentationGradient(item.types)}`}
                         >
                             <div className="flex flex-col h-full justify-between">
                                 <div>
