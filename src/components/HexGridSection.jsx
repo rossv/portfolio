@@ -120,7 +120,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
             transition={{ duration: 0.5, delay: delay * 0.03, type: "spring" }}
             viewport={{ once: true, margin: "-50px" }}
             // Increased size for mobile from w-20/h-24 to w-24/h-28
-            className="relative w-24 h-28 sm:w-24 sm:h-28 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer"
+            className="relative w-16 h-20 sm:w-20 sm:h-24 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer"
             onMouseEnter={() => setActiveGroup(group)}
             onClick={(e) => {
                 e.stopPropagation();
@@ -149,7 +149,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
                         <img
                             src={IconOrImage.src || IconOrImage}
                             alt={label}
-                            className={`w-10 h-10 sm:w-12 sm:h-12 object-contain transition-all duration-300
+                            className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain transition-all duration-300
                  ${isHoveredGroup || activeGroup === group ? 'scale-110 grayscale-0 opacity-100' : ''}
                  ${isDimmed ? 'scale-90 grayscale opacity-40' : ''}
                  ${!activeGroup ? 'opacity-90 dark:brightness-110' : ''}
@@ -157,7 +157,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
                         />
                     ) : (
                         <IconOrImage size={32}
-                            className={`transition-all duration-300
+                            className={`transition-all duration-300 w-6 h-6 sm:w-8 sm:h-8 md:w-8 md:h-8
                  ${isHoveredGroup ? 'text-indigo-400 scale-110' : ''}
                  ${isDimmed ? 'text-slate-600 dark:text-slate-600 scale-90' : ''}
                  ${!activeGroup ? 'text-slate-700 dark:text-slate-200' : ''}
@@ -171,7 +171,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
             <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 transition-opacity duration-300 z-50 pointer-events-none translate-y-2 group-hover:translate-y-0
                 ${showAllTooltips ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
             `}>
-                <div className="bg-slate-900/95 text-white text-xs md:text-sm py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
+                <div className="bg-slate-900/95 text-white text-[10px] md:text-sm py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
                     {label}
                 </div>
             </div>
@@ -196,7 +196,7 @@ export default function HexGridSection() {
     }
 
     return (
-        <section className="py-12 md:py-24 relative z-10 w-full overflow-hidden">
+        <section className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
             <div className="container mx-auto px-2 text-center">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
@@ -206,19 +206,19 @@ export default function HexGridSection() {
                 >
                     Technical Toolkit
                 </motion.h2>
-                <p className="text-slate-600 dark:text-slate-400 mb-12 max-w-xl mx-auto">
-                    Comprehensive set of tools, platforms, and technologies.
+                <p className="text-slate-600 dark:text-slate-400 mb-6 md:mb-12 max-w-xl mx-auto">
+                    Set of tools, platforms, and technologies.
                 </p>
 
                 <div
-                    className="flex flex-col items-center justify-center w-full max-w-6xl mx-auto select-none scale-[0.65] sm:scale-75 md:scale-100 origin-top"
+                    className="flex flex-col items-center justify-center w-full max-w-6xl mx-auto select-none"
                     onMouseLeave={() => setActiveGroup(lockedGroup)}
                 >
                     {chunks.map((rowIcons, rowIndex) => (
                         <div
                             key={rowIndex}
                             // Adjusted margins to relax vertical overlap slightly
-                            className={`flex justify-center gap-1 sm:gap-2 md:gap-3 z-10 ${rowIndex > 0 ? '-mt-4 sm:-mt-5 md:-mt-6' : ''}`}
+                            className={`flex justify-center gap-1 sm:gap-2 md:gap-3 z-10 ${rowIndex > 0 ? '-mt-3 sm:-mt-5 md:-mt-6' : ''}`}
                             // Flipping Z-index: classic "stacking down" feel where lower rows might overlap upper ones?
                             // Or keep top on top? User said "bottom row overlapping above row".
                             // If bottom overlaps above, that means bottom is ON TOP.
@@ -249,9 +249,9 @@ export default function HexGridSection() {
                     <div className="bg-slate-900/90 text-indigo-400 border border-indigo-500/30 px-4 py-2 rounded-lg shadow-2xl backdrop-blur-md font-mono text-sm md:text-base font-bold tracking-widest uppercase flex items-center gap-3">
                         <span className="block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                         {activeGroup === 'hh' && "Hydrology & Hydraulics"}
-                        {activeGroup === 'gis' && "Geospatial Info Systems"}
+                        {activeGroup === 'gis' && "Geographic Information Systems"}
                         {activeGroup === 'coding' && "Development & Automation"}
-                        {activeGroup === 'eng' && "Engineering & Viz"}
+                        {activeGroup === 'eng' && "Engineering & Visuualization"}
                     </div>
                 </div>
 

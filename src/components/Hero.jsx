@@ -3,6 +3,29 @@ import { useRef } from 'react';
 import portrait from '../assets/portrait.png';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
+import swmmIcon from '../assets/icons/hh/epaswmm.png';
+import gisIcon from '../assets/icons/gis/arcgispro.png';
+import aiIcon from '../assets/icons/coding/chatgpt.png';
+
+function FloatingElement({ children, delay = 0, className = "" }) {
+    return (
+        <motion.div
+            animate={{
+                y: [0, -10, 0],
+            }}
+            transition={{
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+                delay: delay,
+            }}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    );
+}
 
 export default function Hero() {
     const targetRef = useRef(null);
@@ -17,6 +40,7 @@ export default function Hero() {
 
     return (
         <section ref={targetRef} className="relative min-h-screen flex flex-col md:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
+
 
             {/* Text Content - Left/Top */}
             <motion.div
@@ -73,7 +97,7 @@ export default function Hero() {
                     <span className="absolute -left-4 top-0 text-slate-300 dark:text-slate-700 text-4xl -z-10 animate-pulse"></span>
                     Delivering technical solutions driven by emerging technologies. <br />
                     Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
-                    <span className="text-xs md:text-sm opacity-75 mt-2 block">Technologist • Space Nerd • Pittsburgh</span>
+                    <span className="text-xs md:text-sm opacity-75 mt-2 block">Technologist • Geospatial & Space Nerd • Pittsburgh</span>
                 </motion.p>
 
                 <motion.div
@@ -109,6 +133,25 @@ export default function Hero() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                     </div>
+
+                    {/* Floating Bubbles */}
+                    <FloatingElement delay={0} className="absolute -left-8 top-1/4 hidden md:block">
+                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-indigo-500/20 border border-slate-100 dark:border-slate-700">
+                            <img src={aiIcon.src} alt="AI" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
+                        </div>
+                    </FloatingElement>
+
+                    <FloatingElement delay={1} className="absolute -right-8 top-1/3 hidden md:block">
+                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-sky-500/20 border border-slate-100 dark:border-slate-700">
+                            <img src={gisIcon.src} alt="GIS" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
+                        </div>
+                    </FloatingElement>
+
+                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden md:block">
+                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-indigo-500/20 border border-slate-100 dark:border-slate-700">
+                            <img src={swmmIcon.src} alt="H&H" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
+                        </div>
+                    </FloatingElement>
                 </motion.div>
             </motion.div>
 

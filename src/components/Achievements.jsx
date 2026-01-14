@@ -1,60 +1,110 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import innovatorAwardImg from '../assets/innovator-award.png';
 
 const positions = [
-    { title: "GIS Technical Lead", category: "Leadership" },
-    { title: "Optimization Lead", category: "Strategy" }, // Shortened for tile fit
-    { title: "Data Science Lead", category: "Innovation" },
-    { title: "AI Task Force", category: "Committee" },
+    {
+        title: "Leadership Academy",
+        category: "Leadership",
+        company: "Wade Trim",
+        year: "2024-2025",
+        details: "Selected for intensive leadership development program",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
+        )
+    },
+    {
+        title: "Optimization & Data Science Lead",
+        category: "Innovation",
+        company: "Wade Trim",
+        year: "Since 2024",
+        details: "Innovation Lead",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        )
+    },
+    {
+        title: "Sewers of the Future Lead",
+        category: "Strategy",
+        company: "Wade Trim",
+        year: "Since 2024",
+        details: "Under Wet Weather Practice",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7m0 0L9 7" /></svg>
+        )
+    },
+    {
+        title: "AI Task Force",
+        category: "Committee",
+        company: "Wade Trim",
+        year: "Since 2023",
+        details: "Member",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        )
+    },
+    {
+        title: "GIS Technical Lead",
+        category: "Leadership",
+        company: "Wade Trim",
+        year: "Since 2022",
+        details: "Under Advanced Design Practice",
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        )
+    },
 ];
 
 const award = {
     title: "2024 Innovator of the Year",
     organization: "Wade Trim",
     description: "Awarded for outstanding contributions to innovation and technical excellence.",
-    icon: (
-        <svg className="w-full h-full text-amber-500/20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-    )
+    image: innovatorAwardImg
 };
 
 const presentations = [
     {
         title: "Building a More Accurate AI Chatbot for Engineering",
-        conference: "OneWater 2025",
-        role: "Co-presented",
+        conference: "OneWater 2025 - Cleveland, OH",
+        types: ["Presentation"],
+        roles: ["Co-Presenter"],
         featured: true // Make this spans 2 cols
     },
     {
-        title: "GIS‑Driven Hydraulic Model Expansion",
-        conference: "3 Rivers Wet Weather 2025",
-        role: "Co-authored",
+        title: "GIS-Driven Hydraulic Model Expansion",
+        conference: "3 Rivers Wet Weather 2025 - Pittsburgh, PA",
+        types: ["Presentation"],
+        roles: ["Lead Presenter"],
     },
     {
         title: "Advancing SWMM Parameter Optimization",
-        conference: "ICWWMM (Ongoing)",
-        role: "Authored",
+        conference: "ICWWMM 2025 - Toronto Canada",
+        types: ["Paper", "Presentation"],
+        roles: ["Co-Author"],
     },
     {
-        title: "GIS Leadership & Innovation",
-        conference: "PA GIS Conf 2024",
-        role: "Presenter",
+        title: "GIS-Driven Hydraulic Model Expansion",
+        conference: "PA KeystoneGIS Conference - State College, PA 2024",
+        types: ["Presentation"],
+        roles: ["Lead Presenter"],
     },
     {
         title: "PWSA Model Expansion Case Study",
-        conference: "IMGIS 2024",
-        role: "Author",
+        conference: "IMGIS 2024 - Palm Springs, CA",
+        types: ["Presentation"],
+        roles: ["Presenter"],
     },
     {
         title: "Manifolded Force Main System Prioritization",
-        conference: "Optimatics 2024",
-        role: "Presenter",
+        conference: "Optimatics North America Users Conference - Denver, CO 2024",
+        types: ["Presentation"],
+        roles: ["Presenter"],
     },
     {
         title: "Hydrodynamic Models for Restoration",
         conference: "EWRI Congress 2011",
-        role: "Author",
+        types: ["Paper", "Presentation"],
+        roles: ["Lead Author"],
     }
 ];
 
@@ -92,7 +142,7 @@ export default function Achievements() {
                             Recognition & Insights
                         </h2>
                         <p className="text-slate-600 dark:text-slate-400 max-w-xl text-lg">
-                            Highlighting industry leadership, technical contributions, and shared knowledge.
+                            Highlighting industry leadership, technical contributions, and recognition.
                         </p>
                     </div>
                     {/* Decorative Line */}
@@ -103,41 +153,55 @@ export default function Achievements() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(180px,auto)]">
 
                     {/* 1. Innovator Award (2x2) */}
-                    <BentoItem className="md:col-span-2 md:row-span-2 bg-gradient-to-br from-indigo-600 to-blue-700 text-white !border-none relative flex flex-col justify-between">
-                        <div className="absolute top-0 right-0 w-64 h-64 translate-x-16 -translate-y-16 opacity-20">
-                            {award.icon}
+                    <BentoItem className="md:col-span-2 md:row-span-2 bg-slate-900 border-none relative flex flex-col justify-end overflow-hidden group">
+                        {/* Background Image */}
+                        <div className="absolute inset-0">
+                            <img
+                                src={award.image.src || award.image}
+                                alt="Innovator of the Year Award"
+                                className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500 scale-105 group-hover:scale-100"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
                         </div>
 
-                        <div className="relative z-10">
-                            <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold border border-white/30 text-white mb-4">
+                        <div className="relative z-10 p-2">
+                            <span className="inline-block px-3 py-1 bg-amber-500/90 backdrop-blur-md rounded-full text-xs font-bold text-white mb-4 shadow-lg shadow-amber-500/20">
                                 Career Highlight
                             </span>
-                            <h3 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4">
+                            <h3 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4 text-white drop-shadow-lg">
                                 {award.title}
                             </h3>
-                            <p className="text-indigo-100 text-lg font-medium leading-relaxed max-w-sm">
+                            <p className="text-slate-200 text-lg font-medium leading-relaxed max-w-sm drop-shadow-md">
                                 {award.description}
                             </p>
                         </div>
+
                         <div className="relative z-10 mt-auto pt-8 flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                             </div>
-                            <span className="font-bold tracking-wide">{award.organization}</span>
+                            <span className="font-bold tracking-wide text-white">{award.organization}</span>
                         </div>
                     </BentoItem>
 
-                    {/* 2. Key Positions (Individual Tiles) */}
                     {positions.map((pos, i) => (
                         <BentoItem key={i} delay={0.1 + (i * 0.05)} className="flex flex-col justify-between group hover:border-indigo-200 dark:hover:border-indigo-700 transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                                {pos.icon}
                             </div>
                             <div>
-                                <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-tight mb-1">
+                                <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-tight mb-0.5">
                                     {pos.title}
                                 </h4>
-                                <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">{pos.category}</span>
+                                <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1">{pos.company}</p>
+                                <span className="text-xs font-mono text-slate-400 uppercase tracking-wider block mb-3">{pos.category}</span>
+
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-700/50">
+                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-0.5">{pos.year}</p>
+                                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                                        {pos.details}
+                                    </p>
+                                </div>
                             </div>
                         </BentoItem>
                     ))}
@@ -150,26 +214,51 @@ export default function Achievements() {
                     </div>
 
                     {/* 4. Papers & Presentations */}
-                    {presentations.map((paper, i) => (
+                    {presentations.map((item, i) => (
                         <BentoItem
                             key={i + "paper"}
                             delay={0.3 + (i * 0.05)}
-                            className={`${paper.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700`}
+                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700`}
                         >
                             <div className="flex flex-col h-full justify-between">
                                 <div>
-                                    <div className="flex justify-between items-start mb-3">
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${paper.featured ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'}`}>
-                                            {paper.role}
-                                        </span>
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {/* Types Icons */}
+                                        <div className="flex gap-1">
+                                            {item.types.includes("Paper") && (
+                                                <div title="Paper" className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                </div>
+                                            )}
+                                            {item.types.includes("Presentation") && (
+                                                <div title="Presentation" className="p-1.5 rounded bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-300">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Roles Badges */}
+                                        {item.roles.map((role, idx) => (
+                                            <span
+                                                key={idx}
+                                                className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full flex items-center
+                                                    ${role.includes("Lead") || role.includes("Presenter") ?
+                                                        'bg-slate-800 text-white dark:bg-white dark:text-slate-900' :
+                                                        'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                                                    }`}
+                                            >
+                                                {role}
+                                            </span>
+                                        ))}
                                     </div>
-                                    <h4 className={`${paper.featured ? 'text-xl' : 'text-base'} font-bold text-slate-900 dark:text-slate-100 leading-snug mb-2`}>
-                                        {paper.title}
+
+                                    <h4 className={`${item.featured ? 'text-xl' : 'text-base'} font-bold text-slate-900 dark:text-slate-100 leading-snug mb-2`}>
+                                        {item.title}
                                     </h4>
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-500 font-medium">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    <span className="truncate">{paper.conference}</span>
+                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <span className="">{item.conference}</span>
                                 </div>
                             </div>
                         </BentoItem>

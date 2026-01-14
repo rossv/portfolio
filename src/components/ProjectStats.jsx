@@ -33,8 +33,9 @@ export default function ProjectStats({ projects }) {
     // Process Data
     const yearData = Object.entries(
         projects.reduce((acc, p) => {
-            // Extract year (handle ranges like "2021-Present")
-            const year = p.year ? p.year.split('-')[0] : 'Unknown';
+            // Extract year (handle ranges like "2021-Present" or full dates "1/1/2025")
+            const match = p.year ? p.year.match(/\d{4}/) : null;
+            const year = match ? match[0] : 'Unknown';
             acc[year] = (acc[year] || 0) + 1;
             return acc;
         }, {})
@@ -69,11 +70,18 @@ export default function ProjectStats({ projects }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <StatCard title="Total Projects" className="justify-center items-center">
-                <div className="text-5xl font-black text-slate-800 dark:text-slate-100 font-mono">
+            <StatCard title="Total Projects" className="justify-center items-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="text-6xl font-black text-slate-800 dark:text-slate-100 font-mono z-10 relative drop-shadow-sm">
                     {projects.length}
                 </div>
-                <div className="text-xs text-slate-500 mt-1">Found</div>
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 z-10 relative font-bold uppercase tracking-widest">
+                    Projects Found
+                </div>
+                {/* Decorative Background */}
+                <div className="absolute -right-4 -bottom-8 text-9xl text-slate-200 dark:text-slate-800 opacity-20 transform rotate-12 select-none pointer-events-none">
+                    P
+                </div>
             </StatCard>
 
             <StatCard title="By Year">

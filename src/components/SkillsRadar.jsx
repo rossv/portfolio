@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -9,6 +10,20 @@ const data = [
 ];
 
 export default function SkillsRadar({ className = "" }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Check initially
+    checkMobile();
+
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className={`bg-white/10 dark:bg-slate-950/80 backdrop-blur-md p-2 sm:p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 relative group hover:border-indigo-500 transition-colors duration-500 w-full max-w-2xl mx-auto aspect-square flex flex-col justify-center ${className}`}>
 
@@ -22,11 +37,11 @@ export default function SkillsRadar({ className = "" }) {
 
       <div className="w-full h-full relative z-10 min-h-[250px] [&_:focus]:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
+          <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "70%"} data={data}>
             <PolarGrid stroke="#64748b" strokeOpacity={0.2} />
             <PolarAngleAxis
               dataKey="subject"
-              tick={{ fill: '#94a3b8', fontSize: 14, fontFamily: 'monospace', fontWeight: 'bold' }}
+              tick={{ fill: '#94a3b8', fontSize: isMobile ? 10 : 14, fontFamily: 'monospace', fontWeight: 'bold' }}
             />
             <PolarRadiusAxis angle={30} domain={[0, 2000]} tick={false} axisLine={false} />
             <Radar

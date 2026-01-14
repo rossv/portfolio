@@ -26,8 +26,8 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
             <button
                 onClick={onToggle}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${isOpen || selected.length > 0
-                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
-                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+                    ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
                     }`}
             >
                 <span>{title}</span>
@@ -59,8 +59,8 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
                                             key={option}
                                             onClick={() => onChange(option)}
                                             className={`w-full text-left flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${isSelected
-                                                    ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                                                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
                                                 }`}
                                         >
                                             <span className="truncate">{option}</span>
@@ -93,7 +93,8 @@ export default function ProjectFilters({
     onClientChange,
     onCategoryChange,
     onTagChange,
-    onReset
+    onReset,
+    filterText
 }) {
     const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -109,7 +110,8 @@ export default function ProjectFilters({
         selectedCompanies.length > 0 ||
         selectedClients.length > 0 ||
         selectedCategories.length > 0 ||
-        selectedTags.length > 0;
+        selectedTags.length > 0 ||
+        (filterText && filterText.length > 0);
 
     return (
         <div className="flex flex-wrap items-center gap-3 pb-4">
