@@ -138,7 +138,7 @@ export default function FloatingIcons() {
             </FloatingItem>
 
             {/* Map - Lower Right */}
-            <FloatingItem x="82%" y="45%" delay={1.5} duration={5} size="w-20 h-20">
+            <FloatingItem x="90%" y="18%" delay={1.5} duration={5} size="w-20 h-20">
                 <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
             </FloatingItem>
 

@@ -118,9 +118,19 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: delay * 0.03, type: "spring" }}
             viewport={{ once: true, margin: "-50px" }}
-            // Note: Kept dimensions the same, layout fix is in the container margins
-            className="relative w-20 h-24 sm:w-24 sm:h-28 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer"
+            // Increased size for mobile from w-20/h-24 to w-24/h-28
+            className="relative w-24 h-28 sm:w-24 sm:h-28 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer"
             onMouseEnter={() => setActiveGroup(group)}
+            onClick={(e) => {
+                e.stopPropagation();
+                // Toggle group active on click for mobile
+                if (activeGroup === group) {
+                    // If we want to allow deselecting
+                    // setActiveGroup(null);
+                } else {
+                    setActiveGroup(group);
+                }
+            }}
         >
             <div
                 className="absolute inset-0 w-full h-full transition-all duration-300"
@@ -139,7 +149,7 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
                             src={IconOrImage.src || IconOrImage}
                             alt={label}
                             className={`w-10 h-10 sm:w-12 sm:h-12 object-contain transition-all duration-300
-                 ${isHoveredGroup ? 'scale-110 grayscale-0 opacity-100' : ''}
+                 ${isHoveredGroup || activeGroup === group ? 'scale-110 grayscale-0 opacity-100' : ''}
                  ${isDimmed ? 'scale-90 grayscale opacity-40' : ''}
                  ${!activeGroup ? 'opacity-90 dark:brightness-110' : ''}
                `}
@@ -157,8 +167,10 @@ const Hexagon = ({ icon: IconOrImage, label, delay, isImage, group, activeGroup,
                 </div>
             </div>
 
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-50 pointer-events-none translate-y-2 group-hover:translate-y-0">
-                <div className="bg-slate-900/95 text-white text-[10px] md:text-xs py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
+            <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 transition-opacity duration-300 z-50 pointer-events-none translate-y-2 group-hover:translate-y-0
+                ${isHoveredGroup ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
+            `}>
+                <div className="bg-slate-900/95 text-white text-xs md:text-sm py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
                     {label}
                 </div>
             </div>
@@ -182,7 +194,7 @@ export default function HexGridSection() {
     }
 
     return (
-        <section className="py-24 relative z-10 w-full overflow-hidden">
+        <section className="py-12 md:py-24 relative z-10 w-full overflow-hidden">
             <div className="container mx-auto px-2 text-center">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}

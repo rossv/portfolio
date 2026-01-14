@@ -20,7 +20,7 @@ export default function SkillsRadar({ className = "" }) {
 
       <h3 className="text-slate-800 dark:text-white text-center font-bold mb-2 font-mono tracking-widest uppercase text-lg">Expertise Profile <span className="text-sm text-slate-500">(Hrs)</span></h3>
 
-      <div className="w-full h-full relative z-10 min-h-[250px]">
+      <div className="w-full h-full relative z-10 min-h-[250px] [&_:focus]:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data}>
             <PolarGrid stroke="#64748b" strokeOpacity={0.2} />

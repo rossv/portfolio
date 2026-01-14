@@ -10,6 +10,7 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
             className={`relative cursor-pointer overflow-hidden rounded bg-transparent ${isHovered ? 'z-50' : 'z-10'}`}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
+            onClick={() => setIsHovered(!isHovered)}
             initial={false}
         >
             <motion.div
