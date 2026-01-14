@@ -110,7 +110,7 @@ export default function ProjectDashboard() {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[900px]">
+        <div className="bg-white dark:bg-slate-950 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-[1100px]">
 
             {/* Search Header - Fixed at Top */}
             <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md z-10 sticky top-0">

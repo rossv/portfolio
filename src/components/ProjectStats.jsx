@@ -77,7 +77,7 @@ export default function ProjectStats({ projects }) {
             </StatCard>
 
             <StatCard title="By Year">
-                <div className="w-full h-32">
+                <div className="w-full h-48">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={yearData}>
                             <XAxis dataKey="name" hide />
@@ -89,13 +89,13 @@ export default function ProjectStats({ projects }) {
             </StatCard>
 
             <StatCard title="Categories">
-                <div className="w-full h-32">
+                <div className="w-full h-48">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
                                 data={categoryData}
-                                innerRadius={25}
-                                outerRadius={40}
+                                innerRadius={40}
+                                outerRadius={65}
                                 paddingAngle={2}
                                 dataKey="value"
                             >
