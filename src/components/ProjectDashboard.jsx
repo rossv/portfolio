@@ -77,15 +77,10 @@ export default function ProjectDashboard() {
         [...new Set(projects.flatMap(p => p.category ? p.category.split(',').map(c => c.trim()) : []))].filter(Boolean).sort(),
         []);
 
-    // Get top 20 most common tags for the filter list (to avoid overwhelming)
     const allTags = useMemo(() => {
-        const counts = {};
-        projects.forEach(p => p.tags.forEach(t => counts[t] = (counts[t] || 0) + 1));
-        return Object.entries(counts)
-            .sort((a, b) => b[1] - a[1]) // Sort by count desc
-            .slice(0, 20)
-            .map(([tag]) => tag)
-            .sort();
+        const tagSet = new Set();
+        projects.forEach(p => (p.tags || []).forEach(tag => tagSet.add(tag)));
+        return [...tagSet].sort();
     }, []);
 
 
