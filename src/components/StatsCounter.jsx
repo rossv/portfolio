@@ -22,7 +22,7 @@ export default function StatsCounter({ className = "" }) {
     const yearsOfExperience = new Date().getFullYear() - 2012;
 
     return (
-        <div className={`flex flex-col sm:flex-row gap-8 sm:gap-12 items-center justify-center ${className}`}>
+        <div className={`flex flex-row gap-4 sm:gap-12 items-center justify-center ${className}`}>
             {/* Stat 1 */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -37,7 +37,7 @@ export default function StatsCounter({ className = "" }) {
                 <div className="font-mono text-xs font-bold text-slate-500 uppercase tracking-wider">Years Exp.</div>
             </motion.div>
 
-            <div className="hidden sm:block h-12 w-px bg-slate-300 dark:bg-slate-700"></div>
+            <div className="h-8 sm:h-12 w-px bg-slate-300 dark:bg-slate-700"></div>
 
             {/* Stat 2 */}
             <motion.div
@@ -53,7 +53,7 @@ export default function StatsCounter({ className = "" }) {
                 <div className="font-mono text-xs font-bold text-slate-500 uppercase tracking-wider">Projects Delivered</div>
             </motion.div>
 
-            <div className="hidden sm:block h-12 w-px bg-slate-300 dark:bg-slate-700"></div>
+            <div className="h-8 sm:h-12 w-px bg-slate-300 dark:bg-slate-700"></div>
 
             {/* Stat 3 */}
             <motion.div
