@@ -1,6 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import innovatorAwardImg from '../assets/innovator-award.png';
+import leadershipAcademyImg from '../assets/recognition-leadership-academy.svg';
+import optimizationDataScienceImg from '../assets/recognition-optimization-data-science.svg';
+import sewersFutureImg from '../assets/recognition-sewers-future.svg';
+import aiTaskForceImg from '../assets/recognition-ai-task-force.svg';
+import gisTechnicalLeadImg from '../assets/recognition-gis-technical-lead.svg';
 
 const positions = [
     {
@@ -9,6 +14,7 @@ const positions = [
         company: "Wade Trim",
         year: "2024-2025",
         details: "Selected for intensive leadership development program",
+        image: leadershipAcademyImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
         )
@@ -19,6 +25,7 @@ const positions = [
         company: "Wade Trim",
         year: "Since 2024",
         details: "Innovation Lead",
+        image: optimizationDataScienceImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
         )
@@ -29,6 +36,7 @@ const positions = [
         company: "Wade Trim",
         year: "Since 2024",
         details: "Under Wet Weather Practice",
+        image: sewersFutureImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7m0 0L9 7" /></svg>
         )
@@ -39,6 +47,7 @@ const positions = [
         company: "Wade Trim",
         year: "Since 2023",
         details: "Member",
+        image: aiTaskForceImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
         )
@@ -49,6 +58,7 @@ const positions = [
         company: "Wade Trim",
         year: "Since 2022",
         details: "Under Advanced Design Practice",
+        image: gisTechnicalLeadImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
         )
@@ -207,10 +217,18 @@ export default function Achievements() {
                             delay={0.1 + (i * 0.05)}
                             className={`flex flex-col justify-between group hover:border-indigo-200 dark:hover:border-indigo-700 transition-colors ${positionGradientMap[pos.category] || ""}`}
                         >
-                            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
+                            <div className="absolute inset-0 pointer-events-none">
+                                <img
+                                    src={pos.image?.src || pos.image}
+                                    alt={`${pos.title} highlight`}
+                                    className="w-full h-full object-cover opacity-25 group-hover:opacity-35 transition-opacity duration-500"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/50 to-white/20 dark:from-slate-900/80 dark:via-slate-900/50 dark:to-slate-900/20" />
+                            </div>
+                            <div className="relative z-10 w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                                 {pos.icon}
                             </div>
-                            <div>
+                            <div className="relative z-10">
                                 <h4 className="font-bold text-slate-800 dark:text-slate-100 leading-tight mb-0.5">
                                     {pos.title}
                                 </h4>
