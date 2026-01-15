@@ -61,7 +61,7 @@ export default function ProjectStats({ projects }) {
 
     // Calculate top tags for cloud
     const tagData = Object.entries(
-        projects.flatMap(p => p.tags).reduce((acc, tag) => {
+        projects.flatMap(p => p.tags ?? []).reduce((acc, tag) => {
             acc[tag] = (acc[tag] || 0) + 1;
             return acc;
         }, {})
