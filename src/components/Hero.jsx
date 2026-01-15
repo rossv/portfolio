@@ -3,9 +3,11 @@ import { useRef } from 'react';
 import portrait from '../assets/portrait.png';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
-import swmmIcon from '../assets/icons/hh/epaswmm.png';
-import gisIcon from '../assets/icons/gis/arcgispro.png';
-import aiIcon from '../assets/icons/coding/chatgpt.png';
+import waterDropIcon from '../assets/icons/hero/water-drop.png';
+import webUiIcon from '../assets/icons/hero/web-ui.png';
+import codingLaptopIcon from '../assets/icons/hero/coding-laptop.png';
+import aiChipIcon from '../assets/icons/hero/ai-chip.png';
+import gisMapIcon from '../assets/icons/hero/gis-map.png';
 
 function FloatingElement({ children, delay = 0, className = "" }) {
     return (
@@ -39,17 +41,17 @@ export default function Hero() {
     const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
     return (
-        <section ref={targetRef} className="relative min-h-screen flex flex-col md:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
+        <section ref={targetRef} className="relative min-h-screen flex flex-col xl:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
 
 
             {/* Text Content - Left/Top */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center md:items-start z-20 text-center md:text-left pt-52 md:pt-40"
+                className="flex-1 flex flex-col items-center xl:items-start z-20 text-center xl:text-left pt-52 xl:pt-40"
             >
 
 
-                <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tighter leading-[0.9]">
+                <h1 className="text-6xl sm:text-7xl md:text-8xl xl:text-9xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tighter leading-[0.9]">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -71,7 +73,7 @@ export default function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-wrap justify-center md:justify-start gap-4 mb-8"
+                    className="flex flex-wrap justify-center xl:justify-start gap-4 mb-8"
                 >
                     <LicenseBadge
                         label="PE"
@@ -113,17 +115,17 @@ export default function Hero() {
             {/* Image Content - Right/Bottom */}
             <motion.div
                 style={{ y: yImage, opacity }}
-                className="flex-1 w-full max-w-[500px] md:max-w-none relative mt-16 md:mt-20 flex justify-center md:justify-end"
+                className="flex-1 w-full max-w-[500px] xl:max-w-none relative mt-16 xl:mt-20 flex justify-center xl:justify-end"
             >
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1, delay: 0.4 }}
-                    className="relative z-10 w-[80%] md:w-[90%] lg:w-[80%]"
+                    className="relative z-10 w-[80%] md:w-[90%] xl:w-[80%]"
                 >
                     {/* Decorative Elements around image */}
-                    <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden md:block opacity-50"></div>
-                    <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden md:block opacity-50"></div>
+                    <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden xl:block opacity-50"></div>
+                    <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden xl:block opacity-50"></div>
 
                     <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group">
                         <img
@@ -135,23 +137,26 @@ export default function Hero() {
                     </div>
 
                     {/* Floating Bubbles */}
-                    <FloatingElement delay={0} className="absolute -left-8 top-1/4 hidden md:block">
-                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-indigo-500/20 border border-slate-100 dark:border-slate-700">
-                            <img src={aiIcon.src} alt="AI" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
-                        </div>
+                    <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
+                        <img src={aiChipIcon.src} alt="AI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={1} className="absolute -right-8 top-1/3 hidden md:block">
-                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-sky-500/20 border border-slate-100 dark:border-slate-700">
-                            <img src={gisIcon.src} alt="GIS" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
-                        </div>
+                    <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
+                        <img src={gisMapIcon.src} alt="GIS" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden md:block">
-                        <div className="p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-lg shadow-indigo-500/20 border border-slate-100 dark:border-slate-700">
-                            <img src={swmmIcon.src} alt="H&H" className="w-8 h-8 md:w-10 md:h-10 object-contain" />
-                        </div>
+                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
+                        <img src={codingLaptopIcon.src} alt="Coding" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
+
+                    <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
+                        <img src={webUiIcon.src} alt="Web UI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
+
+                    <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
+                        <img src={waterDropIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
+
                 </motion.div>
             </motion.div>
 

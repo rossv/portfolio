@@ -330,14 +330,14 @@ export default function CareerTimeline() {
                                                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1.5 leading-snug">{item.title}</h3>
                                                 <p className="font-bold text-base mt-2" style={{ color: item.color }}>{item.company}</p>
                                             </div>
-                                            <div className="h-20 hidden md:flex bg-white p-2 rounded-xl items-center justify-center shrink-0 ml-4 shadow-sm border border-slate-100 dark:border-slate-700">
+                                            <div className="w-28 h-20 hidden md:flex bg-slate-100 dark:bg-slate-300 p-2 rounded-xl items-center justify-center shrink-0 ml-4 shadow-sm border border-slate-200 dark:border-slate-500">
                                                 <img
                                                     src={item.logo.src || item.logo}
                                                     alt={item.company}
-                                                    className="h-full w-auto object-contain max-w-[140px]"
+                                                    className="max-h-full max-w-full object-contain"
                                                 />
                                             </div>
-                                            <div className="w-16 h-16 rounded-xl bg-white p-2 flex md:hidden items-center justify-center shadow-sm shrink-0 border border-slate-100 dark:border-slate-700">
+                                            <div className="w-16 h-16 rounded-xl bg-slate-100 dark:bg-slate-300 p-2 flex md:hidden items-center justify-center shadow-sm shrink-0 border border-slate-200 dark:border-slate-500">
                                                 <img
                                                     src={item.logo.src || item.logo}
                                                     alt={item.company}

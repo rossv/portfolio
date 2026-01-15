@@ -1,28 +1,92 @@
 import { useState, useEffect } from 'react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const data = [
-  { subject: 'H&H Modeling', A: 1670, fullMark: 2000 },
-  { subject: 'GIS / Mapping', A: 1190, fullMark: 2000 },
-  { subject: 'Python / Coding', A: 800, fullMark: 2000 },
-  { subject: 'Design/Drafting', A: 522, fullMark: 2000 },
-  { subject: 'Data Science', A: 600, fullMark: 2000 },
+  {
+    subject: 'H&H Modeling',
+    A: 1670,
+    fullMark: 2000,
+    details: ['Combined & Sanitary Systems', 'Storm Systems', 'Water Distribution', 'Open Channel']
+  },
+  {
+    subject: 'GIS',
+    A: 1450,
+    fullMark: 2000,
+    details: ['Mapping', 'Data Analysis', 'Applications & Dashboards', 'Data Collection']
+  },
+  {
+    subject: 'Coding',
+    A: 1300,
+    fullMark: 2000,
+    details: ['Scripting', 'App Development', 'Automation', 'Integration']
+  },
+  {
+    subject: 'Design',
+    A: 750,
+    fullMark: 2000,
+    details: ['Hydraulic Structures', 'Conveyance', 'Stormwater', 'Site Development']
+  },
+  {
+    subject: 'Data Science',
+    A: 600,
+    fullMark: 2000,
+    details: ['Tool Development', 'Python', 'Large Data']
+  },
 ];
 
 export default function SkillsRadar({ className = "" }) {
   const [isMobile, setIsMobile] = useState(false);
+  const [hoveredSkill, setHoveredSkill] = useState(null);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    // Check initially
     checkMobile();
-
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Custom Tick Component for interactivity
+  const CustomTick = ({ payload, x, y, textAnchor, stroke, radius }) => {
+    return (
+      <g
+        className="cursor-pointer group"
+        onMouseEnter={() => setHoveredSkill(data.find(d => d.subject === payload.value))}
+        onMouseLeave={() => setHoveredSkill(null)}
+        style={{ pointerEvents: 'all' }} // Force pointer events
+      >
+        {/* Invisible hit area to make hovering easier */}
+        <rect
+          x={x - 40}
+          y={y - 15}
+          width={80}
+          height={30}
+          fill="transparent"
+          className="z-50"
+        />
+        <text
+          radius={radius}
+          stroke={stroke}
+          x={x}
+          y={y}
+          className="fill-slate-400 group-hover:fill-indigo-400 dark:group-hover:fill-indigo-300 transition-colors duration-300 select-none"
+          textAnchor={textAnchor}
+          style={{
+            fontSize: isMobile ? 10 : 12,
+            fontFamily: 'monospace',
+            fontWeight: 'bold',
+          }}
+        >
+          <tspan x={x} dy="0em">
+            {payload.value}
+          </tspan>
+        </text>
+      </g>
+    );
+  };
 
   return (
     <div className={`bg-white/10 dark:bg-slate-950/80 backdrop-blur-md p-2 sm:p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 relative group hover:border-indigo-500 transition-colors duration-500 w-full max-w-2xl mx-auto aspect-square flex flex-col justify-center ${className}`}>
@@ -37,11 +101,11 @@ export default function SkillsRadar({ className = "" }) {
 
       <div className="w-full h-full relative z-10 min-h-[250px] [&_:focus]:outline-none" style={{ WebkitTapHighlightColor: 'transparent' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "70%"} data={data}>
+          <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "65%"} data={data}>
             <PolarGrid stroke="#64748b" strokeOpacity={0.2} />
             <PolarAngleAxis
               dataKey="subject"
-              tick={{ fill: '#94a3b8', fontSize: isMobile ? 10 : 14, fontFamily: 'monospace', fontWeight: 'bold' }}
+              tick={<CustomTick />}
             />
             <PolarRadiusAxis angle={30} domain={[0, 2000]} tick={false} axisLine={false} />
             <Radar
@@ -51,9 +115,48 @@ export default function SkillsRadar({ className = "" }) {
               strokeWidth={2}
               fill="#6366f1"
               fillOpacity={0.3}
+              dot={(props) => {
+                const { cx, cy, payload } = props;
+                return (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    r={8}
+                    fill="transparent"
+                    stroke="transparent"
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredSkill(payload)}
+                    onMouseLeave={() => setHoveredSkill(null)}
+                  />
+                );
+              }}
             />
           </RadarChart>
         </ResponsiveContainer>
+
+        {/* Hover Details Overlay */}
+        <AnimatePresence>
+          {hoveredSkill && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 pointer-events-none flex items-center justify-center z-20"
+            >
+              <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-indigo-500/30 shadow-2xl max-w-[200px] text-center">
+                <h4 className="text-indigo-600 dark:text-indigo-400 font-bold mb-2 font-mono text-sm border-b border-indigo-500/20 pb-1">
+                  {hoveredSkill.subject}
+                </h4>
+                <ul className="text-xs space-y-1 text-slate-600 dark:text-slate-300">
+                  {hoveredSkill.details.map((item, idx) => (
+                    <li key={idx} className="leading-tight">{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Background glow */}

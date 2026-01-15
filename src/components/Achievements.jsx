@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import innovatorAwardImg from '../assets/innovator-award.png';
-import leadershipAcademyImg from '../assets/recognition-leadership-academy.svg';
-import optimizationDataScienceImg from '../assets/recognition-optimization-data-science.svg';
-import sewersFutureImg from '../assets/recognition-sewers-future.svg';
-import aiTaskForceImg from '../assets/recognition-ai-task-force.svg';
-import gisTechnicalLeadImg from '../assets/recognition-gis-technical-lead.svg';
+import leadershipAcademyImg from '../assets/recognition-leadership-academy.png';
+import optimizationDataScienceImg from '../assets/recognition-optimization-data-science.png';
+import sewersFutureImg from '../assets/recognition-sewers-future.png';
+import aiTaskForceImg from '../assets/recognition-ai-task-force.png';
+import gisTechnicalLeadImg from '../assets/recognition-gis-technical-lead.jpg';
+import daleCarnegieImg from '../assets/recognition-dale-carnegie.png';
+import asceEwriImg from '../assets/recognition-asce-ewri.png';
 
 const positions = [
     {
@@ -61,6 +63,28 @@ const positions = [
         image: gisTechnicalLeadImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+        )
+    },
+    {
+        title: "Dale Carnegie Graduate",
+        category: "Public Speaking",
+        company: "Independent",
+        year: "2008",
+        details: "Effective Communications",
+        image: daleCarnegieImg,
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+        )
+    },
+    {
+        title: "1st Place Technical Writing",
+        category: "Award",
+        company: "Student",
+        year: "2011",
+        details: "ASCE EWRI Conference",
+        image: asceEwriImg,
+        icon: (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
         )
     },
 ];
@@ -123,6 +147,8 @@ const positionGradientMap = {
     Innovation: "bg-gradient-to-br from-amber-50 via-white to-white dark:from-amber-950/25 dark:via-slate-900 dark:to-slate-900",
     Strategy: "bg-gradient-to-br from-emerald-50 via-white to-white dark:from-emerald-950/25 dark:via-slate-900 dark:to-slate-900",
     Committee: "bg-gradient-to-br from-sky-50 via-white to-white dark:from-sky-950/25 dark:via-slate-900 dark:to-slate-900",
+    "Public Speaking": "bg-gradient-to-br from-pink-50 via-white to-white dark:from-pink-950/30 dark:via-slate-900 dark:to-slate-900",
+    Award: "bg-gradient-to-br from-amber-50 via-white to-white dark:from-amber-950/25 dark:via-slate-900 dark:to-slate-900",
 };
 
 const getPresentationGradient = (types) => {
