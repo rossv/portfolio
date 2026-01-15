@@ -21,7 +21,8 @@ jobs:
       - name: Install, build, and upload
         uses: withastro/action@v2
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
+          BASE_PATH: /
+          SITE_URL: https://www.rossvolkwein.com
           PUBLIC_MAPBOX_ACCESS_TOKEN: ${{ secrets.PUBLIC_MAPBOX_ACCESS_TOKEN }}
   deploy:
     needs: build_site
