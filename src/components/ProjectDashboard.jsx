@@ -126,7 +126,8 @@ export default function ProjectDashboard() {
             }
 
             if (selectedTags.length > 0) {
-                const hasTag = project.tags.some(t => selectedTags.includes(t));
+                const projectTags = project.tags ?? [];
+                const hasTag = projectTags.some(t => selectedTags.includes(t));
                 if (!hasTag) return false;
             }
 
@@ -322,7 +323,7 @@ export default function ProjectDashboard() {
                                 {selectedProject.description}
                             </div>
                             <div className="flex flex-wrap gap-2 mt-auto">
-                                {selectedProject.tags.map(tag => (
+                                {(selectedProject.tags ?? []).map(tag => (
                                     <span key={tag} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium">#{tag}</span>
                                 ))}
                             </div>
@@ -387,11 +388,11 @@ function ProjectCard({ project, onClick, isSelected }) {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-auto">
-                    {project.tags.slice(0, 3).map(tag => (
+                    {(project.tags ?? []).slice(0, 3).map(tag => (
                         <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded text-xs">#{tag}</span>
                     ))}
-                    {project.tags.length > 3 && (
-                        <span className="px-2 py-1 bg-slate-50 dark:bg-slate-800/50 text-slate-400 rounded text-xs">+{project.tags.length - 3}</span>
+                    {(project.tags ?? []).length > 3 && (
+                        <span className="px-2 py-1 bg-slate-50 dark:bg-slate-800/50 text-slate-400 rounded text-xs">+{(project.tags ?? []).length - 3}</span>
                     )}
                 </div>
             </motion.div>
