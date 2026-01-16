@@ -1871,7 +1871,7 @@
         "image": "/src/assets/projects/msdgc_model_calibration.png"
     },
     {
-        "name": "Alts SOI Gate",
+        "name": "Alts SOT Gate",
         "client": "NEOSD",
         "company": "Wade Trim",
         "location": "",
@@ -1884,7 +1884,7 @@
             "Hydraulic Modeling",
             "NEORSD"
         ],
-        "description": "Work for NEOSD included alts SOI Gate. Additional tasks included Pulling HGLs and Hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, NEORSD.",
+        "description": "Work for NEOSD included alts SOT Gate. Additional tasks included Pulling HGLs and Hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, NEORSD.",
         "title": "Professional Engineer",
         "project_role": "",
         "image": "/src/assets/projects/soi_gate.jpg"
@@ -2146,5 +2146,103 @@
         "project_role": "Task Lead",
         "image": "/src/assets/projects/west-mifflin-gis.jpg",
         "coords": null
+    },
+    {
+        "name": "Mt Clemens Connection to GLWA",
+        "client": "City of Mt. Clemens / GLWA",
+        "company": "Wade Trim",
+        "location": "Mt. Clemens, MI",
+        "coords": null,
+        "category": "Water Model",
+        "year": "2024",
+        "tags": [],
+        "description": "Supporting water model calibration and design to size a new pumpstation and ground storage tank to accommodate a new supply connection to GLWA. Oversight of staff and technical QAQC of model and recommendations.",
+        "title": "Professional Engineer",
+        "project_role": "QAQC, Modeler",
+        "image": null
+    },
+    {
+        "name": "CM16 Calibration Review",
+        "client": "NEORSD",
+        "company": "Wade Trim",
+        "location": "Cleveland, OH",
+        "coords": null,
+        "category": "H&H",
+        "year": "2022",
+        "tags": [],
+        "description": "Review of several consultant submitted calibrations as part of ongoing review contract. Tracked and ensured improvements and documentation met District standards",
+        "title": "Professional Engineer",
+        "project_role": "QAQC",
+        "image": null
+    },
+    {
+        "name": "Four Mile Run Model Support",
+        "client": "Pittsburgh Water",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "coords": null,
+        "category": "H&H",
+        "year": "2024+",
+        "tags": [],
+        "description": "Advisor role for ongoing H&H modeling work in the Four Mile Run shed including model review, and sensitivity analysis.",
+        "title": "Professional Engineer",
+        "project_role": "Advisor, QAQC",
+        "image": null
+    },
+    {
+        "name": "ALCOSAN Tunnel Program Manager",
+        "client": "ALCOSAN",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "coords": null,
+        "category": "H&H, Coding",
+        "year": "2021",
+        "tags": [],
+        "description": "Various activities to support the tunnel program including data processing and script development and advisory input.",
+        "title": "Professional Engineer",
+        "project_role": "Technical Support",
+        "image": null
+    },
+    {
+        "name": "Tampa Bay Water - Project Management",
+        "client": "Tampa Bay Water",
+        "company": "Wade Trim",
+        "location": "Tampa Bay, FL",
+        "coords": null,
+        "category": "GIS",
+        "year": "2021",
+        "tags": [],
+        "description": "Development of mapping and elevation profiles including GIS based data sharing tools.",
+        "title": "Professional Engineer",
+        "project_role": "GIS",
+        "image": null
+    },
+    {
+        "name": "3RWW - Program Management",
+        "client": "3RWW",
+        "company": "Wade Trim",
+        "location": null,
+        "coords": null,
+        "category": "H&H",
+        "year": "2021",
+        "tags": [],
+        "description": "Various support for H&H model review and data processing activities.",
+        "title": "Professional Engineer",
+        "project_role": "Technical Support",
+        "image": null
+    },
+    {
+        "name": "Smith Creek Landfill - Asset Management",
+        "client": "Smith Creek Landfill",
+        "company": "Wade Trim",
+        "location": null,
+        "coords": null,
+        "category": "Asset Management",
+        "year": "2021",
+        "tags": [],
+        "description": "Use of Cartegraph to manage assets for landfill client.",
+        "title": "Professional Engineer",
+        "project_role": "Technical Support",
+        "image": null
     }
 ]
