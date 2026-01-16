@@ -121,7 +121,7 @@ export default function SkillsRadar({ className = "" }) {
                   <circle
                     cx={cx}
                     cy={cy}
-                    r={8}
+                    r={24}
                     fill="transparent"
                     stroke="transparent"
                     className="cursor-pointer"

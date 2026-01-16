@@ -97,7 +97,7 @@ export default function ProjectDashboard() {
                 project.category,
                 project.location,
                 project.project_role, // Add project_role to search
-                project.role, // Add role to search
+                project.title, // Add title to search
                 ...(project.tags || [])
             ].join(' ').toLowerCase();
 
@@ -187,10 +187,10 @@ export default function ProjectDashboard() {
     const [selectedProject, setSelectedProject] = useState(null);
 
     return (
-        <div className="bg-white/90 dark:bg-slate-950/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/50 dark:border-slate-800/50 overflow-hidden flex flex-col h-[1100px] relative">
+        <div className="bg-white/10 dark:bg-slate-950/20 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/20 dark:border-slate-800/20 overflow-hidden flex flex-col h-[1100px] relative">
 
             {/* Search Header - Fixed at Top */}
-            <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-md z-10 sticky top-0">
+            <div className="p-6 border-b border-slate-200/30 dark:border-slate-800/30 bg-white/10 dark:bg-slate-900/20 backdrop-blur-md z-10 sticky top-0">
                 <div className="max-w-4xl mx-auto space-y-4">
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -199,7 +199,7 @@ export default function ProjectDashboard() {
                             placeholder="Search projects by keyword, tech, location..."
                             value={filterText}
                             onChange={(e) => setFilterText(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm text-slate-700 dark:text-slate-200"
+                            className="w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm text-slate-700 dark:text-slate-200"
                         />
                     </div>
 
@@ -225,7 +225,7 @@ export default function ProjectDashboard() {
                 </div>
             </div>
 
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 md:p-8 bg-slate-50/30 dark:bg-slate-900/10 scroll-smooth">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 md:p-8 bg-transparent scroll-smooth">
                 {/* Stats Dashboard */}
                 <ProjectStats projects={filteredProjects} />
 
@@ -307,10 +307,10 @@ export default function ProjectDashboard() {
                                         {!selectedProject.company && selectedProject.client && <span className="text-indigo-600 dark:text-indigo-400">{selectedProject.client}</span>}
                                     </div>
                                 )}
-                                {(selectedProject.role || selectedProject.project_role) && (
+                                {(selectedProject.title || selectedProject.project_role) && (
                                     <div className="text-sm flex flex-wrap gap-1 items-center mt-1">
-                                        {selectedProject.role && <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedProject.role}</span>}
-                                        {selectedProject.role && selectedProject.project_role && <span className="text-slate-300">•</span>}
+                                        {selectedProject.title && <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedProject.title}</span>}
+                                        {selectedProject.title && selectedProject.project_role && <span className="text-slate-300">•</span>}
                                         {selectedProject.project_role && <span className="italic text-slate-500">{selectedProject.project_role}</span>}
                                     </div>
                                 )}
@@ -376,9 +376,9 @@ function ProjectCard({ project, onClick, isSelected }) {
                         </div>
                     )}
 
-                    {(project.role || project.project_role) && (
+                    {(project.title || project.project_role) && (
                         <div className="text-xs flex flex-wrap gap-1 items-center">
-                            {project.role && <span className="font-semibold">{project.role}</span>}
+                            {project.title && <span className="font-semibold">{project.title}</span>}
                         </div>
                     )}
                 </div>

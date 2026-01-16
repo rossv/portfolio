@@ -39,7 +39,7 @@ export default function ProjectStats({ projects }) {
             acc[year] = (acc[year] || 0) + 1;
             return acc;
         }, {})
-    ).map(([name, value]) => ({ name, value })).sort((a, b) => b.name.localeCompare(a.name)); // Sort years desc
+    ).map(([name, value]) => ({ name, value })).sort((a, b) => a.name.localeCompare(b.name)); // Sort years asc
 
     const categoryData = Object.entries(
         projects.reduce((acc, p) => {
