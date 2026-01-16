@@ -247,9 +247,9 @@ export default function Achievements() {
                                 <img
                                     src={pos.image?.src || pos.image}
                                     alt={`${pos.title} highlight`}
-                                    className="w-full h-full object-cover opacity-25 group-hover:opacity-35 transition-opacity duration-500"
+                                    className="w-full h-full object-cover object-right opacity-35 group-hover:opacity-45 transition-opacity duration-500"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-white/50 to-white/20 dark:from-slate-900/80 dark:via-slate-900/50 dark:to-slate-900/20" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/70 via-white/40 to-white/10 dark:from-slate-900/70 dark:via-slate-900/45 dark:to-slate-900/15" />
                             </div>
                             <div className="relative z-10 w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 flex items-center justify-center mb-4 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
                                 {pos.icon}
