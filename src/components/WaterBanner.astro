@@ -8,7 +8,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
     loop
     muted
     playsinline
-    class="water-video w-full h-full object-cover"
+    class="water-video w-full h-full object-fill"
     style={{ objectPosition: "50% 20%" }}
   >
     <source src={waterVideo} type="video/mp4" />
@@ -36,6 +36,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
     */
     mix-blend-mode: screen;
     opacity: 1.0; /* Increased to max for visibility */
+    filter: contrast(1.2); /* Boost contrast to counteract wide-screen fading */
   }
 
   /* 
@@ -46,7 +47,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
      2. 'multiply' blend mode -> White becomes transparent, Dark stays.
   */
   :global(html:not(.dark)) .water-video {
-    filter: invert(1);
+    filter: invert(1) contrast(1.2); /* Boost contrast */
     mix-blend-mode: multiply;
     opacity: 0.8; /* Increased for visibility */
   }

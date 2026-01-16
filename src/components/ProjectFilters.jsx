@@ -82,16 +82,19 @@ export default function ProjectFilters({
     allCompanies,
     allClients,
     allCategories,
+    allRoles,
     allTags,
     selectedYears,
     selectedCompanies,
     selectedClients,
     selectedCategories,
+    selectedRoles,
     selectedTags,
     onYearChange,
     onCompanyChange,
     onClientChange,
     onCategoryChange,
+    onRoleChange,
     onTagChange,
     onReset,
     filterText
@@ -110,6 +113,7 @@ export default function ProjectFilters({
         selectedCompanies.length > 0 ||
         selectedClients.length > 0 ||
         selectedCategories.length > 0 ||
+        selectedRoles.length > 0 ||
         selectedTags.length > 0 ||
         (filterText && filterText.length > 0);
 
@@ -137,6 +141,16 @@ export default function ProjectFilters({
                 onChange={onCategoryChange}
                 isOpen={activeDropdown === 'category'}
                 onToggle={() => toggleDropdown('category')}
+                close={closeDropdown}
+            />
+
+            <FilterDropdown
+                title="Role"
+                options={allRoles}
+                selected={selectedRoles}
+                onChange={onRoleChange}
+                isOpen={activeDropdown === 'role'}
+                onToggle={() => toggleDropdown('role')}
                 close={closeDropdown}
             />
 

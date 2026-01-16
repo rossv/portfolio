@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import portrait from '../assets/portrait.png';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
-import waterDropIcon from '../assets/icons/hero/water-drop.png';
+import waterNetworkIcon from '../assets/icons/hero/water-network.png';
 import webUiIcon from '../assets/icons/hero/web-ui.png';
 import codingLaptopIcon from '../assets/icons/hero/coding-laptop.png';
 import aiChipIcon from '../assets/icons/hero/ai-chip.png';
@@ -38,7 +38,7 @@ export default function Hero() {
 
     const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-    const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+    const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
 
     return (
         <section ref={targetRef} className="relative min-h-screen flex flex-col xl:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
@@ -154,7 +154,7 @@ export default function Hero() {
                     </FloatingElement>
 
                     <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
-                        <img src={waterDropIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                        <img src={waterNetworkIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
                 </motion.div>

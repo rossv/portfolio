@@ -55,6 +55,7 @@ export default function ProjectDashboard() {
     const [selectedClients, setSelectedClients] = useState([]);
     const [selectedCompanies, setSelectedCompanies] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedRoles, setSelectedRoles] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
 
     // Scroll Reference for resetting scroll
@@ -75,6 +76,10 @@ export default function ProjectDashboard() {
 
     const allCategories = useMemo(() =>
         [...new Set(projects.flatMap(p => p.category ? p.category.split(',').map(c => c.trim()) : []))].filter(Boolean).sort(),
+        []);
+
+    const allRoles = useMemo(() =>
+        [...new Set(projects.flatMap(p => p.project_role ? p.project_role.split(',').map(r => r.trim()) : []))].filter(Boolean).sort(),
         []);
 
     const allTags = useMemo(() => {
@@ -125,6 +130,12 @@ export default function ProjectDashboard() {
                 if (!hasCategory) return false;
             }
 
+            if (selectedRoles.length > 0) {
+                const projectRoles = project.project_role ? project.project_role.split(',').map(r => r.trim()) : [];
+                const hasRole = selectedRoles.some(role => projectRoles.includes(role));
+                if (!hasRole) return false;
+            }
+
             if (selectedTags.length > 0) {
                 const projectTags = project.tags ?? [];
                 const hasTag = projectTags.some(t => selectedTags.includes(t));
@@ -156,7 +167,7 @@ export default function ProjectDashboard() {
             return getDateValue(b.year) - getDateValue(a.year);
         });
 
-    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedTags]);
+    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags]);
 
     // Scroll to top when filters change
     useEffect(() => {
@@ -180,6 +191,7 @@ export default function ProjectDashboard() {
         setSelectedClients([]);
         setSelectedCompanies([]);
         setSelectedCategories([]);
+        setSelectedRoles([]);
         setSelectedTags([]);
     };
 
@@ -187,7 +199,7 @@ export default function ProjectDashboard() {
     const [selectedProject, setSelectedProject] = useState(null);
 
     return (
-        <div className="bg-white/10 dark:bg-slate-950/20 backdrop-blur-sm rounded-2xl shadow-2xl border border-slate-200/20 dark:border-slate-800/20 overflow-hidden flex flex-col h-[1100px] relative">
+        <div className="bg-transparent rounded-2xl overflow-hidden flex flex-col h-[1100px] relative">
 
             {/* Search Header - Fixed at Top */}
             <div className="p-6 border-b border-slate-200/30 dark:border-slate-800/30 bg-white/10 dark:bg-slate-900/20 backdrop-blur-md z-10 sticky top-0">
@@ -208,16 +220,19 @@ export default function ProjectDashboard() {
                         allCompanies={allCompanies}
                         allClients={allClients}
                         allCategories={allCategories}
+                        allRoles={allRoles}
                         allTags={allTags}
                         selectedYears={selectedYears}
                         selectedCompanies={selectedCompanies}
                         selectedClients={selectedClients}
                         selectedCategories={selectedCategories}
+                        selectedRoles={selectedRoles}
                         selectedTags={selectedTags}
                         onYearChange={(item) => handleToggle(setSelectedYears, item)}
                         onCompanyChange={(item) => handleToggle(setSelectedCompanies, item)}
                         onClientChange={(item) => handleToggle(setSelectedClients, item)}
                         onCategoryChange={(item) => handleToggle(setSelectedCategories, item)}
+                        onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
                         onTagChange={(item) => handleToggle(setSelectedTags, item)}
                         onReset={handleReset}
                         filterText={filterText}
@@ -379,6 +394,8 @@ function ProjectCard({ project, onClick, isSelected }) {
                     {(project.title || project.project_role) && (
                         <div className="text-xs flex flex-wrap gap-1 items-center">
                             {project.title && <span className="font-semibold">{project.title}</span>}
+                            {project.title && project.project_role && <span className="text-slate-300">•</span>}
+                            {project.project_role && <span className="italic text-slate-500">{project.project_role}</span>}
                         </div>
                     )}
                 </div>
