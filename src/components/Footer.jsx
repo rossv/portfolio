@@ -10,7 +10,7 @@ export default function Footer() {
             </div>
 
             {/* Gradient Overlay to fade into the page content */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/80 dark:to-slate-900/80 z-0"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/30 dark:to-slate-900/30 z-0"></div>
 
             <div className="container mx-auto px-6 relative z-10 text-center">
                 <p className="font-mono text-sm text-slate-500 dark:text-slate-400">

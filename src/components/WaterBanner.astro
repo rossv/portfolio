@@ -19,6 +19,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
   .water-banner-container {
     /* Adjusted height: slightly larger minimum to avoid "thin strip" blurry look */
     height: clamp(250px, 30vh, 450px);
+    background: transparent;
     
     /* 
        Mask the bottom edge to fade into transparency.
@@ -37,6 +38,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
     mix-blend-mode: screen;
     opacity: 1.0; /* Increased to max for visibility */
     filter: contrast(1.2); /* Boost contrast to counteract wide-screen fading */
+    background: transparent;
   }
 
   /* 
