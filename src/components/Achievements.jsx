@@ -176,7 +176,7 @@ const BentoItem = ({ children, className = "", delay = 0 }) => (
 
 export default function Achievements() {
     return (
-        <section className="py-24 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
+        <section id="achievements" className="py-24 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden scroll-mt-24">
             {/* Background Decoration */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
