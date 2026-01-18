@@ -60,6 +60,8 @@ export default function ProjectDashboard() {
 
     // Scroll Reference for resetting scroll
     const scrollContainerRef = useRef(null);
+    const modalRef = useRef(null);
+    const lastFocusedElementRef = useRef(null);
 
     // Extract unique options for filters
     const allYears = useMemo(() =>
@@ -197,6 +199,72 @@ export default function ProjectDashboard() {
 
     // Expandable Card State
     const [selectedProject, setSelectedProject] = useState(null);
+    const modalTitleId = selectedProject
+        ? `project-modal-title-${selectedProject.name
+            ?.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')}`
+        : undefined;
+
+    const closeModal = () => {
+        setSelectedProject(null);
+    };
+
+    const handleCardClick = (project, event) => {
+        lastFocusedElementRef.current = event.currentTarget;
+        setSelectedProject(project);
+    };
+
+    useEffect(() => {
+        if (selectedProject) {
+            modalRef.current?.focus();
+        }
+    }, [selectedProject]);
+
+    useEffect(() => {
+        if (!selectedProject && lastFocusedElementRef.current) {
+            lastFocusedElementRef.current.focus();
+        }
+    }, [selectedProject]);
+
+    useEffect(() => {
+        if (!selectedProject) return;
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeModal();
+                return;
+            }
+
+            if (event.key !== 'Tab' || !modalRef.current) return;
+
+            const focusableElements = Array.from(
+                modalRef.current.querySelectorAll(
+                    'a[href], button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+                )
+            );
+
+            if (focusableElements.length === 0) {
+                event.preventDefault();
+                modalRef.current.focus();
+                return;
+            }
+
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            } else if (!event.shiftKey && document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [selectedProject]);
 
     return (
         <div className="bg-transparent rounded-2xl overflow-hidden flex flex-col h-[1100px] relative">
@@ -250,7 +318,7 @@ export default function ProjectDashboard() {
                         <ProjectCard
                             key={`${project.name}-${index}`}
                             project={project}
-                            onClick={() => setSelectedProject(project)}
+                            onClick={(event) => handleCardClick(project, event)}
                             isSelected={selectedProject?.name === project.name}
                         />
                     ))}
@@ -267,7 +335,7 @@ export default function ProjectDashboard() {
             {/* Expanded Card Modal */}
             <AnimatePresence>
                 {selectedProject && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md" onClick={() => setSelectedProject(null)}>
+                    <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md" onClick={closeModal}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -276,6 +344,11 @@ export default function ProjectDashboard() {
                             className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-y-auto rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 p-8 cursor-default"
                             style={{ borderTopColor: getCompanyColor(selectedProject.company) }}
                             onClick={(e) => e.stopPropagation()}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby={modalTitleId}
+                            tabIndex={-1}
+                            ref={modalRef}
                         >
                             {/* Hero Image with Fade Mask */}
                             {(() => {
@@ -299,7 +372,7 @@ export default function ProjectDashboard() {
                                 <div className="flex items-center gap-2">
                                     {selectedProject.year && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{extractYear(selectedProject.year)}</span>}
                                     <button
-                                        onClick={() => setSelectedProject(null)}
+                                        onClick={closeModal}
                                         className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -307,7 +380,7 @@ export default function ProjectDashboard() {
                                 </div>
                             </div>
                             {/* ... Rest of content omitted for brevity in replace tool, but included in visual inspection context ... */}
-                            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedProject.name}</h2>
+                            <h2 id={modalTitleId} className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedProject.name}</h2>
                             {/* ... */}
                             <div className="text-base text-slate-600 dark:text-slate-400 mb-6 flex flex-col gap-1">
                                 {(selectedProject.company || selectedProject.client) && (
