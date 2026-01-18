@@ -8,6 +8,12 @@ const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
 export default function ExperienceMap() {
   const [selectedProject, setSelectedProject] = useState(null);
   const mapRef = useRef(null);
+  const projectsWithCoords = projects.filter(
+    (project) =>
+      Array.isArray(project.coords) &&
+      project.coords.length === 2 &&
+      project.coords.every((value) => typeof value === 'number' && Number.isFinite(value))
+  );
 
   useEffect(() => {
     if (mapRef.current) {
@@ -30,7 +36,7 @@ export default function ExperienceMap() {
         mapboxAccessToken={MAPBOX_TOKEN}
         attributionControl={false}
       >
-        {projects.map(project => (
+        {projectsWithCoords.map(project => (
           <Marker
             key={project.name}
             longitude={project.coords[0]}
