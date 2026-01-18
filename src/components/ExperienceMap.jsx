@@ -22,6 +22,16 @@ export default function ExperienceMap() {
     }
   }, []);
 
+  if (!MAPBOX_TOKEN) {
+    return (
+      <div className="h-[500px] w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 shadow-2xl flex items-center justify-center text-center px-6">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Map preview unavailable. Configure the Mapbox access token to enable the experience map.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 relative group">
       <div className="absolute inset-0 border-[8px] border-white/20 dark:border-slate-950/80 z-10 pointer-events-none rounded-2xl"></div>
