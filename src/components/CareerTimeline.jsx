@@ -179,7 +179,7 @@ const careerData = [
 ];
 
 const JobDetails = ({ job, mapRef, mapToken }) => (
-    <div className="flex flex-col h-full bg-slate-50 dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm">
+    <div className="flex flex-col h-full bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-sm border border-white/30 dark:border-slate-700/60">
         {/* Map Header */}
         <div className="h-64 md:h-80 w-full relative z-0 shrink-0">
             <Map
@@ -212,7 +212,7 @@ const JobDetails = ({ job, mapRef, mapToken }) => (
             </Map>
 
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-50 dark:from-slate-900 via-transparent to-transparent h-full z-10" />
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/40 dark:from-slate-900/60 via-transparent to-transparent h-full z-10" />
 
             <div className="absolute bottom-4 left-6 z-20 pr-4">
                 <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white drop-shadow-sm">{job.company}</h3>
@@ -316,8 +316,8 @@ export default function CareerTimeline() {
                                         className={`
                                         p-6 rounded-2xl border transition-all duration-300 border-l-4 shadow-sm relative overflow-hidden
                                         ${selectedJob.id === item.id
-                                                ? 'bg-white dark:bg-slate-800 shadow-xl border-slate-200 dark:border-slate-700 lg:translate-x-2'
-                                                : 'bg-white/50 dark:bg-slate-900/50 border-transparent hover:bg-white hover:dark:bg-slate-800 hover:shadow-md'
+                                                ? 'bg-white/70 dark:bg-slate-900/70 shadow-xl border-white/40 dark:border-slate-700/70 lg:translate-x-2'
+                                                : 'bg-white/30 dark:bg-slate-900/40 border-transparent hover:bg-white/60 hover:dark:bg-slate-900/60 hover:shadow-md'
                                             }
                                     `}
                                         style={{ borderLeftColor: item.color }}
@@ -372,7 +372,7 @@ export default function CareerTimeline() {
                 {/* Right Column: Sticky Details Panel (Desktop) */}
                 <div className="hidden lg:block lg:w-1/2 relative h-auto">
                     <div
-                        className="sticky top-24 h-fit bg-slate-50 dark:bg-slate-900 rounded-3xl border-2 overflow-hidden shadow-2xl flex flex-col transition-colors duration-300"
+                        className="sticky top-24 h-fit bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl border-2 overflow-hidden shadow-2xl flex flex-col transition-colors duration-300"
                         style={{ borderColor: selectedJob.color }}
                     >
                         <AnimatePresence mode="wait">
