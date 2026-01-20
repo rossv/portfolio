@@ -47,7 +47,7 @@ const extractYear = (dateStr) => {
     return match ? match[0] : null;
 };
 
-export default function ProjectDashboard() {
+export default function ProjectDashboard({ onFilteredProjects }) {
     // ... items ...
 
     const [filterText, setFilterText] = useState('');
@@ -170,6 +170,10 @@ export default function ProjectDashboard() {
         });
 
     }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags]);
+
+    useEffect(() => {
+        onFilteredProjects?.(filteredProjects);
+    }, [filteredProjects, onFilteredProjects]);
 
     // Scroll to top when filters change
     useEffect(() => {

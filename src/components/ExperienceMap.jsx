@@ -1,19 +1,30 @@
 import Map, { Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useState, useRef, useEffect } from 'react';
-import projects from '../data/project.json';
+import { useState, useRef, useEffect, useMemo } from 'react';
 
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-export default function ExperienceMap() {
+export default function ExperienceMap({ projects = [] }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const mapRef = useRef(null);
-  const projectsWithCoords = projects.filter(
-    (project) =>
-      Array.isArray(project.coords) &&
-      project.coords.length === 2 &&
-      project.coords.every((value) => typeof value === 'number' && Number.isFinite(value))
+  const projectsWithCoords = useMemo(
+    () =>
+      projects.filter(
+        (project) =>
+          Array.isArray(project.coords) &&
+          project.coords.length === 2 &&
+          project.coords.every((value) => typeof value === 'number' && Number.isFinite(value))
+      ),
+    [projects]
   );
+
+  useEffect(() => {
+    if (!selectedProject) return;
+    const stillVisible = projectsWithCoords.some((project) => project.name === selectedProject.name);
+    if (!stillVisible) {
+      setSelectedProject(null);
+    }
+  }, [projectsWithCoords, selectedProject]);
 
   useEffect(() => {
     if (mapRef.current) {
