@@ -9,7 +9,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
     muted
     playsinline
     class="water-video w-full h-full object-fill"
-    style={{ objectPosition: "50% 20%" }}
+    style={{ objectPosition: "50% 10%" }}
   >
     <source src={waterVideo} type="video/mp4" />
   </video>
@@ -19,6 +19,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
   .water-banner-container {
     /* Adjusted height: slightly larger minimum to avoid "thin strip" blurry look */
     height: clamp(250px, 30vh, 450px);
+    background: transparent;
     
     /* 
        Mask the bottom edge to fade into transparency.
@@ -29,27 +30,10 @@ import waterVideo from '../assets/water-boomerang.mp4';
   }
 
   .water-video {
-    /*
-      Dark Mode Strategy:
-      Background is dark. Video is black bg + light ripples.
-      'screen' blend mode: Black becomes transparent, Light stays.
-    */
-    mix-blend-mode: screen;
-    opacity: 1.0; /* Increased to max for visibility */
-    filter: contrast(1.2); /* Boost contrast to counteract wide-screen fading */
-  }
-
-  /* 
-     Light Mode Strategy:
-     Background is light. We need dark ripples on transparent/white.
-     Video is Black Bg + Light Ripples.
-     1. Invert video -> White Bg + Dark Ripples.
-     2. 'multiply' blend mode -> White becomes transparent, Dark stays.
-  */
-  :global(html:not(.dark)) .water-video {
-    filter: invert(1) contrast(1.2); /* Boost contrast */
-    mix-blend-mode: multiply;
-    opacity: 0.8; /* Increased for visibility */
+    mix-blend-mode: normal;
+    opacity: 1;
+    filter: none;
+    background: transparent;
   }
 
   /* Respect reduced motion */
