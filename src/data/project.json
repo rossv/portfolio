@@ -43,7 +43,7 @@
         "description": "Supported expansion and client adoption of a SharePoint/M365-based digital delivery platform; advised on content organization, client use patterns, and feature alignment; coordinated with internal teams to integrate project data, dashboards, map updates, and workflows into client sites; supported onboarding and analytics reviews",
         "title": "Professional Engineer",
         "project_role": "Contributor, Technical Advisor",
-        "image": "/src/assets/projects/wtgo.jpg"
+        "image": "/src/assets/projects/wtgo.png"
     },
     {
         "name": "Autocalibrator (WACK) \u0026 SWMM Calibration Automation Toolkit",
@@ -66,7 +66,7 @@
         "description": "Led development, testing, and deployment of an autocalibration toolkit for SWMM-based models to automate calibration workflows; coordinated with internal SMEs and external partners to evaluate algorithms and cloud-based optimization methods; iterated on parameter normalization, uncertainty handling, multi-event scoring, calibration metrics, and visualization; supported applications for multiple utilities and delivered presentations, documentation, and trainings",
         "title": "Professional Engineer",
         "project_role": "Technical Advisor/ strategic Lead, Product Owner",
-        "image": "/src/assets/projects/autocalibrate.jpg"
+        "image": "/src/assets/projects/autocalibrate.png"
     },
     {
         "name": "Resiliency Analysis",
@@ -88,7 +88,7 @@
         "description": "Level of Service and Resiliency analysis for municipal water systems.",
         "title": "Professional Engineer",
         "project_role": "Task Lead",
-        "image": "/src/assets/projects/stpete_LOS.jpg"
+        "image": "/src/assets/projects/stpete_LOS.png"
     },
     {
         "name": "Comprehensive Plan",
@@ -132,7 +132,7 @@
         "description": "Embedded on-site at the Cleveland Water Department, I documented existing water distribution modeling practices and procedures. This involved conducting a thorough review of available documentation and interviewing staff to assess knowledge gaps and prepare for future staffing transitions. A report outlining the steps to be taken during a staffing transition and recommendations for modernizing Standard Operating Procedures was subsequently compiled including improvements to GIS practices, upgrades from InfoWater to InfoWater Pro and use of SCADA.",
         "title": "Professional Engineer",
         "project_role": "Technical Advisor, Modeling Engineer, Task Lead",
-        "image": "/src/assets/projects/cwd_model.jpg"
+        "image": "/src/assets/projects/cwd_model.png"
     },
     {
         "name": "Laurel Run PMF Study",
@@ -839,7 +839,7 @@
         "description": "I completed E\u0026S and PCSM design and permitting for two pump stations and accompanying forcemains as part of the Phase 1 CSO program for ABC.",
         "title": "Senior Project Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/abc_cso.jpg"
+        "image": "/src/assets/projects/abc_cso.png"
     },
     {
         "name": "Camp Meeting Road Pump Station Site Design and Permitting",
@@ -895,7 +895,7 @@
         "description": "I completed design and permitting for a small culvert replacement for NHTMA.",
         "title": "Project Consultant",
         "project_role": "",
-        "image": "/src/assets/projects/wilshire.jpg"
+        "image": "/src/assets/projects/wilshire.png"
     },
     {
         "name": "CEC Go Development",
@@ -1887,7 +1887,7 @@
         "description": "Work for NEOSD included alts SOT Gate. Additional tasks included Pulling HGLs and Hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, NEORSD.",
         "title": "Professional Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/soi_gate.jpg"
+        "image": "/src/assets/projects/soi_gate.png"
     },
     {
         "name": "T2 44 Valve Project",
@@ -1905,7 +1905,7 @@
         "description": "Work for GLWA included t2 44 Valve Project. Additional tasks included Discussing valve hydraulic options with Kyle, meeting on valve considerations and head loss calcs. Key focus areas: Water Distribution, Hydraulic Modeling, GLWA.",
         "title": "Professional Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/t244_valves.jpg"
+        "image": "/src/assets/projects/t244_valves.png"
     },
     {
         "name": "South Beaches",
@@ -1958,7 +1958,7 @@
         "description": "Work for Cokeburg included Determining slope, velocities for spillway, grading in spillway with Max. Key focus areas: HEC-RAS, Spillway/Dam, Hydraulic Modeling, Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/cokeburg_dam.jpg"
+        "image": "/src/assets/projects/cokeburg_dam.png"
     },
     {
         "name": "Site Plan",
@@ -1975,7 +1975,7 @@
         "description": "Work for Fairfield Southpointe included site Plan. Additional tasks included Checking Hydraulic Calcs. Key focus areas: Hydraulic Modeling, Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/fairfield_southpoint.jpg"
+        "image": "/src/assets/projects/fairfield_southpoint.png"
     },
     {
         "name": "Jackson Pointe Phase 3 \u0026 4",
@@ -1991,7 +1991,7 @@
         "description": "Work for The Buncher Company included jackson Pointe Phase 3 \u0026 4. Additional tasks included Looking at Pipe Capacities, Stream Cross Sections. Key focus areas: Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "",
-        "image": "/src/assets/projects/jackson_pointe.jpg"
+        "image": "/src/assets/projects/jackson_pointe.png"
     },
     {
         "name": "Rostraver Map",
@@ -2042,7 +2042,7 @@
         "description": "Work for RDL Architects, Inc. included hillcrest. Additional tasks included Watching video and drawing alignments.",
         "title": "Project Consultant",
         "project_role": "",
-        "image": "/src/assets/projects/hillcrest.jpg"
+        "image": "/src/assets/projects/hillcrest.png"
     },
     {
         "name": "Drury Hotel",
@@ -2075,7 +2075,7 @@
         "description": "Work for Burns \u0026 Scalo Real Estate Services included abele Business Park. Additional tasks included Discussing grading (task 2). Key focus areas: Land Development.",
         "title": "Project Consultant",
         "project_role": "",
-        "image": "/src/assets/projects/abele.jpg"
+        "image": "/src/assets/projects/abele.png"
     },
     {
         "name": "Rivers Casino Hotel - Site Development",
@@ -2091,7 +2091,7 @@
         "description": "Work for VOA Associates Incorporated included rivers Casino Hotel - Site Development. Additional tasks included Pre-Development Application. Key focus areas: Land Development.",
         "title": "Project Consultant",
         "project_role": "",
-        "image": "/src/assets/projects/rivers_hotel.jpg"
+        "image": "/src/assets/projects/rivers_hotel.png"
     },
     {
         "name": "Contact Search Tool",

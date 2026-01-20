@@ -8,7 +8,7 @@ export default function ProjectPortfolio() {
 
     return (
         <>
-            <div className="mb-16">
+            <div className="mb-16 max-w-4xl mx-auto">
                 <ExperienceMap projects={filteredProjects} />
             </div>
             <ProjectDashboard onFilteredProjects={setFilteredProjects} />

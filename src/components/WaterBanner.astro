@@ -1,5 +1,5 @@
 ---
-import waterVideo from '../assets/water-boomerang.mp4';
+import waterVideo from '../assets/videos/water-boomerang-alpha.webm';
 ---
 
 <div class="water-banner-container absolute top-24 left-0 w-full overflow-hidden pointer-events-none z-0" aria-hidden="true">
@@ -11,7 +11,7 @@ import waterVideo from '../assets/water-boomerang.mp4';
     class="water-video w-full h-full object-fill"
     style={{ objectPosition: "50% 10%" }}
   >
-    <source src={waterVideo} type="video/mp4" />
+    <source src={waterVideo} type="video/webm" />
   </video>
 </div>
 
@@ -31,28 +31,17 @@ import waterVideo from '../assets/water-boomerang.mp4';
 
   .water-video {
     /*
-      Dark Mode Strategy:
-      Background is dark. Video is black bg + light ripples.
-      'screen' blend mode: Black becomes transparent, Light stays.
+      Video now has true transparency (alpha channel).
+      No need for mix-blend-mode or contrast hacks.
     */
-    mix-blend-mode: screen;
-    opacity: 1.0; /* Increased to max for visibility */
-    filter: contrast(1.2); /* Boost contrast to counteract wide-screen fading */
     background: transparent;
+    opacity: 0.8; /* Slight opacity to blend nicely if needed, or 1.0 */
   }
 
   /* 
-     Light Mode Strategy:
-     Background is light. We need dark ripples on transparent/white.
-     Video is Black Bg + Light Ripples.
-     1. Invert video -> White Bg + Dark Ripples.
-     2. 'multiply' blend mode -> White becomes transparent, Dark stays.
+     Dark Mode Strategy:
+     No changes needed as the video is transparent.
   */
-  :global(html:not(.dark)) .water-video {
-    filter: invert(1) contrast(1.2); /* Boost contrast */
-    mix-blend-mode: multiply;
-    opacity: 0.8; /* Increased for visibility */
-  }
 
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
@@ -61,3 +50,4 @@ import waterVideo from '../assets/water-boomerang.mp4';
     }
   }
 </style>
+

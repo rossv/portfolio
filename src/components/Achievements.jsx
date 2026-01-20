@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import innovatorAwardImg from '../assets/innovator-award.png';
-import leadershipAcademyImg from '../assets/recognition-leadership-academy.png';
-import optimizationDataScienceImg from '../assets/recognition-optimization-data-science.png';
-import sewersFutureImg from '../assets/recognition-sewers-future.png';
-import aiTaskForceImg from '../assets/recognition-ai-task-force.png';
-import gisTechnicalLeadImg from '../assets/recognition-gis-technical-lead.jpg';
-import daleCarnegieImg from '../assets/recognition-dale-carnegie.png';
-import asceEwriImg from '../assets/recognition-asce-ewri.png';
+import innovatorAwardImg from '../assets/recognition/innovator-award.png';
+import leadershipAcademyImg from '../assets/recognition/recognition-leadership-academy.png';
+import optimizationDataScienceImg from '../assets/recognition/recognition-optimization-data-science.png';
+import sewersFutureImg from '../assets/recognition/recognition-sewers-future.png';
+import aiTaskForceImg from '../assets/recognition/recognition-ai-task-force.png';
+import gisTechnicalLeadImg from '../assets/recognition/recognition-gis-technical-lead.jpg';
+import daleCarnegieImg from '../assets/recognition/recognition-dale-carnegie.png';
+import asceEwriImg from '../assets/recognition/recognition-asce-ewri.png';
 
 const positions = [
     {

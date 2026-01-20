@@ -274,7 +274,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         <div className="bg-transparent rounded-2xl overflow-hidden flex flex-col h-[1100px] relative">
 
             {/* Search Header - Fixed at Top */}
-            <div className="p-6 border-b border-slate-200/30 dark:border-slate-800/30 bg-white/10 dark:bg-slate-900/20 backdrop-blur-md z-10 sticky top-0">
+            <div className="p-6 z-10 sticky top-0">
                 <div className="max-w-4xl mx-auto space-y-4">
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
