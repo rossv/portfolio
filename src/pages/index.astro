@@ -2,8 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero';
 import WaterBanner from '../components/WaterBanner.astro';
-import ProjectDashboard from '../components/ProjectDashboard';
-import ExperienceMap from '../components/ExperienceMap';
+import ProjectPortfolio from '../components/ProjectPortfolio';
 import SkillsRadar from '../components/SkillsRadar';
 import CareerTimeline from '../components/CareerTimeline';
 import Achievements from '../components/Achievements';
@@ -47,11 +46,7 @@ import Footer from '../components/Footer';
         </p>
       </div>
 
-      <div class="mb-16">
-        <ExperienceMap client:only="react" />
-      </div>
-
-      <ProjectDashboard client:load />
+      <ProjectPortfolio client:load />
     </div>
   </section>
 
