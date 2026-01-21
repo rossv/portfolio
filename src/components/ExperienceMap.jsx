@@ -40,7 +40,7 @@ const unclusteredPointLayer = {
   }
 };
 
-export default function ExperienceMap({ projects = [] }) {
+export default function ExperienceMap({ projects = [], className = "", onProjectClick }) {
   const mapRef = useRef(null);
   const [popupInfo, setPopupInfo] = useState(null);
 
@@ -104,11 +104,17 @@ export default function ExperienceMap({ projects = [] }) {
       });
     } else {
       // Unclustered point (single project)
+      const projectData = feature.properties;
       setPopupInfo({
         longitude: coordinates[0],
         latitude: coordinates[1],
-        project: feature.properties
+        project: projectData
       });
+
+      // Notify parent
+      if (onProjectClick) {
+        onProjectClick(projectData);
+      }
     }
   };
 
@@ -123,7 +129,7 @@ export default function ExperienceMap({ projects = [] }) {
   }
 
   return (
-    <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 relative group">
+    <div className={`h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 relative group ${className}`}>
       <div className="absolute inset-0 border-[8px] border-white/20 dark:border-slate-950/80 z-10 pointer-events-none rounded-2xl"></div>
       <Map
         ref={mapRef}
@@ -165,7 +171,12 @@ export default function ExperienceMap({ projects = [] }) {
               {/* Single Project */}
               {popupInfo.project && (
                 <div>
-                  <h4 className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1">{popupInfo.project.name}</h4>
+                  <h4
+                    className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors"
+                    onClick={() => onProjectClick && onProjectClick(popupInfo.project)}
+                  >
+                    {popupInfo.project.name}
+                  </h4>
                   <div className="mb-2">
                     {popupInfo.project.company && <p className="text-sm font-bold text-slate-800 dark:text-slate-200">{popupInfo.project.company}</p>}
                     {popupInfo.project.client && popupInfo.project.client !== popupInfo.project.company && (

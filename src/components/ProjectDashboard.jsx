@@ -5,6 +5,7 @@ import { Search } from 'lucide-react';
 import projects from '../data/project.json';
 import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
+import ExperienceMap from './ExperienceMap';
 import { getCompanyColor } from '../utils/companyColors';
 
 
@@ -39,12 +40,41 @@ const getProjectImageSrc = (imgProperty) => {
     return def;
 };
 
-// Helper to extract year for display and filtering
-// Handles formats like "2024", "2021-Present", "1/1/2025"
-const extractYear = (dateStr) => {
+// Helper to extract year from date string
+const getYear = (dateStr) => {
     if (!dateStr) return null;
     const match = dateStr.match(/\d{4}/);
-    return match ? match[0] : null;
+    return match ? parseInt(match[0]) : null;
+};
+
+// Helper to format date range for display
+const formatDateRange = (start, end) => {
+    const startYear = getYear(start);
+    const endYear = end?.toLowerCase() === 'present' ? 'Present' : getYear(end);
+
+    if (!startYear) return '';
+    if (!endYear || startYear === endYear) return `${startYear}`;
+    return `${startYear} - ${endYear}`;
+};
+
+// Helper to get all years a project was active
+const getProjectActiveYears = (start, end) => {
+    const startYear = getYear(start);
+    if (!startYear) return [];
+
+    let endYear = getYear(end);
+    if (end?.toLowerCase() === 'present') {
+        endYear = new Date().getFullYear();
+    }
+
+    // If no end date, assume single year
+    if (!endYear) return [startYear];
+
+    const years = [];
+    for (let y = startYear; y <= endYear; y++) {
+        years.push(y); // Keep as numbers for comparison
+    }
+    return years;
 };
 
 export default function ProjectDashboard({ onFilteredProjects }) {
@@ -64,9 +94,14 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const lastFocusedElementRef = useRef(null);
 
     // Extract unique options for filters
-    const allYears = useMemo(() =>
-        [...new Set(projects.map(p => extractYear(p.year) || 'Unknown'))].sort().reverse(),
-        []);
+    const allYears = useMemo(() => {
+        const yearSet = new Set();
+        projects.forEach(p => {
+            const activeYears = getProjectActiveYears(p.start_date, p.end_date);
+            activeYears.forEach(y => yearSet.add(y));
+        });
+        return [...yearSet].sort((a, b) => b - a).map(String); // Return as strings for filter UI
+    }, []);
 
     const allClients = useMemo(() =>
         [...new Set(projects.map(p => p.client))].filter(Boolean).sort(),
@@ -114,8 +149,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
             // 2. Slicers
             if (selectedYears.length > 0) {
-                const projectYear = extractYear(project.year) || 'Unknown';
-                if (!selectedYears.includes(projectYear)) return false;
+                const projectYears = getProjectActiveYears(project.start_date, project.end_date).map(String);
+                // Check if ANY of the selected years overlap with project years
+                const hasOverlap = selectedYears.some(y => projectYears.includes(y));
+                if (!hasOverlap) return false;
             }
 
             if (selectedClients.length > 0 && !selectedClients.includes(project.client)) {
@@ -147,26 +184,29 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             return true;
         });
 
-        // 3. Sorting: Reverse Chronological (Newest First)
+        // 3. Sorting: Active/Present first, then End Date (desc), then Start Date (desc)
         return result.sort((a, b) => {
-            const getDateValue = (y) => {
-                if (!y) return 0;
-                // "Present" implies current (highest value)
-                if (y.toLowerCase().includes('present')) return 9999999999999;
-
-                // Try parsing full date first (e.g. "1/1/2025")
-                // We split by '-' to handle "2021-2022" -> parse "2021" if full date not present
-                // But for "1/1/2025", split('-') creates ["1/1/2025"].
-                const parts = y.split('-');
-                const mainPart = parts[0].trim();
-
-                const parsedDate = Date.parse(mainPart);
-                if (!isNaN(parsedDate)) return parsedDate;
-
-                // Fallback: extract year integer
-                return parseInt(mainPart) || 0;
+            // Helper to get comparable value for end date
+            const getEndDateValue = (d) => {
+                if (!d) return 0;
+                if (d.toLowerCase() === 'present') return 9999999999999;
+                return new Date(d).getTime() || 0;
             };
-            return getDateValue(b.year) - getDateValue(a.year);
+
+            const getStartDateValue = (d) => {
+                if (!d) return 0;
+                return new Date(d).getTime() || 0;
+            };
+
+            const endA = getEndDateValue(a.end_date);
+            const endB = getEndDateValue(b.end_date);
+
+            if (endA !== endB) {
+                return endB - endA;
+            }
+
+            // If end dates are same, sort by start date
+            return getStartDateValue(b.start_date) - getStartDateValue(a.start_date);
         });
 
     }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags]);
@@ -216,6 +256,15 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const handleCardClick = (project, event) => {
         lastFocusedElementRef.current = event.currentTarget;
         setSelectedProject(project);
+    };
+
+    const handleMapProjectClick = (project) => {
+        // 1. Set the project as selected (opens modal)
+        setSelectedProject(project);
+
+        // 2. Ideally scroll to it in the grid as well? 
+        // For now, opening the modal is the best "link". 
+        // If we wanted to just scroll, we'd need refs for each card.
     };
 
     useEffect(() => {
@@ -271,69 +320,100 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     }, [selectedProject]);
 
     return (
-        <div className="bg-transparent rounded-2xl overflow-hidden flex flex-col h-[1100px] relative">
+        <div className="rounded-2xl relative h-[calc(100vh-100px)] min-h-[600px] max-h-[1200px]">
 
-            {/* Search Header - Fixed at Top */}
-            <div className="p-6 z-10 sticky top-0">
-                <div className="max-w-4xl mx-auto space-y-4">
-                    <div className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                        <input
-                            type="text"
-                            placeholder="Search projects by keyword, tech, location..."
-                            value={filterText}
-                            onChange={(e) => setFilterText(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-sm text-slate-700 dark:text-slate-200"
-                        />
+            {/* Layout Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
+
+                {/* Left Column: Search & List (Scrollable) */}
+                <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm overflow-hidden shadow-sm">
+
+                    {/* Sticky Header: Search & Filters */}
+                    <div className="p-4 md:p-6 z-20 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-xl transition-all shadow-sm">
+                        <div className="max-w-4xl mx-auto space-y-4">
+                            {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
+                            <div className="relative group">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                <input
+                                    type="text"
+                                    placeholder="Search projects..."
+                                    value={filterText}
+                                    onChange={(e) => setFilterText(e.target.value)}
+                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+                                />
+                            </div>
+
+                            <ProjectFilters
+                                allYears={allYears}
+                                allCompanies={allCompanies}
+                                allClients={allClients}
+                                allCategories={allCategories}
+                                allRoles={allRoles}
+                                allTags={allTags}
+                                selectedYears={selectedYears}
+                                selectedCompanies={selectedCompanies}
+                                selectedClients={selectedClients}
+                                selectedCategories={selectedCategories}
+                                selectedRoles={selectedRoles}
+                                selectedTags={selectedTags}
+                                onYearChange={(item) => handleToggle(setSelectedYears, item)}
+                                onCompanyChange={(item) => handleToggle(setSelectedCompanies, item)}
+                                onClientChange={(item) => handleToggle(setSelectedClients, item)}
+                                onCategoryChange={(item) => handleToggle(setSelectedCategories, item)}
+                                onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
+                                onTagChange={(item) => handleToggle(setSelectedTags, item)}
+                                onReset={handleReset}
+                                filterText={filterText}
+                            />
+                        </div>
                     </div>
 
-                    <ProjectFilters
-                        allYears={allYears}
-                        allCompanies={allCompanies}
-                        allClients={allClients}
-                        allCategories={allCategories}
-                        allRoles={allRoles}
-                        allTags={allTags}
-                        selectedYears={selectedYears}
-                        selectedCompanies={selectedCompanies}
-                        selectedClients={selectedClients}
-                        selectedCategories={selectedCategories}
-                        selectedRoles={selectedRoles}
-                        selectedTags={selectedTags}
-                        onYearChange={(item) => handleToggle(setSelectedYears, item)}
-                        onCompanyChange={(item) => handleToggle(setSelectedCompanies, item)}
-                        onClientChange={(item) => handleToggle(setSelectedClients, item)}
-                        onCategoryChange={(item) => handleToggle(setSelectedCategories, item)}
-                        onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
-                        onTagChange={(item) => handleToggle(setSelectedTags, item)}
-                        onReset={handleReset}
-                        filterText={filterText}
-                    />
-                </div>
-            </div>
+                    {/* Scrollable Content Area */}
+                    <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth bg-transparent relative">
+                        {/* Mobile Map (Visible only on small screens) */}
+                        <div className="lg:hidden mb-8">
+                            <ExperienceMap
+                                projects={filteredProjects}
+                                className="h-[300px] w-full shadow-md border-slate-200 dark:border-slate-700"
+                                onProjectClick={handleMapProjectClick}
+                            />
+                        </div>
 
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-6 md:p-8 bg-transparent scroll-smooth">
-                {/* Stats Dashboard */}
-                <ProjectStats projects={filteredProjects} />
+                        <ProjectStats projects={filteredProjects} />
 
-                {/* Results Grid - Simplified Layout for Stability */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredProjects.map((project, index) => (
-                        <ProjectCard
-                            key={`${project.name}-${index}`}
-                            project={project}
-                            onClick={(event) => handleCardClick(project, event)}
-                            isSelected={selectedProject?.name === project.name}
-                        />
-                    ))}
-                </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 mt-4">
+                            {filteredProjects.map((project, index) => (
+                                <ProjectCard
+                                    key={`${project.name}-${index}`}
+                                    project={project}
+                                    onClick={(event) => handleCardClick(project, event)}
+                                    isSelected={selectedProject?.name === project.name}
+                                />
+                            ))}
+                        </div>
 
-                {filteredProjects.length === 0 && (
-                    <div className="text-center py-20">
-                        <p className="text-slate-500 dark:text-slate-400 text-lg">No projects match your filters.</p>
-                        <button onClick={handleReset} className="mt-4 text-blue-500 hover:underline">Clear all filters</button>
+                        {filteredProjects.length === 0 && (
+                            <div className="text-center py-20">
+                                <p className="text-slate-500 dark:text-slate-400 text-lg">No projects match your filters.</p>
+                                <button onClick={handleReset} className="mt-4 text-blue-500 hover:underline">Clear all filters</button>
+                            </div>
+                        )}
+
+                        {/* Footer spacing */}
+                        <div className="h-12"></div>
                     </div>
-                )}
+                </div>
+
+                {/* Right Column: Map (Desktop Sticky) */}
+                <div className="hidden lg:block lg:col-span-5 xl:col-span-4 h-full">
+                    <div className="h-full w-full rounded-2xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800 bg-slate-900 sticky top-4">
+                        <ExperienceMap
+                            projects={filteredProjects}
+                            className="h-full w-full"
+                            onProjectClick={handleMapProjectClick}
+                        />
+                    </div>
+                </div>
             </div>
 
             {/* Expanded Card Modal */}
@@ -345,7 +425,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-y-auto rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 p-8 cursor-default"
+                            className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-y-auto rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 p-8 cursor-default relative"
                             style={{ borderTopColor: getCompanyColor(selectedProject.company) }}
                             onClick={(e) => e.stopPropagation()}
                             role="dialog"
@@ -374,7 +454,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             <div className="flex justify-between items-start mb-4">
                                 <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
                                 <div className="flex items-center gap-2">
-                                    {selectedProject.year && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{extractYear(selectedProject.year)}</span>}
+                                    {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
                                     <button
                                         onClick={closeModal}
                                         className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
@@ -383,9 +463,9 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                     </button>
                                 </div>
                             </div>
-                            {/* ... Rest of content omitted for brevity in replace tool, but included in visual inspection context ... */}
+
                             <h2 id={modalTitleId} className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedProject.name}</h2>
-                            {/* ... */}
+
                             <div className="text-base text-slate-600 dark:text-slate-400 mb-6 flex flex-col gap-1">
                                 {(selectedProject.company || selectedProject.client) && (
                                     <div className="font-medium flex flex-wrap gap-2 items-center">
@@ -448,7 +528,7 @@ function ProjectCard({ project, onClick, isSelected }) {
             >
                 <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{project.category}</span>
-                    {project.year && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{extractYear(project.year)}</span>}
+                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{formatDateRange(project.start_date, project.end_date)}</span>}
                 </div>
 
                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1 group-hover:text-slate-600 transition-colors">{project.name}</h3>
