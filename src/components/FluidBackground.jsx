@@ -4,6 +4,9 @@ export default function FluidBackground() {
     const canvasRef = useRef(null);
     const mouseRef = useRef({ x: -1000, y: -1000 });
 
+    const scrollRef = useRef(0);
+    const lastScrollRef = useRef(0);
+
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
@@ -42,7 +45,12 @@ export default function FluidBackground() {
                 this.friction = 0.96; // For mouse interaction decay
             }
 
-            update(mouseX, mouseY) {
+            update(mouseX, mouseY, scrollDelta) {
+                // Parallax effect: bubbles move with scroll
+                // If scrolling down (positive delta), bubbles move up (subtract delta)
+                // We multiply by a factor < 1 to make them move slower than background (depth effect)
+                this.y -= scrollDelta * 0.5;
+
                 // Basic movement
                 this.x += this.vx;
                 this.y += this.vy;
@@ -73,13 +81,20 @@ export default function FluidBackground() {
                 }
 
                 // Reset when out of bounds
-                if (this.y < -20 || this.x < -20 || this.x > width + 20) {
+                // Note: With scroll, they can go off top or bottom
+                if (this.y < -50 || this.x < -20 || this.x > width + 20) {
                     // Check if strictly out of view
-                    if (this.y < -20) {
+                    if (this.y < -50) {
                         this.reset();
                     }
                     else if (this.x < -20) this.x = width + 20;
                     else if (this.x > width + 20) this.x = -20;
+                }
+
+                // Also reset if they go too far down (e.g. scrolling up fast)
+                if (this.y > height + 50) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
                 }
             }
 
@@ -96,18 +111,33 @@ export default function FluidBackground() {
             particles.push(new Particle());
         }
 
+        // Scroll handling
+        const updateScroll = () => {
+            scrollRef.current = window.scrollY;
+        };
+        window.addEventListener('scroll', updateScroll);
+
         const render = () => {
+            const currentScroll = scrollRef.current;
+            const scrollDelta = currentScroll - lastScrollRef.current;
+            lastScrollRef.current = currentScroll;
+
             ctx.clearRect(0, 0, width, height);
 
             particles.forEach(p => {
-                p.update(mouseRef.current.x, mouseRef.current.y);
+                p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
 
-                // Fade out particles near the top (approaching water surface at y=0)
-                // Strict fade out: Ensure bubbles are invisible above the video banner (approx 450px)
-                const surfaceY = 450; // Bubbles fully disappear above this Y
+                // Fade out particles near the top (approaching water surface)
+                // key change: The 'surface' effectively moves up as we scroll down
+                // At scroll 0, surface is at ~450px.
+                // At scroll 450, surface is at 0px (top of screen).
+                const surfaceY = 450 - currentScroll;
+
+                // Bubbles fully disappear above surfaceY
                 const fadeZone = 400; // Distance over which they fade out
 
                 let fadeFactor = 0;
+                // Only visible below surfaceY
                 if (p.y > surfaceY) {
                     fadeFactor = Math.min(1, (p.y - surfaceY) / fadeZone);
                 }
@@ -115,10 +145,12 @@ export default function FluidBackground() {
                 // Transient alpha for drawing only
                 const drawAlpha = p.alpha * fadeFactor;
 
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = p.color + drawAlpha + ')';
-                ctx.fill();
+                if (drawAlpha > 0.01) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color + drawAlpha + ')';
+                    ctx.fill();
+                }
             });
 
             animationFrameId = requestAnimationFrame(render);
@@ -146,9 +178,15 @@ export default function FluidBackground() {
         window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('touchmove', handleTouchMove);
+
+        // Initial scroll position
+        scrollRef.current = window.scrollY;
+        lastScrollRef.current = window.scrollY;
+
         render();
 
         return () => {
+            window.removeEventListener('scroll', updateScroll);
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('touchmove', handleTouchMove);

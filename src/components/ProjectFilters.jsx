@@ -284,7 +284,7 @@ export default function ProjectFilters({
             {hasFilters && (
                 <button
                     onClick={onReset}
-                    className="ml-auto flex items-center gap-1 text-sm text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded-lg transition-colors"
+                    className="flex items-center gap-1 text-sm text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 px-3 py-2 rounded-lg transition-colors"
                 >
                     <X size={14} />
                     <span>Clear all</span>

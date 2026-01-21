@@ -10,6 +10,32 @@ html.dark .vignette-layer {
   background-image: radial-gradient(circle at 50% 50%, rgba(2, 6, 23, 0) 0%, #020617 100%);
 }
 
+/* Mapbox Popup Dark Mode Overrides */
+html.dark .mapboxgl-popup-content {
+  background-color: #0f172a; /* slate-900 */
+  border: 1px solid #334155; /* slate-700 */
+  color: #cbd5e1; /* slate-300 */
+}
+
+html.dark .mapboxgl-popup-tip {
+  border-top-color: #0f172a; /* slate-900 */
+  border-bottom-color: #0f172a;
+}
+
+/* Specific tip direction overrides to ensure the arrow matches the background */
+html.dark .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+    border-bottom-color: #0f172a;
+}
+html.dark .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+    border-top-color: #0f172a;
+}
+html.dark .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: #0f172a;
+}
+html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: #0f172a;
+}
+
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
