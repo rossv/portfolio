@@ -8,7 +8,7 @@ const StatCard = ({ title, children, className = "" }) => (
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col ${className}`}
+        className={`bg-white/10 dark:bg-slate-900/20 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-xl p-4 flex flex-col ${className}`}
     >
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">{title}</h4>
         <div className="flex-grow flex items-center justify-center">
@@ -20,7 +20,7 @@ const StatCard = ({ title, children, className = "" }) => (
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-2 rounded shadow-lg text-xs">
+            <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 p-2 rounded shadow-lg text-xs">
                 <p className="font-bold text-slate-800 dark:text-slate-100">{label || payload[0].name}</p>
                 <p className="text-blue-500 font-mono">Count: {payload[0].value}</p>
             </div>

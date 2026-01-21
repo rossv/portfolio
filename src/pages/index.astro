@@ -21,21 +21,21 @@ import Footer from '../components/Footer';
 
 
   <section id="skills" class="py-5 md:py-10 relative z-10 overflow-hidden min-h-[600px] flex flex-col items-center gap-10 md:gap-20">
-      <FloatingIcons client:visible />
+      <FloatingIcons client:load />
       <div class="container mx-auto px-6 flex justify-center relative z-10">
-        <SkillsRadar client:visible />
+        <SkillsRadar client:load />
       </div>
       
       <div class="w-full relative z-10">
-        <HexGridSection client:visible />
+        <HexGridSection client:load />
       </div>
   </section>
 
   <section id="timeline" class="py-5 md:py-10 bg-transparent">
-    <CareerTimeline client:visible />
+    <CareerTimeline client:load />
   </section>
 
-  <Achievements client:visible />
+  <Achievements client:load />
 
   <section id="projects" class="py-20">
     <div class="w-full max-w-[95%] mx-auto px-6">

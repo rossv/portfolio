@@ -282,7 +282,7 @@ export default function CareerTimeline() {
 
 
     return (
-        <div id="timeline" className="w-full py-20 px-6 font-sans scroll-mt-20">
+        <div className="w-full py-20 px-6 font-sans">
             <motion.h2
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

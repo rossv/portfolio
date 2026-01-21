@@ -12,45 +12,87 @@ html.dark .vignette-layer {
 
 /* Mapbox Popup Dark Mode Overrides */
 html.dark .mapboxgl-popup-content {
-  background-color: #0f172a; /* slate-900 */
-  border: 1px solid #334155; /* slate-700 */
-  color: #cbd5e1; /* slate-300 */
+  background-color: #0f172a;
+  /* slate-900 */
+  border: 1px solid #334155;
+  /* slate-700 */
+  color: #cbd5e1;
+  /* slate-300 */
 }
 
 html.dark .mapboxgl-popup-tip {
-  border-top-color: #0f172a; /* slate-900 */
+  border-top-color: #0f172a;
+  /* slate-900 */
   border-bottom-color: #0f172a;
 }
 
 /* Specific tip direction overrides to ensure the arrow matches the background */
 html.dark .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-    border-bottom-color: #0f172a;
+  border-bottom-color: #0f172a;
 }
+
 html.dark .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-    border-top-color: #0f172a;
+  border-top-color: #0f172a;
 }
+
 html.dark .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
-    border-right-color: #0f172a;
+  border-right-color: #0f172a;
 }
+
 html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
-    border-left-color: #0f172a;
+  border-left-color: #0f172a;
 }
 
 @layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
+
+  /* Global Scrollbar Styles */
+  ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: transparent;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     @apply bg-slate-300 dark:bg-slate-700 rounded-full;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     @apply bg-slate-400 dark:bg-slate-600;
+  }
+
+  /* Scrollbar Buttons (Arrows) */
+  ::-webkit-scrollbar-button:single-button {
+    background-color: transparent;
+    display: block;
+    background-size: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  /* Up Arrow */
+  ::-webkit-scrollbar-button:single-button:vertical:decrement {
+    height: 12px;
+    width: 12px;
+    background-position: center 4px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(148, 163, 184)'><polygon points='50,00 0,50 100,50'/></svg>");
+  }
+
+  ::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(100, 116, 139)'><polygon points='50,00 0,50 100,50'/></svg>");
+  }
+
+  /* Down Arrow */
+  ::-webkit-scrollbar-button:single-button:vertical:increment {
+    height: 12px;
+    width: 12px;
+    background-position: center 4px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(148, 163, 184)'><polygon points='0,0 100,0 50,50'/></svg>");
+  }
+
+  ::-webkit-scrollbar-button:single-button:vertical:increment:hover {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(100, 116, 139)'><polygon points='0,0 100,0 50,50'/></svg>");
   }
 }

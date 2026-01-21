@@ -7,6 +7,7 @@ import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
 import ExperienceMap from './ExperienceMap';
 import { getCompanyColor } from '../utils/companyColors';
+import { TAG_HIERARCHY } from '../constants/tagHierarchy';
 
 
 // Dynamic Asset Imports using Vite glob
@@ -50,7 +51,8 @@ const getYear = (dateStr) => {
 // Helper to format date range for display
 const formatDateRange = (start, end) => {
     const startYear = getYear(start);
-    const endYear = end?.toLowerCase() === 'present' ? 'Present' : getYear(end);
+    const isPresent = !end || end.toLowerCase() === 'present';
+    const endYear = isPresent ? 'Present' : getYear(end);
 
     if (!startYear) return '';
     if (!endYear || startYear === endYear) return `${startYear}`;
@@ -63,7 +65,7 @@ const getProjectActiveYears = (start, end) => {
     if (!startYear) return [];
 
     let endYear = getYear(end);
-    if (end?.toLowerCase() === 'present') {
+    if (!end || end.toLowerCase() === 'present') {
         endYear = new Date().getFullYear();
     }
 
@@ -120,9 +122,57 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         []);
 
     const allTags = useMemo(() => {
-        const tagSet = new Set();
-        projects.forEach(p => (p.tags || []).forEach(tag => tagSet.add(tag)));
-        return [...tagSet].sort();
+        const projectTagSet = new Set();
+        projects.forEach(p => (p.tags || []).forEach(tag => projectTagSet.add(tag)));
+        const projectTags = [...projectTagSet];
+
+        // Helper to reconstruct the hierarchy based on what actually exists in the data
+        const buildHierarchy = (nodes) => {
+            return nodes.map(node => {
+                const label = node.label || node;
+                // Check if this node (parent) exists in project tags
+                const exists = projectTagSet.has(label);
+
+                // Process children if any
+                if (node.children) {
+                    const children = buildHierarchy(node.children).filter(Boolean); // Clean out nulls
+
+                    // If no children exist in data AND parent doesn't exist, skip this node
+                    // But if parent exists, we keep it. 
+                    // Or if kids exist, we keep parent (even if parent tag itself isn't on a project?) -> 
+                    // Usually we only show filters that have matching data.
+                    // Let's say: Show node if (exists) OR (has visible children)
+
+                    if (exists || children.length > 0) {
+                        return { label, children: children.length > 0 ? children : undefined };
+                    }
+                    return null;
+                }
+
+                // Leaf node
+                return exists ? label : null;
+            }).filter(Boolean);
+        };
+
+        const hierarchy = buildHierarchy(TAG_HIERARCHY);
+
+        // Find "Orphan" tags (tags in data that aren't in the hierarchy)
+        const flatHierarchyTags = new Set();
+        const traverse = (nodes) => {
+            nodes.forEach(n => {
+                if (typeof n === 'string') flatHierarchyTags.add(n);
+                else {
+                    flatHierarchyTags.add(n.label);
+                    if (n.children) traverse(n.children);
+                }
+            });
+        };
+        traverse(TAG_HIERARCHY); // Use full hierarchy to check coverage
+
+        const orphans = projectTags.filter(t => !flatHierarchyTags.has(t)).sort();
+
+        // Append orphans to the top level
+        return [...hierarchy, ...orphans];
     }, []);
 
 
@@ -188,8 +238,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         return result.sort((a, b) => {
             // Helper to get comparable value for end date
             const getEndDateValue = (d) => {
-                if (!d) return 0;
-                if (d.toLowerCase() === 'present') return 9999999999999;
+                if (!d || d.toLowerCase() === 'present') return 9999999999999;
                 return new Date(d).getTime() || 0;
             };
 
@@ -229,6 +278,51 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 ? prev.filter(i => i !== item)
                 : [...prev, item]
         );
+    };
+
+    const handleTagToggle = (itemLabel) => {
+        setSelectedTags(prev => {
+            // 1. Find the node in the FULL hierarchy to check for children
+            const findNode = (nodes, target) => {
+                for (const node of nodes) {
+                    const label = typeof node === 'string' ? node : node.label;
+                    if (label === target) return node;
+                    if (node.children) {
+                        const found = findNode(node.children, target);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            };
+
+            const node = findNode(TAG_HIERARCHY, itemLabel);
+
+            // Collect all descendants if it's a parent
+            const getDescendants = (n) => {
+                if (!n || typeof n === 'string' || !n.children) return [];
+                let descendants = [];
+                n.children.forEach(child => {
+                    const childLabel = typeof child === 'string' ? child : child.label;
+                    descendants.push(childLabel);
+                    descendants = descendants.concat(getDescendants(child));
+                });
+                return descendants;
+            };
+
+            const descendants = node ? getDescendants(node) : [];
+            const allAffected = [itemLabel, ...descendants];
+
+            const isAlreadySelected = prev.includes(itemLabel);
+
+            if (isAlreadySelected) {
+                // Deselect parent AND all descendants
+                return prev.filter(t => !allAffected.includes(t));
+            } else {
+                // Select parent AND all descendants (that aren't already selected)
+                const toAdd = allAffected.filter(t => !prev.includes(t));
+                return [...prev, ...toAdd];
+            }
+        });
     };
 
     const handleReset = () => {
@@ -326,21 +420,21 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
 
                 {/* Left Column: Search & List (Scrollable) */}
-                <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm overflow-hidden shadow-sm">
+                <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
 
                     {/* Sticky Header: Search & Filters */}
-                    <div className="p-4 md:p-6 z-20 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 backdrop-blur-xl transition-all shadow-sm">
+                    <div className="p-4 md:p-6 z-20 bg-transparent transition-all">
                         <div className="max-w-4xl mx-auto space-y-4">
                             {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
                             <div className="relative group">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 <input
                                     type="text"
                                     placeholder="Search projects..."
                                     value={filterText}
                                     onChange={(e) => setFilterText(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+                                    className="w-full pl-12 pr-4 py-3 bg-white/20 dark:bg-slate-800/30 border border-white/20 dark:border-slate-700/30 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400 backdrop-blur-sm"
                                 />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors pointer-events-none z-10" size={20} />
                             </div>
 
                             <ProjectFilters
@@ -361,7 +455,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 onClientChange={(item) => handleToggle(setSelectedClients, item)}
                                 onCategoryChange={(item) => handleToggle(setSelectedCategories, item)}
                                 onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
-                                onTagChange={(item) => handleToggle(setSelectedTags, item)}
+                                onTagChange={(item) => handleTagToggle(typeof item === 'string' ? item : item.label)}
                                 onReset={handleReset}
                                 filterText={filterText}
                             />
@@ -369,7 +463,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                     </div>
 
                     {/* Scrollable Content Area */}
-                    <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth bg-transparent relative">
+                    <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 scroll-smooth bg-transparent relative custom-scrollbar">
                         {/* Mobile Map (Visible only on small screens) */}
                         <div className="lg:hidden mb-8">
                             <ExperienceMap
@@ -425,7 +519,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-y-auto rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 p-8 cursor-default relative"
+                            className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-hidden rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 cursor-default relative flex flex-col"
                             style={{ borderTopColor: getCompanyColor(selectedProject.company) }}
                             onClick={(e) => e.stopPropagation()}
                             role="dialog"
@@ -434,70 +528,72 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             tabIndex={-1}
                             ref={modalRef}
                         >
-                            {/* Hero Image with Fade Mask */}
-                            {(() => {
-                                const imageSrc = getProjectImageSrc(selectedProject.image);
+                            <div className="overflow-y-auto p-8 h-full custom-scrollbar">
+                                {/* Hero Image with Fade Mask */}
+                                {(() => {
+                                    const imageSrc = getProjectImageSrc(selectedProject.image);
 
-                                return imageSrc && (
-                                    <div className="w-[calc(100%+4rem)] h-80 -mx-8 -mt-8 mb-6 relative group">
-                                        <div className="absolute inset-0 z-10 bg-gradient-to-t from-white dark:from-slate-900 via-transparent to-transparent opacity-90"></div>
-                                        <img
-                                            src={imageSrc}
-                                            alt={selectedProject.name}
-                                            className="w-full h-full object-cover"
-                                        />
+                                    return imageSrc && (
+                                        <div className="w-[calc(100%+4rem)] h-80 -mx-8 -mt-8 mb-6 relative group">
+                                            <div className="absolute inset-0 z-10 bg-gradient-to-t from-white dark:from-slate-900 via-transparent to-transparent opacity-90"></div>
+                                            <img
+                                                src={imageSrc}
+                                                alt={selectedProject.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                    );
+                                })()}
+
+                                {/* ... Content ... */}
+                                <div className="flex justify-between items-start mb-4">
+                                    <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
+                                    <div className="flex items-center gap-2">
+                                        {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
+                                        <button
+                                            onClick={closeModal}
+                                            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </button>
                                     </div>
-                                );
-                            })()}
-
-                            {/* ... Content ... */}
-                            <div className="flex justify-between items-start mb-4">
-                                <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
-                                <div className="flex items-center gap-2">
-                                    {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
-                                    <button
-                                        onClick={closeModal}
-                                        className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                    </button>
                                 </div>
-                            </div>
 
-                            <h2 id={modalTitleId} className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedProject.name}</h2>
+                                <h2 id={modalTitleId} className="text-3xl font-bold text-slate-900 dark:text-white mb-2">{selectedProject.name}</h2>
 
-                            <div className="text-base text-slate-600 dark:text-slate-400 mb-6 flex flex-col gap-1">
-                                {(selectedProject.company || selectedProject.client) && (
-                                    <div className="font-medium flex flex-wrap gap-2 items-center">
-                                        {selectedProject.company && <span className="font-bold text-slate-700 dark:text-slate-300">{selectedProject.company}</span>}
-                                        {selectedProject.company && selectedProject.client && selectedProject.client !== selectedProject.company && (
-                                            <>
-                                                <span className="text-slate-300">|</span>
-                                                <span className="text-indigo-600 dark:text-indigo-400">{selectedProject.client}</span>
-                                            </>
-                                        )}
-                                        {!selectedProject.company && selectedProject.client && <span className="text-indigo-600 dark:text-indigo-400">{selectedProject.client}</span>}
-                                    </div>
-                                )}
-                                {(selectedProject.title || selectedProject.project_role) && (
-                                    <div className="text-sm flex flex-wrap gap-1 items-center mt-1">
-                                        {selectedProject.title && <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedProject.title}</span>}
-                                        {selectedProject.title && selectedProject.project_role && <span className="text-slate-300">•</span>}
-                                        {selectedProject.project_role && <span className="italic text-slate-500">{selectedProject.project_role}</span>}
-                                    </div>
-                                )}
-                            </div>
-                            {selectedProject.location && <p className="text-sm text-slate-500 dark:text-slate-500 mb-6 italic flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full inline-block"></span>
-                                {selectedProject.location}
-                            </p>}
-                            <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-8 leading-relaxed">
-                                {selectedProject.description}
-                            </div>
-                            <div className="flex flex-wrap gap-2 mt-auto">
-                                {(selectedProject.tags ?? []).map(tag => (
-                                    <span key={tag} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium">#{tag}</span>
-                                ))}
+                                <div className="text-base text-slate-600 dark:text-slate-400 mb-6 flex flex-col gap-1">
+                                    {(selectedProject.company || selectedProject.client) && (
+                                        <div className="font-medium flex flex-wrap gap-2 items-center">
+                                            {selectedProject.company && <span className="font-bold text-slate-700 dark:text-slate-300">{selectedProject.company}</span>}
+                                            {selectedProject.company && selectedProject.client && selectedProject.client !== selectedProject.company && (
+                                                <>
+                                                    <span className="text-slate-300">|</span>
+                                                    <span className="text-indigo-600 dark:text-indigo-400">{selectedProject.client}</span>
+                                                </>
+                                            )}
+                                            {!selectedProject.company && selectedProject.client && <span className="text-indigo-600 dark:text-indigo-400">{selectedProject.client}</span>}
+                                        </div>
+                                    )}
+                                    {(selectedProject.title || selectedProject.project_role) && (
+                                        <div className="text-sm flex flex-wrap gap-1 items-center mt-1">
+                                            {selectedProject.title && <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedProject.title}</span>}
+                                            {selectedProject.title && selectedProject.project_role && <span className="text-slate-300">•</span>}
+                                            {selectedProject.project_role && <span className="italic text-slate-500">{selectedProject.project_role}</span>}
+                                        </div>
+                                    )}
+                                </div>
+                                {selectedProject.location && <p className="text-sm text-slate-500 dark:text-slate-500 mb-6 italic flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-slate-400 rounded-full inline-block"></span>
+                                    {selectedProject.location}
+                                </p>}
+                                <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-8 leading-relaxed">
+                                    {selectedProject.description}
+                                </div>
+                                <div className="flex flex-wrap gap-2 mt-auto">
+                                    {(selectedProject.tags ?? []).map(tag => (
+                                        <span key={tag} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium">#{tag}</span>
+                                    ))}
+                                </div>
                             </div>
                         </motion.div>
                     </div>
@@ -523,7 +619,7 @@ function ProjectCard({ project, onClick, isSelected }) {
                 animate={{ opacity: 1 }}
                 whileHover={{ y: -5, scale: 1.02 }}
                 onClick={onClick}
-                className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-xl shadow-lg border-t-4 flex flex-col h-full group cursor-pointer hover:shadow-xl transition-all"
+                className="bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all"
                 style={{ borderTopColor: accentColor }}
             >
                 <div className="flex justify-between items-start mb-2">

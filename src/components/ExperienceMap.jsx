@@ -1,6 +1,6 @@
 import Map, { Source, Layer, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 
 const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
 
@@ -43,6 +43,28 @@ const unclusteredPointLayer = {
 export default function ExperienceMap({ projects = [], className = "", onProjectClick }) {
   const mapRef = useRef(null);
   const [popupInfo, setPopupInfo] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    // Function to check if dark mode is active
+    const checkDarkMode = () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      setIsDarkMode(isDark);
+    };
+
+    // Initial check
+    checkDarkMode();
+
+    // Observer to watch for class changes on html element
+    const observer = new MutationObserver(checkDarkMode);
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const geojsonData = useMemo(() => {
     const features = projects
@@ -67,9 +89,34 @@ export default function ExperienceMap({ projects = [], className = "", onProject
     };
   }, [projects]);
 
+  // Helper to parse Mapbox properties which might be stringified
+  const parseProjectProperties = (properties) => {
+    const parsed = { ...properties };
+    // Mapbox GL JS stringifies arrays/objects in GeoJSON properties
+    // We need to parse them back
+    ['tags', 'coords', 'links'].forEach(key => {
+      if (typeof parsed[key] === 'string' && (parsed[key].startsWith('[') || parsed[key].startsWith('{'))) {
+        try {
+          parsed[key] = JSON.parse(parsed[key]);
+        } catch (e) {
+          // Keep as string if parse fails
+        }
+      }
+    });
+    return parsed;
+  };
+
   const onClick = (event) => {
     const feature = event.features?.[0];
-    if (!feature) return;
+
+    // Always clear popup regarding what we clicked to ensure state consistency.
+    // If we clicked a feature, it will be reopened/overwritten below.
+    // If background, it closes.
+    // This replaces implicit close behavior and prevents stuck states.
+    if (!feature) {
+      setPopupInfo(null);
+      return;
+    }
 
     const clusterId = feature.properties.cluster_id;
     const coordinates = feature.geometry.coordinates.slice();
@@ -81,37 +128,47 @@ export default function ExperienceMap({ projects = [], className = "", onProject
       mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
         if (err) return;
 
-        // If we can zoom in further, do so
-        if (zoom <= 14) { // Arbitrary max zoom check, usually expansion zoom returns nicely
+        // If expansion zoom is reachable and reasonable, fly there.
+        // We set 20 as threshold (since we'll set clusterMaxZoom to 20 or higher).
+        // If expansion suggests zooming beyond ~20, we assume it's a tight cluster (identical points).
+        if (zoom <= 20) {
           mapRef.current.easeTo({
             center: coordinates,
             zoom,
             duration: 500
           });
         } else {
-          // If we are deep enough or expansion zoom is same (stacked points)
-          // We want to show a popup with all items
-          // We need to fetch the leaves of the cluster
+          // Terminal cluster (points at same location) -> Show popup
           mapboxSource.getClusterLeaves(clusterId, 100, 0, (err, leaves) => {
             if (err) return;
+
+            // Deduplicate leaves based on project name to avoid UI duplicates
+            const uniqueLeaves = leaves.filter((leaf, index, self) =>
+              index === self.findIndex((t) => (
+                t.properties.name === leaf.properties.name
+              ))
+            );
+
             setPopupInfo({
               longitude: coordinates[0],
               latitude: coordinates[1],
-              clusterLeaves: leaves // Array of features
+              clusterLeaves: uniqueLeaves
             });
           });
         }
       });
     } else {
       // Unclustered point (single project)
-      const projectData = feature.properties;
+      // With high clusterMaxZoom, we assume this is a truly single point (or we are at max zoom).
+      const projectData = parseProjectProperties(feature.properties);
+
       setPopupInfo({
         longitude: coordinates[0],
         latitude: coordinates[1],
         project: projectData
       });
 
-      // Notify parent
+      // Also notify parent directly if they want to handle it (like opening modal)
       if (onProjectClick) {
         onProjectClick(projectData);
       }
@@ -138,7 +195,7 @@ export default function ExperienceMap({ projects = [], className = "", onProject
           latitude: 38,
           zoom: 3
         }}
-        mapStyle="mapbox://styles/mapbox/dark-v11"
+        mapStyle={isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/light-v11"}
         mapboxAccessToken={MAPBOX_TOKEN}
         interactiveLayerIds={[clusterLayer.id, unclusteredPointLayer.id]}
         onClick={onClick}
@@ -149,7 +206,7 @@ export default function ExperienceMap({ projects = [], className = "", onProject
           type="geojson"
           data={geojsonData}
           cluster={true}
-          clusterMaxZoom={12}
+          clusterMaxZoom={25}
           clusterRadius={30}
         >
           <Layer {...clusterLayer} />
@@ -163,6 +220,7 @@ export default function ExperienceMap({ projects = [], className = "", onProject
             longitude={popupInfo.longitude}
             latitude={popupInfo.latitude}
             onClose={() => setPopupInfo(null)}
+            closeOnClick={false}
             closeButton={false}
             className="z-50"
             maxWidth="300px"
@@ -194,18 +252,27 @@ export default function ExperienceMap({ projects = [], className = "", onProject
                     <div key={leaf.properties.name} className="border-b border-slate-100 dark:border-slate-800 last:border-0 pb-2 last:pb-0">
                       <h5 className="font-bold text-slate-800 dark:text-slate-200 text-sm hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors"
                         onClick={() => {
-                          // Optional: Switch view to single project detail if complex, 
-                          // but for now just showing info here is good or expanding.
+                          const parsedProps = parseProjectProperties(leaf.properties);
+                          // Notify parent to open modal DIRECTLY when clicking a list item
+                          if (onProjectClick) {
+                            onProjectClick(parsedProps);
+                          }
+                          // Also update popup to show single item (optional, but maybe better to just close or let modal take over)
                           setPopupInfo({
                             longitude: popupInfo.longitude,
                             latitude: popupInfo.latitude,
-                            project: leaf.properties
-                          })
+                            project: parsedProps
+                          });
                         }}
                       >
                         {leaf.properties.name}
                       </h5>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{leaf.properties.company}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {leaf.properties.company}
+                        {leaf.properties.client && leaf.properties.client !== leaf.properties.company && (
+                          <span className="block text-indigo-500 dark:text-indigo-400">{leaf.properties.client}</span>
+                        )}
+                      </p>
                     </div>
                   ))}
                 </div>

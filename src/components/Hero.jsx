@@ -39,11 +39,29 @@ export default function Hero() {
     const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
+    const scrollToSection = (id, event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        const element = document.getElementById(id);
+        if (element) {
+            // Using scrollIntoView with block: 'start' ensures it snaps to the top
+            // The sections themselves have padding/scroll-margin to handle spacing
+            console.log(`Scrolling to #${id}`);
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            console.warn(`Section #${id} not found in DOM`);
+            // Fallback: multiple checks or querySelector
+            const fallback = document.querySelector(`#${id}`);
+            if (fallback) fallback.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
     const sectionLinks = [
-        { label: "Skills", href: "#skills", accent: "from-indigo-500/90 to-sky-400/90" },
-        { label: "Timeline", href: "#timeline", accent: "from-sky-500/90 to-cyan-400/90" },
-        { label: "Achievements", href: "#achievements", accent: "from-purple-500/90 to-indigo-400/90" },
-        { label: "Projects", href: "#projects", accent: "from-emerald-500/90 to-lime-400/90" }
+        { label: "Skills", id: "skills", accent: "from-indigo-500/90 to-sky-400/90" },
+        { label: "Timeline", id: "timeline", accent: "from-sky-500/90 to-cyan-400/90" },
+        { label: "Achievements", id: "achievements", accent: "from-purple-500/90 to-indigo-400/90" },
+        { label: "Projects", id: "projects", accent: "from-emerald-500/90 to-lime-400/90" }
     ];
 
     return (
@@ -115,12 +133,12 @@ export default function Hero() {
                     className="mt-6 flex flex-wrap justify-center xl:justify-start gap-3"
                 >
                     {sectionLinks.map((section) => (
-                        <motion.a
-                            key={section.href}
-                            href={section.href}
+                        <motion.button
+                            key={section.id}
+                            onClick={(e) => scrollToSection(section.id, e)}
                             whileHover={{ y: -3, scale: 1.02 }}
                             whileTap={{ scale: 0.97 }}
-                            className={`group relative inline-flex items-center gap-2 rounded-full border border-slate-900/10 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-slate-800 dark:text-slate-100 shadow-lg shadow-indigo-500/10 backdrop-blur transition-all duration-300`}
+                            className={`group relative inline-flex items-center gap-2 rounded-full border border-slate-900/10 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-slate-800 dark:text-slate-100 shadow-lg shadow-indigo-500/10 backdrop-blur transition-all duration-300 cursor-pointer`}
                         >
                             <span
                                 className={`absolute inset-0 rounded-full bg-gradient-to-r ${section.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-90`}
@@ -133,7 +151,7 @@ export default function Hero() {
                             <span className="relative z-10 text-slate-500 dark:text-slate-300 transition-transform duration-300 group-hover:translate-x-0.5">
                                 ↗
                             </span>
-                        </motion.a>
+                        </motion.button>
                     ))}
                 </motion.div>
 
@@ -203,7 +221,7 @@ export default function Hero() {
             >
                 <div
                     className="animate-bounce cursor-pointer"
-                    onClick={() => document.querySelector('#timeline')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => scrollToSection('timeline')}
                 >
                     <div className="font-mono text-[10px] tracking-[0.2em] text-slate-500 dark:text-slate-400 uppercase flex flex-col items-center gap-2">
                         Explore
