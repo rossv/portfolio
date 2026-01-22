@@ -1,8 +1,0 @@
-﻿Validating C:\GitRepos\portfolio\src\data\project.json...
-Error: Drury Hotel image does not exist: C:\GitRepos\portfolio\src\assets\projects\drury_hotel.webp
-Error: Smith Creek Landfill - Asset Management image does not exist: C:\GitRepos\portfolio\src\assets\projects\cartegraph_landfill.png
-Warning: Smith Creek Landfill - Asset Management image is not WebP: /src/assets/projects/cartegraph_landfill.png
-
-Validation Complete.
-Errors: 2
-Warnings: 1

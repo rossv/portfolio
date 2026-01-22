@@ -190,32 +190,39 @@ export default function ExperienceMap({ projects = [], className = "", onProject
       <div className="absolute inset-0 border-[8px] border-white/20 dark:border-slate-950/80 z-10 pointer-events-none rounded-2xl"></div>
 
       {/* Decorative Corner "Book Protectors" */}
-      <div className="absolute top-0 left-0 z-20 pointer-events-none -translate-x-px -translate-y-px">
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
-            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
-            strokeWidth="0.5" />
+      {/* Top Left */}
+      <div className="absolute -top-[1px] -left-[1px] z-20 pointer-events-none">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 60 L 0 16 C 0 7.16 7.16 0 16 0 L 60 0 L 0 60 Z"
+            className="fill-slate-100 dark:fill-slate-800 stroke-slate-200 dark:stroke-slate-700"
+            strokeWidth="1" />
         </svg>
       </div>
-      <div className="absolute top-0 right-0 z-20 pointer-events-none rotate-90 translate-x-px -translate-y-px">
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
-            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
-            strokeWidth="0.5" />
+
+      {/* Top Right */}
+      <div className="absolute -top-[1px] -right-[1px] z-20 pointer-events-none rotate-90">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 60 L 0 16 C 0 7.16 7.16 0 16 0 L 60 0 L 0 60 Z"
+            className="fill-slate-100 dark:fill-slate-800 stroke-slate-200 dark:stroke-slate-700"
+            strokeWidth="1" />
         </svg>
       </div>
-      <div className="absolute bottom-0 left-0 z-20 pointer-events-none -rotate-90 -translate-x-px translate-y-px">
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
-            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
-            strokeWidth="0.5" />
+
+      {/* Bottom Left */}
+      <div className="absolute -bottom-[1px] -left-[1px] z-20 pointer-events-none -rotate-90">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 60 L 0 16 C 0 7.16 7.16 0 16 0 L 60 0 L 0 60 Z"
+            className="fill-slate-100 dark:fill-slate-800 stroke-slate-200 dark:stroke-slate-700"
+            strokeWidth="1" />
         </svg>
       </div>
-      <div className="absolute bottom-0 right-0 z-20 pointer-events-none rotate-180 translate-x-px translate-y-px">
-        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
-            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
-            strokeWidth="0.5" />
+
+      {/* Bottom Right */}
+      <div className="absolute -bottom-[1px] -right-[1px] z-20 pointer-events-none rotate-180">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 60 L 0 16 C 0 7.16 7.16 0 16 0 L 60 0 L 0 60 Z"
+            className="fill-slate-100 dark:fill-slate-800 stroke-slate-200 dark:stroke-slate-700"
+            strokeWidth="1" />
         </svg>
       </div>
       <Map

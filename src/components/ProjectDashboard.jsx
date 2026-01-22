@@ -1,7 +1,7 @@
 // ... imports
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import projects from '../data/project.json';
 import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
@@ -426,15 +426,33 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                     <div className="p-4 md:p-6 z-20 bg-transparent transition-all">
                         <div className="max-w-4xl mx-auto space-y-4">
                             {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
-                            <div className="relative group">
-                                <input
-                                    type="text"
-                                    placeholder="Search projects..."
-                                    value={filterText}
-                                    onChange={(e) => setFilterText(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-3 bg-white/20 dark:bg-slate-800/30 border border-white/20 dark:border-slate-700/30 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400 backdrop-blur-sm"
-                                />
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors pointer-events-none z-10" size={20} />
+                            <div className="flex gap-2">
+                                <div className="relative group flex-1">
+                                    <input
+                                        type="text"
+                                        placeholder="Search projects..."
+                                        value={filterText}
+                                        onChange={(e) => setFilterText(e.target.value)}
+                                        className="w-full pl-12 pr-4 py-3 bg-white/20 dark:bg-slate-800/30 border border-white/20 dark:border-slate-700/30 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all shadow-inner text-slate-700 dark:text-slate-200 placeholder:text-slate-500 dark:placeholder:text-slate-400 backdrop-blur-sm"
+                                    />
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors pointer-events-none z-10" size={20} />
+                                </div>
+
+                                <AnimatePresence>
+                                    {(filterText || selectedYears.length > 0 || selectedCompanies.length > 0 || selectedClients.length > 0 || selectedCategories.length > 0 || selectedRoles.length > 0 || selectedTags.length > 0) && (
+                                        <motion.button
+                                            initial={{ width: 0, opacity: 0, scale: 0.8 }}
+                                            animate={{ width: 'auto', opacity: 1, scale: 1 }}
+                                            exit={{ width: 0, opacity: 0, scale: 0.8 }}
+                                            transition={{ duration: 0.2 }}
+                                            onClick={handleReset}
+                                            className="flex items-center gap-2 px-4 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl whitespace-nowrap overflow-hidden transition-colors"
+                                        >
+                                            <X size={18} />
+                                            <span className="font-medium">Clear</span>
+                                        </motion.button>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
                             <ProjectFilters
