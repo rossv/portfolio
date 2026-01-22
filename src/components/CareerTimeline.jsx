@@ -62,7 +62,8 @@ const careerData = [
         highlights: [
             "GIS Manager",
             "IT Coordinator",
-            "Principal Modeler"
+            "Principal Modeler",
+            "Two-time Employee of the Month"
         ],
         color: "#496980"
     },

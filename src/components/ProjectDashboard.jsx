@@ -106,7 +106,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     }, []);
 
     const allClients = useMemo(() =>
-        [...new Set(projects.map(p => p.client))].filter(Boolean).sort(),
+        [...new Set(projects.map(p => p.client_sort || p.client))].filter(Boolean).sort(),
         []);
 
     const allCompanies = useMemo(() =>
@@ -205,7 +205,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 if (!hasOverlap) return false;
             }
 
-            if (selectedClients.length > 0 && !selectedClients.includes(project.client)) {
+            if (selectedClients.length > 0 && !selectedClients.includes(project.client_sort || project.client)) {
                 return false;
             }
 
