@@ -10,7 +10,7 @@ const StatCard = ({ title, children, className = "" }) => (
         animate={{ opacity: 1, y: 0 }}
         className={`bg-white/10 dark:bg-slate-900/20 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-xl p-4 flex flex-col ${className}`}
     >
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">{title}</h4>
+        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">{title}</h4>
         <div className="flex-grow flex items-center justify-center">
             {children}
         </div>
@@ -152,11 +152,11 @@ export default function ProjectStats({ projects }) {
             </StatCard>
 
             <StatCard title="Top Tags">
-                <div className="flex flex-wrap gap-1 justify-center content-center h-full overflow-hidden">
+                <div className="flex flex-wrap gap-1 justify-center content-center">
                     {tagData.map((tag, i) => (
                         <span
                             key={tag.text}
-                            className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-1.5 py-0.5 rounded text-[10px]"
+                            className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded text-xs"
                             style={{ opacity: 1 - (i * 0.05) }}
                         >
                             {tag.text}

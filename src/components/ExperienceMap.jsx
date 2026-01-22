@@ -188,8 +188,39 @@ export default function ExperienceMap({ projects = [], className = "", onProject
   return (
     <div className={`h-[500px] w-full rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 relative group ${className}`}>
       <div className="absolute inset-0 border-[8px] border-white/20 dark:border-slate-950/80 z-10 pointer-events-none rounded-2xl"></div>
+
+      {/* Decorative Corner "Book Protectors" */}
+      <div className="absolute top-0 left-0 z-20 pointer-events-none -translate-x-px -translate-y-px">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
+            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
+            strokeWidth="0.5" />
+        </svg>
+      </div>
+      <div className="absolute top-0 right-0 z-20 pointer-events-none rotate-90 translate-x-px -translate-y-px">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
+            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
+            strokeWidth="0.5" />
+        </svg>
+      </div>
+      <div className="absolute bottom-0 left-0 z-20 pointer-events-none -rotate-90 -translate-x-px translate-y-px">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
+            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
+            strokeWidth="0.5" />
+        </svg>
+      </div>
+      <div className="absolute bottom-0 right-0 z-20 pointer-events-none rotate-180 translate-x-px translate-y-px">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 0 50 L 0 16 C 0 7.16 7.16 0 16 0 L 50 0 L 0 50 Z"
+            className="fill-slate-200 dark:fill-slate-700 stroke-slate-300 dark:stroke-slate-600"
+            strokeWidth="0.5" />
+        </svg>
+      </div>
       <Map
         ref={mapRef}
+        style={{ borderRadius: '1rem', overflow: 'hidden' }}
         initialViewState={{
           longitude: -80,
           latitude: 38,
@@ -278,7 +309,7 @@ export default function ExperienceMap({ projects = [], className = "", onProject
                 </div>
               )}
 
-              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-2 text-center uppercase tracking-wider">Click outside to close</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 text-center uppercase tracking-wider">Click outside to close</p>
             </div>
           </Popup>
         )}

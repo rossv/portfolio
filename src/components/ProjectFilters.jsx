@@ -142,7 +142,7 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
             >
                 <span>{title}</span>
                 {selected.length > 0 && (
-                    <span className="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full min-w-[1.25rem]">
+                    <span className="bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded-full min-w-[1.25rem]">
                         {selected.length}
                     </span>
                 )}
