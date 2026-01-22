@@ -493,8 +493,6 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             </div>
                         )}
 
-                        {/* Footer spacing */}
-                        <div className="h-12"></div>
                     </div>
                 </div>
 
