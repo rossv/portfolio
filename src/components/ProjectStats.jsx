@@ -121,8 +121,8 @@ export default function ProjectStats({ projects }) {
             <StatCard title="By Year">
                 <div className="w-full h-48">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={yearData}>
-                            <XAxis dataKey="name" hide />
+                        <BarChart data={yearData} barCategoryGap={4}>
+                            <XAxis dataKey="name" type="category" hide />
                             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                             <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 4, 4]} />
                         </BarChart>
