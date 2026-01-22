@@ -27,7 +27,7 @@ const careerData = [
             "Plan and manage flow monitoring program comprised of 130 flow monitors.",
             "Collaborate with staff and consultants to build tools under the Office of Applied Technology.",
             "Establish and lead new GIS Community of Practice to promote and implement the latest technology.",
-            "Develop time saving scripting tools and applicationsfor use company-wide.",
+            "Develop time-saving scripting tools and applications for use company-wide.",
             "Supervise, instruct and develop staff."
         ],
         highlights: [
@@ -49,9 +49,9 @@ const careerData = [
         location: "Pittsburgh, PA",
         fullAddress: "5173 Campbell's Run Road, Pittsburgh, PA 15205",
         coords: [-80.15526074663305, 40.44078119201674],
-        description: "Principle engineer for H&H modeling, flow monitoring plans, and GIS systems. Modernized company software and methods for efficiency.",
+        description: "Principal engineer for H&H modeling, flow monitoring plans, and GIS systems. Modernized company software and methods for efficiency.",
         details: [
-            "Principle engineer for developing, updating, and maintaining H&H models.",
+            "Principal engineer for developing, updating, and maintaining H&H models.",
             "Develop flow monitoring plans and perform flow data QA/QC and calibration.",
             "Develop and maintain asset management for clients utilizing latest GIS tools.",
             "Manage all GIS systems and staff.",
@@ -99,7 +99,7 @@ const careerData = [
         coords: [-80.15526074663305, 40.44078119201674],
         description: "Experience in water, wastewater, and stormwater from site-scale to system-wide. NPDES and other permitting for construction.",
         details: [
-            "Provide H&H modeling for muncipal systems to support design and long-term planning and permitting.",
+            "Provide H&H modeling for municipal systems to support design and long-term planning and permitting.",
             "NPDES and other permitting for construction including stormwater and E&S design.",
             "Modernized company software and methods for efficiency and quality.",
             "Automate routine GIS and engineering tasks with Python and other scripting tools."
