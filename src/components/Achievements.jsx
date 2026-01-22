@@ -135,10 +135,11 @@ const presentations = [
         roles: ["Presenter"],
     },
     {
-        title: "Hydrodynamic Models for Restoration",
+        title: "Comparison and analysis of hydrodynamic models for restoration projects: the case of pool-riffle structures",
         conference: "EWRI Congress 2011",
         types: ["Paper", "Presentation"],
         roles: ["Lead Author"],
+        link: "https://ascelibrary.org/doi/abs/10.1061/41173(414)328"
     }
 ];
 
@@ -291,9 +292,22 @@ export default function Achievements() {
                                         {/* Types Icons */}
                                         <div className="flex gap-1">
                                             {item.types.includes("Paper") && (
-                                                <div title="Paper" className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300">
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                                                </div>
+                                                item.link ? (
+                                                    <a
+                                                        href={item.link}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        title="View paper"
+                                                        aria-label={`View paper: ${item.title}`}
+                                                        className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 transition-colors"
+                                                    >
+                                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                    </a>
+                                                ) : (
+                                                    <div title="Paper" className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300">
+                                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                    </div>
+                                                )
                                             )}
                                             {item.types.includes("Presentation") && (
                                                 <div title="Presentation" className="p-1.5 rounded bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-300">
