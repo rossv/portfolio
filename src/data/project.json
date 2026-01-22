@@ -2525,7 +2525,11 @@
             -80.58047339
         ],
         "category": "Hydrologic & Hydraulic Modeling",
-        "tags": [],
+        "tags": [
+            "Hydraulics",
+            "Infraworks",
+            "Visualization"
+        ],
         "description": "Work for ESC Brooke County Power , LLC included 3D Model. Additional tasks included Model changes to work with infraworks on iPad. Key focus areas: Hydraulic Modeling.",
         "title": "Project Consultant",
         "project_role": "",
@@ -2700,7 +2704,13 @@
             42.59
         ],
         "category": "Water Model",
-        "tags": [],
+        "tags": [
+            "Water Distribution",
+            "Calibration",
+            "Pump Station",
+            "Storage Tanks",
+            "QA/QC"
+        ],
         "description": "Supporting water model calibration and design to size a new pump station and ground storage tank to accommodate a new supply connection to Great Lake Water Authority. Oversight of staff and technical QA/QC of model and recommendations.",
         "title": "Professional Engineer",
         "project_role": "QAQC, Modeler",
@@ -2719,7 +2729,11 @@
             41.49
         ],
         "category": "H&H",
-        "tags": [],
+        "tags": [
+            "Calibration",
+            "QA/QC",
+            "Model Review"
+        ],
         "description": "Review of several consultant submitted calibrations as part of ongoing review contract. Tracked and ensured improvements and documentation met District standards",
         "title": "Professional Engineer",
         "project_role": "QAQC",
@@ -2738,7 +2752,11 @@
             40.44
         ],
         "category": "H&H",
-        "tags": [],
+        "tags": [
+            "Hydraulics",
+            "Hydrology",
+            "Model Review"
+        ],
         "description": "Advisor role for ongoing H&H modeling work in the Four Mile Run shed including model review, and sensitivity analysis.",
         "title": "Professional Engineer",
         "project_role": "Advisor, QAQC",
@@ -2757,7 +2775,12 @@
             40.44
         ],
         "category": "H&H, Coding",
-        "tags": [],
+        "tags": [
+            "Python",
+            "Automation",
+            "Data Ingestion",
+            "Analytics"
+        ],
         "description": "Various activities to support the tunnel program including data processing and script development and advisory input.",
         "title": "Professional Engineer",
         "project_role": "Technical Support",
@@ -2776,7 +2799,13 @@
             27.95
         ],
         "category": "GIS",
-        "tags": [],
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Online",
+            "Web GIS",
+            "Web Mapping",
+            "GIS Content"
+        ],
         "description": "Development of mapping and elevation profiles including GIS based data sharing tools.",
         "title": "Professional Engineer",
         "project_role": "GIS",
@@ -2795,7 +2824,12 @@
             -79.9595435
         ],
         "category": "H&H",
-        "tags": [],
+        "tags": [
+            "Hydraulics",
+            "Hydrology",
+            "Model Review",
+            "Data Ingestion"
+        ],
         "description": "Various support for H&H model review and data processing activities.",
         "title": "Professional Engineer",
         "project_role": "Technical Support",
@@ -2814,7 +2848,11 @@
             -82.59387543
         ],
         "category": "Asset Management",
-        "tags": [],
+        "tags": [
+            "InfoAsset Manager",
+            "GIS Content",
+            "Data Consolidation"
+        ],
         "description": "Use of Cartegraph to manage assets for landfill client.",
         "title": "Professional Engineer",
         "project_role": "Technical Support",
