@@ -1,0 +1,367 @@
+[
+    {
+        "name": "GIS Hydrology Intersection Tool",
+        "client": "Civil & Environmental Consultants, Inc.",
+        "company": "Civil & Environmental Consultants",
+        "location": "Rosslyn Farms, PA",
+        "category": "GIS, Coding, Tool Development",
+        "tags": [
+            "ArcGIS Desktop",
+            "Python",
+            "ArcGIS",
+            "Hydrology"
+        ],
+        "description": "Automated the process of determining hydrologic routing landcover areas. The tool is written in Python and can be used within ArcGIS to intersect several layers and produce a table of areas that can be used in hydrologic calculations. This tool can turn several hours or days of work into just a few minutes and it keeps calculations organized and repeatable for frequently changing designs",
+        "title": "Project Consultant",
+        "project_role": "Developer, GIS Specialist",
+        "image": "/src/assets/projects/gis-hydrology-intersection-tool.webp",
+        "start_date": "1/26/2015",
+        "end_date": "1/5/2016",
+        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "coords": [
+            -80.08,
+            40.42
+        ]
+    },
+    {
+        "name": "Emerald on Centre",
+        "client": "Oxford Development Company",
+        "company": "Civil & Environmental Consultants",
+        "location": "Shadyside, PA",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "AutoCAD",
+            "CAD"
+        ],
+        "description": "Coordinating Utilities, Permitting such as Tap-In and Tap-Termination plans, Sewage Facilities Planning Module, and Department of Public Works approval drawings.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/emerald.webp",
+        "start_date": "1/27/2015",
+        "end_date": "12/3/2015",
+        "client_sort": "Oxford Development Company",
+        "coords": [
+            -79.93,
+            40.45
+        ]
+    },
+    {
+        "name": "Contact Search Tool",
+        "client": "Civil & Environmental Consultants, Inc.",
+        "company": "Civil & Environmental Consultants",
+        "location": "Rosslyn Farms, PA",
+        "category": "Tool Development",
+        "tags": [
+            "Excel",
+            "VBA",
+            "Tool Development"
+        ],
+        "description": "Built a live searchable Excel tool to store and surface key utility contacts for development projects.",
+        "title": "Project Consultant",
+        "project_role": "Developer",
+        "image": "/src/assets/projects/contact-search-tool.webp",
+        "start_date": "1/28/2015",
+        "end_date": "12/22/2015",
+        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "coords": [
+            -80.08,
+            40.42
+        ]
+    },
+    {
+        "name": "Abele Business Park",
+        "client": "Burns & Scalo Real Estate Services",
+        "company": "Civil & Environmental Consultants",
+        "location": "Bridgeville, PA",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "Land Development"
+        ],
+        "description": "Work for Burns & Scalo Real Estate Services included abele Business Park. Additional tasks included Discussing grading (task 2). Key focus areas: Land Development.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/abele.webp",
+        "start_date": "2/17/2015",
+        "end_date": "1/27/2016",
+        "client_sort": "Burns & Scalo Real Estate Services",
+        "coords": [
+            40.35358676,
+            -80.12520616
+        ]
+    },
+    {
+        "name": "Rivers Casino Hotel - Site Development",
+        "client": "VOA Associates Incorporated",
+        "company": "Civil & Environmental Consultants",
+        "location": "Pittsburgh, PA",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "Land Development"
+        ],
+        "description": "Work for VOA Associates Incorporated included rivers Casino Hotel - Site Development. Additional tasks included Pre-Development Application. Key focus areas: Land Development.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/rivers_hotel.webp",
+        "start_date": "2/17/2015",
+        "end_date": "9/28/2015",
+        "client_sort": "VOA Associates Incorporated",
+        "coords": [
+            40.44624089,
+            -80.02039011
+        ]
+    },
+    {
+        "name": "The Bible Chapel",
+        "client": "The Bible Chapel",
+        "company": "Civil & Environmental Consultants",
+        "location": "Robinson, PA",
+        "category": "Land Development, Grading, Erosion & Sedimentation Control, Permitting",
+        "tags": [
+            "AutoCAD",
+            "CAD",
+            "Civil 3D"
+        ],
+        "description": "As part of The Bible Chapel 's new worship center project, I assisted in site layout and preliminary grading of the site. I also helped prepare the Land Development submission, coordinated with utility companies, drafted the Highway Occupancy Permits and Sewage Facilities Planning Module.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/the-bible-chapel.webp",
+        "start_date": "4/16/2015",
+        "end_date": "4/15/2016",
+        "client_sort": "The Bible Chapel",
+        "coords": [
+            -80.11,
+            40.45
+        ]
+    },
+    {
+        "name": "Drury Hotel",
+        "client": "Drury Southwest Inc.",
+        "company": "Civil & Environmental Consultants",
+        "location": "Robinson, PA",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "Land Development"
+        ],
+        "description": "Work for Drury Southwest Inc. included drury Hotel. Additional tasks included Splitting Cost estimate into Phases, checking quantities and earthwork, discussing with Dennis. Key focus areas: GIS, Land Development.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/drury_hotel.webp",
+        "start_date": "4/22/2015",
+        "end_date": "1/5/2016",
+        "client_sort": "Drury Southwest Inc.",
+        "coords": [
+            40.43735352,
+            -80.15489432
+        ]
+    },
+    {
+        "name": "The Empire",
+        "client": "Park7 Group",
+        "company": "Civil & Environmental Consultants",
+        "location": "North Oakland, PA",
+        "category": "Land Development, Permitting, Stormwater Design",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "AutoCAD",
+            "CAD",
+            "HydroCAD",
+            "Stormwater"
+        ],
+        "description": "This project for the Park7 Group consisted of civil site work for a new 17-story apartment building. I worked with utility companies, the architect and general contractor to determine site utility connections and prepared a stormwater design to capture runoff. I also helped to prepare various permit submissions and communicated weekly with the design team.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/park7.webp",
+        "start_date": "4/23/2015",
+        "end_date": "4/6/2016",
+        "client_sort": "Park7 Group",
+        "coords": [
+            -79.95,
+            40.44
+        ]
+    },
+    {
+        "name": "Forbes Avenue Apartments",
+        "client": "Campus Advantage",
+        "company": "Civil & Environmental Consultants",
+        "location": "Oakland, PA",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "AutoCAD",
+            "CAD"
+        ],
+        "description": "Coordinating Utilities and Permitting such as Tap-In and Tap-Termination plans.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/forbes-avenue-apartments.webp",
+        "start_date": "5/21/2015",
+        "end_date": "4/12/2016",
+        "client_sort": "Campus Advantage",
+        "coords": [
+            -79.95,
+            40.44
+        ]
+    },
+    {
+        "name": "Hillcrest",
+        "client": "RDL Architects, Inc.",
+        "company": "Civil & Environmental Consultants",
+        "location": "Brentwood, PA",
+        "category": "Land Development",
+        "tags": [
+            "AutoCAD",
+            "CAD",
+            "Civil 3D",
+            "Land Development"
+        ],
+        "description": "Work for RDL Architects, Inc. included hillcrest. Additional tasks included Watching video and drawing alignments.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/hillcrest.webp",
+        "start_date": "9/16/2015",
+        "end_date": "12/10/2015",
+        "client_sort": "RDL Architects, Inc.",
+        "coords": [
+            40.3817432365317,
+            -79.9768441719792
+        ]
+    },
+    {
+        "name": "Power Plant Siting Certificate",
+        "client": "ESC Brooke County Power I, LLC",
+        "company": "Civil & Environmental Consultants",
+        "location": "Folansbee, WV",
+        "category": "Land Development, Permitting",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "AutoCAD",
+            "CAD",
+            "Infraworks",
+            "Microsoft Project"
+        ],
+        "description": "As a team member on a project to prepare a sitting certificate for a new power plant I aggregated GIS data and prepared numerous exhibits to show surrounding impact, helped construct a 3D model of the plant and analyzed viewshed impacts and helped prepare various other exhibits.",
+        "title": "Project Consultant",
+        "project_role": "GIS Specialist, Engineer",
+        "image": "/src/assets/projects/power-plant-siting-certificate.webp",
+        "start_date": "12/15/2015",
+        "end_date": "4/29/2016",
+        "client_sort": "ESC Brooke County Power I, LLC",
+        "coords": [
+            40.33330887,
+            -80.58047339
+        ]
+    },
+    {
+        "name": "CEC Go Development",
+        "client": "Civil & Environmental Consultants, Inc.",
+        "company": "Civil & Environmental Consultants",
+        "location": "Rosslyn Farms, PA",
+        "category": "GIS, Land Development, Tool Development",
+        "tags": [
+            "ArcGIS Desktop",
+            "ArcGIS Online",
+            "Augment",
+            "Infraworks",
+            "SketchUp",
+            "Dashboard",
+            "ArcGIS"
+        ],
+        "description": "Working with a small team, I helped to develop the technical aspects of a new initiative to provide clients with new tools to evaluate sites and concepts. Using available applications, we streamlined providing online GIS maps, evaluated 3D modeling and presentation tools, and conceptualized project Dashboards that will provide one-point access to clients.",
+        "title": "Project Consultant",
+        "project_role": "Developer",
+        "image": "/src/assets/projects/cec-go-development.webp",
+        "start_date": "1/8/2016",
+        "end_date": "4/14/2016",
+        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "coords": [
+            -80.08,
+            40.42
+        ]
+    },
+    {
+        "name": "3D Model",
+        "client": "ESC Brooke County Power I, LLC",
+        "company": "Civil & Environmental Consultants",
+        "location": "Folansbee, WV",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Hydraulics",
+            "Infraworks",
+            "Visualization"
+        ],
+        "description": "Work for ESC Brooke County Power , LLC included 3D Model. Additional tasks included Model changes to work with infraworks on iPad. Key focus areas: Hydraulic Modeling.",
+        "title": "Project Consultant",
+        "project_role": "Visualization Specialist",
+        "image": "/src/assets/projects/3d-model.webp",
+        "start_date": "3/1/2016",
+        "end_date": "4/4/2016",
+        "client_sort": "ESC Brooke County Power I, LLC",
+        "coords": [
+            40.33330887,
+            -80.58047339
+        ]
+    },
+    {
+        "name": "Walworth Condos",
+        "client": "Private Developer",
+        "company": "Civil & Environmental Consultants",
+        "location": "Cincinnati, OH",
+        "category": "Land Development, Visualization",
+        "tags": [
+            "SketchUp",
+            "Visualization",
+            "Permitting"
+        ],
+        "description": "Created SketchUp rendering for condo development plan to ensure client and stakeholders understood view and visual integrations into Cincinnati neighborhood and city skylines sight lines.",
+        "title": "Project Consultant",
+        "project_role": "Visualization Specialist",
+        "image": "/src/assets/projects/walworth-condos.webp",
+        "start_date": "4/8/2016",
+        "end_date": "4/12/2016",
+        "client_sort": "Private Developer",
+        "coords": [
+            -84.51,
+            39.1
+        ]
+    },
+    {
+        "name": "Wilshire Drive Culvert Replacement",
+        "client": "North Huntingdon Township",
+        "company": "KLH Engineers",
+        "location": "North Huntingdon Township",
+        "category": "Erosion & Sedimentation Control, Permitting, Stormwater Design",
+        "tags": [
+            "AutoCAD",
+            "CAD"
+        ],
+        "description": "I completed design and permitting for a small culvert replacement for NHTMA.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/wilshire.webp",
+        "start_date": "8/8/2016",
+        "end_date": "3/27/2017",
+        "client_sort": "North Huntingdon Township",
+        "coords": [
+            -79.73,
+            40.38
+        ]
+    },
+    {
+        "name": "Tree Roots and Shear Stress Investigation",
+        "client": "University of Pittsburgh",
+        "company": "Earth Processes & Environmental Flows Group",
+        "location": "Oakland, PA",
+        "category": "Research, Field Work, Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Geomagic",
+            "LiDAR",
+            "Meshlab",
+            "TecPlot",
+            "Hydraulics"
+        ],
+        "description": "Stream channel development in forested areas is profoundly influenced by large organic debris with enters the stream after erosion during high flow events. While it is well documented that increased density of roots in stream banks can increase the strength of the bank, the hydraulic process that arise from rootwads along stream banks is less well understood. This project sought to better understand the effect on shear stress that complicated flow cross sections present. To study this, LIDAR scanning of streambanks and modeling of flows around rootwads was conducted.",
+        "title": "Graduate Student",
+        "project_role": "Researcher",
+        "image": "/src/assets/projects/tree-roots-and-shear-stress-investigation.gif",
+        "start_date": 

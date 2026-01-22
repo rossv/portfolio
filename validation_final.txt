@@ -1,0 +1,5 @@
+﻿Validating C:\GitRepos\portfolio\src\data\project.json...
+
+Validation Complete.
+Errors: 0
+Warnings: 0

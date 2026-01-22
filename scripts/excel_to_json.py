@@ -1,61 +1,82 @@
 import pandas as pd
 import json
 import os
+import numpy as np
 
 def excel_to_json(excel_path, json_path):
     print(f"Reading {excel_path}...")
-    df = pd.read_excel(excel_path)
-    
-    # Replace NaN with empty string or appropriate defaults
-    df = df.where(pd.notnull(df), "")
+    try:
+        df = pd.read_excel(excel_path)
+    except Exception as e:
+        print(f"Error reading Excel file: {e}")
+        return
+
+    # Replace specific Excel artifacts
+    # Replace NaN with None (which becomes null in JSON) or empty string based on context
+    # For this project, empty strings are generally safer for text fields
+    df = df.replace({np.nan: "", "NaN": "", "nan": ""})
     
     data = df.to_dict(orient='records')
     
     processed_data = []
-    for item in data:
-        # Reconstruct coords
+    for i, item in enumerate(data):
+        # 1. Coordinate Handling
+        coords = []
         if 'longitude' in item and 'latitude' in item:
             try:
-                # Check for empty strings from Excel
-                lon_val = item['longitude']
-                lat_val = item['latitude']
-                
-                if lon_val != "" and lat_val != "":
-                    item['coords'] = [float(lon_val), float(lat_val)]
-                else:
-                    item['coords'] = []
+                lon = item['longitude']
+                lat = item['latitude']
+                # Check if they are numbers and not empty strings
+                if (isinstance(lon, (int, float)) and isinstance(lat, (int, float)) and 
+                    lon != "" and lat != ""):
+                    coords = [float(lon), float(lat)]
             except (ValueError, TypeError):
-                item['coords'] = []
-            
-            # Remove the flat columns
-            if 'longitude' in item: del item['longitude']
-            if 'latitude' in item: del item['latitude']
+                print(f"Warning: Invalid coordinates for item {i}: {item.get('name', 'Unknown')}")
+        item['coords'] = coords
         
-        # Reconstruct tags list
+        # Cleanup temp coordinate fields
+        item.pop('longitude', None)
+        item.pop('latitude', None)
+
+        # 2. Tag Handling
+        tags = []
         if 'tags' in item:
-            if isinstance(item['tags'], str):
-                if item['tags'].strip() == "":
-                    item['tags'] = []
-                else:
-                    item['tags'] = [tag.strip() for tag in item['tags'].split(',') if tag.strip()]
-            elif isinstance(item['tags'], (int, float)):
-                # Handle cases where tags might be interpreted as numbers
-                item['tags'] = [str(item['tags'])]
-            elif item['tags'] == "":
-                item['tags'] = []
-        
-        # Clean up other empty strings if they should be null or something else
-        # For this project, empty strings seem fine for description, end_date, etc.
+            tag_val = item['tags']
+            if isinstance(tag_val, str) and tag_val.strip():
+                # Split by comma, strip whitespace, remove empty strings
+                tags = [t.strip() for t in tag_val.split(',') if t.strip()]
+            elif isinstance(tag_val, (int, float)):
+                tags = [str(tag_val)]
+        item['tags'] = tags
+
+        # 3. Clean other fields
+        # Ensure 'name' exists
+        if not item.get('name'):
+            print(f"Skipping row {i+2} (Excel row) because it has no 'name'.")
+            continue
+
+        # Convert date fields to strings if they got parsed as datetime objects
+        for key, value in item.items():
+             if isinstance(value, (pd.Timestamp, pd.DatetimeIndex)):
+                item[key] = value.strftime('%m/%d/%Y').lstrip("0").replace("/0", "/")
+             elif hasattr(value, 'strftime'): # Generic datetime catch
+                 item[key] = value.strftime('%m/%d/%Y').lstrip("0").replace("/0", "/")
+
         
         processed_data.append(item)
     
+    # 4. Final Validation
+    print(f"Processed {len(processed_data)} items.")
+    
     print(f"Saving to {json_path}...")
-    with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(processed_data, f, indent=4)
-    print("Done!")
+    try:
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(processed_data, f, indent=4)
+        print("Done!")
+    except Exception as e:
+        print(f"Error writing JSON file: {e}")
 
 if __name__ == "__main__":
-    # Usually we'd want to use a specific file name the user provides
     input_excel = 'projects.xlsx' 
     output_json = os.path.join('src', 'data', 'project.json')
     
@@ -63,9 +84,12 @@ if __name__ == "__main__":
         # Backup original
         backup_path = output_json + '.bak'
         import shutil
-        shutil.copy2(output_json, backup_path)
-        print(f"Backup created at {backup_path}")
-        
+        try:
+            shutil.copy2(output_json, backup_path)
+            print(f"Backup created at {backup_path}")
+        except IOError as e:
+             print(f"Warning: Could not create backup: {e}")
+
         excel_to_json(input_excel, output_json)
     else:
         print(f"Error: {input_excel} not found.")
