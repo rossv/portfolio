@@ -30,16 +30,51 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ProjectStats({ projects }) {
+    const extractYear = (dateStr) => {
+        if (!dateStr) return null;
+        const match = dateStr.match(/\b(19|20)\d{2}\b/);
+        return match ? Number(match[0]) : null;
+    };
+
+    const getProjectYears = (project) => {
+        const startYear = extractYear(project.start_date);
+        const endYearFromDate = extractYear(project.end_date);
+
+        if (startYear) {
+            const endYear = endYearFromDate ?? (project.end_date ? null : new Date().getFullYear());
+            if (!endYear) return [startYear];
+            const years = [];
+            for (let year = startYear; year <= endYear; year++) {
+                years.push(year);
+            }
+            return years;
+        }
+
+        const fallbackYears = project.year?.match(/\d{4}/g)?.map(Number);
+        return fallbackYears?.length ? fallbackYears : [];
+    };
+
     // Process Data
     const yearData = Object.entries(
-        projects.reduce((acc, p) => {
-            // Extract year (handle ranges like "2021-Present" or full dates "1/1/2025")
-            const match = p.year ? p.year.match(/\d{4}/) : null;
-            const year = match ? match[0] : 'Unknown';
-            acc[year] = (acc[year] || 0) + 1;
+        projects.reduce((acc, project) => {
+            const years = getProjectYears(project);
+            if (years.length === 0) {
+                acc.Unknown = (acc.Unknown || 0) + 1;
+                return acc;
+            }
+            years.forEach((year) => {
+                const yearKey = String(year);
+                acc[yearKey] = (acc[yearKey] || 0) + 1;
+            });
             return acc;
         }, {})
-    ).map(([name, value]) => ({ name, value })).sort((a, b) => a.name.localeCompare(b.name)); // Sort years asc
+    )
+        .map(([name, value]) => ({ name, value }))
+        .sort((a, b) => {
+            if (a.name === 'Unknown') return 1;
+            if (b.name === 'Unknown') return -1;
+            return Number(a.name) - Number(b.name);
+        }); // Sort years asc, keep Unknown last
 
     const categoryData = Object.entries(
         projects.reduce((acc, p) => {
@@ -87,8 +122,8 @@ export default function ProjectStats({ projects }) {
             <StatCard title="By Year">
                 <div className="w-full h-48">
                     <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={yearData}>
-                            <XAxis dataKey="name" hide />
+                        <BarChart data={yearData} barCategoryGap={4}>
+                            <XAxis dataKey="name" type="category" hide />
                             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
                             <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 4, 4]} />
                         </BarChart>
