@@ -3,7 +3,7 @@ import { Github, Linkedin } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className="relative py-12 overflow-hidden mt-10">
+        <footer className="relative py-12 overflow-hidden">
             {/* Background Image with Overlay */}
             <div className="absolute inset-0 z-0 opacity-10 dark:opacity-5 pointer-events-none mix-blend-multiply dark:mix-blend-overlay">
                 <img src={abstractPaperCut.src} alt="" className="w-full h-full object-cover" />
