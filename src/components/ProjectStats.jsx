@@ -63,8 +63,7 @@ export default function ProjectStats({ projects }) {
                 return acc;
             }
             years.forEach((year) => {
-                const yearKey = String(year);
-                acc[yearKey] = (acc[yearKey] || 0) + 1;
+                acc[year] = (acc[year] || 0) + 1;
             });
             return acc;
         }, {})
