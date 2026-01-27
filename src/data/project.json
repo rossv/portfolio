@@ -2452,7 +2452,7 @@
         "client": "3 Rivers Wet Weather",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
-        "category": "H&H",
+        "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Hydraulics",
             "Hydrology",
@@ -2502,7 +2502,7 @@
         "client": "Northeast Ohio Regional Sewer District",
         "company": "Wade Trim",
         "location": "Cleveland, OH",
-        "category": "H&H",
+        "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Calibration",
             "QA/QC",
@@ -2747,7 +2747,7 @@
         "client": "ALCOSAN",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
-        "category": "H&H, Coding",
+        "category": "Hydrologic & Hydraulic Modeling, Coding",
         "tags": [
             "Python",
             "Automation",
@@ -2771,7 +2771,7 @@
         "client": "Pittsburgh Water",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
-        "category": "H&H",
+        "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Hydraulics",
             "Hydrology",
