@@ -11,6 +11,7 @@ import badgeFooter from '../assets/badges/badge-footer.svg';
 import badgeTime1 from '../assets/badges/badge-time-1.svg';
 import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
+import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 
 // Badges reset on page reload - no localStorage persistence
@@ -98,7 +99,7 @@ const BADGES = [
     id: 'hour-mark',
     name: 'Hour Mark',
     description: 'Spent one hour on the page.',
-    icon: badgeTime15,
+    icon: badgeTime60,
   },
   {
     id: 'space-nerd',
@@ -252,6 +253,7 @@ export default function BadgeCollection() {
   }, [unlockedIds]);
 
   useEffect(() => {
+    // Timers should not reset when other badges are unlocked
     if (typeof window === 'undefined') return undefined;
 
     const timers = [
@@ -259,14 +261,81 @@ export default function BadgeCollection() {
       { id: 'quarter-hour', delay: 15 * 60 * 1000 },
       { id: 'hour-mark', delay: 60 * 60 * 1000 },
     ].map(({ id, delay }) => {
-      if (unlockedIds.has(id)) return null;
+      // We check inside the timeout if it's already done
       return window.setTimeout(() => unlockBadge(id), delay);
     });
 
     return () => {
       timers.forEach((timer) => timer && window.clearTimeout(timer));
     };
-  }, [unlockedIds]);
+  }, []); // Empty dependency array ensures timers persist
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    // Use a more robust approach for the magic lamp - verify element exists or use delegation
+    // Since the element uses standard DOM events, we can try to attach to it, 
+    // but if it's not mounted yet, we might miss it. 
+    // A safe fallback is to use document-level delegation for the start/stop logic 
+    // or a MutationObserver. Given the simplicity, let's use document delegation
+    // which is more React-friendly for "late appearing" content.
+
+    const handlePointerMove = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const portrait = target.closest('[data-badge-target="portrait"]');
+
+      if (portrait) {
+        const rect = portrait.getBoundingClientRect();
+        // Head zone: Top 45% of the image
+        const headZone = rect.top + rect.height * 0.45;
+        const inHeadZone = event.clientY <= headZone &&
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right;
+
+        if (inHeadZone) {
+          if (!isInHeadZoneRef.current) {
+            isInHeadZoneRef.current = true;
+            // Start timer
+            if (!buddaTimerRef.current) {
+              buddaTimerRef.current = window.setTimeout(() => {
+                unlockBadge('magic-lamp');
+                buddaTimerRef.current = null;
+              }, 10000); // 10 seconds
+            }
+          }
+        } else {
+          if (isInHeadZoneRef.current) {
+            isInHeadZoneRef.current = false;
+            if (buddaTimerRef.current) {
+              window.clearTimeout(buddaTimerRef.current);
+              buddaTimerRef.current = null;
+            }
+          }
+        }
+      } else {
+        // Left the element entirely
+        if (isInHeadZoneRef.current) {
+          isInHeadZoneRef.current = false;
+          if (buddaTimerRef.current) {
+            window.clearTimeout(buddaTimerRef.current);
+            buddaTimerRef.current = null;
+          }
+        }
+      }
+    };
+
+    // Optimization: throttling could be added, but browser handles pointermove reasonable well
+    document.addEventListener('pointermove', handlePointerMove);
+
+    return () => {
+      document.removeEventListener('pointermove', handlePointerMove);
+      if (buddaTimerRef.current) {
+        window.clearTimeout(buddaTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -295,57 +364,6 @@ export default function BadgeCollection() {
 
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-  }, [unlockedIds]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-
-    const portrait = document.querySelector('[data-badge-target="portrait"]');
-    if (!portrait) return undefined;
-
-    const startBuddaTimer = () => {
-      if (buddaTimerRef.current) return; // Already running
-      buddaTimerRef.current = window.setTimeout(() => {
-        unlockBadge('magic-lamp');
-        buddaTimerRef.current = null;
-      }, 10000); // 10 seconds
-    };
-
-    const stopBuddaTimer = () => {
-      if (buddaTimerRef.current) {
-        window.clearTimeout(buddaTimerRef.current);
-        buddaTimerRef.current = null;
-      }
-    };
-
-    const handlePointerMove = (event) => {
-      const rect = portrait.getBoundingClientRect();
-      const headZone = rect.top + rect.height * 0.45;
-      const inHeadZone = event.clientY <= headZone &&
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right;
-
-      if (inHeadZone && !isInHeadZoneRef.current) {
-        isInHeadZoneRef.current = true;
-        startBuddaTimer();
-      } else if (!inHeadZone && isInHeadZoneRef.current) {
-        isInHeadZoneRef.current = false;
-        stopBuddaTimer();
-      }
-    };
-
-    const handlePointerLeave = () => {
-      isInHeadZoneRef.current = false;
-      stopBuddaTimer();
-    };
-
-    portrait.addEventListener('pointermove', handlePointerMove);
-    portrait.addEventListener('pointerleave', handlePointerLeave);
-    return () => {
-      portrait.removeEventListener('pointermove', handlePointerMove);
-      portrait.removeEventListener('pointerleave', handlePointerLeave);
-      stopBuddaTimer();
-    };
   }, [unlockedIds]);
 
   const unlockedBadges = BADGES.filter((badge) => unlockedIds.has(badge.id));
