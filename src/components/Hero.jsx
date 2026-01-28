@@ -325,7 +325,7 @@ export default function Hero() {
 
                                     {/* Second Stage */}
                                     <rect x="8" y="42" width="24" height="40" fill="#f0f0f0" stroke="#888" strokeWidth="0.5" />
-                                    <text x="20" y="60" textAnchor="middle" fontSize="6" fill="#1a1a1a" fontWeight="bold">SpaceX</text>
+
 
                                     {/* Interstage 2 */}
                                     <rect x="6" y="82" width="28" height="8" fill="#1a1a1a" />

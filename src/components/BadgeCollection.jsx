@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import badgeSections from '../assets/badges/badge-sections.svg';
 import badgeBubbles from '../assets/badges/badge-bubbles.svg';
-import badgeBudda from '../assets/badges/badge-budda.svg';
+import badgeMagicLamp from '../assets/badges/badge-magic-lamp.svg';
 import badgeProject1 from '../assets/badges/badge-project-1.svg';
 import badgeProject10 from '../assets/badges/badge-project-10.svg';
 import badgeProjectAll from '../assets/badges/badge-project-all.svg';
@@ -41,10 +41,10 @@ const BADGES = [
     icon: badgeBubbles,
   },
   {
-    id: 'budda-badge',
-    name: 'Budda Badge',
-    description: 'Rubbed the portrait head area.',
-    icon: badgeBudda,
+    id: 'magic-lamp',
+    name: 'Magic Lamp',
+    description: "You're granted three wishes!",
+    icon: badgeMagicLamp,
   },
   {
     id: 'project-first-steps',
@@ -306,7 +306,7 @@ export default function BadgeCollection() {
     const startBuddaTimer = () => {
       if (buddaTimerRef.current) return; // Already running
       buddaTimerRef.current = window.setTimeout(() => {
-        unlockBadge('budda-badge');
+        unlockBadge('magic-lamp');
         buddaTimerRef.current = null;
       }, 10000); // 10 seconds
     };
