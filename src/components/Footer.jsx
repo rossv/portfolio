@@ -3,7 +3,7 @@ import { Github, Linkedin } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer className="relative py-12 overflow-hidden">
+        <footer id="footer" className="relative py-12 overflow-hidden">
             {/* Background Image with Overlay */}
             <div className="absolute inset-0 z-0 opacity-10 dark:opacity-5 pointer-events-none mix-blend-multiply dark:mix-blend-overlay">
                 <img src={abstractPaperCut.src} alt="" className="w-full h-full object-cover" />
@@ -21,6 +21,8 @@ export default function Footer() {
                         href="https://stackexchange.com/users/3363150/rossv?tab=accounts"
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-badge-action="footer-link"
+                        data-footer-id="stackexchange"
                         className="text-slate-400 hover:text-[#1E5397] transition-colors duration-300 transform hover:scale-110"
                         aria-label="Stack Exchange"
                     >
@@ -34,6 +36,8 @@ export default function Footer() {
                         href="https://www.linkedin.com/in/rossvolkwein/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-badge-action="footer-link"
+                        data-footer-id="linkedin"
                         className="text-slate-400 hover:text-[#0A66C2] transition-colors duration-300 transform hover:scale-110"
                         aria-label="LinkedIn"
                     >
@@ -44,6 +48,8 @@ export default function Footer() {
                         href="https://github.com/rossv/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-badge-action="footer-link"
+                        data-footer-id="github"
                         className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-300 transform hover:scale-110"
                         aria-label="GitHub"
                     >
@@ -54,6 +60,8 @@ export default function Footer() {
                         href="https://gis-portfolio-volkwein.hub.arcgis.com/"
                         target="_blank"
                         rel="noopener noreferrer"
+                        data-badge-action="footer-link"
+                        data-footer-id="arcgis"
                         className="text-slate-400 hover:text-[#007AC2] transition-colors duration-300 transform hover:scale-110"
                         aria-label="ArcGIS Portfolio"
                     >

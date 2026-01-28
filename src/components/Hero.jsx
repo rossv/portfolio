@@ -216,7 +216,10 @@ export default function Hero() {
                     <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden xl:block opacity-50"></div>
                     <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden xl:block opacity-50"></div>
 
-                    <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group">
+                    <div
+                        className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group"
+                        data-badge-target="portrait"
+                    >
                         <img
                             src={portrait.src}
                             alt="Ross Volkwein"

@@ -347,14 +347,24 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         setSelectedProject(null);
     };
 
+    const dispatchProjectOpen = (project) => {
+        if (typeof window !== 'undefined' && project?.name) {
+            window.dispatchEvent(
+                new CustomEvent('project-open', { detail: { id: project.name, total: projects.length } })
+            );
+        }
+    };
+
     const handleCardClick = (project, event) => {
         lastFocusedElementRef.current = event.currentTarget;
         setSelectedProject(project);
+        dispatchProjectOpen(project);
     };
 
     const handleMapProjectClick = (project) => {
         // 1. Set the project as selected (opens modal)
         setSelectedProject(project);
+        dispatchProjectOpen(project);
 
         // 2. Ideally scroll to it in the grid as well? 
         // For now, opening the modal is the best "link". 

@@ -297,6 +297,7 @@ export default function Achievements() {
                                                         href={item.link}
                                                         target="_blank"
                                                         rel="noreferrer"
+                                                        data-badge-action="journal-link"
                                                         title="View paper"
                                                         aria-label={`View paper: ${item.title}`}
                                                         className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 transition-colors"
