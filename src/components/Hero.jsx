@@ -124,17 +124,7 @@ export default function Hero() {
                     Delivering technical solutions driven by emerging technologies. <br />
                     Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
                     <span className="text-xs md:text-sm opacity-75 mt-2 block">
-                        Technologist • Geospatial &{' '}
-                        <button
-                            type="button"
-                            data-badge-action="space-nerd"
-                            className="inline-flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-300 underline decoration-dotted underline-offset-4 hover:text-indigo-500"
-                            aria-label="Space Nerd more"
-                        >
-                            Space Nerd
-                            <span className="text-[10px] uppercase tracking-[0.2em]">More</span>
-                        </button>{' '}
-                        • Pittsburgh
+                        Technologist • Geospatial & Space Nerd • Pittsburgh
                     </span>
                 </motion.p>
 

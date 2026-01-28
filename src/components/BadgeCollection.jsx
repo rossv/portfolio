@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import badgeSections from '../assets/badges/badge-sections.svg';
 import badgeBubbles from '../assets/badges/badge-bubbles.svg';
 import badgeBudda from '../assets/badges/badge-budda.svg';
-import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import badgeProject10 from '../assets/badges/badge-project-10.svg';
 import badgeProjectAll from '../assets/badges/badge-project-all.svg';
 import badgeJournal from '../assets/badges/badge-journal.svg';
@@ -32,12 +31,6 @@ const BADGES = [
     name: 'Budda Badge',
     description: 'Rubbed the portrait head area.',
     icon: badgeBudda,
-  },
-  {
-    id: 'space-nerd-more',
-    name: 'Space Nerd More',
-    description: 'Found the Space Nerd more button.',
-    icon: badgeSpaceNerd,
   },
   {
     id: 'project-explorer',
@@ -239,9 +232,6 @@ export default function BadgeCollection() {
       if (!actionEl) return;
 
       const action = actionEl.getAttribute('data-badge-action');
-      if (action === 'space-nerd') {
-        unlockBadge('space-nerd-more');
-      }
       if (action === 'journal-link') {
         unlockBadge('journal-reader');
       }
