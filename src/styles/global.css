@@ -45,7 +45,7 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
 
 @layer utilities {
   .badge-chip {
-    @apply flex items-center gap-3 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700/80 shadow-lg px-3 py-2 backdrop-blur;
+    @apply flex items-center gap-2 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700/80 shadow-lg px-2.5 py-1.5 backdrop-blur;
   }
 
   .badge-pop {
@@ -53,7 +53,7 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
   }
 
   .badge-collapsed {
-    @apply px-2 py-1.5 cursor-pointer transition-all duration-300;
+    @apply px-1.5 py-1 cursor-pointer transition-all duration-300;
   }
 
   .badge-collapsed:hover {
@@ -117,10 +117,12 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     transform: translateY(-6px) scale(0.85);
     opacity: 0;
   }
+
   60% {
     transform: translateY(0) scale(1.05);
     opacity: 1;
   }
+
   100% {
     transform: translateY(0) scale(1);
     opacity: 1;

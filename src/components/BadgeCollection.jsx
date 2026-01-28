@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import badgeSections from '../assets/badges/badge-sections.svg';
 import badgeBubbles from '../assets/badges/badge-bubbles.svg';
 import badgeBudda from '../assets/badges/badge-budda.svg';
+import badgeProject1 from '../assets/badges/badge-project-1.svg';
 import badgeProject10 from '../assets/badges/badge-project-10.svg';
 import badgeProjectAll from '../assets/badges/badge-project-all.svg';
 import badgeJournal from '../assets/badges/badge-journal.svg';
@@ -10,6 +11,7 @@ import badgeFooter from '../assets/badges/badge-footer.svg';
 import badgeTime1 from '../assets/badges/badge-time-1.svg';
 import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
+import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 
 // Badges reset on page reload - no localStorage persistence
 
@@ -43,6 +45,12 @@ const BADGES = [
     name: 'Budda Badge',
     description: 'Rubbed the portrait head area.',
     icon: badgeBudda,
+  },
+  {
+    id: 'project-first-steps',
+    name: 'First Steps',
+    description: 'Opened your first project card.',
+    icon: badgeProject1,
   },
   {
     id: 'project-explorer',
@@ -92,6 +100,12 @@ const BADGES = [
     description: 'Spent one hour on the page.',
     icon: badgeTime15,
   },
+  {
+    id: 'space-nerd',
+    name: 'Space Nerd',
+    description: 'Entered space nerd mode.',
+    icon: badgeSpaceNerd,
+  },
 ];
 
 const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer'];
@@ -100,13 +114,14 @@ export default function BadgeCollection() {
   const [unlocked, setUnlocked] = useState(new Set());
   const [dismissed, setDismissed] = useState(new Set());
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
+  const [hoveredBadge, setHoveredBadge] = useState(null);
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
   const jobReadsRef = useRef(new Set());
   const footerClicksRef = useRef(new Set());
   const visitedSectionsRef = useRef(new Set());
-  const rubCountRef = useRef(0);
-  const rubTimeoutRef = useRef(null);
+  const buddaTimerRef = useRef(null);
+  const isInHeadZoneRef = useRef(false);
 
   // No localStorage loading - badges reset on page reload
 
@@ -147,7 +162,7 @@ export default function BadgeCollection() {
       });
       // Auto-dismiss after animation completes
       dismissBadge(id);
-    }, 1600);
+    }, 5000);
   };
 
   useEffect(() => {
@@ -171,6 +186,9 @@ export default function BadgeCollection() {
       const total = event.detail?.total;
       if (!id) return;
       projectReadsRef.current.add(id);
+      if (projectReadsRef.current.size >= 1) {
+        unlockBadge('project-first-steps');
+      }
       if (projectReadsRef.current.size >= 10) {
         unlockBadge('project-explorer');
       }
@@ -189,14 +207,22 @@ export default function BadgeCollection() {
       }
     };
 
+    const handleSpaceNerdToggle = (event) => {
+      if (event.detail?.enabled) {
+        unlockBadge('space-nerd');
+      }
+    };
+
     window.addEventListener('bubble-collect', handleBubbleCollect);
     window.addEventListener('project-open', handleProjectOpen);
     window.addEventListener('job-open', handleJobOpen);
+    window.addEventListener('space-nerd-toggle', handleSpaceNerdToggle);
 
     return () => {
       window.removeEventListener('bubble-collect', handleBubbleCollect);
       window.removeEventListener('project-open', handleProjectOpen);
       window.removeEventListener('job-open', handleJobOpen);
+      window.removeEventListener('space-nerd-toggle', handleSpaceNerdToggle);
     };
   }, [unlockedIds]);
 
@@ -277,30 +303,48 @@ export default function BadgeCollection() {
     const portrait = document.querySelector('[data-badge-target="portrait"]');
     if (!portrait) return undefined;
 
+    const startBuddaTimer = () => {
+      if (buddaTimerRef.current) return; // Already running
+      buddaTimerRef.current = window.setTimeout(() => {
+        unlockBadge('budda-badge');
+        buddaTimerRef.current = null;
+      }, 10000); // 10 seconds
+    };
+
+    const stopBuddaTimer = () => {
+      if (buddaTimerRef.current) {
+        window.clearTimeout(buddaTimerRef.current);
+        buddaTimerRef.current = null;
+      }
+    };
+
     const handlePointerMove = (event) => {
       const rect = portrait.getBoundingClientRect();
       const headZone = rect.top + rect.height * 0.45;
-      if (event.clientY > headZone || event.clientX < rect.left || event.clientX > rect.right) {
-        return;
-      }
+      const inHeadZone = event.clientY <= headZone &&
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right;
 
-      rubCountRef.current += 1;
-      if (rubCountRef.current >= 35) {
-        unlockBadge('budda-badge');
+      if (inHeadZone && !isInHeadZoneRef.current) {
+        isInHeadZoneRef.current = true;
+        startBuddaTimer();
+      } else if (!inHeadZone && isInHeadZoneRef.current) {
+        isInHeadZoneRef.current = false;
+        stopBuddaTimer();
       }
+    };
 
-      if (rubTimeoutRef.current) {
-        window.clearTimeout(rubTimeoutRef.current);
-      }
-      rubTimeoutRef.current = window.setTimeout(() => {
-        rubCountRef.current = 0;
-      }, 1500);
+    const handlePointerLeave = () => {
+      isInHeadZoneRef.current = false;
+      stopBuddaTimer();
     };
 
     portrait.addEventListener('pointermove', handlePointerMove);
+    portrait.addEventListener('pointerleave', handlePointerLeave);
     return () => {
       portrait.removeEventListener('pointermove', handlePointerMove);
-      if (rubTimeoutRef.current) window.clearTimeout(rubTimeoutRef.current);
+      portrait.removeEventListener('pointerleave', handlePointerLeave);
+      stopBuddaTimer();
     };
   }, [unlockedIds]);
 
@@ -315,15 +359,17 @@ export default function BadgeCollection() {
       {unlockedBadges.map((badge) => {
         const isDismissed = dismissed.has(badge.id);
         const isRecent = recentlyUnlocked.has(badge.id);
+        const isHovered = hoveredBadge === badge.id;
 
         return (
           <div
             key={badge.id}
-            className={`badge-chip ${isRecent ? 'badge-pop' : ''} ${isDismissed ? 'badge-collapsed' : ''}`}
-            title={`${badge.name} — ${badge.description}`}
+            className={`badge-chip ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
+            onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
+            onMouseLeave={() => setHoveredBadge(null)}
           >
-            <img src={badge.icon.src || badge.icon} alt="" className={isDismissed ? "h-8 w-8" : "h-10 w-10"} />
-            {!isDismissed && (
+            <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-6 w-6" : "h-8 w-8"} />
+            {(!isDismissed || isHovered) && (
               <div className="text-right">
                 <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
                 <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
