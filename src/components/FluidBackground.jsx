@@ -1,11 +1,25 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function FluidBackground() {
     const canvasRef = useRef(null);
     const mouseRef = useRef({ x: -1000, y: -1000 });
+    const [isStarfield, setIsStarfield] = useState(false);
 
     const scrollRef = useRef(0);
     const lastScrollRef = useRef(0);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('spaceNerdMode') === 'stars';
+        setIsStarfield(stored);
+        document.documentElement.dataset.spaceNerd = stored ? 'stars' : 'water';
+
+        const handleToggle = (event) => {
+            const nextState = event.detail?.enabled ?? false;
+            setIsStarfield(nextState);
+        };
+        window.addEventListener('space-nerd-toggle', handleToggle);
+        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
+    }, []);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -20,7 +34,7 @@ export default function FluidBackground() {
         canvas.height = height;
 
         const particles = [];
-        const particleCount = 120; // Increased density slightly
+        const particleCount = isStarfield ? 200 : 120;
 
         // Water-themed palette (Cyan, Sky, Blue, Teal)
         const colors = [
@@ -28,6 +42,13 @@ export default function FluidBackground() {
             'rgba(59, 130, 246, ', // blue-500
             'rgba(14, 165, 233, ', // sky-500
             'rgba(20, 184, 166, '  // teal-500
+        ];
+
+        const starColors = [
+            'rgba(255, 255, 255, ',
+            'rgba(191, 219, 254, ',
+            'rgba(165, 243, 252, ',
+            'rgba(196, 181, 253, '
         ];
 
         class Particle {
@@ -107,18 +128,71 @@ export default function FluidBackground() {
                     this.x = Math.random() * width;
                 }
             }
+        }
+
+        class Star {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : -20;
+                this.radius = Math.random() * 1.8 + 0.4;
+                this.speed = Math.random() * 0.6 + 0.2;
+                this.alpha = Math.random() * 0.5 + 0.4;
+                this.twinkle = Math.random() * 0.015 + 0.005;
+                this.color = starColors[Math.floor(Math.random() * starColors.length)];
+                this.depth = Math.random() * 0.8 + 0.2;
+            }
+
+            update(mouseX, mouseY, scrollDelta) {
+                this.y += this.speed + scrollDelta * 0.15 * this.depth;
+                if (this.y > height + 30) {
+                    this.reset();
+                }
+
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const influence = Math.max(0, 160 - distance) / 160;
+                this.x += (dx / 200) * influence * this.depth;
+
+                this.alpha += this.twinkle;
+                if (this.alpha > 1 || this.alpha < 0.2) {
+                    this.twinkle *= -1;
+                }
+            }
 
             draw() {
+                const glow = this.radius * 6;
+                const gradient = ctx.createRadialGradient(
+                    this.x,
+                    this.y,
+                    0,
+                    this.x,
+                    this.y,
+                    glow
+                );
+                gradient.addColorStop(0, `${this.color}${this.alpha})`);
+                gradient.addColorStop(1, `${this.color}0)`);
+                ctx.fillStyle = gradient;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.arc(this.x, this.y, glow, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `${this.color}${this.alpha})`;
                 ctx.fill();
             }
         }
 
+        const ParticleType = isStarfield ? Star : Particle;
+
         // Initialize particles
         for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
+            particles.push(new ParticleType());
         }
 
         // Scroll handling
@@ -134,34 +208,41 @@ export default function FluidBackground() {
 
             ctx.clearRect(0, 0, width, height);
 
-            particles.forEach(p => {
-                p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
+            if (isStarfield) {
+                particles.forEach(p => {
+                    p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
+                    p.draw();
+                });
+            } else {
+                particles.forEach(p => {
+                    p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
 
-                // Fade out particles near the top (approaching water surface)
-                // key change: The 'surface' effectively moves up as we scroll down
-                // At scroll 0, surface is at ~450px.
-                // At scroll 450, surface is at 0px (top of screen).
-                const surfaceY = 450 - currentScroll;
+                    // Fade out particles near the top (approaching water surface)
+                    // key change: The 'surface' effectively moves up as we scroll down
+                    // At scroll 0, surface is at ~450px.
+                    // At scroll 450, surface is at 0px (top of screen).
+                    const surfaceY = 450 - currentScroll;
 
-                // Bubbles fully disappear above surfaceY
-                const fadeZone = 400; // Distance over which they fade out
+                    // Bubbles fully disappear above surfaceY
+                    const fadeZone = 400; // Distance over which they fade out
 
-                let fadeFactor = 0;
-                // Only visible below surfaceY
-                if (p.y > surfaceY) {
-                    fadeFactor = Math.min(1, (p.y - surfaceY) / fadeZone);
-                }
+                    let fadeFactor = 0;
+                    // Only visible below surfaceY
+                    if (p.y > surfaceY) {
+                        fadeFactor = Math.min(1, (p.y - surfaceY) / fadeZone);
+                    }
 
-                // Transient alpha for drawing only
-                const drawAlpha = p.alpha * fadeFactor;
+                    // Transient alpha for drawing only
+                    const drawAlpha = p.alpha * fadeFactor;
 
-                if (drawAlpha > 0.01) {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color + drawAlpha + ')';
-                    ctx.fill();
-                }
-            });
+                    if (drawAlpha > 0.01) {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color + drawAlpha + ')';
+                        ctx.fill();
+                    }
+                });
+            }
 
             animationFrameId = requestAnimationFrame(render);
         };
@@ -202,7 +283,7 @@ export default function FluidBackground() {
             window.removeEventListener('touchmove', handleTouchMove);
             cancelAnimationFrame(animationFrameId);
         };
-    }, []);
+    }, [isStarfield]);
 
     return (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-canvas dark:bg-slate-950 transition-colors duration-300">

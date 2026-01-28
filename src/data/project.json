@@ -11,7 +11,7 @@
             "ArcGIS",
             "Hydrology"
         ],
-        "description": "Automated the process of determining hydrologic routing landcover areas. The tool is written in Python and can be used within ArcGIS to intersect several layers and produce a table of areas that can be used in hydrologic calculations. This tool can turn several hours or days of work into just a few minutes and it keeps calculations organized and repeatable for frequently changing designs",
+        "description": "Automated the process of determining hydrologic routing land-cover areas. The tool is written in Python and can be used within ArcGIS to intersect several layers and produce a table of areas for hydrologic calculations. It can turn several hours or days of work into just a few minutes, keeping calculations organized and repeatable for frequently changing designs.",
         "title": "Project Consultant",
         "project_role": "Developer, GIS Specialist",
         "image": "/src/assets/projects/gis-hydrology-intersection-tool.webp",
@@ -33,7 +33,7 @@
             "AutoCAD",
             "CAD"
         ],
-        "description": "Coordinating Utilities, Permitting such as Tap-In and Tap-Termination plans, Sewage Facilities Planning Module, and Department of Public Works approval drawings.",
+        "description": "Coordinated utilities and permitting tasks such as Tap-In and Tap-Termination plans, the Sewage Facilities Planning Module, and Department of Public Works approval drawings.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "/src/assets/projects/emerald.webp",
@@ -77,7 +77,7 @@
         "tags": [
             "Land Development"
         ],
-        "description": "Work for Burns & Scalo Real Estate Services included abele Business Park. Additional tasks included Discussing grading (task 2). Key focus areas: Land Development.",
+        "description": "Supported Burns & Scalo Real Estate Services on the Abele Business Park project, including grading discussions and land-development coordination.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "/src/assets/projects/abele.webp",
@@ -98,7 +98,7 @@
         "tags": [
             "Land Development"
         ],
-        "description": "Work for VOA Associates Incorporated included rivers Casino Hotel - Site Development. Additional tasks included Pre-Development Application. Key focus areas: Land Development.",
+        "description": "Supported VOA Associates Incorporated on the Rivers Casino Hotel site development, including the pre-development application. Key focus areas: Land Development.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "/src/assets/projects/rivers_hotel.webp",
@@ -121,7 +121,7 @@
             "CAD",
             "Civil 3D"
         ],
-        "description": "As part of The Bible Chapel 's new worship center project, I assisted in site layout and preliminary grading of the site. I also helped prepare the Land Development submission, coordinated with utility companies, drafted the Highway Occupancy Permits and Sewage Facilities Planning Module.",
+        "description": "As part of The Bible Chapel's new worship center project, I assisted with site layout and preliminary grading. I also helped prepare the land development submission, coordinated with utility companies, and drafted the Highway Occupancy Permits and Sewage Facilities Planning Module.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "/src/assets/projects/the-bible-chapel.webp",
@@ -142,7 +142,7 @@
         "tags": [
             "Land Development"
         ],
-        "description": "Work for Drury Southwest Inc. included drury Hotel. Additional tasks included Splitting Cost estimate into Phases, checking quantities and earthwork, discussing with Dennis. Key focus areas: GIS, Land Development.",
+        "description": "Supported Drury Southwest Inc. on the Drury Hotel project, including cost-estimate phasing, quantity and earthwork checks, and coordination discussions. Key focus areas: GIS, Land Development.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "",
@@ -214,7 +214,7 @@
             "Civil 3D",
             "Land Development"
         ],
-        "description": "Work for RDL Architects, Inc. included hillcrest. Additional tasks included Watching video and drawing alignments.",
+        "description": "Supported RDL Architects, Inc. on the Hillcrest project, including reviewing reference videos and drafting alignments.",
         "title": "Project Consultant",
         "project_role": "Engineer",
         "image": "/src/assets/projects/hillcrest.webp",
@@ -240,7 +240,7 @@
             "Infraworks",
             "Microsoft Project"
         ],
-        "description": "As a team member on a project to prepare a sitting certificate for a new power plant I aggregated GIS data and prepared numerous exhibits to show surrounding impact, helped construct a 3D model of the plant and analyzed viewshed impacts and helped prepare various other exhibits.",
+        "description": "As a team member on a project to prepare a siting certificate for a new power plant, I aggregated GIS data and prepared exhibits showing surrounding impacts, helped construct a 3D model of the plant, and analyzed viewshed impacts.",
         "title": "Project Consultant",
         "project_role": "GIS Specialist, Engineer",
         "image": "/src/assets/projects/power-plant-siting-certificate.webp",
@@ -290,7 +290,7 @@
             "Infraworks",
             "Visualization"
         ],
-        "description": "Work for ESC Brooke County Power , LLC included 3D Model. Additional tasks included Model changes to work with infraworks on iPad. Key focus areas: Hydraulic Modeling.",
+        "description": "Supported ESC Brooke County Power, LLC with a 3D model, including updates to work with InfraWorks on iPad. Key focus areas: Hydraulic Modeling.",
         "title": "Project Consultant",
         "project_role": "Visualization Specialist",
         "image": "/src/assets/projects/3d-model.webp",
@@ -360,7 +360,7 @@
             "TecPlot",
             "Hydraulics"
         ],
-        "description": "Stream channel development in forested areas is profoundly influenced by large organic debris with enters the stream after erosion during high flow events. While it is well documented that increased density of roots in stream banks can increase the strength of the bank, the hydraulic process that arise from rootwads along stream banks is less well understood. This project sought to better understand the effect on shear stress that complicated flow cross sections present. To study this, LIDAR scanning of streambanks and modeling of flows around rootwads was conducted.",
+        "description": "Stream channel development in forested areas is profoundly influenced by large organic debris that enters the stream after erosion during high-flow events. While it is well documented that increased root density in streambanks can increase bank strength, the hydraulic processes that arise from rootwads along streambanks are less well understood. This project sought to better understand the effect on shear stress that complex flow cross-sections present. To study this, LiDAR scanning of streambanks and modeling of flows around rootwads was conducted.",
         "title": "Graduate Student",
         "project_role": "Researcher",
         "image": "/src/assets/projects/tree-roots-and-shear-stress-investigation.webp",
@@ -384,7 +384,7 @@
             "SketchUp",
             "Vectrino"
         ],
-        "description": "Planned and coordinated a new Environmental Fluid Mechanics Laboratory that included four large flumes and several small exhibits. I worked with several other members of the research group to rehabilitate an old flume that was previously in storage. We also worked on building an intermediate sized flume and planned and constructed a small flume including channel design, plumbing, pump selection,electrical coordination, and a sediment collection system.",
+        "description": "Planned and coordinated a new Environmental Fluid Mechanics Laboratory that included four large flumes and several small exhibits. I worked with several other members of the research group to rehabilitate an old flume that was previously in storage. We also built an intermediate-sized flume and planned and constructed a small flume, including channel design, plumbing, pump selection, electrical coordination, and a sediment collection system.",
         "title": "Research Assistant",
         "project_role": "Researcher, Lab Manager, Builder",
         "image": "/src/assets/projects/environmental-fluid-mechanics-laboratory.webp",
@@ -407,7 +407,7 @@
             "SketchUp",
             "Hydraulics"
         ],
-        "description": "The Tipon channels in Peru demonstrate an understanding of hydraulic principles by the Inca civilization. Irrigation channels were built to convey water down steep gradients without allowing flows to transition from supercritical to subcritical flow. When that transition occurs, hydraulic jumps can be found. Understanding and managing this transition can reduce hydraulic jumps and reduce damage to your channel. As part of a group, I helped to build a computer model of a channel that achieved the same effect and then I planned and built a flume that let us compare the effect of energy dissipation from different surface roughnesses.",
+        "description": "The Tipon channels in Peru demonstrate an understanding of hydraulic principles by the Inca civilization. Irrigation channels were built to convey water down steep gradients without allowing flows to transition from supercritical to subcritical flow. When that transition occurs, hydraulic jumps can form. Understanding and managing this transition can reduce hydraulic jumps and channel damage. As part of a group, I helped build a computer model of a channel that achieved the same effect and then planned and built a flume to compare energy dissipation from different surface roughnesses.",
         "title": "Graduate Student",
         "project_role": "Graduate Student, Resercher, Builder",
         "image": "/src/assets/projects/tipon-channel-physical-model.webp",
@@ -602,7 +602,7 @@
             "InfoSWMM",
             "SWMM"
         ],
-        "description": "H&H modeling of the McKeesport Long Run sewershed and pump station to respond to PADEP reuests. Calibration based on flow monitoring and complete model geometry updates.",
+        "description": "H&H modeling of the McKeesport Long Run sewershed and pump station to respond to PADEP requests. Calibration based on flow monitoring and complete model geometry updates.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/mckeesport-combined-sewer-systems-hydraulic-modeling.webp",
@@ -630,7 +630,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "H&H modeling of the McKeesport, Dravosburg, Duquesne Combined sewer systems utilizing flow monitor data and provided GIS database. Model was developed in InfoWorks ICM. Worked on but did not complete project due to change in job.",
+        "description": "H&H modeling of the McKeesport, Dravosburg, and Duquesne combined sewer systems using flow monitor data and the provided GIS database. The model was developed in InfoWorks ICM. Worked on the project but did not complete it due to a job change.",
         "title": "Senior Project Engineer",
         "project_role": "Lead Modeler",
         "image": "/src/assets/projects/mckeesport-combined-sewer-systems-hydraulic-modeling.webp",
@@ -660,7 +660,7 @@
             "SWMM",
             "ArcGIS"
         ],
-        "description": "The City of McKeesport Municipal Authority acquired the treatment systems for Duquesne and Dravosburg. In order to complete a Long Term Control Plan for each system and an Act 537 report, KLH had to show that the system was capable of conveying all flows to treatment including 350% of peak dry flow. In addition, a H&H model was needed to evaluate future plans for the two systems. Without high quality data, I coordinated a survey of the existing conveyance systems including field work to verify specific details. Using this data I build a GIS and used it to build an H&H model for each system. I then evaluated each system to determine compliance with the requirements.",
+        "description": "The City of McKeesport Municipal Authority acquired the treatment systems for Duquesne and Dravosburg. In order to complete a Long Term Control Plan for each system and an Act 537 report, KLH had to show that the system was capable of conveying all flows to treatment including 350% of peak dry flow. In addition, an H&H model was needed to evaluate future plans for the two systems. Without high-quality data, I coordinated a survey of the existing conveyance systems, including field work to verify specific details. Using this data, I built a GIS and used it to build an H&H model for each system. I then evaluated each system to determine compliance with the requirements.",
         "title": "Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/duquesne-and-dravosburg-hydraulic-models.webp",
@@ -747,7 +747,7 @@
             "InfoWater Pro",
             "LTS"
         ],
-        "description": "Support with GIS and water modeling torubleshooting to support EWW master planning.",
+        "description": "Provided GIS and water modeling troubleshooting to support EWW master planning.",
         "title": "Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/erie-water-works-master-plan-exhibits.webp",
@@ -772,7 +772,7 @@
             "Hydraulics",
             "Water Distribution"
         ],
-        "description": "Following the acquisition of Millcreek Township Water Authority, I oversaw the completion of an update and expansion of the InfoWater model. This involved adding 9 pump stations and 5 water tanks across several new pressure districts. The new model was calibrated, and model results were provided in support of a revised Master Plan.; resolved data challenges and stabilized the model for use in master planning",
+        "description": "Following the acquisition of Millcreek Township Water Authority, I oversaw the completion of an update and expansion of the InfoWater model. This involved adding nine pump stations and five water tanks across several new pressure districts. The new model was calibrated, and results supported a revised Master Plan. I resolved data challenges and stabilized the model for use in master planning.",
         "title": "Senior Project Engineer",
         "project_role": "Task Lead",
         "image": "/src/assets/projects/erie_water_works_master_plan.webp",
@@ -879,7 +879,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "The Moon Township Municipal Authority was experiencing flooding near one of its pump stations where the flows were not being conveyed to the pump station. I coordinated flow monitoring around the pump station and created an H&H model to identify the problem areas in the system and make recommendations in order to convey storm flows to the pump station without overflows. Performed on-site flow monitoring siting to address pump station flooding in a complex sewer system; sited six monitors, iterated locations as data arrived, and provided QA/QC to support pump station upgrade analysis; supported SWMM modeling to evaluate flood-alleviation alternatives",
+        "description": "The Moon Township Municipal Authority was experiencing flooding near one of its pump stations where flows were not being conveyed. I coordinated flow monitoring around the pump station and created an H&H model to identify problem areas and recommend ways to convey storm flows without overflows. I also performed on-site flow monitoring siting, placed six monitors, iterated locations as data arrived, and provided QA/QC to support pump station upgrade analysis and SWMM modeling of flood-alleviation alternatives.",
         "title": "Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/frey-pump-station-investigation.webp",
@@ -950,7 +950,7 @@
         "tags": [
             "Pumps/Storage"
         ],
-        "description": "Work for Rostraver Township Sewage Authority included Rostraver Zoning Map. Additional tasks included Updating pump stations in GIS, adding search. Incorporating as-builts into GIS. Key focus areas: GIS, Pumps/Storage.",
+        "description": "Updated pump station data in GIS, added search tools, and incorporated as-builts into the Rostraver zoning map. Key focus areas: GIS, Pumps/Storage.",
         "title": "Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/rostraver_gis.webp",
@@ -1070,7 +1070,7 @@
         "tags": [
             "Excel"
         ],
-        "description": "As part of a NPDES permit, Carnegie is required to complete a Discharge Monitoring Reports (DMR) to report overflows from an outfall in their system. Instead of installing a permanent flow meter, we installed a temporary flow meter and a rainmeter for several months of data collection. Using this data I built a multiple linear regression model to predict overflow volumes based on rainfall from public rain stations. The model was implemented into an Excel spreadsheet to allow rainfall data to be easily enters and predicted volumes calculated.",
+        "description": "As part of an NPDES permit, Carnegie is required to complete Discharge Monitoring Reports (DMRs) to report overflows from an outfall in their system. Instead of installing a permanent flow meter, we installed a temporary flow meter and a rain gauge for several months of data collection. Using this data, I built a multiple linear regression model to predict overflow volumes based on rainfall from public rain stations. The model was implemented in an Excel spreadsheet to allow rainfall data to be easily entered and predicted volumes calculated.",
         "title": "Project Engineer",
         "project_role": "Engineer, Developer",
         "image": "/src/assets/projects/carnegie-overflow-regression-model.webp",
@@ -1144,7 +1144,7 @@
             "HydroCAD",
             "Stormwater"
         ],
-        "description": "As part of land development for Indy-Apple, LLC , I worked with project managers and other team members to layout a site plan for two restaurants and a hotel along Oakland Avenue. I assisted in drafting a land development package, running stormwater calculations, submitting various permitting packages including NPDES and I coordinated with utility companies and other permitting entities.",
+        "description": "As part of land development for Indy-Apple, LLC, I worked with project managers and other team members to lay out a site plan for two restaurants and a hotel along Oakland Avenue. I assisted in drafting a land development package, running stormwater calculations, submitting various permitting packages including NPDES, and coordinated with utility companies and other permitting entities.",
         "title": "Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/white_township.webp",
@@ -1169,7 +1169,7 @@
             "Javascript",
             "ArcGIS"
         ],
-        "description": "KLH Engineers had been exploring the idea of an intranet to facilitate some basic business information and practices. After many meetings discussing Enterprise options, I build a simple yet functional intranet using a Google Site. Employees could see a company calendar, open new Order Entries, find project numbers, contact info, and client information, and use other tools like GIS maps and a company directory to be productive.",
+        "description": "KLH Engineers had been exploring the idea of an intranet to facilitate basic business information and practices. After many meetings discussing enterprise options, I built a simple yet functional intranet using a Google Site. Employees could see a company calendar, open new Order Entries, find project numbers, contact info, and client information, and use other tools like GIS maps and a company directory to be productive.",
         "title": "Project Engineer",
         "project_role": "Developer",
         "image": "/src/assets/projects/company-intranet.webp",
@@ -1190,7 +1190,7 @@
         "tags": [
             "Land Development"
         ],
-        "description": "Work for The Buncher Company included jackson Pointe Phase 3 & 4. Additional tasks included Looking at Pipe Capacities, Stream Cross Sections. Key focus areas: Land Development.",
+        "description": "Supported The Buncher Company on Jackson Pointe Phases 3 and 4, including reviewing pipe capacities and stream cross-sections. Key focus areas: Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/jackson_pointe.webp",
@@ -1216,7 +1216,7 @@
             "Trimble R2",
             "ArcGIS"
         ],
-        "description": "Update of System map. Worked with Precision Laser to setup a collection program using Terraflex and an R2 unit. Eventual transition to Collector app and ArcGIS Online.",
+        "description": "Updated the system map and worked with Precision Laser to set up a collection program using TerraFlex and an R2 unit. Later transitioned to the Collector app and ArcGIS Online.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/system-mapping-and-collection-program.webp",
@@ -1242,7 +1242,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "Work with Authority to determine site locations for 10 flow meters and 3 rain gauges to be used in a SWMM model of the Authority's main interceptors and several key pump stations and siphons. Worked on but did not complete project due to change in job.",
+        "description": "Worked with the Authority to determine site locations for 10 flow meters and three rain gauges for a SWMM model of the Authority's main interceptors and several key pump stations and siphons. Worked on the project but did not complete it due to a job change.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist, Modeler",
         "image": "/src/assets/projects/comprehensive-plan.webp",
@@ -1263,7 +1263,7 @@
         "tags": [
             "Land Development"
         ],
-        "description": "Work for Fairfield Southpointe included site Plan. Additional tasks included Checking Hydraulic Calcs. Key focus areas: Hydraulic Modeling, Land Development.",
+        "description": "Supported Fairfield Southpointe on the site plan, including checking hydraulic calculations. Key focus areas: Hydraulic Modeling, Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler, Engineer",
         "image": "/src/assets/projects/fairfield_southpoint.webp",
@@ -1386,7 +1386,7 @@
             "ArcGIS Pro",
             "ArcGIS"
         ],
-        "description": "Update of System sewer and water mapping. Migration to ArcGIS Online.",
+        "description": "Updated system sewer and water mapping and migrated it to ArcGIS Online.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/finley_township_municipal_authority.webp",
@@ -1461,7 +1461,7 @@
             "Sewer Separation",
             "Stormwater"
         ],
-        "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements For the second round of ALCOSAN GROW grants, I successfully submitted reimbursement and new separation projects for over $1 million. Successfully submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
+        "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); and managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements. For the second round of ALCOSAN GROW grants, I submitted reimbursement and new separation projects totaling over $1 million. I also submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler, Grant Lead",
         "image": "/src/assets/projects/grow.webp",
@@ -1491,7 +1491,7 @@
             "Sanitary Sewer",
             "Stormwater"
         ],
-        "description": "Led stormwater site plan design and permitting for a new sanitary sewer pump station; developed E&S and PCSM plans addressing grading, drainage, and regulatory compliance; coordinated submissions and approvals with regulatory agencies Worked on E&S and PCSM design and permitting for a new pump station and sewer system for FTMA.",
+        "description": "Led stormwater site plan design and permitting for a new sanitary sewer pump station; developed E&S and PCSM plans addressing grading, drainage, and regulatory compliance; and coordinated submissions and approvals with regulatory agencies for the FTMA pump station and sewer system.",
         "title": "Senior Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/camp-meeting-road-pump-station-site-design-and-permitting.webp",
@@ -1514,7 +1514,7 @@
             "ArcGIS Pro",
             "ArcGIS"
         ],
-        "description": "Creation of System Map utilizing As-Built drawings. Migration to ArcGIS Online platform",
+        "description": "Created a system map using as-built drawings and migrated it to the ArcGIS Online platform.",
         "title": "Senior Project Engineer",
         "project_role": "Developer",
         "image": "/src/assets/projects/system-map.webp",
@@ -1562,7 +1562,7 @@
         "tags": [
             "Permitting"
         ],
-        "description": "Work for Union Electric Steel included NPDES Modification. Additional tasks included Looking for past NPDES submissions and modeling work.",
+        "description": "Supported Union Electric Steel on an NPDES modification by reviewing past submissions and modeling work.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler, Engineer",
         "image": "/src/assets/projects/ues_npdes.webp",
@@ -1589,7 +1589,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "Calibrated H&H Model consisting of 5 flow monitors, pump station, forcemain, and interceptor to assist in the development of a Corrective Action Plan",
+        "description": "Calibrated an H&H model consisting of five flow monitors, a pump station, a forcemain, and an interceptor to assist in the development of a Corrective Action Plan.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/corrective-action-plan-engineering-evaluation.webp",
@@ -1616,7 +1616,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "Completed H&H modeling and evaluation following failure of CSO Regulator No. 1; built a detailed SWMM model of the interconnected sewer/regulator system; prepared a preliminary replacement regulator/outfall concept including proposed elevations, weir sizing, and hydraulic checks After a failure of a CSO structure, an H&H study was completed to evaluate options for a permanent design of a new regulator and outfall structure. This model had multiple interconnected systems and regulators that had to be modeled.",
+        "description": "Completed H&H modeling and evaluation following failure of CSO Regulator No. 1; built a detailed SWMM model of the interconnected sewer/regulator system; and prepared a preliminary replacement regulator/outfall concept including proposed elevations, weir sizing, and hydraulic checks. The H&H study evaluated options for a permanent design of a new regulator and outfall structure in a system with multiple interconnected regulators.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler, Engineer",
         "image": "/src/assets/projects/cso-regulator-no-1-evaluation-and-replacement-concept-design.webp",
@@ -1724,7 +1724,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "Assisted the design team by creating a calibrated H&H model to determine design flows for a new pump station",
+        "description": "Assisted the design team by creating a calibrated H&H model to determine design flows for a new pump station.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/glannons-pump-station.webp",
@@ -1815,7 +1815,7 @@
             "Spillway/Dam",
             "Land Development"
         ],
-        "description": "Work for Cokeburg included Determining slope, velocities for spillway, grading in spillway with Max. Key focus areas: HEC-RAS, Spillway/Dam, Hydraulic Modeling, Land Development.",
+        "description": "Determined spillway slopes and velocities, and supported grading tasks. Key focus areas: HEC-RAS, Spillway/Dam, Hydraulic Modeling, Land Development.",
         "title": "Senior Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/cokeburg_dam.webp",
@@ -1842,7 +1842,7 @@
             "Dashboard",
             "GPS"
         ],
-        "description": "Migrated GIS data form GeoPlan to ArcGIS Online. Development of a GPS collection program using ArcGIS Online Dashboards, and the Collector app to enable centimeter accuracy data collection of system manholes.",
+        "description": "Migrated GIS data from GeoPlan to ArcGIS Online. Developed a GPS collection program using ArcGIS Online Dashboards and the Collector app to enable centimeter-accurate data collection of system manholes.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/system-mapping-and-gps-collection-program.webp",
@@ -1867,7 +1867,7 @@
             "Survey123",
             "ArcGIS"
         ],
-        "description": "Creation of zoning map using old paper maps. Migration to ArcGIS Online for publishing of public facing zoning application. Also created a Survey123 Zoning Violation tool for the Township to replace existing paper processes.",
+        "description": "Created a zoning map using old paper maps and migrated it to ArcGIS Online for a public-facing zoning application. Also created a Survey123 zoning violation tool for the Township to replace existing paper processes.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/zoning-map.webp",
@@ -1897,7 +1897,7 @@
             "PCSM",
             "Stormwater"
         ],
-        "description": "Performed full stormwater management design and permitting for a new Admin & Personnel Building, including H&H analysis, two bioretention basins, and a tributary swale; prepared calculations/documentation to satisfy NPDES peak rate and volume control; coordinated with site architect and engineers to integrate stormwater infrastructure with building plans Working with the building design team, I completed H&H calculations and design of two bioretention areas and tributary swale to treat stormwater runoff and meet pear rate and volume requirement for the NPDES permit which I completed.",
+        "description": "Performed full stormwater management design and permitting for a new Admin & Personnel Building, including H&H analysis, two bioretention basins, and a tributary swale; prepared calculations and documentation to satisfy NPDES peak rate and volume control; and coordinated with the site architect and engineers to integrate stormwater infrastructure with building plans.",
         "title": "Senior Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/admin-and-personnel-building-stormwater-design-and-permitting.webp",
@@ -1923,7 +1923,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "Assisted the design team by creating a calibrated H&H model to determine design flows for a new pump station",
+        "description": "Assisted the design team by creating a calibrated H&H model to determine design flows for a new pump station.",
         "title": "Senior Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/peebles-road-pump-station.webp",
@@ -1947,7 +1947,7 @@
             "ArcGIS Pro",
             "ArcGIS Story Maps"
         ],
-        "description": "Utilized publically available permits for gas wells in and around the township to map all gas well heads and laterals in and around the township. This information was used to communicate to the public and discuss changes to ordinances. An ESRI story map was developed to best communicate the findings in an organized manner.",
+        "description": "Utilized publicly available permits for gas wells in and around the township to map all gas well heads and laterals. This information was used to communicate with the public and discuss changes to ordinances. An ESRI story map was developed to present the findings in an organized manner.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/south-strabane-gas-well-mapping.webp",
@@ -1979,7 +1979,7 @@
             "SSOAP",
             "SWMM"
         ],
-        "description": "To come into compliance with PA DEP, KVWPCA communities completed sewer separation projects and plant upgrades. To establish new rates and determine flow values, I completed a Post Construction H&H model using 6 months of flow data from 75 flow meters. The model was modified and calibrated to best model the current flow conditions which were used to establish new rates. Developed and calibrated a post-construction SWMM model used to assess compliance and establish user rates; implemented model updates and calibrated hydrology/hydraulics using ~6 months of data from 75 flow monitors; compiled results and managed post-processing, QA/QC, and flow-monitor data management",
+        "description": "To come into compliance with PA DEP, KVWPCA communities completed sewer separation projects and plant upgrades. To establish new rates and determine flow values, I completed a post-construction H&H model using six months of flow data from 75 flow meters. The model was modified and calibrated to reflect current flow conditions and used to establish new rates. I also implemented model updates and managed post-processing, QA/QC, and flow-monitor data management.",
         "title": "Senior Project Engineer",
         "project_role": "Lead Modeler",
         "image": "/src/assets/projects/post-construction-sewer-system-model.webp",
@@ -2144,7 +2144,7 @@
             "ArcGIS",
             "ArcGIS Pro"
         ],
-        "description": "Creation of a Zoning map using a decades old paper map and updating by review or ordinances.",
+        "description": "Created a zoning map using a decades-old paper map and updated it through ordinance reviews.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/zoning-map-updates.webp",
@@ -2262,7 +2262,7 @@
         "tags": [
             "Calibration"
         ],
-        "description": "Work for Metropolitan Sewer Authority of Greater Cincinnati included calibration Reviews. Additional tasks included 2020 Model Assessment, tsf tool. Key focus areas: Calibration, Hydraulic Modeling, Metropolitan Sewer Authority of Greater Cincinnati.",
+        "description": "Supported calibration reviews for the Metropolitan Sewer Authority of Greater Cincinnati, including a 2020 model assessment and TSF tool work. Key focus areas: Calibration, Hydraulic Modeling, Metropolitan Sewer Authority of Greater Cincinnati.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/msdgc_model_calibration.webp",
@@ -2308,7 +2308,7 @@
             "Calibration",
             "Gates/Controls"
         ],
-        "description": "Work for Northeast Ohio Regional Sewer District included alts SOT Gate. Additional tasks included Pulling HGLs and Hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, Northeast Ohio Regional Sewer District.",
+        "description": "Supported the Northeast Ohio Regional Sewer District on the Alts SOT Gate effort, including pulling HGLs and hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, Northeast Ohio Regional Sewer District.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/soi_gate.webp",
@@ -2335,7 +2335,7 @@
             "Dashboard",
             "Calibration"
         ],
-        "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Task lead overseeing extensive field data collection and integration into SWMM model updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data. Key team member on $17 million Wet Weather Program Manager contract including contribution to the winning proposal development. The multi-year program consists of data management and analysis, data collection, a 100-meter flow monitor plan and SWMM model expansion and calibration. Lead engineer in developing and managing the flow monitoring plan including overseeing multiple subconsultants, QA/QC review work and management of quality deliverables.",
+        "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Oversaw field data collection and integration into SWMM updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data; and contributed to the winning proposal development.",
         "title": "Professional Engineer",
         "project_role": "Task Lead, Engineer, Modeler",
         "image": "/src/assets/projects/pwsa-wet-weather-program-manager.webp",
@@ -2358,7 +2358,7 @@
             "GIS Content",
             "Data Consolidation"
         ],
-        "description": "Use of Cartegraph to manage assets for landfill client.",
+        "description": "Used Cartegraph to manage assets for a landfill client.",
         "title": "Professional Engineer",
         "project_role": "Asset Management Specialsit, GIS Specialist, Technical Support",
         "image": "",
@@ -2435,7 +2435,7 @@
             "Web Mapping",
             "GIS Content"
         ],
-        "description": "Development of mapping and elevation profiles including GIS based data sharing tools.",
+        "description": "Developed mapping and elevation profiles, including GIS-based data sharing tools.",
         "title": "Professional Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/tbw_routes.webp",
@@ -2508,7 +2508,7 @@
             "QA/QC",
             "Model Review"
         ],
-        "description": "Review of several consultant submitted calibrations as part of ongoing review contract. Tracked and ensured improvements and documentation met District standards",
+        "description": "Reviewed several consultant-submitted calibrations as part of an ongoing review contract. Tracked improvements and ensured documentation met District standards.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "",
@@ -2556,7 +2556,7 @@
             "Python",
             "Calibration"
         ],
-        "description": "Developed a python tool to interface with model .out files and pull requested .tsf files. Later improved this code and had it integrated into the \"Autocalibration\" tool being developed on behalf of Wade Trim.",
+        "description": "Developed a Python tool to interface with model .out files and pull requested .tsf files. Later improved this code and integrated it into the \"Autocalibration\" tool being developed on behalf of Wade Trim.",
         "title": "Professional Engineer",
         "project_role": "Developer, Modeler",
         "image": "/src/assets/projects/python-out-file-reader-script.webp",
@@ -2627,7 +2627,7 @@
         "tags": [
             "Pumps/Storage"
         ],
-        "description": "Work for Brevard County Utilities included south Beaches. Additional tasks included reviewing pump curve model updates. Key focus areas: Pumps/Storage, Hydraulic Modeling, Brevard County.",
+        "description": "Supported Brevard County Utilities on the South Beaches project, including reviewing pump curve model updates. Key focus areas: Pumps/Storage, Hydraulic Modeling, Brevard County.",
         "title": "Professional Engineer",
         "project_role": "Optimization Engineer",
         "image": "/src/assets/projects/brevard_opt.webp",
@@ -2701,7 +2701,7 @@
         "tags": [
             "Water Distribution"
         ],
-        "description": "Work for Great Lake Water Authority included t2 44 Valve Project. Additional tasks included Discussing valve hydraulic options with Kyle, meeting on valve considerations and head loss calcs. Key focus areas: Water Distribution, Hydraulic Modeling, Great Lake Water Authority.",
+        "description": "Supported the Great Lake Water Authority on the T2 44 Valve Project, including discussions on valve hydraulics, head loss calculations, and design considerations. Key focus areas: Water Distribution, Hydraulic Modeling, Great Lake Water Authority.",
         "title": "Professional Engineer",
         "project_role": "Engineer, Modeler, QAQC",
         "image": "/src/assets/projects/t244_valves.webp",
@@ -2801,7 +2801,7 @@
             "Resiliency",
             "Water Distribution"
         ],
-        "description": "Level of Service and Resiliency analysis for municipal water systems.",
+        "description": "Level of service and resiliency analysis for municipal water systems.",
         "title": "Professional Engineer",
         "project_role": "Optimization Engineer",
         "image": "/src/assets/projects/stpete_LOS.webp",

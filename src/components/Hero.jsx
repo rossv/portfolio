@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import portrait from '../assets/portrait.png';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
@@ -31,6 +31,7 @@ function FloatingElement({ children, delay = 0, className = "" }) {
 
 export default function Hero() {
     const targetRef = useRef(null);
+    const [isStarfield, setIsStarfield] = useState(false);
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -39,6 +40,30 @@ export default function Hero() {
     const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
+    useEffect(() => {
+        const stored = localStorage.getItem('spaceNerdMode') === 'stars';
+        setIsStarfield(stored);
+        document.documentElement.dataset.spaceNerd = stored ? 'stars' : 'water';
+
+        const handleToggle = (event) => {
+            setIsStarfield(event.detail?.enabled ?? false);
+        };
+        window.addEventListener('space-nerd-toggle', handleToggle);
+        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
+    }, []);
+
+    const handleSpaceNerdClick = (event) => {
+        if (event.detail !== 3) {
+            return;
+        }
+        const nextState = !isStarfield;
+        setIsStarfield(nextState);
+        localStorage.setItem('spaceNerdMode', nextState ? 'stars' : 'water');
+        document.documentElement.dataset.spaceNerd = nextState ? 'stars' : 'water';
+        window.dispatchEvent(
+            new CustomEvent('space-nerd-toggle', { detail: { enabled: nextState } })
+        );
+    };
     const scrollToSection = (id, event) => {
         if (event) {
             event.preventDefault();
@@ -124,7 +149,16 @@ export default function Hero() {
                     Delivering technical solutions driven by emerging technologies. <br />
                     Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
                     <span className="text-xs md:text-sm opacity-75 mt-2 block">
-                        Technologist • Geospatial & Space Nerd • Pittsburgh
+                        Technologist • Geospatial &{' '}
+                        <button
+                            type="button"
+                            onClick={handleSpaceNerdClick}
+                            className="font-semibold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-sky-300 transition-colors"
+                            aria-label="Triple click to toggle space nerd mode"
+                        >
+                            Space Nerd
+                        </button>{' '}
+                        • Pittsburgh
                     </span>
                 </motion.p>
 
@@ -194,26 +228,30 @@ export default function Hero() {
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                     </div>
 
-                    {/* Floating Bubbles */}
-                    <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
-                        <img src={aiChipIcon.src} alt="AI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                    </FloatingElement>
+                    {!isStarfield && (
+                        <>
+                            {/* Floating Bubbles */}
+                            <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
+                                <img src={aiChipIcon.src} alt="AI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
 
-                    <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
-                        <img src={gisMapIcon.src} alt="GIS" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                    </FloatingElement>
+                            <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
+                                <img src={gisMapIcon.src} alt="GIS" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
 
-                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
-                        <img src={codingLaptopIcon.src} alt="Coding" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                    </FloatingElement>
+                            <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
+                                <img src={codingLaptopIcon.src} alt="Coding" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
 
-                    <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
-                        <img src={webUiIcon.src} alt="Web UI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                    </FloatingElement>
+                            <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
+                                <img src={webUiIcon.src} alt="Web UI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
 
-                    <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
-                        <img src={waterNetworkIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                    </FloatingElement>
+                            <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
+                                <img src={waterNetworkIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
+                        </>
+                    )}
 
                 </motion.div>
             </motion.div>
