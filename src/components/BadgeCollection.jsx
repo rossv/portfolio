@@ -11,8 +11,7 @@ import badgeTime1 from '../assets/badges/badge-time-1.svg';
 import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
 
-const BADGE_STORAGE_KEY = 'portfolio-badges';
-const BADGE_DISMISSED_KEY = 'portfolio-badges-dismissed';
+// Badges reset on page reload - no localStorage persistence
 
 const BADGES = [
   {
@@ -109,50 +108,29 @@ export default function BadgeCollection() {
   const rubCountRef = useRef(0);
   const rubTimeoutRef = useRef(null);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const stored = window.localStorage.getItem(BADGE_STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      setUnlocked(new Set(parsed));
-    }
-    const dismissedStored = window.localStorage.getItem(BADGE_DISMISSED_KEY);
-    if (dismissedStored) {
-      const parsedDismissed = JSON.parse(dismissedStored);
-      setDismissed(new Set(parsedDismissed));
-    }
-  }, []);
+  // No localStorage loading - badges reset on page reload
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
-  const persistUnlocked = (next) => {
-    window.localStorage.setItem(BADGE_STORAGE_KEY, JSON.stringify([...next]));
-  };
-
-  const persistDismissed = (next) => {
-    window.localStorage.setItem(BADGE_DISMISSED_KEY, JSON.stringify([...next]));
-  };
+  // No persistence functions needed - badges reset on reload
 
   const dismissBadge = (id) => {
     setDismissed((prev) => {
       if (prev.has(id)) return prev;
       const next = new Set(prev);
       next.add(id);
-      if (typeof window !== 'undefined') {
-        persistDismissed(next);
-      }
       return next;
     });
   };
 
   const unlockBadge = (id) => {
+    // Check if already unlocked to prevent re-triggering animation
+    if (unlocked.has(id)) return;
+
     setUnlocked((prev) => {
       if (prev.has(id)) return prev;
       const next = new Set(prev);
       next.add(id);
-      if (typeof window !== 'undefined') {
-        persistUnlocked(next);
-      }
       return next;
     });
     setRecentlyUnlocked((prev) => {
