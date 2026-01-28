@@ -268,6 +268,13 @@ export default function CareerTimeline() {
     const [selectedJob, setSelectedJob] = useState(careerData[0]);
     const mapRef = useRef(null);
 
+    const handleJobClick = (job) => {
+        setSelectedJob(job);
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('job-open', { detail: { id: job.id, total: careerData.length } }));
+        }
+    };
+
     // Update map view when selection changes
     useEffect(() => {
         if (mapRef.current && selectedJob) {
@@ -279,6 +286,14 @@ export default function CareerTimeline() {
             });
         }
     }, [selectedJob]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(
+                new CustomEvent('job-open', { detail: { id: selectedJob.id, total: careerData.length } })
+            );
+        }
+    }, []);
 
 
 
@@ -306,7 +321,7 @@ export default function CareerTimeline() {
                                 transition={{ duration: 0.4, delay: index * 0.1 }}
                             >
                                 <div
-                                    onClick={() => setSelectedJob(item)}
+                                    onClick={() => handleJobClick(item)}
                                     className={`
                                         relative cursor-pointer group transition-all duration-300 mb-4
                                         ${selectedJob.id === item.id ? 'opacity-100 scale-[1.01]' : 'opacity-70 hover:opacity-100'}

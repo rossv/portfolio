@@ -11,6 +11,7 @@ export default function FluidBackground() {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         let animationFrameId;
+        let bubbleCollectCount = 0;
 
         let width = window.innerWidth;
         let height = window.innerHeight;
@@ -43,6 +44,7 @@ export default function FluidBackground() {
                 this.color = colors[Math.floor(Math.random() * colors.length)];
                 this.alpha = Math.random() * 0.5 + 0.4; // Increased opacity: 0.4-0.9
                 this.friction = 0.96; // For mouse interaction decay
+                this.collected = false;
             }
 
             update(mouseX, mouseY, scrollDelta) {
@@ -69,6 +71,14 @@ export default function FluidBackground() {
                     const pull = force * 0.8;
                     this.vx += Math.cos(angle) * pull;
                     this.vy += Math.sin(angle) * pull;
+                }
+
+                if (!this.collected && distance < this.size + 12) {
+                    this.collected = true;
+                    bubbleCollectCount += 1;
+                    window.dispatchEvent(
+                        new CustomEvent('bubble-collect', { detail: { count: bubbleCollectCount } })
+                    );
                 }
 
                 // Friction to stabilize velocity after interaction

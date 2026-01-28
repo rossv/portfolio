@@ -123,7 +123,19 @@ export default function Hero() {
                     <span className="absolute -left-4 top-0 text-slate-300 dark:text-slate-700 text-4xl -z-10 animate-pulse"></span>
                     Delivering technical solutions driven by emerging technologies. <br />
                     Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
-                    <span className="text-xs md:text-sm opacity-75 mt-2 block">Technologist • Geospatial & Space Nerd • Pittsburgh</span>
+                    <span className="text-xs md:text-sm opacity-75 mt-2 block">
+                        Technologist • Geospatial &{' '}
+                        <button
+                            type="button"
+                            data-badge-action="space-nerd"
+                            className="inline-flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-300 underline decoration-dotted underline-offset-4 hover:text-indigo-500"
+                            aria-label="Space Nerd more"
+                        >
+                            Space Nerd
+                            <span className="text-[10px] uppercase tracking-[0.2em]">More</span>
+                        </button>{' '}
+                        • Pittsburgh
+                    </span>
                 </motion.p>
 
                 <motion.div
@@ -180,7 +192,10 @@ export default function Hero() {
                     <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden xl:block opacity-50"></div>
                     <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden xl:block opacity-50"></div>
 
-                    <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group">
+                    <div
+                        className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group"
+                        data-badge-target="portrait"
+                    >
                         <img
                             src={portrait.src}
                             alt="Ross Volkwein"
