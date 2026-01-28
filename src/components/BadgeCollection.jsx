@@ -12,6 +12,7 @@ import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
 
 const BADGE_STORAGE_KEY = 'portfolio-badges';
+const BADGE_DISMISSED_KEY = 'portfolio-badges-dismissed';
 
 const BADGES = [
   {
@@ -21,9 +22,21 @@ const BADGES = [
     icon: badgeSections,
   },
   {
-    id: 'bubble-collector',
-    name: 'Bubble Collector',
-    description: 'Collected 50 floating bubbles.',
+    id: 'bubble-collector-100',
+    name: 'Bubble Novice',
+    description: 'Collected 100 floating bubbles.',
+    icon: badgeBubbles,
+  },
+  {
+    id: 'bubble-collector-1000',
+    name: 'Bubble Enthusiast',
+    description: 'Collected 1,000 floating bubbles.',
+    icon: badgeBubbles,
+  },
+  {
+    id: 'bubble-collector-5000',
+    name: 'Bubble Master',
+    description: 'Collected 5,000 floating bubbles.',
     icon: badgeBubbles,
   },
   {
@@ -63,21 +76,21 @@ const BADGES = [
     icon: badgeFooter,
   },
   {
-    id: 'minute-mark',
-    name: 'Minute Mark',
-    description: 'Spent one minute on the page.',
-    icon: badgeTime1,
-  },
-  {
-    id: 'five-minute-drift',
-    name: 'Five Minute Drift',
+    id: 'five-minute-mark',
+    name: 'Five Minute Mark',
     description: 'Spent five minutes on the page.',
-    icon: badgeTime5,
+    icon: badgeTime1,
   },
   {
     id: 'quarter-hour',
     name: 'Quarter Hour',
     description: 'Spent fifteen minutes on the page.',
+    icon: badgeTime5,
+  },
+  {
+    id: 'hour-mark',
+    name: 'Hour Mark',
+    description: 'Spent one hour on the page.',
     icon: badgeTime15,
   },
 ];
@@ -86,6 +99,7 @@ const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer']
 
 export default function BadgeCollection() {
   const [unlocked, setUnlocked] = useState(new Set());
+  const [dismissed, setDismissed] = useState(new Set());
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
@@ -102,12 +116,33 @@ export default function BadgeCollection() {
       const parsed = JSON.parse(stored);
       setUnlocked(new Set(parsed));
     }
+    const dismissedStored = window.localStorage.getItem(BADGE_DISMISSED_KEY);
+    if (dismissedStored) {
+      const parsedDismissed = JSON.parse(dismissedStored);
+      setDismissed(new Set(parsedDismissed));
+    }
   }, []);
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
   const persistUnlocked = (next) => {
     window.localStorage.setItem(BADGE_STORAGE_KEY, JSON.stringify([...next]));
+  };
+
+  const persistDismissed = (next) => {
+    window.localStorage.setItem(BADGE_DISMISSED_KEY, JSON.stringify([...next]));
+  };
+
+  const dismissBadge = (id) => {
+    setDismissed((prev) => {
+      if (prev.has(id)) return prev;
+      const next = new Set(prev);
+      next.add(id);
+      if (typeof window !== 'undefined') {
+        persistDismissed(next);
+      }
+      return next;
+    });
   };
 
   const unlockBadge = (id) => {
@@ -132,6 +167,8 @@ export default function BadgeCollection() {
         updated.delete(id);
         return updated;
       });
+      // Auto-dismiss after animation completes
+      dismissBadge(id);
     }, 1600);
   };
 
@@ -140,8 +177,14 @@ export default function BadgeCollection() {
 
     const handleBubbleCollect = (event) => {
       bubbleCountRef.current = Math.max(bubbleCountRef.current, event.detail?.count ?? 0);
-      if (bubbleCountRef.current >= 50) {
-        unlockBadge('bubble-collector');
+      if (bubbleCountRef.current >= 100) {
+        unlockBadge('bubble-collector-100');
+      }
+      if (bubbleCountRef.current >= 1000) {
+        unlockBadge('bubble-collector-1000');
+      }
+      if (bubbleCountRef.current >= 5000) {
+        unlockBadge('bubble-collector-5000');
       }
     };
 
@@ -208,9 +251,9 @@ export default function BadgeCollection() {
     if (typeof window === 'undefined') return undefined;
 
     const timers = [
-      { id: 'minute-mark', delay: 60 * 1000 },
-      { id: 'five-minute-drift', delay: 5 * 60 * 1000 },
+      { id: 'five-minute-mark', delay: 5 * 60 * 1000 },
       { id: 'quarter-hour', delay: 15 * 60 * 1000 },
+      { id: 'hour-mark', delay: 60 * 60 * 1000 },
     ].map(({ id, delay }) => {
       if (unlockedIds.has(id)) return null;
       return window.setTimeout(() => unlockBadge(id), delay);
@@ -291,19 +334,26 @@ export default function BadgeCollection() {
 
   return (
     <div className="fixed top-24 right-4 z-50 flex flex-col items-end gap-3">
-      {unlockedBadges.map((badge) => (
-        <div
-          key={badge.id}
-          className={`badge-chip ${recentlyUnlocked.has(badge.id) ? 'badge-pop' : ''}`}
-          title={`${badge.name} — ${badge.description}`}
-        >
-          <img src={badge.icon.src || badge.icon} alt="" className="h-10 w-10" />
-          <div className="text-right">
-            <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
-            <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
+      {unlockedBadges.map((badge) => {
+        const isDismissed = dismissed.has(badge.id);
+        const isRecent = recentlyUnlocked.has(badge.id);
+
+        return (
+          <div
+            key={badge.id}
+            className={`badge-chip ${isRecent ? 'badge-pop' : ''} ${isDismissed ? 'badge-collapsed' : ''}`}
+            title={`${badge.name} — ${badge.description}`}
+          >
+            <img src={badge.icon.src || badge.icon} alt="" className={isDismissed ? "h-8 w-8" : "h-10 w-10"} />
+            {!isDismissed && (
+              <div className="text-right">
+                <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -52,6 +52,14 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     animation: badge-pop 1.4s ease-out;
   }
 
+  .badge-collapsed {
+    @apply px-2 py-1.5 cursor-pointer transition-all duration-300;
+  }
+
+  .badge-collapsed:hover {
+    @apply scale-110;
+  }
+
   /* Global Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 6px;
