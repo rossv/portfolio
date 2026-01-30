@@ -87,13 +87,13 @@ const BADGES = [
     id: 'five-minute-mark',
     name: 'Five Minute Mark',
     description: 'Spent five minutes on the page.',
-    icon: badgeTime1,
+    icon: badgeTime5,
   },
   {
     id: 'quarter-hour',
     name: 'Quarter Hour',
     description: 'Spent fifteen minutes on the page.',
-    icon: badgeTime5,
+    icon: badgeTime15,
   },
   {
     id: 'hour-mark',
@@ -110,6 +110,7 @@ const BADGES = [
 ];
 
 const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer'];
+const TOTAL_FOOTER_LINKS = 4;
 
 export default function BadgeCollection() {
   const [unlocked, setUnlocked] = useState(new Set());
@@ -273,14 +274,15 @@ export default function BadgeCollection() {
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
 
-    // Use a more robust approach for the magic lamp - verify element exists or use delegation
-    // Since the element uses standard DOM events, we can try to attach to it, 
-    // but if it's not mounted yet, we might miss it. 
-    // A safe fallback is to use document-level delegation for the start/stop logic 
-    // or a MutationObserver. Given the simplicity, let's use document delegation
-    // which is more React-friendly for "late appearing" content.
+    // Throttle helper to limit how often the handler runs
+    let lastCall = 0;
+    const throttleMs = 50;
 
     const handlePointerMove = (event) => {
+      const now = Date.now();
+      if (now - lastCall < throttleMs) return;
+      lastCall = now;
+
       const target = event.target;
       if (!(target instanceof Element)) return;
 
@@ -326,7 +328,6 @@ export default function BadgeCollection() {
       }
     };
 
-    // Optimization: throttling could be added, but browser handles pointermove reasonable well
     document.addEventListener('pointermove', handlePointerMove);
 
     return () => {
@@ -356,7 +357,7 @@ export default function BadgeCollection() {
         if (footerId) {
           footerClicksRef.current.add(footerId);
         }
-        if (footerClicksRef.current.size >= 4) {
+        if (footerClicksRef.current.size >= TOTAL_FOOTER_LINKS) {
           unlockBadge('footer-friend');
         }
       }
