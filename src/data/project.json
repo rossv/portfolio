@@ -1133,7 +1133,7 @@
     {
         "name": "Oakland Avenue Commercial Development",
         "client": "Indy Apple, LLC",
-        "company": "KLH Engineers",
+        "company": "Civil & Environmental Consultants, Inc.",
         "location": "Indiana, PA",
         "category": "Land Development, Grading, Erosion & Sedimentation Control, Permitting, Stormwater Design",
         "tags": [
@@ -2157,34 +2157,10 @@
         ]
     },
     {
-        "name": "Metropolitan Sewer Authority of Greater Cincinnati Model Calibration and Model Reviews",
-        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
-        "company": "KLH Engineers",
-        "location": "Cincinnati, OH",
-        "category": "Hydrologic & Hydraulic Modeling",
-        "tags": [
-            "SWMM",
-            "Python",
-            "Sanitary Sewer",
-            "Calibration"
-        ],
-        "description": "Worked on SWMM model calibration for the Metropolitan Sewer District of Cincinnati, calibrating several separate sanitary flow meter locations. Also revised and redistributed tributary acreage throughout the model area by developing a custom python script to allocate area along interceptor lines for RDII. Completed model reviews for other consultant model submissions and drafted a final calibration report for the Wade Trim portions of the model calibration effort.",
-        "title": "Senior Project Engineer",
-        "project_role": "Modeler",
-        "image": "/src/assets/projects/msdgc-model-calibration-and-model-reviews.webp",
-        "start_date": "4/30/2021",
-        "end_date": "7/1/2021",
-        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
-        "coords": [
-            -84.512,
-            39.1031
-        ]
-    },
-    {
         "name": "Allegheny National Forest Gas Survey",
         "client": "National Energy Technology Laboratory",
         "company": "National Energy Technology Lab",
-        "location": "Pittsburgh, PA",
+        "location": "South Park, PA",
         "category": "Research, GIS, Field Work",
         "tags": [
             "ArcGIS",
@@ -2198,6 +2174,28 @@
         "image": "/src/assets/projects/allegheny-national-forest-gas-survey.webp",
         "start_date": "6/1/2009",
         "end_date": "12/30/2009",
+        "client_sort": "National Energy Technology Laboratory",
+        "coords": [
+            -79.146936,
+            41.837242
+        ]
+    },
+    {
+        "name": "Visualization Lab",
+        "client": "National Energy Technology Laboratory",
+        "company": "National Energy Technology Lab",
+        "location": "South Park, PA",
+        "category": "Research, GIS",
+        "tags": [
+            "IT",
+            "Visualization",
+        ],
+        "description": "Assembled and integrated a $200,000 visualization lab for visualizing large datsets including subsurface geophysical models and air quality models. This lab was used to visualize data for NETL staff and was used to present findings to NETL staff.",
+        "title": "Intern",
+        "project_role": "Researcher",
+        "image": "/src/assets/projects/visualizationlab.webp",
+        "start_date": "12/1/2009",
+        "end_date": "01/301/2010",
         "client_sort": "National Energy Technology Laboratory",
         "coords": [
             -79.146936,
@@ -2241,7 +2239,7 @@
             "LTS",
             "Sanitary Sewer"
         ],
-        "description": "Supported SWMM calibration at multiple sanitary flow monitor locations; developed custom tools to allocate RDII and produced calibration results and report; performed model reviews of other consultant submissions under a model review support contract",
+        "description": "Supported SWMM model calibration for the Metropolitan Sewer District of Cincinnati across multiple sanitary flow meter locations, including calibration of several independent sanitary basins. Developed custom Python scripts to revise and redistribute tributary drainage area and allocate RDII along interceptor alignments, improving representation of contributing areas within the model. Produced calibration results, figures, and a final calibration report for the Wade Trim scope of work, and provided independent technical review of other consultant model submissions as part of a broader model review support contract.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/msdgc_model_calibration.webp",
