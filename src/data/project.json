@@ -1992,25 +1992,300 @@
         ]
     },
     {
-        "name": "MS4 Programs",
-        "client": "Various Clients",
+        "name": "MS4 Permit and Program",
+        "client": "Canonsburg Borough",
         "company": "KLH Engineers",
-        "location": "Pittsburgh, PA",
-        "category": "Permitting, GIS",
+        "location": "Canonsburg, PA",
+        "category": "Permitting, GIS, Stormwater",
         "tags": [
             "ArcGIS",
-            "ArcGIS Desktop"
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
         ],
-        "description": "I completed new MS4 permits for several clients including development of MS4 mapping and Pollution Reduction Plans and helped to establish MS4 programs.",
+        "description": "Completed MS4 General permit for Canonsburg Borough including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Chartiers Creek TMDL. Helped establish and support ongoing MS4 program requirements.",
         "title": "Senior Project Engineer",
         "project_role": "Engineer",
         "image": "/src/assets/projects/ms4-programs.webp",
         "start_date": "7/25/2017",
         "end_date": "10/3/2018",
-        "client_sort": "Various Clients",
+        "client_sort": "Canonsburg Borough",
         "coords": [
-            -80.156136,
-            40.441313
+            -80.185030,
+            40.262012
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Carnegie Borough",
+        "company": "KLH Engineers",
+        "location": "Carnegie, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for Carnegie Borough including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Chartiers Creek TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Carnegie Borough",
+        "coords": [
+            -80.077566,
+            40.404769
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Cokeburg Borough",
+        "company": "KLH Engineers",
+        "location": "Cokeburg, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater"
+        ],
+        "description": "Completed MS4 Exemption permit for Cokeburg Borough including development of MS4 mapping. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Cokeburg Borough",
+        "coords": [
+            -80.061296,
+            40.127931
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Elizabeth Township",
+        "company": "KLH Engineers",
+        "location": "Elizabeth, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for Elizabeth Township including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Wylie Run TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Elizabeth Township",
+        "coords": [
+            -79.828005,
+            40.288614
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Glassport Borough",
+        "company": "KLH Engineers",
+        "location": "Glassport, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater"
+        ],
+        "description": "Completed MS4 Exemption permit for Glassport Borough including development of MS4 mapping addressing the UNT to Monongahela River. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Glassport Borough",
+        "coords": [
+            -79.887317,
+            40.341186
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Lincoln Borough",
+        "company": "KLH Engineers",
+        "location": "Lincoln, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for Lincoln Borough including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Wylie Run TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Lincoln Borough",
+        "coords": [
+            -79.85231,
+            40.2878
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "New Eagle Borough",
+        "company": "KLH Engineers",
+        "location": "New Eagle, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater"
+        ],
+        "description": "Completed MS4 Exemption permit for New Eagle Borough including development of MS4 mapping. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "New Eagle Borough",
+        "coords": [
+            -79.9531,
+            40.2075
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "North Belle Vernon Borough",
+        "company": "KLH Engineers",
+        "location": "North Belle Vernon, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for North Belle Vernon Borough including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Speers Run TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "North Belle Vernon Borough",
+        "coords": [
+            -79.8681023,
+            40.1292391
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Oakdale Borough",
+        "company": "KLH Engineers",
+        "location": "Oakdale, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for Oakdale Borough including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the Robinson Run TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Oakdale Borough",
+        "coords": [
+            -80.1847,
+            40.3930
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program (Greensburg Area Joint MS4)",
+        "client": "Southwest Greensburg Borough",
+        "company": "KLH Engineers",
+        "location": "Southwest Greensburg, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 Individual permit for Southwest Greensburg Borough as part of the Greensburg Area Joint MS4 including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the UNT to Jacks Run TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Southwest Greensburg Borough",
+        "coords": [
+            -79.548635,
+            40.293253
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "Stowe Township",
+        "company": "KLH Engineers",
+        "location": "Stowe Township, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 permit for Stowe Township including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the UNT Trib to Monongahela River TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Stowe Township",
+        "coords": [
+            -80.07304909999999,
+            40.4834296
+        ]
+    },
+    {
+        "name": "MS4 Permit and Program",
+        "client": "City of Clairton",
+        "company": "KLH Engineers",
+        "location": "Clairton, PA",
+        "category": "Permitting, GIS, Stormwater",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Desktop",
+            "MS4",
+            "Stormwater",
+            "PRP"
+        ],
+        "description": "Completed MS4 General permit for the City of Clairton including development of MS4 mapping and a Pollutant Reduction Plan (PRP) addressing the UNT Trib to Monongahela River TMDL. Helped establish and support ongoing MS4 program requirements.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/ms4-programs.webp",
+        "start_date": "7/25/2017",
+        "end_date": "10/3/2018",
+        "client_sort": "Clairton, City of",
+        "coords": [
+            -79.883889,
+            40.304252
         ]
     },
     {
