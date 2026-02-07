@@ -300,7 +300,7 @@ export default function Achievements() {
                                                         data-badge-action="journal-link"
                                                         title="View paper"
                                                         aria-label={`View paper: ${item.title}`}
-                                                        className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 transition-colors"
+                                                        className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 ring-1 ring-emerald-200/70 hover:ring-emerald-300 dark:ring-emerald-500/30 dark:hover:ring-emerald-400 transition-all"
                                                     >
                                                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                                     </a>
@@ -333,7 +333,20 @@ export default function Achievements() {
                                     </div>
 
                                     <h4 className={`${item.featured ? 'text-xl' : 'text-base'} font-bold text-slate-900 dark:text-slate-100 leading-snug mb-2`}>
-                                        {item.title}
+                                        {item.link ? (
+                                            <a
+                                                href={item.link}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-flex items-center gap-1 underline decoration-emerald-300/70 underline-offset-4 decoration-1 hover:decoration-2 text-slate-900 dark:text-slate-100 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                                                aria-label={`Open paper: ${item.title}`}
+                                            >
+                                                {item.title}
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 6H19m0 0v5.5M19 6l-7 7M5 5h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z" /></svg>
+                                            </a>
+                                        ) : (
+                                            item.title
+                                        )}
                                     </h4>
                                 </div>
                                 <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-500 font-medium">
