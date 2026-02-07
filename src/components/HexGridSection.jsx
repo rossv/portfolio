@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Database } from 'lucide-react';
 
@@ -186,6 +186,31 @@ export default function HexGridSection() {
     const [activeGroup, setActiveGroup] = useState(null);
     const [lockedGroup, setLockedGroup] = useState(null);
     const [activeTileId, setActiveTileId] = useState(null);
+    const sectionRef = useRef(null);
+
+    useEffect(() => {
+        const sectionNode = sectionRef.current;
+        if (!sectionNode) {
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) {
+                    setActiveGroup(null);
+                    setLockedGroup(null);
+                    setActiveTileId(null);
+                }
+            },
+            { threshold: 0.1 },
+        );
+
+        observer.observe(sectionNode);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, []);
 
     const chunks = [];
     let i = 0;
@@ -200,7 +225,7 @@ export default function HexGridSection() {
     }
 
     return (
-        <section className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
+        <section ref={sectionRef} className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
             <div className="container mx-auto px-2 text-center">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
