@@ -79,6 +79,17 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
 };
 
 export default function NewsSection() {
+    const sortedNews = [...newsData].sort((a, b) => {
+        const dateA = Date.parse(a.date);
+        const dateB = Date.parse(b.date);
+
+        if (Number.isNaN(dateA) && Number.isNaN(dateB)) return 0;
+        if (Number.isNaN(dateA)) return 1;
+        if (Number.isNaN(dateB)) return -1;
+
+        return dateB - dateA;
+    });
+
     return (
         <section id="news" className="py-20 relative overflow-hidden">
             {/* Background Decoration */}
@@ -104,7 +115,7 @@ export default function NewsSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {newsData.map((item, index) => (
+                    {sortedNews.map((item, index) => (
                         <NewsCard key={item.id} item={item} index={index} />
                     ))}
                 </div>
