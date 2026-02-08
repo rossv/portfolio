@@ -33,13 +33,12 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
             className="group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col h-full"
         >
             {/* Image Container */}
-            <div className="relative h-48 overflow-hidden">
-                <div className="absolute inset-0 bg-slate-200 dark:bg-slate-700" /> {/* Placeholder */}
+            <div className="relative h-48 overflow-hidden bg-slate-200 dark:bg-slate-700">
                 {imageSrc && (
                     <img
                         src={imageSrc}
                         alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="relative z-10 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = 'none'; // Hide if broken
