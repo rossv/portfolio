@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Map as MapIcon, LayoutDashboard } from 'lucide-react';
 
@@ -115,39 +115,86 @@ const Bubble = ({ x, y, size, delay, duration }) => (
 );
 
 export default function FloatingIcons() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    const floatingPositions = isMobile
+        ? {
+            python: { x: "6%", y: "60%" },
+            sewer: { x: "72%", y: "62%" },
+            pipe: { x: "14%", y: "72%" },
+            dashboard: { x: "66%", y: "78%" },
+            map: { x: "82%", y: "54%" },
+            bubbles: [
+                { x: "34%", y: "62%", size: 18, delay: 0, duration: 4 },
+                { x: "58%", y: "86%", size: 26, delay: 2, duration: 5 },
+                { x: "86%", y: "70%", size: 14, delay: 1, duration: 3 },
+                { x: "18%", y: "80%", size: 22, delay: 3, duration: 6 },
+                { x: "48%", y: "92%", size: 16, delay: 1.5, duration: 4.5 },
+            ],
+        }
+        : {
+            python: { x: "4%", y: "15%" },
+            sewer: { x: "85%", y: "12%" },
+            pipe: { x: "12%", y: "22%" },
+            dashboard: { x: "80%", y: "22%" },
+            map: { x: "90%", y: "18%" },
+            bubbles: [
+                { x: "40%", y: "10%", size: 20, delay: 0, duration: 4 },
+                { x: "60%", y: "80%", size: 30, delay: 2, duration: 5 },
+                { x: "90%", y: "50%", size: 15, delay: 1, duration: 3 },
+                { x: "20%", y: "40%", size: 25, delay: 3, duration: 6 },
+                { x: "50%", y: "90%", size: 18, delay: 1.5, duration: 4.5 },
+            ],
+        };
+
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
             {/* Python - Top Left */}
-            <FloatingItem x="4%" y="15%" delay={0} duration={6}>
+            <FloatingItem x={floatingPositions.python.x} y={floatingPositions.python.y} delay={0} duration={6}>
                 <PythonLogo className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
             {/* Sewer Network - Top Right */}
-            <FloatingItem x="85%" y="12%" delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
+            <FloatingItem x={floatingPositions.sewer.x} y={floatingPositions.sewer.y} delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
                 <SewerNetwork className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
             {/* Pipe Section - Upper Left (Staggered) */}
-            <FloatingItem x="12%" y="22%" delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
+            <FloatingItem x={floatingPositions.pipe.x} y={floatingPositions.pipe.y} delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
                 <PipeSection className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
             {/* App Dashboard - Upper Right (Staggered) */}
-            <FloatingItem x="80%" y="22%" delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
+            <FloatingItem x={floatingPositions.dashboard.x} y={floatingPositions.dashboard.y} delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
                 <AppDashboard className="w-full h-full drop-shadow-md" />
             </FloatingItem>
 
             {/* Map - Lower Right */}
-            <FloatingItem x="90%" y="18%" delay={1.5} duration={5} size="w-20 h-20">
+            <FloatingItem x={floatingPositions.map.x} y={floatingPositions.map.y} delay={1.5} duration={5} size="w-20 h-20">
                 <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
             </FloatingItem>
 
             {/* Bubbles */}
-            <Bubble x="40%" y="10%" size={20} delay={0} duration={4} />
-            <Bubble x="60%" y="80%" size={30} delay={2} duration={5} />
-            <Bubble x="90%" y="50%" size={15} delay={1} duration={3} />
-            <Bubble x="20%" y="40%" size={25} delay={3} duration={6} />
-            <Bubble x="50%" y="90%" size={18} delay={1.5} duration={4.5} />
+            {floatingPositions.bubbles.map((bubble, index) => (
+                <Bubble
+                    key={`${bubble.x}-${bubble.y}-${index}`}
+                    x={bubble.x}
+                    y={bubble.y}
+                    size={bubble.size}
+                    delay={bubble.delay}
+                    duration={bubble.duration}
+                />
+            ))}
         </div>
     )
 }
