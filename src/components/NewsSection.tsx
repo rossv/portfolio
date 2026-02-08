@@ -30,7 +30,7 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col h-full"
+            className="group relative bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-700 flex flex-col h-full w-80 sm:w-96 shrink-0"
         >
             {/* Image Container */}
             <div className="relative h-48 overflow-hidden bg-slate-200 dark:bg-slate-700">
@@ -114,9 +114,11 @@ export default function NewsSection() {
                     </motion.div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="flex gap-8 overflow-x-auto pb-6 snap-x snap-mandatory">
                     {sortedNews.map((item, index) => (
-                        <NewsCard key={item.id} item={item} index={index} />
+                        <div key={item.id} className="snap-start">
+                            <NewsCard item={item} index={index} />
+                        </div>
                     ))}
                 </div>
             </div>
