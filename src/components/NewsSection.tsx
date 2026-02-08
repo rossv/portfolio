@@ -89,7 +89,7 @@ export default function NewsSection() {
         let direction = 1;
         let lastTime = performance.now();
         let isPaused = false;
-        const scrollSpeed = 0.02;
+        const scrollSpeed = 0.08;
 
         const handlePause = () => {
             isPaused = true;
@@ -164,7 +164,7 @@ export default function NewsSection() {
                 <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl translate-y-1/2 translate-x-1/2"></div>
             </div>
 
-            <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+            <div className="mx-auto px-6 relative z-10 w-full max-w-none">
                 <div className="text-center mb-16">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -182,10 +182,10 @@ export default function NewsSection() {
 
                 <div
                     ref={scrollRef}
-                    className="flex gap-8 overflow-x-auto pb-6 snap-x snap-mandatory"
+                    className="flex gap-8 overflow-x-auto pb-6 w-full"
                 >
                     {sortedNews.map((item, index) => (
-                        <div key={item.id} className="snap-start">
+                        <div key={item.id} className="shrink-0">
                             <NewsCard item={item} index={index} />
                         </div>
                     ))}
