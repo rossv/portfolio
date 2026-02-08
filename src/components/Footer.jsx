@@ -1,16 +1,8 @@
-import abstractPaperCut from '../assets/abstract-paper-cut.webp';
 import { Github, Linkedin } from 'lucide-react';
 
 export default function Footer() {
     return (
-        <footer id="footer" className="relative py-12 overflow-hidden">
-            {/* Background Image with Overlay */}
-            <div className="absolute inset-0 z-0 opacity-10 dark:opacity-5 pointer-events-none mix-blend-multiply dark:mix-blend-overlay">
-                <img src={abstractPaperCut.src} alt="" className="w-full h-full object-cover" />
-            </div>
-
-            {/* Gradient Overlay to fade into the page content */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/30 dark:to-slate-900/30 z-0"></div>
+        <footer id="footer" className="relative py-12">
 
             <div className="container mx-auto px-6 relative z-10 text-center">
                 <p className="font-mono text-sm text-slate-500 dark:text-slate-400">
