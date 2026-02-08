@@ -307,15 +307,19 @@ export default function Achievements() {
                             {item.image && (
                                 <div className="absolute inset-0 pointer-events-none overflow-hidden">
                                     {/* Top fade to protect header readability */}
-                                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/80 via-white/40 to-transparent dark:from-slate-800/80 dark:via-slate-800/40 z-10" />
+                                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/90 via-white/55 to-transparent dark:from-slate-900/60 dark:via-slate-900/30 z-10" />
 
                                     <img
                                         src={item.image.src || item.image}
                                         alt=""
-                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-60 dark:opacity-40 mix-blend-multiply dark:mix-blend-overlay scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
+                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-65 dark:opacity-70 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
+                                        style={{
+                                            WebkitMaskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
+                                            maskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
+                                        }}
                                     />
                                     {/* Bottom Masking gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/60 to-white dark:via-slate-800/60 dark:to-slate-800" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/70 to-white/95 dark:via-slate-900/45 dark:to-slate-900/70" />
                                 </div>
                             )}
 
