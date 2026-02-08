@@ -9,6 +9,14 @@ import gisTechnicalLeadImg from '../assets/recognition/recognition-gis-technical
 import daleCarnegieImg from '../assets/recognition/recognition-dale-carnegie.webp';
 import asceEwriImg from '../assets/recognition/recognition-asce-ewri.webp';
 
+import clevelandImg from '../assets/skylines/cleveland.webp';
+import denverImg from '../assets/skylines/denver.webp';
+import monroevilleImg from '../assets/skylines/monroeville.webp';
+import palmSprings1Img from '../assets/skylines/palm_springs_1.webp';
+import palmSprings2Img from '../assets/skylines/palm_springs_2.webp';
+import stateCollegeImg from '../assets/skylines/state_college.webp';
+import torontoImg from '../assets/skylines/toronto.webp';
+
 const positions = [
     {
         title: "Leadership Academy",
@@ -102,44 +110,53 @@ const presentations = [
         conference: "OneWater 2025 - Cleveland, OH",
         types: ["Presentation"],
         roles: ["Co-Presenter"],
-        featured: true // Make this spans 2 cols
+        featured: true,
+        image: clevelandImg
     },
     {
-        title: "GIS-Driven Hydraulic Model Expansion",
-        conference: "3 Rivers Wet Weather 2025 - Pittsburgh, PA",
+        title: "GIS-Driven Hydraulic Model Expansion: A Case Study from Pittsburgh Water",
+        conference: "3 Rivers Wet Weather 2025 - Monroeville, PA",
         types: ["Presentation"],
         roles: ["Lead Presenter"],
+        link: "https://www.3riverswetweather.org/sites/default/files/Conference%20booklet%202025%20for%20web%20-4.pdf",
+        image: monroevilleImg
     },
     {
-        title: "Advancing SWMM Parameter Optimization",
-        conference: "ICWWMM 2025 - Toronto Canada",
+        title: "Exploration of Model Parameter Optimization Strategies for Improved SWMM Model Calibrations",
+        conference: "ICWWMM 2025 - Toronto, Canada",
         types: ["Paper", "Presentation"],
         roles: ["Co-Author"],
+        link: "https://www.icwmm.org/Archive/2025-C034-01/exploration-of-model-parameter-optimization-strategies-for-improved-swmm-model-calibrations",
+        image: torontoImg
     },
     {
         title: "GIS-Driven Hydraulic Model Expansion",
         conference: "PA KeystoneGIS Conference - State College, PA 2024",
         types: ["Presentation"],
         roles: ["Lead Presenter"],
+        image: stateCollegeImg
     },
     {
         title: "PWSA Model Expansion Case Study",
         conference: "IMGIS 2024 - Palm Springs, CA",
         types: ["Presentation"],
         roles: ["Presenter"],
+        image: palmSprings2Img
     },
     {
-        title: "Manifolded Force Main System Prioritization",
+        title: "Lessons Learned Project Prioritization of a Manifolded Force Main System",
         conference: "Optimatics North America Users Conference - Denver, CO 2024",
         types: ["Presentation"],
         roles: ["Presenter"],
+        image: denverImg
     },
     {
         title: "Comparison and analysis of hydrodynamic models for restoration projects: the case of pool-riffle structures",
-        conference: "EWRI Congress 2011",
+        conference: "EWRI Congress 2011 - Palm Springs, CA",
         types: ["Paper", "Presentation"],
         roles: ["Lead Author"],
-        link: "https://ascelibrary.org/doi/abs/10.1061/41173(414)328"
+        link: "https://ascelibrary.org/doi/abs/10.1061/41173(414)328",
+        image: palmSprings1Img
     }
 ];
 
@@ -225,7 +242,7 @@ export default function Achievements() {
                             <h3 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4 text-white drop-shadow-lg">
                                 {award.title}
                             </h3>
-                            <p className="text-slate-200 text-lg font-medium leading-relaxed max-w-sm drop-shadow-md">
+                            <p className="text-slate-200 text-lg font-medium leading-relaxed max-sm drop-shadow-md">
                                 {award.description}
                             </p>
                         </div>
@@ -284,9 +301,25 @@ export default function Achievements() {
                         <BentoItem
                             key={i + "paper"}
                             delay={0.3 + (i * 0.05)}
-                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700 ${getPresentationGradient(item.types)}`}
+                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700 ${getPresentationGradient(item.types)} relative overflow-hidden group/card`}
                         >
-                            <div className="flex flex-col h-full justify-between">
+                            {/* Background Image - Higher vibrancy, focused at the bottom */}
+                            {item.image && (
+                                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                                    {/* Top fade to protect header readability */}
+                                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/80 via-white/40 to-transparent dark:from-slate-800/80 dark:via-slate-800/40 z-10" />
+
+                                    <img
+                                        src={item.image.src || item.image}
+                                        alt=""
+                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-60 dark:opacity-40 mix-blend-multiply dark:mix-blend-overlay scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
+                                    />
+                                    {/* Bottom Masking gradient */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/60 to-white dark:via-slate-800/60 dark:to-slate-800" />
+                                </div>
+                            )}
+
+                            <div className="flex flex-col h-full justify-between relative z-10">
                                 <div>
                                     <div className="flex flex-wrap gap-2 mb-3">
                                         {/* Types Icons */}
@@ -300,7 +333,7 @@ export default function Achievements() {
                                                         data-badge-action="journal-link"
                                                         title="View paper"
                                                         aria-label={`View paper: ${item.title}`}
-                                                        className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 ring-1 ring-emerald-200/70 hover:ring-emerald-300 dark:ring-emerald-500/30 dark:hover:ring-emerald-400 transition-all"
+                                                        className="p-1.5 rounded bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300 hover:text-emerald-700 hover:bg-emerald-200/80 dark:hover:bg-emerald-500/40 ring-1 ring-emerald-200/70 hover:ring-emerald-300 dark:ring-emerald-500/30 dark:hover:ring-emerald-400 transition-all shadow-[0_0_10px_rgba(16,185,129,0.3)] hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]"
                                                     >
                                                         <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                                     </a>
@@ -338,7 +371,7 @@ export default function Achievements() {
                                                 href={item.link}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="inline-flex items-center gap-1 underline decoration-emerald-300/70 underline-offset-4 decoration-1 hover:decoration-2 text-slate-900 dark:text-slate-100 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
+                                                className="inline-flex items-center gap-1 text-slate-900 dark:text-slate-100 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors"
                                                 aria-label={`Open paper: ${item.title}`}
                                             >
                                                 {item.title}
@@ -349,8 +382,8 @@ export default function Achievements() {
                                         )}
                                     </h4>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-500 font-medium">
-                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <div className="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 font-bold drop-shadow-sm transition-colors group-hover/card:text-indigo-700 dark:group-hover/card:text-indigo-300">
+                                    <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                     <span className="">{item.conference}</span>
                                 </div>
                             </div>
