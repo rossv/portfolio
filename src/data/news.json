@@ -6,7 +6,7 @@
         "url": "https://www.dell.com/en-us/blog/wade-trim-accelerates-material-design-and-simulation/",
         "date": "February 2026",
         "description": "Discover how Wade Trim accelerates high-fidelity simulations with Dell Pro Max workstations and NVIDIA RTX PRO GPUs, reducing runtimes from 48 to 8 hours.",
-        "imageUrl": "/src/assets/news/dell-wade-trim.webp"
+        "imageUrl": "/assets/news/dell-wade-trim.webp"
     },
     {
         "id": "wade-trim-join",
@@ -15,7 +15,7 @@
         "url": "https://www.wadetrim.com/khan-volkwein-join/",
         "date": "2021",
         "description": "Khalid Khan and Ross Volkwein joined Wade Trim's Water Resources Group in Pittsburgh, bringing expertise in H&H modeling and stormwater management.",
-        "imageUrl": "/src/assets/news/wade-trim-join.webp"
+        "imageUrl": "/assets/news/wade-trim-join.webp"
     },
     {
         "id": "swan-americas-research",
@@ -24,6 +24,6 @@
         "url": "https://swan-forum.com/publications/swan-americas-research-project/",
         "date": "December 2025",
         "description": "Contributing to the SWAN Americas Alliance research project focusing on the role of Agentic AI in the water sector.",
-        "imageUrl": "/src/assets/news/swan-research.webp"
+        "imageUrl": "/assets/news/swan-research.webp"
     }
 ]

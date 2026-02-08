@@ -12,18 +12,13 @@ interface NewsItem {
     imageUrl: string;
 }
 
-const newsAssets = import.meta.glob('../assets/news/*', { eager: true });
-
 const getNewsImageSrc = (imgProperty: string) => {
     if (!imgProperty) return null;
     if (imgProperty.startsWith('http')) return imgProperty;
+    if (imgProperty.startsWith('/assets/')) return imgProperty;
 
     const filename = imgProperty.split('/').pop();
-    const globKey = `../assets/news/${filename}`;
-    const assetModule = newsAssets[globKey] as any;
-
-    if (!assetModule) return null;
-    return assetModule.default?.src || assetModule.default;
+    return filename ? `/assets/news/${filename}` : null;
 };
 
 const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
