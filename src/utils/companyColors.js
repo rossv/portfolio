@@ -5,7 +5,6 @@ export const COMPANY_COLORS = {
     "KLH Engineers, Inc.": "#496980",
     "KLH Engineers Inc.": "#496980",
     "Civil & Environmental Consultants": "#fcb900",
-    "Civil & Environmental Consultants, Inc.": "#fcb900",
     "University of Pittsburgh": "#083b97",
     "Earth Processes & Environmental Flows Group": "#083b97",
     "National Energy Technology Lab": "#3e3e3e",
