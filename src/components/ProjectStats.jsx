@@ -106,11 +106,13 @@ export default function ProjectStats({ projects }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <StatCard title="Total Projects" className="justify-center items-center relative overflow-hidden group">
                 <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="text-6xl font-black text-slate-800 dark:text-slate-100 font-mono z-10 relative drop-shadow-sm">
-                    {projects.length}
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 z-10 relative font-bold uppercase tracking-widest">
-                    Projects Found
+                <div className="flex flex-col items-center z-10 relative">
+                    <div className="text-6xl font-black text-slate-800 dark:text-slate-100 font-mono drop-shadow-sm">
+                        {projects.length}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
+                        Projects Found
+                    </div>
                 </div>
                 {/* Decorative Background */}
                 <div className="absolute -right-4 -bottom-8 text-9xl text-slate-200 dark:text-slate-800 opacity-20 transform rotate-12 select-none pointer-events-none">
