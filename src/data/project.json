@@ -1,7 +1,7 @@
 [
     {
         "name": "GIS Hydrology Intersection Tool",
-        "client": "Civil & Environmental Consultants, Inc.",
+        "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
         "category": "GIS, Coding, Tool Development",
@@ -17,7 +17,7 @@
         "image": "/src/assets/projects/gis-hydrology-intersection-tool.webp",
         "start_date": "1/26/2015",
         "end_date": "1/5/2016",
-        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "client_sort": "Civil & Environmental Consultants",
         "coords": [
             -80.10065,
             40.424725
@@ -47,7 +47,7 @@
     },
     {
         "name": "Contact Search Tool",
-        "client": "Civil & Environmental Consultants, Inc.",
+        "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
         "category": "Tool Development",
@@ -62,7 +62,7 @@
         "image": "/src/assets/projects/contact-search-tool.webp",
         "start_date": "1/28/2015",
         "end_date": "12/22/2015",
-        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "client_sort": "Civil & Environmental Consultants",
         "coords": [
             -80.10065,
             40.424725
@@ -254,7 +254,7 @@
     },
     {
         "name": "CEC Go Development",
-        "client": "Civil & Environmental Consultants, Inc.",
+        "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
         "category": "GIS, Land Development, Tool Development",
@@ -273,7 +273,7 @@
         "image": "/src/assets/projects/cec-go-development.webp",
         "start_date": "1/8/2016",
         "end_date": "4/14/2016",
-        "client_sort": "Civil & Environmental Consultants, Inc.",
+        "client_sort": "Civil & Environmental Consultants",
         "coords": [
             -80.10065,
             40.424725
@@ -1133,7 +1133,7 @@
     {
         "name": "Oakland Avenue Commercial Development",
         "client": "Indy Apple, LLC",
-        "company": "Civil & Environmental Consultants, Inc.",
+        "company": "Civil & Environmental Consultants",
         "location": "Indiana, PA",
         "category": "Land Development, Grading, Erosion & Sedimentation Control, Permitting, Stormwater Design",
         "tags": [
@@ -2809,7 +2809,7 @@
         ],
         "description": "Supported GIS team in the transformation of GPS survey data, resolved quality issues, and ensured accurate GNSS receiver integration with ArcGIS Field Maps and a well-organized schema; performed QA/QC on field-collected data and supported web map projection setup for reliable workflows",
         "title": "Professional Engineer",
-        "project_role": "GIS Specialist, Technology Advisor",
+        "project_role": "GIS Specialist, Technical Advisor",
         "image": "/src/assets/projects/midland_hydrants.webp",
         "start_date": "1/3/2024",
         "end_date": "6/13/2024",
@@ -2855,7 +2855,7 @@
         ],
         "description": "Provided QA/QC oversight, technical guidance, and strategic direction for statewide synchronization of PA 116 parcels with MDOT trunkline corridor data; advised on migration methods, troubleshot GIS workflows, coordinated with stakeholders, and supported spatial/attribute review aligned with MDARD\u2019s database",
         "title": "Professional Engineer",
-        "project_role": "GIS Specialist, Technology Advisor",
+        "project_role": "GIS Specialist, Technical Advisor",
         "image": "/src/assets/projects/mdot_pa116.webp",
         "start_date": "4/11/2024",
         "end_date": "5/28/2024",
@@ -2881,7 +2881,7 @@
         ],
         "description": "Led consolidation of disparate GIS sources and paper mapping into a single authoritative sanitary sewer asset dataset; oversaw quality control and resolution of technical obstacles; delivered a standardized utility database with customized domains and improved web/Field Maps workflows",
         "title": "Professional Engineer",
-        "project_role": "GIS Specialist, Technology Advisor",
+        "project_role": "GIS Specialist, Technical Advisor",
         "image": "/src/assets/projects/mvsa_gis.webp",
         "start_date": "4/29/2024",
         "end_date": "4/2/2025",
@@ -2930,7 +2930,7 @@
         ],
         "description": "Advised on GIS modernization planning; standardized and validated sanitary, stormwater, and planning datasets into a single source of truth; migrated data to online platforms and built web mapping/mobile applications; enabled integration of inspection & maintenance data and trained staff",
         "title": "Professional Engineer",
-        "project_role": "GIS Specialist, Technology Advisor",
+        "project_role": "GIS Specialist, Technical Advisor",
         "image": "/src/assets/projects/bethel_gis.webp",
         "start_date": "11/10/2022",
         "end_date": "",
@@ -3029,7 +3029,7 @@
         ],
         "description": "Various activities to support the tunnel program including data processing and script development and advisory input.",
         "title": "Professional Engineer",
-        "project_role": "Technology Advisor, Modeler",
+        "project_role": "Technical Advisor, Modeler",
         "image": "",
         "start_date": "6/1/2021",
         "end_date": "8/18/2025",
@@ -3052,7 +3052,7 @@
         ],
         "description": "Advisor role for ongoing H&H modeling work in the Four Mile Run shed including model review, and sensitivity analysis.",
         "title": "Professional Engineer",
-        "project_role": "Technology Advisor, QAQC",
+        "project_role": "Technical Advisor, QAQC",
         "image": "",
         "start_date": "6/30/2025",
         "end_date": "",
