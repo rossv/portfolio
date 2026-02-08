@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import newsData from '../data/news.json';
 
@@ -79,6 +79,72 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
 };
 
 export default function NewsSection() {
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (!container) return;
+
+        let animationFrameId = 0;
+        let direction = 1;
+        let lastTime = performance.now();
+        let isPaused = false;
+        const scrollSpeed = 0.02;
+
+        const handlePause = () => {
+            isPaused = true;
+        };
+
+        const handleResume = () => {
+            isPaused = false;
+            lastTime = performance.now();
+        };
+
+        const tick = (time: number) => {
+            const delta = time - lastTime;
+            lastTime = time;
+
+            if (!isPaused) {
+                const maxScrollLeft = container.scrollWidth - container.clientWidth;
+
+                if (maxScrollLeft > 0) {
+                    const nextScrollLeft = container.scrollLeft + direction * delta * scrollSpeed;
+
+                    if (nextScrollLeft <= 0) {
+                        container.scrollLeft = 0;
+                        direction = 1;
+                    } else if (nextScrollLeft >= maxScrollLeft) {
+                        container.scrollLeft = maxScrollLeft;
+                        direction = -1;
+                    } else {
+                        container.scrollLeft = nextScrollLeft;
+                    }
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(tick);
+        };
+
+        animationFrameId = requestAnimationFrame(tick);
+
+        container.addEventListener('mouseenter', handlePause);
+        container.addEventListener('mouseleave', handleResume);
+        container.addEventListener('focusin', handlePause);
+        container.addEventListener('focusout', handleResume);
+        container.addEventListener('touchstart', handlePause);
+        container.addEventListener('touchend', handleResume);
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            container.removeEventListener('mouseenter', handlePause);
+            container.removeEventListener('mouseleave', handleResume);
+            container.removeEventListener('focusin', handlePause);
+            container.removeEventListener('focusout', handleResume);
+            container.removeEventListener('touchstart', handlePause);
+            container.removeEventListener('touchend', handleResume);
+        };
+    }, []);
+
     const sortedNews = [...newsData].sort((a, b) => {
         const dateA = Date.parse(a.date);
         const dateB = Date.parse(b.date);
@@ -114,7 +180,10 @@ export default function NewsSection() {
                     </motion.div>
                 </div>
 
-                <div className="flex gap-8 overflow-x-auto pb-6 snap-x snap-mandatory">
+                <div
+                    ref={scrollRef}
+                    className="flex gap-8 overflow-x-auto pb-6 snap-x snap-mandatory"
+                >
                     {sortedNews.map((item, index) => (
                         <div key={item.id} className="snap-start">
                             <NewsCard item={item} index={index} />
