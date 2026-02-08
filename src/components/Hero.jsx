@@ -95,6 +95,7 @@ export default function Hero() {
         { label: "Skills", id: "skills", accent: "from-indigo-500/90 to-sky-400/90" },
         { label: "Timeline", id: "timeline", accent: "from-sky-500/90 to-cyan-400/90" },
         { label: "Achievements", id: "achievements", accent: "from-purple-500/90 to-indigo-400/90" },
+        { label: "News", id: "news", accent: "from-pink-500/90 to-rose-400/90" },
         { label: "Projects", id: "projects", accent: "from-emerald-500/90 to-lime-400/90" }
     ];
 
