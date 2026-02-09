@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import newsData from '../data/news.json';
 
@@ -82,6 +82,7 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
 
 export default function NewsSection() {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const [scrollProgress, setScrollProgress] = useState(0);
 
     useEffect(() => {
         const container = scrollRef.current;
@@ -178,6 +179,29 @@ export default function NewsSection() {
         };
     }, []);
 
+    useEffect(() => {
+        const container = scrollRef.current;
+        if (!container) return;
+
+        const updateProgress = () => {
+            const maxScrollLeft = container.scrollWidth - container.clientWidth;
+            if (maxScrollLeft <= 0) {
+                setScrollProgress(0);
+                return;
+            }
+            setScrollProgress(container.scrollLeft / maxScrollLeft);
+        };
+
+        updateProgress();
+        container.addEventListener('scroll', updateProgress, { passive: true });
+        window.addEventListener('resize', updateProgress);
+
+        return () => {
+            container.removeEventListener('scroll', updateProgress);
+            window.removeEventListener('resize', updateProgress);
+        };
+    }, []);
+
     const sortedNews = [...newsData].sort((a, b) => {
         const dateA = Date.parse(a.date);
         const dateB = Date.parse(b.date);
@@ -213,15 +237,29 @@ export default function NewsSection() {
                     </motion.div>
                 </div>
 
-                <div
-                    ref={scrollRef}
-                    className="flex gap-8 overflow-x-auto pb-6 w-full"
-                >
-                    {sortedNews.map((item, index) => (
-                        <div key={item.id} className="shrink-0">
-                            <NewsCard item={item} index={index} />
-                        </div>
-                    ))}
+                <div className="relative">
+                    <div
+                        ref={scrollRef}
+                        className="flex gap-8 overflow-x-auto pb-6 w-full snap-x snap-mandatory"
+                        style={{ scrollSnapType: 'x mandatory' }}
+                    >
+                        {sortedNews.map((item, index) => (
+                            <div key={item.id} className="shrink-0 snap-start">
+                                <NewsCard item={item} index={index} />
+                            </div>
+                        ))}
+                    </div>
+                    <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
+                    <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
+                </div>
+                <div className="relative mt-4 h-1.5 w-full max-w-3xl mx-auto rounded-full bg-slate-200/70 dark:bg-slate-700/50 overflow-hidden">
+                    <div
+                        className="absolute top-0 h-full rounded-full bg-gradient-to-r from-indigo-400/60 via-purple-400/60 to-indigo-400/60 transition-[left] duration-150"
+                        style={{
+                            width: '30%',
+                            left: `${scrollProgress * 70}%`,
+                        }}
+                    />
                 </div>
             </div>
         </section>
