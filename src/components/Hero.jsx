@@ -247,13 +247,15 @@ export default function Hero() {
                     <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden xl:block opacity-50"></div>
 
                     <div
-                        className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group"
+                        className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group aspect-[4/5]"
                         data-badge-target="portrait"
                     >
                         <img
                             src={portrait.src}
                             alt="Ross Volkwein"
-                            className="w-full h-auto object-cover filter grayscale hover:grayscale-0 transition-all duration-700 ease-in-out transform hover:scale-105"
+                            width={800}
+                            height={1000}
+                            className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700 ease-in-out transform hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                     </div>
