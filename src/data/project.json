@@ -716,7 +716,6 @@
             "Hydrant Testing",
             "InfoWater",
             "InfoWater Pro",
-            "LTS",
             "Master Plan",
             "Roughness Calibration",
             "Water Distribution",
@@ -744,8 +743,7 @@
             "ArcGIS",
             "ArcGIS Desktop",
             "Calibration",
-            "InfoWater Pro",
-            "LTS"
+            "InfoWater Pro"
         ],
         "description": "Provided GIS and water modeling troubleshooting to support EWW master planning.",
         "title": "Project Engineer",
@@ -820,7 +818,6 @@
             "ArcGIS Desktop",
             "Hydraulics",
             "InfoSWMM",
-            "LTS",
             "SSOAP",
             "SWMM"
         ],
@@ -1406,7 +1403,6 @@
         "category": "GIS",
         "tags": [
             "ArcGIS Desktop",
-            "LTS",
             "ArcGIS"
         ],
         "description": "Updated GIS database using As-builts and constructed truck maps.",
@@ -1972,7 +1968,6 @@
             "Hydraulics",
             "Hydrology",
             "InfoSWMM",
-            "LTS",
             "PaDEP",
             "QA/QC",
             "Rate Setting",
@@ -2012,7 +2007,7 @@
         "end_date": "10/3/2018",
         "client_sort": "Canonsburg Borough",
         "coords": [
-            -80.185030,
+            -80.18503,
             40.262012
         ]
     },
@@ -2210,7 +2205,7 @@
         "client_sort": "Oakdale Borough",
         "coords": [
             -80.1847,
-            40.3930
+            40.393
         ]
     },
     {
@@ -2511,7 +2506,6 @@
             "Model Review",
             "RDII",
             "SWMM",
-            "LTS",
             "Sanitary Sewer"
         ],
         "description": "Supported SWMM model calibration for the Metropolitan Sewer District of Cincinnati across multiple sanitary flow meter locations, including calibration of several independent sanitary basins. Developed custom Python scripts to revise and redistribute tributary drainage area and allocate RDII along interceptor alignments, improving representation of contributing areas within the model. Produced calibration results, figures, and a final calibration report for the Wade Trim scope of work, and provided independent technical review of other consultant model submissions as part of a broader model review support contract.",
