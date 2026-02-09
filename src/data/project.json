@@ -2317,10 +2317,9 @@
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "ArcGIS",
-            "ArcGIS Desktop",
+            "ArcGIS Pro",
             "Calibration",
             "Hydrant Testing",
-            "InfoWater",
             "InfoWater Pro"
         ],
         "description": "Leveraging existing GIS and as-built data, a water model was constructed and calibrated for the Findlay Township Municipal Authority. The InfoWater Pro model included 2 tanks, 2 booster stations, and several interconnections. Hydrant flow testing was conducted to acquire pressure calibration points and pipe roughness values. The calibrated model was used for planning system expansion, supporting bottling operations, facilitating significant commercial development, and conducting fire flow simulations and alternatives analysis for new tanks and booster pumps.",
@@ -2387,7 +2386,9 @@
         "location": "Charleroi, PA",
         "category": "Hydrologic & Hydraulic Modeling, GIS",
         "tags": [
-            "Alternatives Analysis",
+            "ArcGIS",
+            "InfoWater Pro",
+            "ArcGIS Pro",
             "GIS Migration",
             "Web GIS",
             "Water Distribution"
@@ -2412,7 +2413,8 @@
         "category": "GIS",
         "tags": [
             "ArcGIS",
-            "ArcGIS Pro"
+            "ArcGIS Pro",
+            "Zoning"
         ],
         "description": "Created a zoning map using a decades-old paper map and updated it through ordinance reviews.",
         "title": "Senior Project Engineer",
@@ -2436,7 +2438,8 @@
             "ArcGIS",
             "ArcGIS Desktop",
             "ArcPad",
-            "Leak Detection System"
+            "Leak Detection System",
+            "Field Work"
         ],
         "description": "NETL was to deploy a new mobile air quality monitoring trailer. Testing of this trailer was proposed to be in the Allegheny National Forest which is dense with oil and gas wells. Utilizing a Leak Detection System, the team planned an efficient route to drive throughout and around the forest to detect methane and hydrocarbons from leaking wells. We identified several areas with significant levels of methane detected and presented our findings to staff.",
         "title": "Intern",
@@ -2457,7 +2460,7 @@
         "location": "South Park, PA",
         "category": "Research, GIS",
         "tags": [
-            "IT",
+            "IT Infrastructure",
             "Visualization"
         ],
         "description": "Assembled and integrated a $200,000 visualization lab for visualizing large datsets including subsurface geophysical models and air quality models. This lab was used to visualize data for NETL staff and was used to present findings to NETL staff.",
@@ -2479,8 +2482,7 @@
         "location": "Oakland, PA",
         "category": "Coding",
         "tags": [
-            "HTML",
-            "SSO"
+            "HTML"
         ],
         "description": "Worked with faculty to maintain the entire Civil & Environmental Engineering webpage including keeping forms up to date, adding new web pages and helping professors update their personal pages.",
         "title": "Undergraduate Student",
@@ -2527,7 +2529,10 @@
         "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
-            "Calibration"
+            "Calibration",
+            "QAQC",
+            "Model Review",
+            "PCSWMM"
         ],
         "description": "Supported calibration reviews for the Metropolitan Sewer Authority of Greater Cincinnati, including a 2020 model assessment and TSF tool work. Key focus areas: Calibration, Hydraulic Modeling, Metropolitan Sewer Authority of Greater Cincinnati.",
         "title": "Professional Engineer",
@@ -2566,14 +2571,16 @@
         ]
     },
     {
-        "name": "Alts SOT Gate",
+        "name": "Alterantives Southerly Tunnel Gate",
         "client": "Northeast Ohio Regional Sewer District",
         "company": "Wade Trim",
         "location": "Cleveland, OH",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Calibration",
-            "Gates/Controls"
+            "Gates/Controls",
+            "InfoWorks ICM SE",
+            "Hydraulic Modeling"
         ],
         "description": "Supported the Northeast Ohio Regional Sewer District on the Alts SOT Gate effort, including pulling HGLs and hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, Northeast Ohio Regional Sewer District.",
         "title": "Professional Engineer",
@@ -2600,7 +2607,14 @@
             "QA/QC",
             "SWMM",
             "Dashboard",
-            "Calibration"
+            "Calibration",
+            "Model Review",
+            "PCSWMM",
+            "ArcGIS",
+            "InfoAsset Manager",
+            "ArcGIS Field Maps",
+            "ArcGIS Pro",
+            "ArcGIS Online"
         ],
         "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Oversaw field data collection and integration into SWMM updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data; and contributed to the winning proposal development.",
         "title": "Professional Engineer",
@@ -2621,9 +2635,8 @@
         "location": "St. Clair, MI",
         "category": "Asset Management",
         "tags": [
-            "InfoAsset Manager",
-            "GIS Content",
-            "Data Consolidation"
+            "Cartegraph",
+            "Asset Management"
         ],
         "description": "Used Cartegraph to manage assets for a landfill client.",
         "title": "Professional Engineer",
@@ -2647,7 +2660,6 @@
             "Analytics",
             "Client Portals",
             "Digital Delivery",
-            "GIS Content",
             "M365",
             "SharePoint",
             "Dashboard"
@@ -2821,7 +2833,8 @@
         "category": "Coding",
         "tags": [
             "Python",
-            "Calibration"
+            "Calibration",
+            "Scripting"
         ],
         "description": "Developed a Python tool to interface with model .out files and pull requested .tsf files. Later improved this code and integrated it into the \"Autocalibration\" tool being developed on behalf of Wade Trim.",
         "title": "Professional Engineer",
@@ -2845,7 +2858,7 @@
             "Data Migration",
             "Parcel Data",
             "QA/QC",
-            "Trunkline Corridors"
+            "ArcGIS Pro"
         ],
         "description": "Provided QA/QC oversight, technical guidance, and strategic direction for statewide synchronization of PA 116 parcels with MDOT trunkline corridor data; advised on migration methods, troubleshot GIS workflows, coordinated with stakeholders, and supported spatial/attribute review aligned with MDARD\u2019s database",
         "title": "Professional Engineer",
@@ -2871,7 +2884,9 @@
             "Field Maps",
             "Utility Schema",
             "Web Apps",
-            "Sanitary Sewer"
+            "Sanitary Sewer",
+            "ArcGIS Pro",
+            "ArcGIS Online"
         ],
         "description": "Led consolidation of disparate GIS sources and paper mapping into a single authoritative sanitary sewer asset dataset; oversaw quality control and resolution of technical obstacles; delivered a standardized utility database with customized domains and improved web/Field Maps workflows",
         "title": "Professional Engineer",
@@ -2886,13 +2901,18 @@
         ]
     },
     {
-        "name": "South Beaches",
+        "name": "South Beaches Initial Manifold Forecemain Optimization",
         "client": "Brevard County Utilities",
         "company": "Wade Trim",
         "location": "Brevard, FL",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
-            "Pumps/Storage"
+            "Pumps/Storage",
+            "Hydraulic Modeling",
+            "Optimization",
+            "Optimatics",
+            "Optimizer",
+            "EPANET"
         ],
         "description": "Supported Brevard County Utilities on the South Beaches project, including reviewing pump curve model updates. Key focus areas: Pumps/Storage, Hydraulic Modeling, Brevard County.",
         "title": "Professional Engineer",
@@ -2920,7 +2940,8 @@
             "Web Mapping",
             "Stormwater",
             "Sanitary Sewer",
-            "ArcGIS"
+            "ArcGIS",
+            "ArcGIS Pro"
         ],
         "description": "Advised on GIS modernization planning; standardized and validated sanitary, stormwater, and planning datasets into a single source of truth; migrated data to online platforms and built web mapping/mobile applications; enabled integration of inspection & maintenance data and trained staff",
         "title": "Professional Engineer",
@@ -2945,7 +2966,9 @@
             "Calibration",
             "Pump Station",
             "Storage Tanks",
-            "QA/QC"
+            "QA/QC",
+            "InfoWater Pro",
+            "EPANET"
         ],
         "description": "Supporting water model calibration and design to size a new pump station and ground storage tank to accommodate a new supply connection to Great Lake Water Authority. Oversight of staff and technical QA/QC of model and recommendations.",
         "title": "Professional Engineer",
@@ -2961,12 +2984,14 @@
     },
     {
         "name": "T2 44 Valve Project",
-        "client": "Great Lake Water Authority",
+        "client": "Great Lakes Water Authority",
         "company": "Wade Trim",
         "location": "Detroit, MI",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
-            "Water Distribution"
+            "Water Distribution",
+            "PCSWMM",
+            "QA/QC"
         ],
         "description": "Supported the Great Lake Water Authority on the T2 44 Valve Project, including discussions on valve hydraulics, head loss calculations, and design considerations. Key focus areas: Water Distribution, Hydraulic Modeling, Great Lake Water Authority.",
         "title": "Professional Engineer",
@@ -3042,7 +3067,9 @@
         "tags": [
             "Hydraulics",
             "Hydrology",
-            "Model Review"
+            "Model Review",
+            "PCSWMM",
+            "QA/QC"
         ],
         "description": "Advisor role for ongoing H&H modeling work in the Four Mile Run shed including model review, and sensitivity analysis.",
         "title": "Professional Engineer",
@@ -3066,7 +3093,7 @@
             "Hydraulics",
             "LOS",
             "Resiliency",
-            "Water Distribution"
+            "Optimization"
         ],
         "description": "Level of service and resiliency analysis for municipal water systems.",
         "title": "Professional Engineer",
@@ -3081,7 +3108,7 @@
         ]
     },
     {
-        "name": "Autocalibrator (WACK) & SWMM Calibration Automation Toolkit",
+        "name": "SWMM Autocalibrator",
         "client": "Internal",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
