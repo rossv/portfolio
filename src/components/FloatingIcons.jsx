@@ -135,11 +135,11 @@ export default function FloatingIcons() {
             dashboard: { x: "66%", y: "78%" },
             map: { x: "82%", y: "54%" },
             bubbles: [
-                { x: "34%", y: "62%", size: 18, delay: 0, duration: 4 },
-                { x: "58%", y: "86%", size: 26, delay: 2, duration: 5 },
-                { x: "86%", y: "70%", size: 14, delay: 1, duration: 3 },
-                { x: "18%", y: "80%", size: 22, delay: 3, duration: 6 },
-                { x: "48%", y: "92%", size: 16, delay: 1.5, duration: 4.5 },
+                { x: "6%", y: "18%", size: 16, delay: 0, duration: 4 },
+                { x: "90%", y: "22%", size: 24, delay: 2, duration: 5 },
+                { x: "4%", y: "86%", size: 18, delay: 1, duration: 3 },
+                { x: "92%", y: "78%", size: 22, delay: 3, duration: 6 },
+                { x: "80%", y: "92%", size: 14, delay: 1.5, duration: 4.5 },
             ],
         }
         : {

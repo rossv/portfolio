@@ -374,7 +374,7 @@ export default function BadgeCollection() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-auto sm:top-24 z-50 flex flex-col items-end gap-3">
+    <div className="fixed top-24 right-4 z-50 flex flex-col items-end gap-3">
       {unlockedBadges.map((badge) => {
         const isDismissed = dismissed.has(badge.id);
         const isRecent = recentlyUnlocked.has(badge.id);
