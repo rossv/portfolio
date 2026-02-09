@@ -125,7 +125,28 @@ export default function NewsSection() {
             animationFrameId = requestAnimationFrame(tick);
         };
 
-        animationFrameId = requestAnimationFrame(tick);
+        const startAnimation = () => {
+            if (animationFrameId) return;
+            lastTime = performance.now();
+            animationFrameId = requestAnimationFrame(tick);
+        };
+
+        const stopAnimation = () => {
+            if (!animationFrameId) return;
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = 0;
+        };
+
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const handlePreferenceChange = () => {
+            if (mediaQuery.matches) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        };
+
+        handlePreferenceChange();
 
         container.addEventListener('mouseenter', handlePause);
         container.addEventListener('mouseleave', handleResume);
@@ -133,15 +154,25 @@ export default function NewsSection() {
         container.addEventListener('focusout', handleResume);
         container.addEventListener('touchstart', handlePause);
         container.addEventListener('touchend', handleResume);
+        if ('addEventListener' in mediaQuery) {
+            mediaQuery.addEventListener('change', handlePreferenceChange);
+        } else {
+            mediaQuery.addListener(handlePreferenceChange);
+        }
 
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            stopAnimation();
             container.removeEventListener('mouseenter', handlePause);
             container.removeEventListener('mouseleave', handleResume);
             container.removeEventListener('focusin', handlePause);
             container.removeEventListener('focusout', handleResume);
             container.removeEventListener('touchstart', handlePause);
             container.removeEventListener('touchend', handleResume);
+            if ('removeEventListener' in mediaQuery) {
+                mediaQuery.removeEventListener('change', handlePreferenceChange);
+            } else {
+                mediaQuery.removeListener(handlePreferenceChange);
+            }
         };
     }, []);
 
