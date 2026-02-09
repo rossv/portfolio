@@ -578,6 +578,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                         {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
                                         <button
                                             onClick={closeModal}
+                                            aria-label="Close project details"
                                             className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
