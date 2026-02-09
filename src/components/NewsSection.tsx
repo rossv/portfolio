@@ -190,7 +190,7 @@ export default function NewsSection() {
     });
 
     return (
-        <section id="news" className="py-20 relative overflow-hidden">
+        <section id="news" className="section-shell section-shell--alt relative overflow-hidden">
             {/* Background Decoration */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
