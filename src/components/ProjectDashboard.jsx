@@ -335,6 +335,48 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         setSelectedTags([]);
     };
 
+    const activeFilterChips = useMemo(() => {
+        const chips = [];
+
+        if (filterText) {
+            chips.push({ key: `search-${filterText}`, label: `Search: ${filterText}` });
+        }
+
+        selectedYears.forEach(year => {
+            chips.push({ key: `year-${year}`, label: `Year: ${year}` });
+        });
+
+        selectedClients.forEach(client => {
+            chips.push({ key: `client-${client}`, label: `Client: ${client}` });
+        });
+
+        selectedCompanies.forEach(company => {
+            chips.push({ key: `company-${company}`, label: `Company: ${company}` });
+        });
+
+        selectedCategories.forEach(category => {
+            chips.push({ key: `category-${category}`, label: `Category: ${category}` });
+        });
+
+        selectedRoles.forEach(role => {
+            chips.push({ key: `role-${role}`, label: `Role: ${role}` });
+        });
+
+        selectedTags.forEach(tag => {
+            chips.push({ key: `tag-${tag}`, label: `Tag: ${tag}` });
+        });
+
+        return chips;
+    }, [
+        filterText,
+        selectedYears,
+        selectedClients,
+        selectedCompanies,
+        selectedCategories,
+        selectedRoles,
+        selectedTags,
+    ]);
+
     // Expandable Card State
     const [selectedProject, setSelectedProject] = useState(null);
     const modalTitleId = selectedProject
@@ -433,8 +475,8 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
 
                     {/* Sticky Header: Search & Filters */}
-                    <div className="p-4 md:p-6 z-20 bg-transparent transition-all">
-                        <div className="max-w-4xl mx-auto space-y-4">
+                    <div className="p-4 md:p-6 z-30 sticky top-4 bg-transparent transition-all">
+                        <div className="max-w-4xl mx-auto space-y-4 rounded-2xl bg-white/70 dark:bg-slate-900/70 backdrop-blur border border-white/40 dark:border-slate-700/50 shadow-lg p-4 md:p-6">
                             {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
                             <div className="flex gap-2">
                                 <div className="relative group flex-1">
@@ -488,6 +530,19 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 onReset={handleReset}
                                 filterText={filterText}
                             />
+
+                            {activeFilterChips.length > 0 && (
+                                <div className="flex flex-wrap gap-2 pt-1">
+                                    {activeFilterChips.map(chip => (
+                                        <span
+                                            key={chip.key}
+                                            className="rounded-full border border-slate-200/70 dark:border-slate-700/60 bg-white/60 dark:bg-slate-800/60 px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-300"
+                                        >
+                                            {chip.label}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
