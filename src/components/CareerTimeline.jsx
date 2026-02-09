@@ -287,6 +287,7 @@ const JobDetails = ({ job, mapRef, mapToken }) => {
 export default function CareerTimeline() {
     const [selectedJob, setSelectedJob] = useState(careerData[0]);
     const mapRef = useRef(null);
+    const hasMapboxToken = Boolean(MAPBOX_TOKEN);
 
     const handleJobClick = (job) => {
         setSelectedJob(job);
@@ -297,7 +298,7 @@ export default function CareerTimeline() {
 
     // Update map view when selection changes
     useEffect(() => {
-        if (mapRef.current && selectedJob) {
+        if (hasMapboxToken && mapRef.current && selectedJob) {
             mapRef.current.flyTo({
                 center: selectedJob.coords,
                 zoom: 14,
@@ -305,7 +306,7 @@ export default function CareerTimeline() {
                 duration: 2000
             });
         }
-    }, [selectedJob]);
+    }, [selectedJob, hasMapboxToken]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -402,7 +403,7 @@ export default function CareerTimeline() {
                                                 transition={{ duration: 0.3 }}
                                                 className="overflow-hidden rounded-3xl mt-4 mb-8 border border-slate-200 dark:border-slate-800 shadow-lg"
                                             >
-                                                <JobDetails job={selectedJob} mapRef={mapRef} mapToken={MAPBOX_TOKEN} />
+                                                <JobDetails job={selectedJob} mapRef={mapRef} mapToken={hasMapboxToken ? MAPBOX_TOKEN : ''} />
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -427,7 +428,7 @@ export default function CareerTimeline() {
                                 transition={{ duration: 0.2 }}
                                 className="flex-1 flex flex-col h-full"
                             >
-                                <JobDetails job={selectedJob} mapRef={mapRef} mapToken={MAPBOX_TOKEN} />
+                                <JobDetails job={selectedJob} mapRef={mapRef} mapToken={hasMapboxToken ? MAPBOX_TOKEN : ''} />
                             </motion.div>
                         </AnimatePresence>
                     </div>
