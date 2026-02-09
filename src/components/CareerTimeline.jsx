@@ -350,6 +350,8 @@ export default function CareerTimeline() {
                                                 <img
                                                     src={item.logo.src || item.logo}
                                                     alt={item.company}
+                                                    width={112}
+                                                    height={80}
                                                     className="max-h-full max-w-full object-contain"
                                                 />
                                             </div>
@@ -357,6 +359,8 @@ export default function CareerTimeline() {
                                                 <img
                                                     src={item.logo.src || item.logo}
                                                     alt={item.company}
+                                                    width={64}
+                                                    height={64}
                                                     className="max-w-full max-h-full object-contain"
                                                 />
                                             </div>

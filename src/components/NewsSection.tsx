@@ -38,6 +38,8 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
                     <img
                         src={imageSrc}
                         alt={item.title}
+                        width={384}
+                        height={192}
                         className="relative z-10 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         onError={(e) => {
                             const target = e.target as HTMLImageElement;
