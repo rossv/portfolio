@@ -83,10 +83,13 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
 export default function NewsSection() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
 
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
+        const coarsePointerQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
+        if (coarsePointerQuery.matches) return;
 
         let animationFrameId = 0;
         let direction = 1;
@@ -157,6 +160,9 @@ export default function NewsSection() {
         container.addEventListener('focusout', handleResume);
         container.addEventListener('touchstart', handlePause);
         container.addEventListener('touchend', handleResume);
+        container.addEventListener('pointerdown', handlePause);
+        container.addEventListener('pointerup', handleResume);
+        container.addEventListener('pointercancel', handleResume);
         if ('addEventListener' in mediaQuery) {
             mediaQuery.addEventListener('change', handlePreferenceChange);
         } else {
@@ -171,6 +177,9 @@ export default function NewsSection() {
             container.removeEventListener('focusout', handleResume);
             container.removeEventListener('touchstart', handlePause);
             container.removeEventListener('touchend', handleResume);
+            container.removeEventListener('pointerdown', handlePause);
+            container.removeEventListener('pointerup', handleResume);
+            container.removeEventListener('pointercancel', handleResume);
             if ('removeEventListener' in mediaQuery) {
                 mediaQuery.removeEventListener('change', handlePreferenceChange);
             } else {
@@ -182,6 +191,44 @@ export default function NewsSection() {
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
+        let isPointerDown = false;
+        let startX = 0;
+        let startScrollLeft = 0;
+        let suppressClick = false;
+
+        const handlePointerDown = (event: PointerEvent) => {
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            isPointerDown = true;
+            startX = event.clientX;
+            startScrollLeft = container.scrollLeft;
+            suppressClick = false;
+            setIsDragging(true);
+            container.setPointerCapture(event.pointerId);
+        };
+
+        const handlePointerMove = (event: PointerEvent) => {
+            if (!isPointerDown) return;
+            const deltaX = event.clientX - startX;
+            if (Math.abs(deltaX) > 4) {
+                suppressClick = true;
+            }
+            container.scrollLeft = startScrollLeft - deltaX;
+            event.preventDefault();
+        };
+
+        const handlePointerUp = (event: PointerEvent) => {
+            if (!isPointerDown) return;
+            isPointerDown = false;
+            setIsDragging(false);
+            container.releasePointerCapture(event.pointerId);
+        };
+
+        const handleClick = (event: MouseEvent) => {
+            if (!suppressClick) return;
+            event.preventDefault();
+            event.stopPropagation();
+            suppressClick = false;
+        };
 
         const updateProgress = () => {
             const maxScrollLeft = container.scrollWidth - container.clientWidth;
@@ -195,10 +242,20 @@ export default function NewsSection() {
         updateProgress();
         container.addEventListener('scroll', updateProgress, { passive: true });
         window.addEventListener('resize', updateProgress);
+        container.addEventListener('pointerdown', handlePointerDown);
+        container.addEventListener('pointermove', handlePointerMove);
+        container.addEventListener('pointerup', handlePointerUp);
+        container.addEventListener('pointercancel', handlePointerUp);
+        container.addEventListener('click', handleClick, true);
 
         return () => {
             container.removeEventListener('scroll', updateProgress);
             window.removeEventListener('resize', updateProgress);
+            container.removeEventListener('pointerdown', handlePointerDown);
+            container.removeEventListener('pointermove', handlePointerMove);
+            container.removeEventListener('pointerup', handlePointerUp);
+            container.removeEventListener('pointercancel', handlePointerUp);
+            container.removeEventListener('click', handleClick, true);
         };
     }, []);
 
@@ -240,8 +297,8 @@ export default function NewsSection() {
                 <div className="relative">
                     <div
                         ref={scrollRef}
-                        className="flex gap-8 overflow-x-auto pb-6 w-full snap-x snap-mandatory"
-                        style={{ scrollSnapType: 'x mandatory' }}
+                        className={`flex gap-8 overflow-x-auto overflow-y-hidden pb-6 w-full snap-x snap-proximity scrollbar-hide select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                        style={{ scrollSnapType: 'x proximity' }}
                     >
                         {sortedNews.map((item, index) => (
                             <div key={item.id} className="shrink-0 snap-start">
