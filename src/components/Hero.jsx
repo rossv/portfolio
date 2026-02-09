@@ -33,6 +33,8 @@ export default function Hero() {
     const targetRef = useRef(null);
     const [isStarfield, setIsStarfield] = useState(false);
     const [showRocket, setShowRocket] = useState(false);
+    const rocketTimeoutRef = useRef(null);
+    const hideRocketTimeoutRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -50,7 +52,17 @@ export default function Hero() {
             setIsStarfield(event.detail?.enabled ?? false);
         };
         window.addEventListener('space-nerd-toggle', handleToggle);
-        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
+        return () => {
+            window.removeEventListener('space-nerd-toggle', handleToggle);
+            if (rocketTimeoutRef.current) {
+                clearTimeout(rocketTimeoutRef.current);
+                rocketTimeoutRef.current = null;
+            }
+            if (hideRocketTimeoutRef.current) {
+                clearTimeout(hideRocketTimeoutRef.current);
+                hideRocketTimeoutRef.current = null;
+            }
+        };
     }, []);
 
     const handleSpaceNerdClick = (event) => {
@@ -65,11 +77,21 @@ export default function Hero() {
             new CustomEvent('space-nerd-toggle', { detail: { enabled: nextState } })
         );
         // Launch rocket animation when entering space nerd mode
+        if (rocketTimeoutRef.current) {
+            clearTimeout(rocketTimeoutRef.current);
+            rocketTimeoutRef.current = null;
+        }
+        if (hideRocketTimeoutRef.current) {
+            clearTimeout(hideRocketTimeoutRef.current);
+            hideRocketTimeoutRef.current = null;
+        }
         if (nextState) {
-            setTimeout(() => {
+            rocketTimeoutRef.current = setTimeout(() => {
                 setShowRocket(true);
                 // Hide rocket after animation completes
-                setTimeout(() => setShowRocket(false), 9000);
+                hideRocketTimeoutRef.current = setTimeout(() => {
+                    setShowRocket(false);
+                }, 9000);
             }, 500); // Short delay before rocket appears
         }
     };
