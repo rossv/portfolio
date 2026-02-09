@@ -179,94 +179,109 @@ const careerData = [
     }
 ];
 
-const JobDetails = ({ job, mapRef, mapToken }) => (
-    <div className="flex flex-col h-full bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-sm border border-white/30 dark:border-slate-700/60">
-        {/* Map Header */}
-        <div className="h-64 md:h-80 w-full relative z-0 shrink-0">
-            <Map
-                ref={mapRef}
-                initialViewState={{
-                    longitude: job.coords[0],
-                    latitude: job.coords[1],
-                    zoom: 14,
-                    pitch: 45
-                }}
-                mapStyle="mapbox://styles/mapbox/dark-v11"
-                mapboxAccessToken={mapToken}
-                attributionControl={false}
-                scrollZoom={false}
-            >
-                <Marker
-                    longitude={job.coords[0]}
-                    latitude={job.coords[1]}
-                    anchor="bottom"
-                >
-                    <div className="relative">
-                        <div className="w-12 h-12 rounded-full border-4 border-white shadow-xl z-20 relative flex items-center justify-center bg-white overflow-hidden p-1">
-                            <img src={job.logo.src || job.logo} alt="marker" className="w-full h-full object-contain" />
+const JobDetails = ({ job, mapRef, mapToken }) => {
+    const hasMap = Boolean(mapToken);
+
+    return (
+        <div className="flex flex-col h-full bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-sm border border-white/30 dark:border-slate-700/60">
+            {/* Map Header */}
+            <div className="h-64 md:h-80 w-full relative z-0 shrink-0">
+                {hasMap ? (
+                    <Map
+                        ref={mapRef}
+                        initialViewState={{
+                            longitude: job.coords[0],
+                            latitude: job.coords[1],
+                            zoom: 14,
+                            pitch: 45
+                        }}
+                        mapStyle="mapbox://styles/mapbox/dark-v11"
+                        mapboxAccessToken={mapToken}
+                        attributionControl={false}
+                        scrollZoom={false}
+                    >
+                        <Marker
+                            longitude={job.coords[0]}
+                            latitude={job.coords[1]}
+                            anchor="bottom"
+                        >
+                            <div className="relative">
+                                <div className="w-12 h-12 rounded-full border-4 border-white shadow-xl z-20 relative flex items-center justify-center bg-white overflow-hidden p-1">
+                                    <img src={job.logo.src || job.logo} alt="marker" className="w-full h-full object-contain" />
+                                </div>
+                                <div className="absolute -inset-4 rounded-full animate-ping opacity-30" style={{ backgroundColor: job.color }}></div>
+                                {/* Pin Stand */}
+                                <div className="w-1 h-4 bg-white/80 absolute left-1/2 -bottom-3 -translate-x-1/2 rounded-full" />
+                            </div>
+                        </Marker>
+                    </Map>
+                ) : (
+                    <div className="h-full w-full bg-slate-900/80 flex items-center justify-center text-center px-6">
+                        <div className="space-y-3">
+                            <div className="text-sm uppercase tracking-[0.3em] text-slate-300">Map unavailable</div>
+                            <div className="text-xl md:text-2xl font-bold text-white">{job.location}</div>
+                            <div className="text-xs md:text-sm text-slate-300">{job.fullAddress}</div>
                         </div>
-                        <div className="absolute -inset-4 rounded-full animate-ping opacity-30" style={{ backgroundColor: job.color }}></div>
-                        {/* Pin Stand */}
-                        <div className="w-1 h-4 bg-white/80 absolute left-1/2 -bottom-3 -translate-x-1/2 rounded-full" />
                     </div>
-                </Marker>
-            </Map>
+                )}
 
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/40 dark:from-slate-900/60 via-transparent to-transparent h-full z-10" />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/40 dark:from-slate-900/60 via-transparent to-transparent h-full z-10" />
 
-            <div className="absolute bottom-4 left-6 z-20 pr-4">
-                <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white drop-shadow-sm">{job.company}</h3>
-                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 text-xs md:text-sm font-bold bg-white/80 dark:bg-black/50 backdrop-blur px-3 py-1 rounded-full w-fit mt-2">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    <span className="truncate max-w-[200px] md:max-w-none">{job.fullAddress}</span>
+                <div className="absolute bottom-4 left-6 z-20 pr-4">
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white drop-shadow-sm">{job.company}</h3>
+                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 text-xs md:text-sm font-bold bg-white/80 dark:bg-black/50 backdrop-blur px-3 py-1 rounded-full w-fit mt-2">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <span className="truncate max-w-[200px] md:max-w-none">{job.fullAddress}</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        {/* Content Body */}
-        <div className="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar">
-            <div className="mb-6">
-                <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-2 transition-colors duration-300" style={{ color: job.color }}>Role Overview</h4>
-                <p className="text-base md:text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-                    {job.description}
-                </p>
-            </div>
-
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="flex-1">
-                    <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-3 transition-colors duration-300" style={{ color: job.color }}>Key Achievements & Responsibilities</h4>
-                    <ul className="space-y-3">
-                        {job.details.map((point, i) => (
-                            <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base group/item">
-                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 group-hover/item:bg-indigo-500" style={{ backgroundColor: job.color }}></span>
-                                <span>{point}</span>
-                            </li>
-                        ))}
-                    </ul>
+            {/* Content Body */}
+            <div className="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar">
+                <div className="mb-6">
+                    <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-2 transition-colors duration-300" style={{ color: job.color }}>Role Overview</h4>
+                    <p className="text-base md:text-lg text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                        {job.description}
+                    </p>
                 </div>
 
-                {job.highlights && (
-                    <div className="md:w-1/3 shrink-0">
-                        <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-3 transition-colors duration-300" style={{ color: job.color }}>Roles & Highlights</h4>
+                <div className="flex flex-col md:flex-row gap-8">
+                    <div className="flex-1">
+                        <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-3 transition-colors duration-300" style={{ color: job.color }}>Key Achievements & Responsibilities</h4>
                         <ul className="space-y-3">
-                            {job.highlights.map((highlight, i) => (
-                                <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base">
-                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 opacity-60" style={{ backgroundColor: job.color }}></span>
-                                    <span>{highlight}</span>
+                            {job.details.map((point, i) => (
+                                <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base group/item">
+                                    <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 group-hover/item:bg-indigo-500" style={{ backgroundColor: job.color }}></span>
+                                    <span>{point}</span>
                                 </li>
                             ))}
                         </ul>
                     </div>
-                )}
+
+                    {job.highlights && (
+                        <div className="md:w-1/3 shrink-0">
+                            <h4 className="text-xs md:text-sm uppercase tracking-wider font-bold mb-3 transition-colors duration-300" style={{ color: job.color }}>Roles & Highlights</h4>
+                            <ul className="space-y-3">
+                                {job.highlights.map((highlight, i) => (
+                                    <li key={i} className="flex gap-3 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base">
+                                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-300 opacity-60" style={{ backgroundColor: job.color }}></span>
+                                        <span>{highlight}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 export default function CareerTimeline() {
     const [selectedJob, setSelectedJob] = useState(careerData[0]);
     const mapRef = useRef(null);
+    const hasMap = Boolean(MAPBOX_TOKEN);
 
     const handleJobClick = (job) => {
         setSelectedJob(job);
@@ -277,7 +292,7 @@ export default function CareerTimeline() {
 
     // Update map view when selection changes
     useEffect(() => {
-        if (mapRef.current && selectedJob) {
+        if (hasMap && mapRef.current && selectedJob) {
             mapRef.current.flyTo({
                 center: selectedJob.coords,
                 zoom: 14,
@@ -285,7 +300,7 @@ export default function CareerTimeline() {
                 duration: 2000
             });
         }
-    }, [selectedJob]);
+    }, [hasMap, selectedJob]);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
