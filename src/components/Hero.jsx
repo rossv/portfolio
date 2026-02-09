@@ -103,10 +103,8 @@ export default function Hero() {
         if (element) {
             // Using scrollIntoView with block: 'start' ensures it snaps to the top
             // The sections themselves have padding/scroll-margin to handle spacing
-            console.log(`Scrolling to #${id}`);
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-            console.warn(`Section #${id} not found in DOM`);
             // Fallback: multiple checks or querySelector
             const fallback = document.querySelector(`#${id}`);
             if (fallback) fallback.scrollIntoView({ behavior: 'smooth', block: 'start' });
