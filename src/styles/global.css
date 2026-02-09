@@ -60,6 +60,18 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     @apply scale-110;
   }
 
+  .section-shell {
+    @apply py-16 md:py-24;
+  }
+
+  .section-shell--divider {
+    @apply border-y border-slate-200/70 dark:border-slate-800/70;
+  }
+
+  .section-shell--alt {
+    @apply bg-slate-50/80 dark:bg-slate-900/40;
+  }
+
   /* Global Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 6px;
