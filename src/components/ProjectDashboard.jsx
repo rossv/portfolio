@@ -177,6 +177,16 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
 
 
+    const featuredProjectNames = useMemo(
+        () => new Set([
+            'pittsburgh water wet weather program',
+            'model toolkit',
+            'kiski project',
+            'eww project',
+        ]),
+        []
+    );
+
     // Derived State: Filtering
     const filteredProjects = useMemo(() => {
         let result = projects.filter(project => {
@@ -559,13 +569,14 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
                         <ProjectStats projects={filteredProjects} />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 xl:gap-7 mt-4">
                             {filteredProjects.map((project, index) => (
                                 <ProjectCard
                                     key={`${project.name}-${index}`}
                                     project={project}
                                     onClick={(event) => handleCardClick(project, event)}
                                     isSelected={selectedProject?.name === project.name}
+                                    isFeatured={featuredProjectNames.has(project.name?.toLowerCase())}
                                 />
                             ))}
                         </div>
@@ -687,7 +698,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 }
 
 // Sub-component for individual card (Extracted from old ProjectGrid but simplified/styled)
-function ProjectCard({ project, onClick, isSelected }) {
+function ProjectCard({ project, onClick, isSelected, isFeatured }) {
     // Truncate description to ~80 chars for tighter tiles
     const truncatedDescription = project.description?.length > 80
         ? project.description.substring(0, 80) + "..."
@@ -700,17 +711,34 @@ function ProjectCard({ project, onClick, isSelected }) {
             <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -5, scale: isFeatured ? 1.04 : 1.02 }}
                 onClick={onClick}
                 type="button"
                 aria-pressed={isSelected}
-                className="bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all text-left w-full"
-                style={{ borderTopColor: accentColor }}
+                className={`relative bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all text-left w-full ${isFeatured ? 'border-2 xl:scale-[1.02]' : ''}`}
+                style={{
+                    borderTopColor: accentColor,
+                    borderColor: isFeatured ? accentColor : undefined,
+                    boxShadow: isFeatured ? `0 0 0 1px ${accentColor}40` : undefined,
+                }}
             >
+                <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 top-0 h-1 rounded-t-xl opacity-80"
+                    style={{ backgroundColor: accentColor }}
+                />
                 <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{project.category}</span>
                     {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{formatDateRange(project.start_date, project.end_date)}</span>}
                 </div>
+                {isFeatured && (
+                    <span
+                        className="inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3"
+                        style={{ backgroundColor: accentColor }}
+                    >
+                        Featured
+                    </span>
+                )}
 
                 <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1 group-hover:text-slate-600 transition-colors">{project.name}</h3>
 
