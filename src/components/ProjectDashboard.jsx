@@ -640,12 +640,14 @@ function ProjectCard({ project, onClick, isSelected }) {
 
     return (
         <div className="h-full">
-            <motion.div
+            <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 whileHover={{ y: -5, scale: 1.02 }}
                 onClick={onClick}
-                className="bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all"
+                type="button"
+                aria-pressed={isSelected}
+                className="bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all text-left w-full"
                 style={{ borderTopColor: accentColor }}
             >
                 <div className="flex justify-between items-start mb-2">
@@ -691,7 +693,7 @@ function ProjectCard({ project, onClick, isSelected }) {
                         <span className="px-2 py-1 bg-slate-50 dark:bg-slate-800/50 text-slate-400 rounded text-xs">+{(project.tags ?? []).length - 3}</span>
                     )}
                 </div>
-            </motion.div>
+            </motion.button>
         </div>
     );
 }
