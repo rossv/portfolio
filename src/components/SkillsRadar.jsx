@@ -122,7 +122,7 @@ export default function SkillsRadar({ className = "" }) {
   };
 
   return (
-    <div className={`bg-white/10 dark:bg-slate-950/80 backdrop-blur-md p-2 sm:p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 relative group hover:border-indigo-500 transition-colors duration-500 w-full max-w-2xl mx-auto aspect-square flex flex-col justify-center ${className}`}>
+    <div className={`bg-white/10 dark:bg-slate-950/80 backdrop-blur-md p-2 sm:p-6 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 relative group hover:border-indigo-500 transition-colors duration-500 w-full max-w-2xl mx-auto aspect-auto sm:aspect-square flex flex-col justify-center ${className}`}>
 
       {/* Decorative HUD corners */}
       <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-indigo-500 rounded-tl-lg"></div>
@@ -130,10 +130,12 @@ export default function SkillsRadar({ className = "" }) {
       <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-indigo-500 rounded-bl-lg"></div>
       <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-indigo-500 rounded-br-lg"></div>
 
-      <h3 className="text-slate-800 dark:text-white text-center font-bold mb-2 font-mono tracking-widest uppercase text-lg">Expertise Profile <span className="text-sm text-slate-500">(Hrs)</span></h3>
+      <h3 className="text-slate-800 dark:text-white text-center font-bold mb-3 sm:mb-2 font-mono tracking-widest uppercase text-base sm:text-lg leading-snug">
+        Expertise Profile <span className="block sm:inline text-xs sm:text-sm text-slate-500">(Hrs)</span>
+      </h3>
 
       <div
-        className="w-full h-full relative z-10 min-h-[250px] [&_:focus]:outline-none"
+        className="w-full h-[320px] sm:h-full relative z-10 min-h-[250px] [&_:focus]:outline-none"
         style={{ WebkitTapHighlightColor: 'transparent' }}
         onClick={handleContainerClick}
       >
