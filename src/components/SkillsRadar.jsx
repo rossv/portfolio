@@ -135,44 +135,46 @@ export default function SkillsRadar({ className = "" }) {
       </h3>
 
       <div
-        className="w-full h-[320px] sm:h-full relative z-10 min-h-[250px] [&_:focus]:outline-none"
+        className="w-full min-h-[320px] sm:h-full relative z-10 [&_:focus]:outline-none"
         style={{ WebkitTapHighlightColor: 'transparent' }}
         onClick={handleContainerClick}
       >
-        <ResponsiveContainer width="100%" height="100%">
-          <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "65%"} data={data}>
-            <PolarGrid stroke="#64748b" strokeOpacity={0.2} />
-            <PolarAngleAxis
-              dataKey="subject"
-              tick={<CustomTick />}
-            />
-            <PolarRadiusAxis angle={30} domain={[0, 2000]} tick={false} axisLine={false} />
-            <Radar
-              name="Ross"
-              dataKey="A"
-              stroke="#6366f1" // indigo-500
-              strokeWidth={2}
-              fill="#6366f1"
-              fillOpacity={0.3}
-              dot={(props) => {
-                const { cx, cy, payload } = props;
-                return (
-                  <circle
-                    cx={cx}
-                    cy={cy}
-                    r={24}
-                    fill="transparent"
-                    stroke="transparent"
-                    className="cursor-pointer"
-                    onMouseEnter={isTouchMode ? undefined : () => setHoveredSkill(payload)}
-                    onMouseLeave={isTouchMode ? undefined : () => setHoveredSkill(null)}
-                    onClick={isTouchMode ? (event) => handleSkillSelect(payload, event) : undefined}
-                  />
-                );
-              }}
-            />
-          </RadarChart>
-        </ResponsiveContainer>
+        <div className="h-[320px] sm:h-full min-h-[250px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "65%"} data={data}>
+              <PolarGrid stroke="#64748b" strokeOpacity={0.2} />
+              <PolarAngleAxis
+                dataKey="subject"
+                tick={<CustomTick />}
+              />
+              <PolarRadiusAxis angle={30} domain={[0, 2000]} tick={false} axisLine={false} />
+              <Radar
+                name="Ross"
+                dataKey="A"
+                stroke="#6366f1" // indigo-500
+                strokeWidth={2}
+                fill="#6366f1"
+                fillOpacity={0.3}
+                dot={(props) => {
+                  const { cx, cy, payload } = props;
+                  return (
+                    <circle
+                      cx={cx}
+                      cy={cy}
+                      r={24}
+                      fill="transparent"
+                      stroke="transparent"
+                      className="cursor-pointer"
+                      onMouseEnter={isTouchMode ? undefined : () => setHoveredSkill(payload)}
+                      onMouseLeave={isTouchMode ? undefined : () => setHoveredSkill(null)}
+                      onClick={isTouchMode ? (event) => handleSkillSelect(payload, event) : undefined}
+                    />
+                  );
+                }}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
 
         {/* Hover Details Overlay */}
         <AnimatePresence>
