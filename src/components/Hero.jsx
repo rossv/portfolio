@@ -236,6 +236,12 @@ export default function Hero() {
                 style={{ y: yImage, opacity }}
                 className="flex-1 w-full max-w-[500px] xl:max-w-none relative mt-16 xl:mt-20 flex justify-center xl:justify-end"
             >
+                <div
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 flex items-center justify-center"
+                >
+                    <div className="h-[90%] w-[90%] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.18),rgba(14,116,144,0.08),transparent_70%)] blur-3xl dark:bg-[radial-gradient(circle_at_center,rgba(129,140,248,0.2),rgba(56,189,248,0.12),transparent_70%)]"></div>
+                </div>
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
