@@ -440,6 +440,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 <div className="relative group flex-1">
                                     <input
                                         type="text"
+                                        aria-label="Search projects"
                                         placeholder="Search projects..."
                                         value={filterText}
                                         onChange={(e) => setFilterText(e.target.value)}
