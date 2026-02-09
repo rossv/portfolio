@@ -179,38 +179,57 @@ const careerData = [
     }
 ];
 
-const JobDetails = ({ job, mapRef, mapToken }) => (
-    <div className="flex flex-col h-full bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-sm border border-white/30 dark:border-slate-700/60">
+const JobDetails = ({ job, mapRef, mapToken }) => {
+    const hasMapToken = Boolean(mapToken);
+
+    return (
+        <div className="flex flex-col h-full bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl overflow-hidden shadow-sm border border-white/30 dark:border-slate-700/60">
         {/* Map Header */}
         <div className="h-64 md:h-80 w-full relative z-0 shrink-0">
-            <Map
-                ref={mapRef}
-                initialViewState={{
-                    longitude: job.coords[0],
-                    latitude: job.coords[1],
-                    zoom: 14,
-                    pitch: 45
-                }}
-                mapStyle="mapbox://styles/mapbox/dark-v11"
-                mapboxAccessToken={mapToken}
-                attributionControl={false}
-                scrollZoom={false}
-            >
-                <Marker
-                    longitude={job.coords[0]}
-                    latitude={job.coords[1]}
-                    anchor="bottom"
+            {hasMapToken ? (
+                <Map
+                    ref={mapRef}
+                    initialViewState={{
+                        longitude: job.coords[0],
+                        latitude: job.coords[1],
+                        zoom: 14,
+                        pitch: 45
+                    }}
+                    mapStyle="mapbox://styles/mapbox/dark-v11"
+                    mapboxAccessToken={mapToken}
+                    attributionControl={false}
+                    scrollZoom={false}
                 >
-                    <div className="relative">
-                        <div className="w-12 h-12 rounded-full border-4 border-white shadow-xl z-20 relative flex items-center justify-center bg-white overflow-hidden p-1">
-                            <img src={job.logo.src || job.logo} alt="marker" className="w-full h-full object-contain" />
+                    <Marker
+                        longitude={job.coords[0]}
+                        latitude={job.coords[1]}
+                        anchor="bottom"
+                    >
+                        <div className="relative">
+                            <div className="w-12 h-12 rounded-full border-4 border-white shadow-xl z-20 relative flex items-center justify-center bg-white overflow-hidden p-1">
+                                <img src={job.logo.src || job.logo} alt="marker" className="w-full h-full object-contain" />
+                            </div>
+                            <div className="absolute -inset-4 rounded-full animate-ping opacity-30" style={{ backgroundColor: job.color }}></div>
+                            {/* Pin Stand */}
+                            <div className="w-1 h-4 bg-white/80 absolute left-1/2 -bottom-3 -translate-x-1/2 rounded-full" />
                         </div>
-                        <div className="absolute -inset-4 rounded-full animate-ping opacity-30" style={{ backgroundColor: job.color }}></div>
-                        {/* Pin Stand */}
-                        <div className="w-1 h-4 bg-white/80 absolute left-1/2 -bottom-3 -translate-x-1/2 rounded-full" />
+                    </Marker>
+                </Map>
+            ) : (
+                <div className="h-full w-full flex items-center justify-center bg-slate-100/80 dark:bg-slate-900/70">
+                    <div className="mx-6 rounded-2xl border border-dashed border-slate-300/80 dark:border-slate-700 bg-white/70 dark:bg-slate-900/70 px-6 py-8 text-center shadow-sm backdrop-blur">
+                        <p className="text-sm uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold">
+                            Map unavailable
+                        </p>
+                        <p className="mt-3 text-lg font-bold text-slate-800 dark:text-slate-100">
+                            {job.location}
+                        </p>
+                        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                            {job.fullAddress}
+                        </p>
                     </div>
-                </Marker>
-            </Map>
+                </div>
+            )}
 
             {/* Gradient Overlay */}
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-white/40 dark:from-slate-900/60 via-transparent to-transparent h-full z-10" />
@@ -261,8 +280,9 @@ const JobDetails = ({ job, mapRef, mapToken }) => (
                 )}
             </div>
         </div>
-    </div>
-);
+        </div>
+    );
+};
 
 export default function CareerTimeline() {
     const [selectedJob, setSelectedJob] = useState(careerData[0]);
