@@ -72,6 +72,15 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     @apply bg-slate-50/80 dark:bg-slate-900/40;
   }
 
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Global Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 6px;
