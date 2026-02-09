@@ -320,10 +320,13 @@ export default function CareerTimeline() {
                                 viewport={{ once: true, margin: "-50px" }}
                                 transition={{ duration: 0.4, delay: index * 0.1 }}
                             >
-                                <div
+                                <button
+                                    type="button"
                                     onClick={() => handleJobClick(item)}
+                                    aria-pressed={selectedJob.id === item.id}
                                     className={`
                                         relative cursor-pointer group transition-all duration-300 mb-4
+                                        w-full text-left
                                         ${selectedJob.id === item.id ? 'opacity-100 scale-[1.01]' : 'opacity-70 hover:opacity-100'}
                                     `}
                                 >
@@ -362,7 +365,7 @@ export default function CareerTimeline() {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </button>
 
                                 {/* Mobile/Tablet Details (Accordion style) */}
                                 <div className="lg:!hidden">
