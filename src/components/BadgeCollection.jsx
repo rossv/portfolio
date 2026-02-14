@@ -229,6 +229,7 @@ export default function BadgeCollection() {
       });
       // Auto-dismiss after animation completes
       dismissBadge(id);
+      setHoveredBadge((prev) => (prev === id ? null : prev));
     }, 5000);
   };
 
