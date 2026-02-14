@@ -14,7 +14,7 @@ import badgeTime15 from '../assets/badges/badge-time-15.svg';
 import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 
-// Badges reset on page reload - no localStorage persistence
+const BADGE_STORAGE_KEY = 'badgeState:v1';
 
 const BADGES = [
   {
@@ -111,12 +111,39 @@ const BADGES = [
 
 const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer'];
 const TOTAL_FOOTER_LINKS = 4;
+const BUBBLE_THRESHOLDS = [100, 1000, 5000];
+
+const parseStoredState = (rawValue) => {
+  if (!rawValue) return null;
+
+  try {
+    const parsed = JSON.parse(rawValue);
+    return {
+      unlockedIds: Array.isArray(parsed.unlockedIds) ? parsed.unlockedIds : [],
+      dismissedIds: Array.isArray(parsed.dismissedIds) ? parsed.dismissedIds : [],
+      bubbleCount: Number.isFinite(parsed.bubbleCount) ? parsed.bubbleCount : 0,
+      projectReads: Array.isArray(parsed.projectReads) ? parsed.projectReads : [],
+      jobReads: Array.isArray(parsed.jobReads) ? parsed.jobReads : [],
+      footerClicks: Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [],
+      visitedSections: Array.isArray(parsed.visitedSections) ? parsed.visitedSections : [],
+    };
+  } catch {
+    return null;
+  }
+};
 
 export default function BadgeCollection() {
   const [unlocked, setUnlocked] = useState(new Set());
   const [dismissed, setDismissed] = useState(new Set());
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
   const [hoveredBadge, setHoveredBadge] = useState(null);
+  const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [progressSnapshot, setProgressSnapshot] = useState({
+    bubbleCount: 0,
+    projectReads: 0,
+    jobReads: 0,
+    footerClicks: 0,
+  });
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
   const jobReadsRef = useRef(new Set());
@@ -125,11 +152,49 @@ export default function BadgeCollection() {
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
 
-  // No localStorage loading - badges reset on page reload
+  const persistBadgeState = () => {
+    if (typeof window === 'undefined') return;
+
+    window.localStorage.setItem(
+      BADGE_STORAGE_KEY,
+      JSON.stringify({
+        unlockedIds: Array.from(unlocked),
+        dismissedIds: Array.from(dismissed),
+        bubbleCount: bubbleCountRef.current,
+        projectReads: Array.from(projectReadsRef.current),
+        jobReads: Array.from(jobReadsRef.current),
+        footerClicks: Array.from(footerClicksRef.current),
+        visitedSections: Array.from(visitedSectionsRef.current),
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const stored = parseStoredState(window.localStorage.getItem(BADGE_STORAGE_KEY));
+    if (!stored) return;
+
+    setUnlocked(new Set(stored.unlockedIds));
+    setDismissed(new Set(stored.dismissedIds));
+    bubbleCountRef.current = stored.bubbleCount;
+    projectReadsRef.current = new Set(stored.projectReads);
+    jobReadsRef.current = new Set(stored.jobReads);
+    footerClicksRef.current = new Set(stored.footerClicks);
+    visitedSectionsRef.current = new Set(stored.visitedSections);
+    setProgressSnapshot({
+      bubbleCount: stored.bubbleCount,
+      projectReads: stored.projectReads.length,
+      jobReads: stored.jobReads.length,
+      footerClicks: stored.footerClicks.length,
+    });
+  }, []);
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
-  // No persistence functions needed - badges reset on reload
+  useEffect(() => {
+    persistBadgeState();
+  }, [unlocked, dismissed]);
 
   const dismissBadge = (id) => {
     setDismissed((prev) => {
@@ -172,6 +237,8 @@ export default function BadgeCollection() {
 
     const handleBubbleCollect = (event) => {
       bubbleCountRef.current = Math.max(bubbleCountRef.current, event.detail?.count ?? 0);
+      setProgressSnapshot((prev) => ({ ...prev, bubbleCount: bubbleCountRef.current }));
+      persistBadgeState();
       if (bubbleCountRef.current >= 100) {
         unlockBadge('bubble-collector-100');
       }
@@ -188,6 +255,8 @@ export default function BadgeCollection() {
       const total = event.detail?.total;
       if (!id) return;
       projectReadsRef.current.add(id);
+      setProgressSnapshot((prev) => ({ ...prev, projectReads: projectReadsRef.current.size }));
+      persistBadgeState();
       if (projectReadsRef.current.size >= 1) {
         unlockBadge('project-first-steps');
       }
@@ -204,6 +273,8 @@ export default function BadgeCollection() {
       const total = event.detail?.total;
       if (!id) return;
       jobReadsRef.current.add(id);
+      setProgressSnapshot((prev) => ({ ...prev, jobReads: jobReadsRef.current.size }));
+      persistBadgeState();
       if (typeof total === 'number' && jobReadsRef.current.size >= total) {
         unlockBadge('journeyman');
       }
@@ -236,6 +307,7 @@ export default function BadgeCollection() {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.target.id) {
             visitedSectionsRef.current.add(entry.target.id);
+            persistBadgeState();
             if (visitedSectionsRef.current.size >= SECTION_IDS.length) {
               unlockBadge('section-scout');
             }
@@ -356,6 +428,8 @@ export default function BadgeCollection() {
         const footerId = actionEl.getAttribute('data-footer-id');
         if (footerId) {
           footerClicksRef.current.add(footerId);
+          setProgressSnapshot((prev) => ({ ...prev, footerClicks: footerClicksRef.current.size }));
+          persistBadgeState();
         }
         if (footerClicksRef.current.size >= TOTAL_FOOTER_LINKS) {
           unlockBadge('footer-friend');
@@ -368,13 +442,58 @@ export default function BadgeCollection() {
   }, [unlockedIds]);
 
   const unlockedBadges = BADGES.filter((badge) => unlockedIds.has(badge.id));
+  const nextBubbleTier = BUBBLE_THRESHOLDS.find((threshold) => progressSnapshot.bubbleCount < threshold);
 
-  if (unlockedBadges.length === 0) {
-    return null;
-  }
+  const resetProgress = () => {
+    setUnlocked(new Set());
+    setDismissed(new Set());
+    setRecentlyUnlocked(new Set());
+    setHoveredBadge(null);
+    bubbleCountRef.current = 0;
+    projectReadsRef.current = new Set();
+    jobReadsRef.current = new Set();
+    footerClicksRef.current = new Set();
+    visitedSectionsRef.current = new Set();
+    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, jobReads: 0, footerClicks: 0 });
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(BADGE_STORAGE_KEY);
+    }
+  };
 
   return (
     <div className="fixed top-24 right-4 z-50 flex flex-col items-end gap-3">
+      <button
+        type="button"
+        className="rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+        onClick={() => setIsProgressOpen((prev) => !prev)}
+      >
+        Badges {unlockedBadges.length}/{BADGES.length}
+      </button>
+
+      {isProgressOpen && (
+        <div className="w-72 rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+          <p className="font-semibold text-slate-900 dark:text-slate-50">Progress</p>
+          <p className="mt-2 text-slate-600 dark:text-slate-300">Unlocked: {unlockedBadges.length}/{BADGES.length}</p>
+          <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}</p>
+          <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}</p>
+          <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
+          {nextBubbleTier ? (
+            <p className="mt-1 text-slate-600 dark:text-slate-300">
+              Next bubble badge in {nextBubbleTier - progressSnapshot.bubbleCount} bubbles ({progressSnapshot.bubbleCount}/{nextBubbleTier}).
+            </p>
+          ) : (
+            <p className="mt-1 text-slate-600 dark:text-slate-300">Bubble track complete ({progressSnapshot.bubbleCount} collected).</p>
+          )}
+          <button
+            type="button"
+            onClick={resetProgress}
+            className="mt-3 rounded-md border border-rose-200 px-2 py-1 font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/40"
+          >
+            Reset progress
+          </button>
+        </div>
+      )}
+
       {unlockedBadges.map((badge) => {
         const isDismissed = dismissed.has(badge.id);
         const isRecent = recentlyUnlocked.has(badge.id);
