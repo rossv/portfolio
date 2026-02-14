@@ -764,7 +764,7 @@
         "location": "Erie, PA",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
-            "Master Planning",
+            "Master Plan",
             "Storage Tanks",
             "Pump Station",
             "Hydraulics",
@@ -1661,7 +1661,6 @@
             "ArcGIS Pro",
             "Trimble R2",
             "ArcGIS",
-            "Dashboard",
             "GNSS"
         ],
         "description": "Georeferencing old paper maps into a GIS system map and configuration of GIS databases for use in ArcGIS Online. Led the acquisition of new equipment to utilize ArcGIS Online and the Collector app for high accuracy GNSS survey. Developed a dashboard to track survey crews' progress in real time.",
@@ -2294,8 +2293,7 @@
             "ArcGIS Online",
             "ArcGIS Pro",
             "Survey123",
-            "ArcGIS",
-            "Dashboard"
+            "ArcGIS"
         ],
         "description": "Developed Survey123 Form with data validation and dependencies along with a dashboard and desktop web map for office management. Process allowed Zoning Officer and staff to create violation reports which were stored in an ArcGIS Online feature service. This was consumed by dashboards and web maps to give insight to office staff and allow updates to violations. Individual violation letters were automatically generated along with summary reports for board meetings.",
         "title": "Senior Project Engineer",
@@ -2530,7 +2528,7 @@
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Calibration",
-            "QAQC",
+            "QA/QC",
             "Model Review",
             "PCSWMM"
         ],
@@ -2611,7 +2609,6 @@
             "Model Review",
             "PCSWMM",
             "ArcGIS",
-            "InfoAsset Manager",
             "ArcGIS Field Maps",
             "ArcGIS Pro",
             "ArcGIS Online"
