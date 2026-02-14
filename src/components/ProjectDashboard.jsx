@@ -177,15 +177,23 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
 
 
-    const featuredProjectNames = useMemo(
-        () => new Set([
-            'pittsburgh water wet weather program',
-            'model toolkit',
-            'kiski project',
-            'eww project',
-        ]),
+    const featuredProjectMatchers = useMemo(
+        () => [
+            // Exact names currently in project data
+            'model toolkit & flow data review tool',
+            'eww water system consolidation plan modeling support',
+            'eww water system consolidation plan update',
+            // Keyword fallbacks for renamed records
+            'wet weather program',
+        ],
         []
     );
+
+    const isFeaturedProject = (projectName) => {
+        const normalizedName = projectName?.toLowerCase().trim();
+        if (!normalizedName) return false;
+        return featuredProjectMatchers.some((matcher) => normalizedName.includes(matcher));
+    };
 
     // Derived State: Filtering
     const filteredProjects = useMemo(() => {
@@ -576,7 +584,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                     project={project}
                                     onClick={(event) => handleCardClick(project, event)}
                                     isSelected={selectedProject?.name === project.name}
-                                    isFeatured={featuredProjectNames.has(project.name?.toLowerCase())}
+                                    isFeatured={isFeaturedProject(project.name)}
                                 />
                             ))}
                         </div>
