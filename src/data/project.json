@@ -1791,8 +1791,32 @@
         "title": "Project Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/hampton_wwtp.webp",
-        "start_date": "2/22/2017",
-        "end_date": "3/29/2017",
+        "start_date": "1/1/2013",
+        "end_date": "12/31/2013",
+        "client_sort": "Hampton Township",
+        "coords": [
+            -79.9644556,
+            40.5624306
+        ]
+    },
+    {
+        "name": "Hampton WWTP 3D Visualization Walkthrough",
+        "client": "Hampton Township",
+        "company": "KLH Engineers",
+        "location": "Hampton, PA",
+        "category": "Visualization, Wastewater",
+        "tags": [
+            "Lumion",
+            "InfoWorks 360",
+            "Navisworks Manage",
+            "WWTP"
+        ],
+        "description": "Created a 3D visualization rendering walkthrough of a new WWTP design to demonstrate site visuals and operations using Lumion, InfoWorks 360, and Navisworks Manage.",
+        "title": "Project Engineer",
+        "project_role": "Visualization Specialist",
+        "image": "/src/assets/projects/hampton_wwtp.webp",
+        "start_date": "1/1/2020",
+        "end_date": "12/31/2020",
         "client_sort": "Hampton Township",
         "coords": [
             -79.9644556,
