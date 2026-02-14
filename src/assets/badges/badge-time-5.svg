@@ -1,12 +1,13 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="time5-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#A78BFA"/>
-      <stop offset="1" stop-color="#60A5FA"/>
+    <linearGradient id="badge-time-5-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A78BFA" />
+      <stop offset="1" stop-color="#60A5FA" />
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#time5-bg)" stroke="#0F172A" stroke-width="2"/>
-  <circle cx="32" cy="32" r="14" fill="#F8FAFC"/>
-  <path d="M32 22v10l-6 6" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
-  <text x="32" y="50" text-anchor="middle" font-size="12" font-family="'Space Mono', monospace" fill="#0F172A">5m</text>
+  <circle cx="32" cy="32" r="28" fill="url(#badge-time-5-bg)" stroke="#0F172A" stroke-width="2" />
+  <circle cx="32" cy="32" r="14" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.5" />
+  <path d="M32 22V32L26 38" stroke="#0F172A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="22" y="44" width="20" height="10" rx="3" fill="#0F172A" />
+  <path d="M27 47H35V49H30V51H35V53H27V51H32V49H27V47Z" fill="#F8FAFC" />
 </svg>
