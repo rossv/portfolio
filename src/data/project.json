@@ -1757,7 +1757,7 @@
     },
     {
         "name": "Vita Dump Site",
-        "client": "Hampton Township",
+        "client": "Hampton-Shaler Water Authority",
         "company": "KLH Engineers",
         "location": "Hampton, PA",
         "category": "Hydrologic & Hydraulic Modeling",
@@ -1771,10 +1771,10 @@
         "image": "/src/assets/projects/vita-dump-site.webp",
         "start_date": "2/22/2017",
         "end_date": "3/29/2017",
-        "client_sort": "Hampton Township",
+        "client_sort": "Hampton-Shaler Water Authority",
         "coords": [
-            -79.95,
-            40.57
+            -79.973436,
+            40.523314
         ]
     },
     {
