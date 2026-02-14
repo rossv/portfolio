@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Map as MapIcon, LayoutDashboard } from 'lucide-react';
+import { Map as MapIcon } from 'lucide-react';
 
 const PythonLogo = ({ className }) => (
     <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,30 +159,34 @@ export default function FloatingIcons() {
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-            {/* Python - Top Left */}
-            <FloatingItem x={floatingPositions.python.x} y={floatingPositions.python.y} delay={0} duration={6}>
-                <PythonLogo className="w-full h-full drop-shadow-md" />
-            </FloatingItem>
+            {!isMobile && (
+                <>
+                    {/* Python - Top Left */}
+                    <FloatingItem x={floatingPositions.python.x} y={floatingPositions.python.y} delay={0} duration={6}>
+                        <PythonLogo className="w-full h-full drop-shadow-md" />
+                    </FloatingItem>
 
-            {/* Sewer Network - Top Right */}
-            <FloatingItem x={floatingPositions.sewer.x} y={floatingPositions.sewer.y} delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
-                <SewerNetwork className="w-full h-full drop-shadow-md" />
-            </FloatingItem>
+                    {/* Sewer Network - Top Right */}
+                    <FloatingItem x={floatingPositions.sewer.x} y={floatingPositions.sewer.y} delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
+                        <SewerNetwork className="w-full h-full drop-shadow-md" />
+                    </FloatingItem>
 
-            {/* Pipe Section - Upper Left (Staggered) */}
-            <FloatingItem x={floatingPositions.pipe.x} y={floatingPositions.pipe.y} delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
-                <PipeSection className="w-full h-full drop-shadow-md" />
-            </FloatingItem>
+                    {/* Pipe Section - Upper Left (Staggered) */}
+                    <FloatingItem x={floatingPositions.pipe.x} y={floatingPositions.pipe.y} delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
+                        <PipeSection className="w-full h-full drop-shadow-md" />
+                    </FloatingItem>
 
-            {/* App Dashboard - Upper Right (Staggered) */}
-            <FloatingItem x={floatingPositions.dashboard.x} y={floatingPositions.dashboard.y} delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
-                <AppDashboard className="w-full h-full drop-shadow-md" />
-            </FloatingItem>
+                    {/* App Dashboard - Upper Right (Staggered) */}
+                    <FloatingItem x={floatingPositions.dashboard.x} y={floatingPositions.dashboard.y} delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
+                        <AppDashboard className="w-full h-full drop-shadow-md" />
+                    </FloatingItem>
 
-            {/* Map - Lower Right */}
-            <FloatingItem x={floatingPositions.map.x} y={floatingPositions.map.y} delay={1.5} duration={5} size="w-20 h-20">
-                <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
-            </FloatingItem>
+                    {/* Map - Lower Right */}
+                    <FloatingItem x={floatingPositions.map.x} y={floatingPositions.map.y} delay={1.5} duration={5} size="w-20 h-20">
+                        <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
+                    </FloatingItem>
+                </>
+            )}
 
             {/* Bubbles */}
             {floatingPositions.bubbles.map((bubble, index) => (
