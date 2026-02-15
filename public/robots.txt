@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.rossvolkwein.com/sitemap.xml
+Sitemap: https://www.rossvolkwein.com/sitemap-index.xml
