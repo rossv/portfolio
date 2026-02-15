@@ -1,17 +1,18 @@
 ---
+import Layout from '../layouts/Layout.astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0;url=/#timeline">
-    <title>Redirecting...</title>
-    <script>
-        window.location.replace("/#timeline");
-    </script>
-</head>
-<body>
-    <p>Redirecting to <a href="/#timeline">CV</a>...</p>
-</body>
-</html>
+
+<Layout
+  title="CV Redirect | Ross Volkwein"
+  description="Redirecting to Ross Volkwein's career timeline and CV highlights."
+  canonicalPath="/CV"
+  ogImage="/favicon.svg"
+  noindex
+>
+  <script>
+    window.location.replace('/#timeline');
+  </script>
+  <p class="p-6 text-center">
+    Redirecting to <a class="underline" href="/#timeline">CV</a>...
+  </p>
+</Layout>

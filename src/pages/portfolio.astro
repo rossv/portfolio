@@ -1,17 +1,18 @@
 ---
+import Layout from '../layouts/Layout.astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="0;url=/#projects">
-    <title>Redirecting...</title>
-    <script>
-        window.location.replace("/#projects");
-    </script>
-</head>
-<body>
-    <p>Redirecting to <a href="/#projects">Portfolio</a>...</p>
-</body>
-</html>
+
+<Layout
+  title="Portfolio Redirect | Ross Volkwein"
+  description="Redirecting to Ross Volkwein's featured project portfolio section."
+  canonicalPath="/portfolio"
+  ogImage="/favicon.svg"
+  noindex
+>
+  <script>
+    window.location.replace('/#projects');
+  </script>
+  <p class="p-6 text-center">
+    Redirecting to <a class="underline" href="/#projects">Portfolio</a>...
+  </p>
+</Layout>
