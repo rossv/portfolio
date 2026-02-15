@@ -614,14 +614,13 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             {/* Expanded Card Modal */}
             <AnimatePresence>
                 {selectedProject && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md" onClick={closeModal}>
+                    <div className="absolute inset-0 z-50 flex items-center justify-center p-4" onClick={closeModal}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90%] overflow-hidden rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 border-t-4 cursor-default relative flex flex-col"
-                            style={{ borderTopColor: getCompanyColor(selectedProject.company) }}
+                            className="w-full max-w-2xl max-h-[90%] p-2 sm:p-3 rounded-[2rem] bg-white/15 dark:bg-slate-950/35 backdrop-blur-xl border border-white/30 dark:border-slate-700/50 shadow-[0_20px_70px_rgba(15,23,42,0.45)] cursor-default relative"
                             onClick={(e) => e.stopPropagation()}
                             role="dialog"
                             aria-modal="true"
@@ -629,7 +628,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             tabIndex={-1}
                             ref={modalRef}
                         >
-                            <div className="overflow-y-auto p-8 h-full custom-scrollbar">
+                            <div
+                                className="bg-white dark:bg-slate-900 max-h-[calc(90vh-1rem)] overflow-y-auto p-8 rounded-[1.45rem] border border-slate-200 dark:border-slate-700 border-t-4 custom-scrollbar"
+                                style={{ borderTopColor: getCompanyColor(selectedProject.company) }}
+                            >
                                 {/* Hero Image with Fade Mask */}
                                 {(() => {
                                     const imageSrc = getProjectImageSrc(selectedProject.image);
