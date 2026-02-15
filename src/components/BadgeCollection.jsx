@@ -175,8 +175,15 @@ export default function BadgeCollection() {
     const stored = parseStoredState(window.localStorage.getItem(BADGE_STORAGE_KEY));
     if (!stored) return;
 
-    setUnlocked(new Set(stored.unlockedIds));
-    setDismissed(new Set(stored.dismissedIds));
+    const unlockedFromStorage = new Set(stored.unlockedIds);
+    const dismissedFromStorage = new Set(stored.dismissedIds);
+
+    // If the page refreshes while a badge is still expanded, treat it as dismissed.
+    // This prevents older badges from getting stuck open after reloads.
+    unlockedFromStorage.forEach((id) => dismissedFromStorage.add(id));
+
+    setUnlocked(unlockedFromStorage);
+    setDismissed(dismissedFromStorage);
     bubbleCountRef.current = stored.bubbleCount;
     projectReadsRef.current = new Set(stored.projectReads);
     jobReadsRef.current = new Set(stored.jobReads);
