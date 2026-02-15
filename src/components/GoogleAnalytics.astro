@@ -1,8 +1,9 @@
 ---
-const id = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || 'G-N5JMFMZMBN';
+const id = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID;
+const shouldInjectAnalytics = import.meta.env.PROD && Boolean(id);
 ---
 {
-  id && (
+  shouldInjectAnalytics && (
     <>
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} is:inline></script>
       <script define:vars={{ id }} is:inline>
@@ -10,7 +11,14 @@ const id = import.meta.env.PUBLIC_GOOGLE_ANALYTICS_ID || 'G-N5JMFMZMBN';
         function gtag() {
           window.dataLayer.push(arguments);
         }
+
         gtag('js', new Date());
+
+        const consentDefaults = window.__gaConsentDefaults;
+        if (consentDefaults && typeof consentDefaults === 'object') {
+          gtag('consent', 'default', consentDefaults);
+        }
+
         gtag('config', id);
       </script>
     </>
