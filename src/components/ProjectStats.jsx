@@ -1,4 +1,5 @@
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from 'recharts';
+import { useEffect, useState } from 'react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'];
@@ -30,6 +31,12 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ProjectStats({ projects }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     const extractYear = (dateStr) => {
         if (!dateStr) return null;
         const match = dateStr.match(/\b(19|20)\d{2}\b/);
@@ -122,34 +129,42 @@ export default function ProjectStats({ projects }) {
 
             <StatCard title="By Year">
                 <div className="w-full h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={yearData} barCategoryGap={4}>
-                            <XAxis dataKey="name" type="category" hide />
-                            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                            <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 4, 4]} />
-                        </BarChart>
-                    </ResponsiveContainer>
+                    {isMounted ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={yearData} barCategoryGap={4}>
+                                <XAxis dataKey="name" type="category" hide />
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
+                                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 4, 4]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className="h-full w-full animate-pulse rounded bg-slate-200/40 dark:bg-slate-700/40" aria-hidden="true" />
+                    )}
                 </div>
             </StatCard>
 
             <StatCard title="Categories">
                 <div className="w-full h-48">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie
-                                data={categoryData}
-                                innerRadius={40}
-                                outerRadius={65}
-                                paddingAngle={2}
-                                dataKey="value"
-                            >
-                                {categoryData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip content={<CustomTooltip />} />
-                        </PieChart>
-                    </ResponsiveContainer>
+                    {isMounted ? (
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={categoryData}
+                                    innerRadius={40}
+                                    outerRadius={65}
+                                    paddingAngle={2}
+                                    dataKey="value"
+                                >
+                                    {categoryData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip content={<CustomTooltip />} />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className="h-full w-full animate-pulse rounded-full bg-slate-200/40 dark:bg-slate-700/40" aria-hidden="true" />
+                    )}
                 </div>
             </StatCard>
 

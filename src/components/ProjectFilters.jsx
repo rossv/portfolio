@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, X, Filter, Check } from 'lucide-react';
+import { ChevronDown, X, Filter, Check } from 'lucide-react';
 
 const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, close }) => {
     const dropdownRef = useRef(null);
