@@ -34,13 +34,13 @@ export default function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
-            className="group relative flex items-center gap-2 px-2 py-1.5 rounded-lg bg-slate-100/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors shadow-sm backdrop-blur-sm"
+            className="group relative flex items-center gap-2 px-2 py-1.5 rounded-full bg-slate-100/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors shadow-sm backdrop-blur-sm"
             title="Toggle Theme"
             aria-label="Toggle Theme"
         >
             {/* Sun Wrapper */}
             <div
-                className={`p-1.5 rounded-md transition-all duration-500 ${theme === 'light'
+                className={`p-1.5 rounded-full transition-all duration-500 ${theme === 'light'
                     ? 'rotate-0 bg-white shadow-sm text-amber-500'
                     : 'rotate-90 bg-transparent text-slate-400'
                     }`}
@@ -60,7 +60,7 @@ export default function ThemeToggle() {
 
             {/* Moon Wrapper */}
             <div
-                className={`p-1.5 rounded-md transition-all duration-500 ${theme === 'dark'
+                className={`p-1.5 rounded-full transition-all duration-500 ${theme === 'dark'
                     ? 'rotate-0 bg-slate-700 text-sky-400 shadow-sm'
                     : '-rotate-90 bg-transparent text-slate-400'
                     }`}
