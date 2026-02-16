@@ -260,28 +260,29 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             return true;
         });
 
-        // 3. Sorting: Active/Present first, then End Date (desc), then Start Date (desc)
+        // 3. Sorting: Start Date (desc), then End Date (desc)
         return result.sort((a, b) => {
+            const getStartDateValue = (d) => {
+                if (!d) return 0;
+                return new Date(d).getTime() || 0;
+            };
+
             // Helper to get comparable value for end date
             const getEndDateValue = (d) => {
                 if (!d || d.toLowerCase() === 'present') return 9999999999999;
                 return new Date(d).getTime() || 0;
             };
 
-            const getStartDateValue = (d) => {
-                if (!d) return 0;
-                return new Date(d).getTime() || 0;
-            };
+            const startA = getStartDateValue(a.start_date);
+            const startB = getStartDateValue(b.start_date);
+
+            if (startA !== startB) {
+                return startB - startA;
+            }
 
             const endA = getEndDateValue(a.end_date);
             const endB = getEndDateValue(b.end_date);
-
-            if (endA !== endB) {
-                return endB - endA;
-            }
-
-            // If end dates are same, sort by start date
-            return getStartDateValue(b.start_date) - getStartDateValue(a.start_date);
+            return endB - endA;
         });
 
     }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags]);
