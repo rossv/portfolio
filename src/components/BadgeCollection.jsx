@@ -124,7 +124,9 @@ const parseStoredState = (rawValue) => {
       dismissedIds: Array.isArray(parsed.dismissedIds) ? parsed.dismissedIds : [],
       bubbleCount: Number.isFinite(parsed.bubbleCount) ? parsed.bubbleCount : 0,
       projectReads: Array.isArray(parsed.projectReads) ? parsed.projectReads : [],
+      projectTotal: Number.isFinite(parsed.projectTotal) ? parsed.projectTotal : 0,
       jobReads: Array.isArray(parsed.jobReads) ? parsed.jobReads : [],
+      jobTotal: Number.isFinite(parsed.jobTotal) ? parsed.jobTotal : 0,
       footerClicks: Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [],
       visitedSections: Array.isArray(parsed.visitedSections) ? parsed.visitedSections : [],
     };
@@ -143,12 +145,16 @@ export default function BadgeCollection() {
   const [progressSnapshot, setProgressSnapshot] = useState({
     bubbleCount: 0,
     projectReads: 0,
+    projectTotal: 0,
     jobReads: 0,
+    jobTotal: 0,
     footerClicks: 0,
   });
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
+  const projectTotalRef = useRef(0);
   const jobReadsRef = useRef(new Set());
+  const jobTotalRef = useRef(0);
   const footerClicksRef = useRef(new Set());
   const visitedSectionsRef = useRef(new Set());
   const buddaTimerRef = useRef(null);
@@ -165,7 +171,9 @@ export default function BadgeCollection() {
         dismissedIds: Array.from(dismissed),
         bubbleCount: bubbleCountRef.current,
         projectReads: Array.from(projectReadsRef.current),
+        projectTotal: projectTotalRef.current,
         jobReads: Array.from(jobReadsRef.current),
+        jobTotal: jobTotalRef.current,
         footerClicks: Array.from(footerClicksRef.current),
         visitedSections: Array.from(visitedSectionsRef.current),
       })
@@ -195,9 +203,13 @@ export default function BadgeCollection() {
     setProgressSnapshot({
       bubbleCount: stored.bubbleCount,
       projectReads: stored.projectReads.length,
+      projectTotal: Number.isFinite(stored.projectTotal) ? stored.projectTotal : 0,
       jobReads: stored.jobReads.length,
+      jobTotal: Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0,
       footerClicks: stored.footerClicks.length,
     });
+    projectTotalRef.current = Number.isFinite(stored.projectTotal) ? stored.projectTotal : 0;
+    jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
   }, []);
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
@@ -289,7 +301,14 @@ export default function BadgeCollection() {
       const total = event.detail?.total;
       if (!id) return;
       projectReadsRef.current.add(id);
-      setProgressSnapshot((prev) => ({ ...prev, projectReads: projectReadsRef.current.size }));
+      if (typeof total === 'number') {
+        projectTotalRef.current = Math.max(projectTotalRef.current, total);
+      }
+      setProgressSnapshot((prev) => ({
+        ...prev,
+        projectReads: projectReadsRef.current.size,
+        projectTotal: Math.max(projectTotalRef.current, prev.projectTotal),
+      }));
       persistBadgeState();
       if (projectReadsRef.current.size >= 1) {
         unlockBadge('project-first-steps');
@@ -307,7 +326,14 @@ export default function BadgeCollection() {
       const total = event.detail?.total;
       if (!id) return;
       jobReadsRef.current.add(id);
-      setProgressSnapshot((prev) => ({ ...prev, jobReads: jobReadsRef.current.size }));
+      if (typeof total === 'number') {
+        jobTotalRef.current = Math.max(jobTotalRef.current, total);
+      }
+      setProgressSnapshot((prev) => ({
+        ...prev,
+        jobReads: jobReadsRef.current.size,
+        jobTotal: Math.max(jobTotalRef.current, prev.jobTotal),
+      }));
       persistBadgeState();
       if (typeof total === 'number' && jobReadsRef.current.size >= total) {
         unlockBadge('journeyman');
@@ -485,10 +511,12 @@ export default function BadgeCollection() {
     setHoveredBadge(null);
     bubbleCountRef.current = 0;
     projectReadsRef.current = new Set();
+    projectTotalRef.current = 0;
     jobReadsRef.current = new Set();
+    jobTotalRef.current = 0;
     footerClicksRef.current = new Set();
     visitedSectionsRef.current = new Set();
-    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, jobReads: 0, footerClicks: 0 });
+    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0 });
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(BADGE_STORAGE_KEY);
     }
@@ -542,8 +570,8 @@ export default function BadgeCollection() {
           <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
             <p className="font-semibold text-slate-900 dark:text-slate-50">Progress</p>
             <p className="mt-2 text-slate-600 dark:text-slate-300">Unlocked: {unlockedBadges.length}/{BADGES.length}</p>
-            <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}</p>
-            <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}</p>
+            <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}/{Math.max(progressSnapshot.projectTotal, progressSnapshot.projectReads)}</p>
+            <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}/{Math.max(progressSnapshot.jobTotal, progressSnapshot.jobReads)}</p>
             <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
             {nextBubbleTier ? (
               <p className="mt-1 text-slate-600 dark:text-slate-300">
