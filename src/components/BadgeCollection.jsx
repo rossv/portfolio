@@ -13,6 +13,7 @@ import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
 import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
+import ThemeToggle from './ThemeToggle';
 
 const BADGE_STORAGE_KEY = 'badgeState:v1';
 
@@ -530,6 +531,10 @@ export default function BadgeCollection() {
                 );
               })}
             </div>
+          </div>
+
+          <div className="shrink-0">
+            <ThemeToggle />
           </div>
         </div>
 

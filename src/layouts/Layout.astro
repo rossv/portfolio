@@ -1,6 +1,5 @@
 ---
 import FluidBackground from '../components/FluidBackground';
-import ThemeToggle from '../components/ThemeToggle';
 import Cursor from '../components/Cursor';
 import BadgeCollection from '../components/BadgeCollection';
 import GoogleAnalytics from '../components/GoogleAnalytics.astro';
@@ -67,9 +66,6 @@ const ogImageUrl = new URL(ogImage, Astro.site);
     <FluidBackground client:idle />
     <Cursor client:visible />
     <BadgeCollection client:visible />
-    <div class="fixed top-4 right-4 z-50">
-      <ThemeToggle client:idle />
-    </div>
     <div class="fixed inset-0 z-[-1] pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] dark:opacity-20"></div>
 		<main class="relative">
       <slot />
