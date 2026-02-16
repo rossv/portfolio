@@ -179,12 +179,20 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
     const featuredProjectMatchers = useMemo(
         () => [
-            // Exact names currently in project data
-            'model toolkit & flow data review tool',
-            'eww water system consolidation plan modeling support',
-            'eww water system consolidation plan update',
-            // Keyword fallbacks for renamed records
-            'wet weather program',
+            // Featured project names/keywords
+            'swmm autocalibrator',
+            'south beaches initial manifold forcemain optimization',
+            'saddle creek groundwater monitoring dashboard',
+            'hydraulic model modernization',
+            'hampton wwtp 3d visualization walkthrough',
+            'moon water model',
+            'alcosan grow grants',
+            'post-construction sewer system model',
+            'wewja comprehensive plan',
+            'power plant siting certificate',
+            '3d model',
+            'pool-riffle shear stress models',
+            'environmental fluid mechanics laboratory',
         ],
         []
     );
