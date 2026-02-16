@@ -743,8 +743,12 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
                 </div>
                 {isFeatured && (
                     <span
-                        className="inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white mb-3"
-                        style={{ backgroundColor: accentColor }}
+                        className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center rounded-md border px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white shadow-lg backdrop-blur-md"
+                        style={{
+                            background: `linear-gradient(135deg, ${accentColor}CC, ${accentColor}99)`,
+                            borderColor: `${accentColor}80`,
+                            boxShadow: `0 10px 24px -16px ${accentColor}, inset 0 1px 0 rgba(255,255,255,0.35)`,
+                        }}
                     >
                         Featured
                     </span>
