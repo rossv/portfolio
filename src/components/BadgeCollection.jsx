@@ -138,6 +138,7 @@ export default function BadgeCollection() {
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
   const [hoveredBadge, setHoveredBadge] = useState(null);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [isDockVisible, setIsDockVisible] = useState(true);
   const [progressSnapshot, setProgressSnapshot] = useState({
     bubbleCount: 0,
     projectReads: 0,
@@ -151,6 +152,7 @@ export default function BadgeCollection() {
   const visitedSectionsRef = useRef(new Set());
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
+  const lastScrollYRef = useRef(0);
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -228,6 +230,7 @@ export default function BadgeCollection() {
       next.add(id);
       return next;
     });
+    setIsDockVisible(true);
     window.setTimeout(() => {
       setRecentlyUnlocked((prev) => {
         const updated = new Set(prev);
@@ -239,6 +242,28 @@ export default function BadgeCollection() {
       setHoveredBadge((prev) => (prev === id ? null : prev));
     }, 5000);
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    lastScrollYRef.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollYRef.current;
+
+      if (currentY <= 24 || delta < -6) {
+        setIsDockVisible(true);
+      } else if (delta > 10) {
+        setIsDockVisible(false);
+      }
+
+      lastScrollYRef.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -469,16 +494,43 @@ export default function BadgeCollection() {
   };
 
   return (
-    <div className="fixed inset-x-0 top-4 z-50 px-3 md:px-4">
+    <div className={`fixed inset-x-0 top-4 z-50 px-3 transition-transform duration-300 ease-out md:px-4 ${isDockVisible ? 'translate-y-0' : '-translate-y-[140%]'}`}>
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 overflow-hidden rounded-full border border-slate-200/90 bg-white/85 p-1.5 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
           <button
             type="button"
-            className="rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+            className="shrink-0 rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
             onClick={() => setIsProgressOpen((prev) => !prev)}
           >
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
+
+          <div className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
+            <div className="flex w-max min-w-full items-center gap-2 px-1">
+              {unlockedBadges.map((badge) => {
+                const isDismissed = dismissed.has(badge.id);
+                const isRecent = recentlyUnlocked.has(badge.id);
+                const isHovered = hoveredBadge === badge.id;
+
+                return (
+                  <div
+                    key={badge.id}
+                    className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
+                    onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
+                    onMouseLeave={() => setHoveredBadge(null)}
+                  >
+                    <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-6 w-6" : "h-8 w-8"} />
+                    {(!isDismissed || isHovered) && (
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
+                        <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
         {isProgressOpen && (
@@ -504,33 +556,6 @@ export default function BadgeCollection() {
             </button>
           </div>
         )}
-
-        <div className="scrollbar-hide -mx-1 overflow-x-auto pb-1">
-          <div className="flex w-max min-w-full items-start gap-2 px-1">
-            {unlockedBadges.map((badge) => {
-              const isDismissed = dismissed.has(badge.id);
-              const isRecent = recentlyUnlocked.has(badge.id);
-              const isHovered = hoveredBadge === badge.id;
-
-              return (
-                <div
-                  key={badge.id}
-                  className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
-                  onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
-                  onMouseLeave={() => setHoveredBadge(null)}
-                >
-                  <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-6 w-6" : "h-8 w-8"} />
-                  {(!isDismissed || isHovered) && (
-                    <div className="text-left">
-                      <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </div>
     </div>
   );
