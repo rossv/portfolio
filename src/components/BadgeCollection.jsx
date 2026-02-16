@@ -138,6 +138,7 @@ export default function BadgeCollection() {
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
   const [hoveredBadge, setHoveredBadge] = useState(null);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [isHudVisible, setIsHudVisible] = useState(true);
   const [progressSnapshot, setProgressSnapshot] = useState({
     bubbleCount: 0,
     projectReads: 0,
@@ -151,6 +152,7 @@ export default function BadgeCollection() {
   const visitedSectionsRef = useRef(new Set());
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
+  const lastScrollYRef = useRef(0);
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -310,6 +312,32 @@ export default function BadgeCollection() {
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
 
+    const minDelta = 8;
+    const hideThreshold = 96;
+    lastScrollYRef.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollYRef.current;
+
+      if (currentY <= 12) {
+        setIsHudVisible(true);
+      } else if (delta > minDelta && currentY > hideThreshold) {
+        setIsHudVisible(false);
+      } else if (delta < -minDelta) {
+        setIsHudVisible(true);
+      }
+
+      lastScrollYRef.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -450,6 +478,11 @@ export default function BadgeCollection() {
   }, [unlockedIds]);
 
   const unlockedBadges = BADGES.filter((badge) => unlockedIds.has(badge.id));
+
+  useEffect(() => {
+    setIsHudVisible(true);
+  }, [unlockedBadges.length]);
+
   const nextBubbleTier = BUBBLE_THRESHOLDS.find((threshold) => progressSnapshot.bubbleCount < threshold);
 
   const resetProgress = () => {
@@ -469,61 +502,69 @@ export default function BadgeCollection() {
   };
 
   return (
-    <div className="fixed top-24 right-4 z-50 flex flex-col items-end gap-3">
-      <button
-        type="button"
-        className="rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
-        onClick={() => setIsProgressOpen((prev) => !prev)}
-      >
-        Badges {unlockedBadges.length}/{BADGES.length}
-      </button>
-
-      {isProgressOpen && (
-        <div className="w-72 rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
-          <p className="font-semibold text-slate-900 dark:text-slate-50">Progress</p>
-          <p className="mt-2 text-slate-600 dark:text-slate-300">Unlocked: {unlockedBadges.length}/{BADGES.length}</p>
-          <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}</p>
-          <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}</p>
-          <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
-          {nextBubbleTier ? (
-            <p className="mt-1 text-slate-600 dark:text-slate-300">
-              Next bubble badge in {nextBubbleTier - progressSnapshot.bubbleCount} bubbles ({progressSnapshot.bubbleCount}/{nextBubbleTier}).
-            </p>
-          ) : (
-            <p className="mt-1 text-slate-600 dark:text-slate-300">Bubble track complete ({progressSnapshot.bubbleCount} collected).</p>
-          )}
+    <div className={`fixed inset-x-0 top-4 z-50 px-3 transition-transform duration-300 md:px-4 ${isHudVisible ? 'translate-y-0' : '-translate-y-[140%]'}`}>
+      <div className="mx-auto flex max-w-7xl flex-col gap-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={resetProgress}
-            className="mt-3 rounded-md border border-rose-200 px-2 py-1 font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/40"
+            className="shrink-0 rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+            onClick={() => setIsProgressOpen((prev) => !prev)}
           >
-            Reset progress
+            Badges {unlockedBadges.length}/{BADGES.length}
           </button>
-        </div>
-      )}
 
-      {unlockedBadges.map((badge) => {
-        const isDismissed = dismissed.has(badge.id);
-        const isRecent = recentlyUnlocked.has(badge.id);
-        const isHovered = hoveredBadge === badge.id;
+          <div className="scrollbar-hide min-w-0 flex-1 overflow-x-auto pb-1">
+            <div className="flex w-max items-start gap-2 pr-1">
+              {unlockedBadges.map((badge) => {
+                const isDismissed = dismissed.has(badge.id);
+                const isRecent = recentlyUnlocked.has(badge.id);
+                const isHovered = hoveredBadge === badge.id;
 
-        return (
-          <div
-            key={badge.id}
-            className={`badge-chip ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
-            onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
-            onMouseLeave={() => setHoveredBadge(null)}
-          >
-            <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-6 w-6" : "h-8 w-8"} />
-            {(!isDismissed || isHovered) && (
-              <div className="text-right">
-                <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
-              </div>
-            )}
+                return (
+                  <div
+                    key={badge.id}
+                    className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
+                    onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
+                    onMouseLeave={() => setHoveredBadge(null)}
+                  >
+                    <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-6 w-6" : "h-8 w-8"} />
+                    {(!isDismissed || isHovered) && (
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-300 max-w-[140px]">{badge.description}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        );
-      })}
+        </div>
+
+        {isProgressOpen && (
+          <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white/95 p-3 text-xs shadow-lg backdrop-blur dark:border-slate-700 dark:bg-slate-900/95">
+            <p className="font-semibold text-slate-900 dark:text-slate-50">Progress</p>
+            <p className="mt-2 text-slate-600 dark:text-slate-300">Unlocked: {unlockedBadges.length}/{BADGES.length}</p>
+            <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}</p>
+            <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}</p>
+            <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
+            {nextBubbleTier ? (
+              <p className="mt-1 text-slate-600 dark:text-slate-300">
+                Next bubble badge in {nextBubbleTier - progressSnapshot.bubbleCount} bubbles ({progressSnapshot.bubbleCount}/{nextBubbleTier}).
+              </p>
+            ) : (
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Bubble track complete ({progressSnapshot.bubbleCount} collected).</p>
+            )}
+            <button
+              type="button"
+              onClick={resetProgress}
+              className="mt-3 rounded-md border border-rose-200 px-2 py-1 font-medium text-rose-700 hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/40"
+            >
+              Reset progress
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
