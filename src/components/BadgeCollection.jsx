@@ -14,6 +14,7 @@ import badgeTime15 from '../assets/badges/badge-time-15.svg';
 import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import ThemeToggle from './ThemeToggle';
+import projects from '../data/project.json';
 
 const BADGE_STORAGE_KEY = 'badgeState:v1';
 
@@ -113,6 +114,7 @@ const BADGES = [
 const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer'];
 const TOTAL_FOOTER_LINKS = 4;
 const BUBBLE_THRESHOLDS = [100, 1000, 5000];
+const TOTAL_PROJECT_CARDS = projects.length;
 
 const parseStoredState = (rawValue) => {
   if (!rawValue) return null;
@@ -145,7 +147,7 @@ export default function BadgeCollection() {
   const [progressSnapshot, setProgressSnapshot] = useState({
     bubbleCount: 0,
     projectReads: 0,
-    projectTotal: 0,
+    projectTotal: TOTAL_PROJECT_CARDS,
     jobReads: 0,
     jobTotal: 0,
     footerClicks: 0,
@@ -203,12 +205,12 @@ export default function BadgeCollection() {
     setProgressSnapshot({
       bubbleCount: stored.bubbleCount,
       projectReads: stored.projectReads.length,
-      projectTotal: Number.isFinite(stored.projectTotal) ? stored.projectTotal : 0,
+      projectTotal: TOTAL_PROJECT_CARDS,
       jobReads: stored.jobReads.length,
       jobTotal: Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0,
       footerClicks: stored.footerClicks.length,
     });
-    projectTotalRef.current = Number.isFinite(stored.projectTotal) ? stored.projectTotal : 0;
+    projectTotalRef.current = TOTAL_PROJECT_CARDS;
     jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
   }, []);
 
@@ -298,16 +300,13 @@ export default function BadgeCollection() {
 
     const handleProjectOpen = (event) => {
       const id = event.detail?.id;
-      const total = event.detail?.total;
       if (!id) return;
       projectReadsRef.current.add(id);
-      if (typeof total === 'number') {
-        projectTotalRef.current = Math.max(projectTotalRef.current, total);
-      }
+      projectTotalRef.current = TOTAL_PROJECT_CARDS;
       setProgressSnapshot((prev) => ({
         ...prev,
         projectReads: projectReadsRef.current.size,
-        projectTotal: Math.max(projectTotalRef.current, prev.projectTotal),
+        projectTotal: TOTAL_PROJECT_CARDS,
       }));
       persistBadgeState();
       if (projectReadsRef.current.size >= 1) {
@@ -316,7 +315,7 @@ export default function BadgeCollection() {
       if (projectReadsRef.current.size >= 10) {
         unlockBadge('project-explorer');
       }
-      if (typeof total === 'number' && projectReadsRef.current.size >= total) {
+      if (projectReadsRef.current.size >= TOTAL_PROJECT_CARDS) {
         unlockBadge('project-completionist');
       }
     };
