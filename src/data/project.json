@@ -238,7 +238,8 @@
             "AutoCAD",
             "CAD",
             "Infraworks",
-            "Microsoft Project"
+            "Microsoft Project",
+            "Featured"
         ],
         "description": "As a team member on a project to prepare a siting certificate for a new power plant, I aggregated GIS data and prepared exhibits showing surrounding impacts, helped construct a 3D model of the plant, and analyzed viewshed impacts.",
         "title": "Project Consultant",
@@ -288,7 +289,8 @@
         "tags": [
             "Hydraulics",
             "Infraworks",
-            "Visualization"
+            "Visualization",
+            "Featured"
         ],
         "description": "Supported ESC Brooke County Power, LLC with a 3D model, including updates to work with InfraWorks on iPad. Key focus areas: Hydraulic Modeling.",
         "title": "Project Consultant",
@@ -382,7 +384,8 @@
             "Flumes",
             "Laser Depth Gauge",
             "SketchUp",
-            "Vectrino"
+            "Vectrino",
+            "Featured"
         ],
         "description": "Planned and coordinated a new Environmental Fluid Mechanics Laboratory that included four large flumes and several small exhibits. I worked with several other members of the research group to rehabilitate an old flume that was previously in storage. We also built an intermediate-sized flume and planned and constructed a small flume, including channel design, plumbing, pump selection, electrical coordination, and a sediment collection system.",
         "title": "Research Assistant",
@@ -428,7 +431,8 @@
         "tags": [
             "C++",
             "HEC-RAS",
-            "River 2D"
+            "River 2D",
+            "Featured"
         ],
         "description": "Pool-Riffle stream structures can be found in nature and can demonstrate self-maintaining qualities by alternating high and low flows and then reversing flow regimes during high flow events. Modeling of these structures is typically done using one-dimensional models such as HEC-RAS. However, the reversal mechanism may not be found when a two-dimensional model is used. I compared a HEC-RAS and River2D model for several geometries and flow regimes to demonstrate the need to model these structures using more complex models. This paper was recognized at the 2011 World Environmental & Water Resources Congress for coming in 1st place for the student competition.",
         "title": "Undergraduate Student",
@@ -743,7 +747,8 @@
             "ArcGIS",
             "ArcGIS Desktop",
             "Calibration",
-            "InfoWater Pro"
+            "InfoWater Pro",
+            "Featured"
         ],
         "description": "Provided GIS and water modeling troubleshooting to support EWW master planning.",
         "title": "Project Engineer",
@@ -768,7 +773,8 @@
             "Storage Tanks",
             "Pump Station",
             "Hydraulics",
-            "Water Distribution"
+            "Water Distribution",
+            "Featured"
         ],
         "description": "Following the acquisition of Millcreek Township Water Authority, I oversaw the completion of an update and expansion of the InfoWater model. This involved adding nine pump stations and five water tanks across several new pressure districts. The new model was calibrated, and results supported a revised Master Plan. I resolved data challenges and stabilized the model for use in master planning.",
         "title": "Senior Project Engineer",
@@ -845,7 +851,8 @@
             "Hydrant Testing",
             "InfoWater Pro",
             "Water Distribution",
-            "WaterCAD"
+            "WaterCAD",
+            "Featured"
         ],
         "description": "I completed the upgrade of an existing WaterCAD hydraulic model to an InfoWater Pro water distribution model. This project included integrating various system updates, such as the incorporation of the latest infrastructure data. The system encompassed three tank sites, a treatment plant, and various interconnections. Calibration of the model was achieved through hydrant flow and pressure testing throughout the system. Additionally, I implemented data exchange tools to facilitate bi-directional information exchange between the model and GIS data.",
         "title": "Senior Project Engineer",
@@ -1237,7 +1244,8 @@
             "InfoSWMM",
             "Pump Station",
             "SSOAP",
-            "SWMM"
+            "SWMM",
+            "Featured"
         ],
         "description": "Worked with the Authority to determine site locations for 10 flow meters and three rain gauges for a SWMM model of the Authority's main interceptors and several key pump stations and siphons. Worked on the project but did not complete it due to a job change.",
         "title": "Senior Project Engineer",
@@ -1455,7 +1463,8 @@
             "InfoSWMM",
             "SWMM",
             "Sewer Separation",
-            "Stormwater"
+            "Stormwater",
+            "Featured"
         ],
         "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); and managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements. For the second round of ALCOSAN GROW grants, I submitted reimbursement and new separation projects totaling over $1 million. I also submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
         "title": "Senior Project Engineer",
@@ -1809,7 +1818,8 @@
             "Lumion",
             "InfoWorks 360",
             "Navisworks Manage",
-            "WWTP"
+            "WWTP",
+            "Featured"
         ],
         "description": "Created a 3D visualization rendering walkthrough of a new WWTP design to demonstrate site visuals and operations using Lumion, InfoWorks 360, and Navisworks Manage.",
         "title": "Project Engineer",
@@ -1995,7 +2005,8 @@
             "QA/QC",
             "Rate Setting",
             "SSOAP",
-            "SWMM"
+            "SWMM",
+            "Featured"
         ],
         "description": "To come into compliance with PA DEP, KVWPCA communities completed sewer separation projects and plant upgrades. To establish new rates and determine flow values, I completed a post-construction H&H model using six months of flow data from 75 flow meters. The model was modified and calibrated to reflect current flow conditions and used to establish new rates. I also implemented model updates and managed post-processing, QA/QC, and flow-monitor data management.",
         "title": "Senior Project Engineer",
@@ -2578,7 +2589,8 @@
             "Data Science",
             "IoT",
             "Power BI",
-            "Dashboard"
+            "Dashboard",
+            "Featured"
         ],
         "description": "Built a Power BI dashboard to ingest groundwater well readings from IoT sensors.",
         "title": "Professional Engineer",
@@ -2635,7 +2647,8 @@
             "ArcGIS",
             "ArcGIS Field Maps",
             "ArcGIS Pro",
-            "ArcGIS Online"
+            "ArcGIS Online",
+            "Featured"
         ],
         "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Oversaw field data collection and integration into SWMM updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data; and contributed to the winning proposal development.",
         "title": "Professional Engineer",
@@ -2783,7 +2796,8 @@
             "InfoWater Pro",
             "SOP",
             "Staff Training",
-            "Water Distribution"
+            "Water Distribution",
+            "Featured"
         ],
         "description": "Embedded on-site at the Cleveland Water Department, I documented existing water distribution modeling practices and procedures. This involved conducting a thorough review of available documentation and interviewing staff to assess knowledge gaps and prepare for future staffing transitions. A report outlining the steps to be taken during a staffing transition and recommendations for modernizing Standard Operating Procedures was subsequently compiled including improvements to GIS practices, upgrades from InfoWater to InfoWater Pro and use of SCADA.",
         "title": "Professional Engineer",
@@ -3041,7 +3055,8 @@
             "QA",
             "UI/UX",
             "Dashboard",
-            "Calibration"
+            "Calibration",
+            "Featured"
         ],
         "description": "Originated and led development of an enterprise platform to unify modeling workflows, tools, and data processes in a single AI-enabled environment; defined vision/roadmap/requirements through workshops and user research; worked with external developers on MVP architecture/specs, ingestion concepts, UI/UX mockups, workflow diagrams, and sprint/backlog/QA; integrated capabilities such as flow data QA/QC, ingestion/normalization, event detection, rainfall processing, and calibration dashboards",
         "title": "Professional Engineer",
@@ -3143,7 +3158,8 @@
             "Reinforcement Learning",
             "RMSE",
             "SWMM",
-            "AI"
+            "AI",
+            "Featured"
         ],
         "description": "Led development, testing, and deployment of an autocalibration toolkit for SWMM-based models to automate calibration workflows; coordinated with internal SMEs and external partners to evaluate algorithms and cloud-based optimization methods; iterated on parameter normalization, uncertainty handling, multi-event scoring, calibration metrics, and visualization; supported applications for multiple utilities and delivered presentations, documentation, and trainings",
         "title": "Professional Engineer",

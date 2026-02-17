@@ -174,39 +174,6 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         // Append orphans to the top level
         return [...hierarchy, ...orphans];
     }, []);
-
-
-
-    const featuredProjectMatchers = useMemo(
-        () => [
-            // Featured project names/keywords
-            'swmm autocalibrator',
-            'south beaches initial manifold forcemain optimization',
-            'saddle creek groundwater monitoring dashboard',
-            'hydraulic model modernization',
-            'hampton wwtp 3d visualization walkthrough',
-            'moon water model',
-            'alcosan grow grants',
-            'post-construction sewer system model',
-            'wewja comprehensive plan',
-            'power plant siting certificate',
-            '3d model',
-            'pool-riffle shear stress models',
-            'environmental fluid mechanics laboratory',
-            'model toolkit & flow data review tool',
-            'eww water system consolidation plan modeling support',
-            'eww water system consolidation plan update',
-            'pwsa wet weather program manager',
-        ],
-        []
-    );
-
-    const isFeaturedProject = (projectName) => {
-        const normalizedName = projectName?.toLowerCase().trim();
-        if (!normalizedName) return false;
-        return featuredProjectMatchers.some((matcher) => normalizedName.includes(matcher));
-    };
-
     // Derived State: Filtering
     const filteredProjects = useMemo(() => {
         let result = projects.filter(project => {
@@ -597,7 +564,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                     project={project}
                                     onClick={(event) => handleCardClick(project, event)}
                                     isSelected={selectedProject?.name === project.name}
-                                    isFeatured={isFeaturedProject(project.name)}
+                                    isFeatured={(project.tags ?? []).includes('Featured')}
                                 />
                             ))}
                         </div>
