@@ -118,12 +118,16 @@ export default function ExperienceMap({ projects = [], className = "", onProject
       return;
     }
 
-    const clusterId = feature.properties.cluster_id;
+    const clusterId = feature.properties?.cluster_id;
+    const isCluster = feature.properties?.point_count !== undefined;
     const coordinates = feature.geometry.coordinates.slice();
 
     // If it's a cluster
-    if (clusterId) {
-      const mapboxSource = mapRef.current.getSource('projects');
+    if (isCluster) {
+      const mapboxSource = mapRef.current?.getSource('projects');
+      if (!mapboxSource || clusterId === undefined) {
+        return;
+      }
 
       mapboxSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
         if (err) return;
