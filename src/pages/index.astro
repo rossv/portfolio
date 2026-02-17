@@ -22,12 +22,12 @@ import Footer from '../components/Footer';
   ogImage="/favicon.svg"
 >
   <WaterBanner />
-  <Hero client:load />
+  <Hero client:idle />
 
 
 
   <section id="skills" class="section-shell relative z-10 overflow-hidden min-h-[600px] flex flex-col items-center gap-10 md:gap-20">
-      <FloatingIcons client:idle />
+      <FloatingIcons client:media="(min-width: 1024px) and (hover: hover) and (pointer: fine)" />
       <div class="container mx-auto px-6 flex justify-center relative z-10">
         <SkillsRadar client:visible />
       </div>
@@ -38,12 +38,12 @@ import Footer from '../components/Footer';
   </section>
 
   <section id="timeline" class="section-shell section-shell--alt bg-transparent">
-    <CareerTimeline client:visible />
+    <CareerTimeline client:idle />
   </section>
 
-  <Achievements client:visible />
+  <Achievements />
 
-  <NewsSection client:visible />
+  <NewsSection client:idle />
 
   <section id="projects" class="section-shell pb-8 md:pb-12">
     <div class="w-full max-w-[95%] mx-auto px-6 border-b border-slate-200/60 dark:border-slate-700/40 pb-8 md:pb-10">
@@ -58,5 +58,5 @@ import Footer from '../components/Footer';
     </div>
   </section>
 
-  <Footer client:visible />
+  <Footer />
 </Layout>
