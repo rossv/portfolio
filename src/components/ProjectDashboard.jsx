@@ -193,6 +193,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             '3d model',
             'pool-riffle shear stress models',
             'environmental fluid mechanics laboratory',
+            'model toolkit & flow data review tool',
+            'eww water system consolidation plan modeling support',
+            'eww water system consolidation plan update',
+            'pwsa wet weather program manager',
         ],
         []
     );
