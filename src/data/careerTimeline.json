@@ -1,0 +1,167 @@
+[
+  {
+    "id": "wade-trim",
+    "title": "Professional Engineer",
+    "company": "Wade Trim",
+    "logoKey": "wade-trim",
+    "year": "April 2021 – Present",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "444 Liberty Avenue, Suite 300, Pittsburgh, PA 15222",
+    "coords": [-80.00485997060412, 40.44081394317524],
+    "description": "Leading Hydrologic & Hydraulic modeling projects for large utilities. Developing innovative tools under the Office of Applied Technology and leading technical groups for Advanced Design Technology and Wet Weather Practices.",
+    "details": [
+      "Conduct Hydrologic and Hydraulic modeling for large utilities in multiple metro areas.",
+      "Plan and manage flow monitoring program comprised of 130 flow monitors.",
+      "Collaborate with staff and consultants to build tools under the Office of Applied Technology.",
+      "Establish and lead new GIS Community of Practice to promote and implement the latest technology.",
+      "Develop time-saving scripting tools and applications for use company-wide.",
+      "Supervise, instruct and develop staff."
+    ],
+    "highlights": [
+      "2024 Innovator of the Year 🏆",
+      "GIS Tech Lead",
+      "Optimization & Data Science Lead",
+      "Sewers of the Future Lead",
+      "Leadership Academy Alumni",
+      "Supervisor"
+    ],
+    "color": "#43b02a"
+  },
+  {
+    "id": "klh-senior",
+    "title": "Senior Project Engineer",
+    "company": "KLH Engineers",
+    "logoKey": "klh",
+    "year": "May 2016 – March 2021",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "5173 Campbell's Run Road, Pittsburgh, PA 15205",
+    "coords": [-80.15526074663305, 40.44078119201674],
+    "description": "Principal engineer for H&H modeling, flow monitoring plans, and GIS systems. Modernized company software and methods for efficiency.",
+    "details": [
+      "Principal engineer for developing, updating, and maintaining H&H models.",
+      "Develop flow monitoring plans and perform flow data QA/QC and calibration.",
+      "Develop and maintain asset management for clients utilizing latest GIS tools.",
+      "Manage all GIS systems and staff.",
+      "Manage IT infrastructure and technology, deploy new services and business processes.",
+      "MS4 program management and permitting including PRPs.",
+      "3D modeling and rendering for business development and presentations."
+    ],
+    "highlights": [
+      "GIS Manager",
+      "IT Coordinator",
+      "Principal Modeler",
+      "Two-time Employee of the Month"
+    ],
+    "color": "#496980"
+  },
+  {
+    "id": "cec",
+    "title": "Project Consultant",
+    "company": "Civil & Environmental Consultants",
+    "logoKey": "cec",
+    "year": "Jan 2015 - Apr 2016",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "333 Baldwin Road, Pittsburgh, PA 15205",
+    "coords": [-80.10060670990161, 40.424593291706955],
+    "description": "Civil/Site development including grading, utilities, and stormwater design. Facilitated regulatory submissions (NPDES, HOP, PCSM). Provided new tools and workflows to improve efficiencies.",
+    "details": [
+      "Prepare land development plans in C3D including layout, grading, utilities, and E&S controls.",
+      "Stormwater design and modeling using HydroCAD and Hydraflow.",
+      "Facilitate timely regulatory submissions (SFPM, HOP, PCSM, NPDES).",
+      "Collaborate with leadership to conceptualize innovative tools and workflows."
+    ],
+    "highlights": [
+      "Built first Concept of a Site Intelligence and Project Digital Delivery tool that evolved to CEC Go!"
+    ],
+    "color": "#fcb900"
+  },
+  {
+    "id": "klh-project",
+    "title": "Project Engineer",
+    "company": "KLH Engineers",
+    "logoKey": "klh",
+    "year": "Dec 2012 – Jan 2015",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "5173 Campbell's Run Road, Pittsburgh, PA 15205",
+    "coords": [-80.15526074663305, 40.44078119201674],
+    "description": "Experience in water, wastewater, and stormwater from site-scale to system-wide. NPDES and other permitting for construction.",
+    "details": [
+      "Provide H&H modeling for municipal systems to support design and long-term planning and permitting.",
+      "NPDES and other permitting for construction including stormwater and E&S design.",
+      "Modernized company software and methods for efficiency and quality.",
+      "Automate routine GIS and engineering tasks with Python and other scripting tools."
+    ],
+    "highlights": [
+      "Became lead modeler",
+      "Built company's first internal intranet"
+    ],
+    "color": "#496980"
+  },
+  {
+    "id": "pitt",
+    "title": "Research Assistant",
+    "company": "University of Pittsburgh",
+    "logoKey": "pitt",
+    "year": "May 2010 – Dec 2012",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "University of Pittsburgh, Pittsburgh, PA",
+    "coords": [-79.95863716325252, 40.44363087984247],
+    "description": "Conducted research for the Earth Processes & Environmental Flows Group. Comparison and Analysis of Hydrodynamic Models for Restoration Projects.",
+    "details": [
+      "Research under Dr. Jorge D. Abad, Earth Processes & Environmental Flows Group.",
+      "Built and maintained hydraulics lab including construction of physical flumes for hydraulic and sediment analysis."
+    ],
+    "color": "#083b97"
+  },
+  {
+    "id": "pitt-ms",
+    "title": "M.S. Civil & Environmental Engineering",
+    "company": "University of Pittsburgh",
+    "logoKey": "pitt",
+    "year": "2011 – 2012",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "University of Pittsburgh, Pittsburgh, PA",
+    "coords": [-79.95863716325252, 40.44363087984247],
+    "description": "Master of Science in Civil & Environmental Engineering.",
+    "details": [
+      "Specialization in environmental engineering and water resources.",
+      "Concurrent research with the Earth Processes & Environmental Flows Group.",
+      "Comparison and Analysis of Hydrodynamic Models for Restoration Projects: The Case of Pool-Riffle Structures."
+    ],
+    "color": "#083b97"
+  },
+  {
+    "id": "netl",
+    "title": "Intern",
+    "company": "National Energy Technology Laboratory (U.S. DOE)",
+    "logoKey": "netl",
+    "year": "2009 – 2010",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "626 Cochrans Mill Rd, Pittsburgh, PA 15236",
+    "coords": [-79.9780268797734, 40.30597821094191],
+    "description": "Conducted methane gas surveys in the Allegheny National Forest. Used GIS to process and visualize air quality data sets.",
+    "details": [
+      "Conducted methane gas surveys in the Allegheny National Forest.",
+      "Used GIS to process and visualize air quality data sets.",
+      "Assembled and integrated a $200,000 visualization lab."
+    ],
+    "color": "#3e3e3e"
+  },
+  {
+    "id": "pitt-bs",
+    "title": "B.S. Civil & Environmental Engineering",
+    "company": "University of Pittsburgh",
+    "logoKey": "pitt",
+    "year": "2007 – 2011",
+    "location": "Pittsburgh, PA",
+    "fullAddress": "University of Pittsburgh, Pittsburgh, PA",
+    "coords": [-79.95863716325252, 40.44363087984247],
+    "description": "Bachelor of Science in Civil & Environmental Engineering.",
+    "details": [
+      "Foundation in civil and environmental engineering principles.",
+      "Focus on fluid mechanics, hydraulics, and environmental systems.",
+      "Certificate in Sustainability."
+    ],
+    "color": "#083b97"
+  }
+]
