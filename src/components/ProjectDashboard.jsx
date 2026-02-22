@@ -645,10 +645,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 })()}
 
                                 {/* ... Content ... */}
-                                <div className="flex justify-between items-start mb-4">
+                                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
                                     <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
-                                    <div className="flex items-center gap-2">
-                                        {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
+                                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                                        {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full whitespace-nowrap shrink-0">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
                                         <button
                                             onClick={closeModal}
                                             aria-label="Close project details"
@@ -735,7 +735,7 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
                 />
                 <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{project.category}</span>
-                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{formatDateRange(project.start_date, project.end_date)}</span>}
+                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap">{formatDateRange(project.start_date, project.end_date)}</span>}
                 </div>
                 {isFeatured && (
                     <span
