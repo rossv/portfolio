@@ -80,6 +80,21 @@ const getProjectActiveYears = (start, end) => {
 };
 
 export default function ProjectDashboard({ onFilteredProjects }) {
+    const getProjectTrackingId = (project) => {
+        if (!project) return null;
+
+        return [
+            project.name,
+            project.client,
+            project.company,
+            project.start_date,
+            project.end_date,
+            project.image,
+        ]
+            .map(value => value ?? '')
+            .join('|');
+    };
+
     // ... items ...
 
     const [filterText, setFilterText] = useState('');
@@ -388,9 +403,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     };
 
     const dispatchProjectOpen = (project) => {
-        if (typeof window !== 'undefined' && project?.name) {
+        const trackingId = getProjectTrackingId(project);
+        if (typeof window !== 'undefined' && trackingId) {
             window.dispatchEvent(
-                new CustomEvent('project-open', { detail: { id: project.name, total: projects.length } })
+                new CustomEvent('project-open', { detail: { id: trackingId, total: projects.length } })
             );
         }
     };
