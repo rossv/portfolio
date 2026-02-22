@@ -25,7 +25,10 @@ export default function FluidBackground() {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         let animationFrameId;
-        let bubbleCollectCount = 0;
+        let bubbleCollectCount = Number.parseInt(window.localStorage.getItem('bubbleCollectCount') || '0', 10);
+        if (!Number.isFinite(bubbleCollectCount) || bubbleCollectCount < 0) {
+            bubbleCollectCount = 0;
+        }
 
         let width = window.innerWidth;
         let height = window.innerHeight;
@@ -97,8 +100,9 @@ export default function FluidBackground() {
                 if (!this.collected && distance < this.size + 12) {
                     this.collected = true;
                     bubbleCollectCount += 1;
+                    window.localStorage.setItem('bubbleCollectCount', String(bubbleCollectCount));
                     window.dispatchEvent(
-                        new CustomEvent('bubble-collect', { detail: { count: bubbleCollectCount } })
+                        new CustomEvent('bubble-collect', { detail: { count: bubbleCollectCount, increment: 1 } })
                     );
                 }
 
