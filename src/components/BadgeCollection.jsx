@@ -86,6 +86,12 @@ const BADGES = [
     icon: badgeFooter,
   },
   {
+    id: 'one-minute-mark',
+    name: 'One Minute Mark',
+    description: 'Spent one minute on the page.',
+    icon: badgeTime1,
+  },
+  {
     id: 'five-minute-mark',
     name: 'Five Minute Mark',
     description: 'Spent five minutes on the page.',
@@ -115,6 +121,12 @@ const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer']
 const TOTAL_FOOTER_LINKS = 4;
 const BUBBLE_THRESHOLDS = [100, 1000, 5000];
 const TOTAL_PROJECT_CARDS = projects.length;
+const TIME_BADGE_THRESHOLDS = [
+  { id: 'one-minute-mark', ms: 1 * 60 * 1000 },
+  { id: 'five-minute-mark', ms: 5 * 60 * 1000 },
+  { id: 'quarter-hour', ms: 15 * 60 * 1000 },
+  { id: 'hour-mark', ms: 60 * 60 * 1000 },
+];
 
 const parseStoredState = (rawValue) => {
   if (!rawValue) return null;
@@ -131,6 +143,7 @@ const parseStoredState = (rawValue) => {
       jobTotal: Number.isFinite(parsed.jobTotal) ? parsed.jobTotal : 0,
       footerClicks: Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [],
       visitedSections: Array.isArray(parsed.visitedSections) ? parsed.visitedSections : [],
+      timeSpentMs: Number.isFinite(parsed.timeSpentMs) ? parsed.timeSpentMs : 0,
     };
   } catch {
     return null;
@@ -151,6 +164,7 @@ export default function BadgeCollection() {
     jobReads: 0,
     jobTotal: 0,
     footerClicks: 0,
+    timeSpentMs: 0,
   });
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
@@ -159,9 +173,12 @@ export default function BadgeCollection() {
   const jobTotalRef = useRef(0);
   const footerClicksRef = useRef(new Set());
   const visitedSectionsRef = useRef(new Set());
+  const timeSpentMsRef = useRef(0);
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
   const lastScrollYRef = useRef(0);
+  const badgeScrollerRef = useRef(null);
+  const badgeItemRefs = useRef(new Map());
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -178,6 +195,7 @@ export default function BadgeCollection() {
         jobTotal: jobTotalRef.current,
         footerClicks: Array.from(footerClicksRef.current),
         visitedSections: Array.from(visitedSectionsRef.current),
+        timeSpentMs: timeSpentMsRef.current,
       })
     );
   };
@@ -209,9 +227,11 @@ export default function BadgeCollection() {
       jobReads: stored.jobReads.length,
       jobTotal: Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0,
       footerClicks: stored.footerClicks.length,
+      timeSpentMs: stored.timeSpentMs,
     });
     projectTotalRef.current = TOTAL_PROJECT_CARDS;
     jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
+    timeSpentMsRef.current = stored.timeSpentMs;
   }, []);
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
@@ -246,6 +266,7 @@ export default function BadgeCollection() {
       return next;
     });
     setIsDockVisible(true);
+
     window.setTimeout(() => {
       setRecentlyUnlocked((prev) => {
         const updated = new Set(prev);
@@ -257,6 +278,19 @@ export default function BadgeCollection() {
       setHoveredBadge((prev) => (prev === id ? null : prev));
     }, 5000);
   };
+
+  useEffect(() => {
+    if (recentlyUnlocked.size === 0) return;
+
+    const latestBadgeId = Array.from(recentlyUnlocked).at(-1);
+    if (!latestBadgeId) return;
+
+    const scroller = badgeScrollerRef.current;
+    const badgeElement = badgeItemRefs.current.get(latestBadgeId);
+    if (!scroller || !badgeElement) return;
+
+    badgeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [recentlyUnlocked]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -284,7 +318,15 @@ export default function BadgeCollection() {
     if (typeof window === 'undefined') return undefined;
 
     const handleBubbleCollect = (event) => {
-      bubbleCountRef.current = Math.max(bubbleCountRef.current, event.detail?.count ?? 0);
+      const totalCount = event.detail?.count;
+      const increment = event.detail?.increment;
+
+      if (Number.isFinite(increment) && increment > 0) {
+        bubbleCountRef.current += increment;
+      } else if (Number.isFinite(totalCount)) {
+        bubbleCountRef.current = Math.max(bubbleCountRef.current, totalCount);
+      }
+
       setProgressSnapshot((prev) => ({ ...prev, bubbleCount: bubbleCountRef.current }));
       persistBadgeState();
       if (bubbleCountRef.current >= 100) {
@@ -385,22 +427,28 @@ export default function BadgeCollection() {
   }, [unlockedIds]);
 
   useEffect(() => {
-    // Timers should not reset when other badges are unlocked
     if (typeof window === 'undefined') return undefined;
 
-    const timers = [
-      { id: 'five-minute-mark', delay: 5 * 60 * 1000 },
-      { id: 'quarter-hour', delay: 15 * 60 * 1000 },
-      { id: 'hour-mark', delay: 60 * 60 * 1000 },
-    ].map(({ id, delay }) => {
-      // We check inside the timeout if it's already done
-      return window.setTimeout(() => unlockBadge(id), delay);
-    });
+    let lastTick = Date.now();
 
-    return () => {
-      timers.forEach((timer) => timer && window.clearTimeout(timer));
+    const tick = () => {
+      const now = Date.now();
+      if (!document.hidden) {
+        timeSpentMsRef.current += now - lastTick;
+        setProgressSnapshot((prev) => ({ ...prev, timeSpentMs: timeSpentMsRef.current }));
+        TIME_BADGE_THRESHOLDS.forEach(({ id, ms }) => {
+          if (timeSpentMsRef.current >= ms) {
+            unlockBadge(id);
+          }
+        });
+        persistBadgeState();
+      }
+      lastTick = now;
     };
-  }, []); // Empty dependency array ensures timers persist
+
+    const interval = window.setInterval(tick, 1000);
+    return () => window.clearInterval(interval);
+  }, [unlockedIds]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -515,9 +563,11 @@ export default function BadgeCollection() {
     jobTotalRef.current = 0;
     footerClicksRef.current = new Set();
     visitedSectionsRef.current = new Set();
-    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0 });
+    timeSpentMsRef.current = 0;
+    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0, timeSpentMs: 0 });
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(BADGE_STORAGE_KEY);
+      window.localStorage.removeItem('bubbleCollectCount');
     }
   };
 
@@ -533,7 +583,7 @@ export default function BadgeCollection() {
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
 
-          <div className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
+          <div ref={badgeScrollerRef} className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
             <div className="flex w-max min-w-full items-center gap-2 px-1">
               {unlockedBadges.map((badge) => {
                 const isDismissed = dismissed.has(badge.id);
@@ -543,6 +593,13 @@ export default function BadgeCollection() {
                 return (
                   <div
                     key={badge.id}
+                    ref={(element) => {
+                      if (element) {
+                        badgeItemRefs.current.set(badge.id, element);
+                      } else {
+                        badgeItemRefs.current.delete(badge.id);
+                      }
+                    }}
                     className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
                     onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
                     onMouseLeave={() => setHoveredBadge(null)}
@@ -572,6 +629,7 @@ export default function BadgeCollection() {
             <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}/{Math.max(progressSnapshot.projectTotal, progressSnapshot.projectReads)}</p>
             <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}/{Math.max(progressSnapshot.jobTotal, progressSnapshot.jobReads)}</p>
             <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
+            <p className="text-slate-600 dark:text-slate-300">Time on page: {Math.floor(progressSnapshot.timeSpentMs / 60000)}m {Math.floor((progressSnapshot.timeSpentMs % 60000) / 1000)}s</p>
             {nextBubbleTier ? (
               <p className="mt-1 text-slate-600 dark:text-slate-300">
                 Next bubble badge in {nextBubbleTier - progressSnapshot.bubbleCount} bubbles ({progressSnapshot.bubbleCount}/{nextBubbleTier}).

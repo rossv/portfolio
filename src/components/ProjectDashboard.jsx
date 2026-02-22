@@ -80,6 +80,21 @@ const getProjectActiveYears = (start, end) => {
 };
 
 export default function ProjectDashboard({ onFilteredProjects }) {
+    const getProjectTrackingId = (project) => {
+        if (!project) return null;
+
+        return [
+            project.name,
+            project.client,
+            project.company,
+            project.start_date,
+            project.end_date,
+            project.image,
+        ]
+            .map(value => value ?? '')
+            .join('|');
+    };
+
     // ... items ...
 
     const [filterText, setFilterText] = useState('');
@@ -388,9 +403,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     };
 
     const dispatchProjectOpen = (project) => {
-        if (typeof window !== 'undefined' && project?.name) {
+        const trackingId = getProjectTrackingId(project);
+        if (typeof window !== 'undefined' && trackingId) {
             window.dispatchEvent(
-                new CustomEvent('project-open', { detail: { id: project.name, total: projects.length } })
+                new CustomEvent('project-open', { detail: { id: trackingId, total: projects.length } })
             );
         }
     };
@@ -464,7 +480,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     }, [selectedProject]);
 
     return (
-        <div className="rounded-2xl relative h-[calc(100vh-100px)] min-h-[600px] max-h-[1200px]">
+        <div className="rounded-2xl relative h-[calc(100vh-80px)] min-h-[640px] max-h-[1240px]">
 
             {/* Layout Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
@@ -473,7 +489,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
 
                     {/* Sticky Header: Search & Filters */}
-                    <div className="p-4 md:p-6 z-30 sticky top-4 bg-transparent transition-all">
+                    <div className="p-4 md:p-6 z-30 lg:sticky lg:top-4 bg-transparent transition-all">
                         <div className="max-w-4xl mx-auto space-y-4 rounded-2xl bg-white/40 dark:bg-slate-900/50 backdrop-blur border border-white/30 dark:border-slate-700/40 shadow-lg p-4 md:p-6">
                             {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
                             <div className="flex gap-2">
@@ -629,10 +645,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 })()}
 
                                 {/* ... Content ... */}
-                                <div className="flex justify-between items-start mb-4">
+                                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
                                     <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
-                                    <div className="flex items-center gap-2">
-                                        {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
+                                    <div className="flex items-center gap-2 self-end sm:self-auto">
+                                        {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full whitespace-nowrap shrink-0">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
                                         <button
                                             onClick={closeModal}
                                             aria-label="Close project details"
@@ -719,7 +735,7 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
                 />
                 <div className="flex justify-between items-start mb-2">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{project.category}</span>
-                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">{formatDateRange(project.start_date, project.end_date)}</span>}
+                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap">{formatDateRange(project.start_date, project.end_date)}</span>}
                 </div>
                 {isFeatured && (
                     <span
