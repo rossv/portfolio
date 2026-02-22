@@ -177,6 +177,8 @@ export default function BadgeCollection() {
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
   const lastScrollYRef = useRef(0);
+  const badgeScrollerRef = useRef(null);
+  const badgeItemRefs = useRef(new Map());
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -264,6 +266,7 @@ export default function BadgeCollection() {
       return next;
     });
     setIsDockVisible(true);
+
     window.setTimeout(() => {
       setRecentlyUnlocked((prev) => {
         const updated = new Set(prev);
@@ -275,6 +278,19 @@ export default function BadgeCollection() {
       setHoveredBadge((prev) => (prev === id ? null : prev));
     }, 5000);
   };
+
+  useEffect(() => {
+    if (recentlyUnlocked.size === 0) return;
+
+    const latestBadgeId = Array.from(recentlyUnlocked).at(-1);
+    if (!latestBadgeId) return;
+
+    const scroller = badgeScrollerRef.current;
+    const badgeElement = badgeItemRefs.current.get(latestBadgeId);
+    if (!scroller || !badgeElement) return;
+
+    badgeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [recentlyUnlocked]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -567,7 +583,7 @@ export default function BadgeCollection() {
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
 
-          <div className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
+          <div ref={badgeScrollerRef} className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
             <div className="flex w-max min-w-full items-center gap-2 px-1">
               {unlockedBadges.map((badge) => {
                 const isDismissed = dismissed.has(badge.id);
@@ -577,6 +593,13 @@ export default function BadgeCollection() {
                 return (
                   <div
                     key={badge.id}
+                    ref={(element) => {
+                      if (element) {
+                        badgeItemRefs.current.set(badge.id, element);
+                      } else {
+                        badgeItemRefs.current.delete(badge.id);
+                      }
+                    }}
                     className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
                     onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
                     onMouseLeave={() => setHoveredBadge(null)}
