@@ -489,7 +489,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
 
                     {/* Sticky Header: Search & Filters */}
-                    <div className="p-4 md:p-6 z-30 sticky top-4 bg-transparent transition-all">
+                    <div className="p-4 md:p-6 z-30 lg:sticky lg:top-4 bg-transparent transition-all">
                         <div className="max-w-4xl mx-auto space-y-4 rounded-2xl bg-white/40 dark:bg-slate-900/50 backdrop-blur border border-white/30 dark:border-slate-700/40 shadow-lg p-4 md:p-6">
                             {/* Mobile Map Toggle / Preview could go here if needed, keeping it simple for now */}
                             <div className="flex gap-2">
