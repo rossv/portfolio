@@ -1,13 +1,95 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="budda-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FBBF24"/>
-      <stop offset="1" stop-color="#F472B6"/>
+    <filter id="badge-budda_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="badge-budda_glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badge-budda_inner_shadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+    <linearGradient id="badge-budda_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#065F46"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+    <linearGradient id="badge-budda_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37"/>
+      <stop offset="50%" stop-color="#F0E68C"/>
+      <stop offset="100%" stop-color="#AA7814"/>
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#budda-bg)" stroke="#0F172A" stroke-width="2"/>
-  <path d="M32 16c-4 4-6 8-6 12 0 4 2 8 6 10 4-2 6-6 6-10 0-4-2-8-6-12z" fill="#0F172A" opacity="0.2"/>
-  <path d="M18 38c6-2 10-2 14 0-6 2-8 4-14 6 2-2 2-4 0-6z" fill="#0F172A"/>
-  <path d="M46 38c-6-2-10-2-14 0 6 2 8 4 14 6-2-2-2-4 0-6z" fill="#0F172A"/>
-  <circle cx="32" cy="30" r="6" fill="#F8FAFC" opacity="0.8"/>
+
+  <!-- Outer Ring -->
+  <circle cx="32" cy="32" r="30" fill="url(#badge-budda_ring)" filter="url(#badge-budda_shadow)"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
+
+  <!-- Inner Background -->
+  <circle cx="32" cy="32" r="26" fill="url(#badge-budda_bg)" filter="url(#badge-budda_inner_shadow)"/>
+
+  <!-- Glassmorphic Top Shine -->
+  <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.12"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- === Buddhist Halo (nimbus) behind head === -->
+  <circle cx="32" cy="21" r="10" fill="none" stroke="#FEF08A" stroke-width="1.2" opacity="0.6" filter="url(#badge-budda_glow)"/>
+  <circle cx="32" cy="21" r="8.5" fill="none" stroke="#FBBF24" stroke-width="0.7" opacity="0.5"/>
+
+  <!-- === Buddha silhouette (filled in gold/white) === -->
+
+  <!-- Topknot (ushnisha) -->
+  <ellipse cx="32" cy="10" rx="3" ry="3.5" fill="#FEF08A" stroke="#D97706" stroke-width="0.5"/>
+  <ellipse cx="32" cy="12" rx="3.8" ry="2" fill="#FEF08A" stroke="#D97706" stroke-width="0.5"/>
+
+  <!-- Head -->
+  <ellipse cx="32" cy="19" rx="7" ry="8" fill="#FEF08A" stroke="#D97706" stroke-width="0.6"/>
+
+  <!-- Neck -->
+  <rect x="29.5" y="26" width="5" height="3" rx="1" fill="#FEF08A" stroke="#D97706" stroke-width="0.5"/>
+
+  <!-- Robe body / torso -->
+  <path d="M 20,29 C 18,31 16,36 17,42 C 18,46 20,48 24,49 C 27,50 37,50 40,49 C 44,48 46,46 47,42 C 48,36 46,31 44,29 C 41,27 23,27 20,29 Z"
+    fill="#FEF08A" stroke="#D97706" stroke-width="0.7"/>
+
+  <!-- Crossed legs (lotus position) -->
+  <!-- Left knee/leg goes left and down -->
+  <path d="M 19,42 C 14,43 13,47 16,49 C 19,51 24,50 24,49"
+    fill="#FEF08A" stroke="#D97706" stroke-width="0.7"/>
+  <!-- Right knee/leg goes right and down -->
+  <path d="M 45,42 C 50,43 51,47 48,49 C 45,51 40,50 40,49"
+    fill="#FEF08A" stroke="#D97706" stroke-width="0.7"/>
+
+  <!-- Feet crossed in center -->
+  <ellipse cx="27" cy="50" rx="6" ry="2.5" fill="#FEF08A" stroke="#D97706" stroke-width="0.5" transform="rotate(-5 27 50)"/>
+  <ellipse cx="37" cy="50" rx="6" ry="2.5" fill="#FEF08A" stroke="#D97706" stroke-width="0.5" transform="rotate(5 37 50)"/>
+
+  <!-- Dhyana mudra hands resting in lap -->
+  <ellipse cx="27" cy="44" rx="5" ry="2.5" fill="#FEF08A" stroke="#D97706" stroke-width="0.5"/>
+  <ellipse cx="37" cy="44" rx="5" ry="2.5" fill="#FEF08A" stroke="#D97706" stroke-width="0.5"/>
+  <!-- Top hand (resting on the bottom) -->
+  <ellipse cx="32" cy="42.5" rx="6" ry="2.5" fill="#FDE68A" stroke="#D97706" stroke-width="0.5"/>
+
+  <!-- Face details -->
+  <!-- Closed eyes (meditative) -->
+  <path d="M 28.5,18.5 C 29,17.5 30.5,17.5 31,18.5" stroke="#92400E" stroke-width="1" stroke-linecap="round" fill="none"/>
+  <path d="M 33,18.5 C 33.5,17.5 35,17.5 35.5,18.5" stroke="#92400E" stroke-width="1" stroke-linecap="round" fill="none"/>
+  <!-- Serene smile -->
+  <path d="M 30,22 C 31,23 33,23 34,22" stroke="#92400E" stroke-width="0.8" stroke-linecap="round" fill="none"/>
+  <!-- Third eye dot (urna) -->
+  <circle cx="32" cy="16.5" r="1" fill="#F97316" opacity="0.9"/>
+
+  <!-- Robe fold lines on body -->
+  <path d="M 27,30 C 26,36 26,42 27,47" stroke="#D97706" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+  <path d="M 37,30 C 38,36 38,42 37,47" stroke="#D97706" stroke-width="0.6" stroke-linecap="round" opacity="0.5"/>
+  <path d="M 22,34 C 26,35 38,35 42,34" stroke="#D97706" stroke-width="0.6" opacity="0.4"/>
 </svg>

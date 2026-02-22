@@ -1,11 +1,57 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="journal-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F97316"/>
-      <stop offset="1" stop-color="#EF4444"/>
+    <!-- Inner Drop Shadow -->
+    <filter id="badge-journal_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glow -->
+    <filter id="badge-journal_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badge-journal_inner_shadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+    <!-- Background Gradient -->
+    <linearGradient id="badge-journal_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D4D4D8"/>
+      <stop offset="1" stop-color="#71717A"/>
+    </linearGradient>
+    <!-- Outer Ring Gradient -->
+    <linearGradient id="badge-journal_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A56A49"/>
+      <stop offset="50%" stop-color="#D28D69"/>
+      <stop offset="100%" stop-color="#774229"/>
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#journal-bg)" stroke="#0F172A" stroke-width="2"/>
-  <rect x="22" y="18" width="20" height="28" rx="4" fill="#F8FAFC"/>
-  <path d="M26 24h12M26 30h12M26 36h8" stroke="#0F172A" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Outer Ring  -->
+  <circle cx="32" cy="32" r="30" fill="url(#badge-journal_ring)" filter="url(#badge-journal_shadow)"/>
+  
+  <!-- Outer Ring Bevel -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
+  
+  <!-- Inner Background -->
+  <circle cx="32" cy="32" r="26" fill="url(#badge-journal_bg)" filter="url(#badge-journal_inner_shadow)"/>
+
+  <!-- Inner Highlight/Glass Curve -->
+  <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Extra custom background shapes if any -->
+  
+
+  <!-- Icon Group -->
+  <g transform="translate(18, 18) scale(1.16)">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="none" stroke="#FFF" stroke-width="2" stroke-linejoin="round"/>
+  </g>
 </svg>

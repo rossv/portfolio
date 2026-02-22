@@ -1,21 +1,64 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="space-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1E1B4B"/>
-      <stop offset="1" stop-color="#312E81"/>
+    <!-- Inner Drop Shadow -->
+    <filter id="badge-space-nerd_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glow -->
+    <filter id="badge-space-nerd_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badge-space-nerd_inner_shadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+    <!-- Background Gradient -->
+    <linearGradient id="badge-space-nerd_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#3B0764"/>
+    </linearGradient>
+    <!-- Outer Ring Gradient -->
+    <linearGradient id="badge-space-nerd_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A1EBEB"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#4DB6AC"/>
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#space-bg)" stroke="#6366F1" stroke-width="2"/>
+  
+  <!-- Outer Ring  -->
+  <circle cx="32" cy="32" r="30" fill="url(#badge-space-nerd_ring)" filter="url(#badge-space-nerd_shadow)"/>
+  
+  <!-- Outer Ring Bevel -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
+  
+  <!-- Inner Background -->
+  <circle cx="32" cy="32" r="26" fill="url(#badge-space-nerd_bg)" filter="url(#badge-space-nerd_inner_shadow)"/>
+
+  <!-- Inner Highlight/Glass Curve -->
+  <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Extra custom background shapes if any -->
+  
   <!-- Stars -->
-  <circle cx="18" cy="20" r="1.5" fill="#FFF"/>
-  <circle cx="45" cy="18" r="1" fill="#FFF"/>
-  <circle cx="50" cy="35" r="1.5" fill="#FFF"/>
-  <circle cx="15" cy="42" r="1" fill="#FFF"/>
-  <circle cx="38" cy="48" r="1" fill="#FFF"/>
-  <!-- Rocket -->
-  <path d="M32 14 L36 28 L34 30 L32 32 L30 30 L28 28 Z" fill="#F8FAFC"/>
-  <path d="M30 30 L26 36 L30 34 Z" fill="#EF4444"/>
-  <path d="M34 30 L38 36 L34 34 Z" fill="#EF4444"/>
-  <ellipse cx="32" cy="36" rx="2" ry="4" fill="#F97316"/>
-  <ellipse cx="32" cy="38" rx="1.5" ry="3" fill="#FBBF24"/>
+  <circle cx="21" cy="22" r="1.5" fill="#FFF" opacity="0.8"/>
+  <circle cx="43" cy="20" r="1" fill="#FFF" opacity="0.6"/>
+  <circle cx="47" cy="38" r="1.5" fill="#FFF" opacity="0.9"/>
+  <circle cx="20" cy="45" r="1" fill="#FFF" opacity="0.7"/>
+  <circle cx="38" cy="50" r="1" fill="#FFF" opacity="0.5"/>
+    
+
+  <!-- Icon Group -->
+  <g transform="translate(18, 18) scale(1.16)">
+    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" fill="none" stroke="#FFF" stroke-width="2"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" fill="none" stroke="#FFF" stroke-width="2"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" fill="none" stroke="#FFF" stroke-width="2"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" fill="none" stroke="#FFF" stroke-width="2"/>
+  </g>
 </svg>

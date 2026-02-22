@@ -1,13 +1,57 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="badge-time-5-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#A78BFA" />
-      <stop offset="1" stop-color="#60A5FA" />
+    <!-- Inner Drop Shadow -->
+    <filter id="badge-time-5_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glow -->
+    <filter id="badge-time-5_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badge-time-5_inner_shadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+    <!-- Background Gradient -->
+    <linearGradient id="badge-time-5_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+    <!-- Outer Ring Gradient -->
+    <linearGradient id="badge-time-5_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B0B5B9"/>
+      <stop offset="50%" stop-color="#E1E5E8"/>
+      <stop offset="100%" stop-color="#6E7A81"/>
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#badge-time-5-bg)" stroke="#0F172A" stroke-width="2" />
-  <circle cx="32" cy="32" r="14" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.5" />
-  <path d="M32 22V32L26 38" stroke="#0F172A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-  <rect x="22" y="44" width="20" height="10" rx="3" fill="#0F172A" />
-  <path d="M27 47H35V49H30V51H35V53H27V51H32V49H27V47Z" fill="#F8FAFC" />
+  
+  <!-- Outer Ring  -->
+  <circle cx="32" cy="32" r="30" fill="url(#badge-time-5_ring)" filter="url(#badge-time-5_shadow)"/>
+  
+  <!-- Outer Ring Bevel -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
+  
+  <!-- Inner Background -->
+  <circle cx="32" cy="32" r="26" fill="url(#badge-time-5_bg)" filter="url(#badge-time-5_inner_shadow)"/>
+
+  <!-- Inner Highlight/Glass Curve -->
+  <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Extra custom background shapes if any -->
+  
+
+  <!-- Icon Group -->
+  <g transform="translate(18, 18) scale(1.16)">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="#FFF" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 </svg>

@@ -1,12 +1,57 @@
 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="sections-bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#60A5FA"/>
-      <stop offset="1" stop-color="#34D399"/>
+    <!-- Inner Drop Shadow -->
+    <filter id="badge-sections_shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glow -->
+    <filter id="badge-sections_glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="badge-sections_inner_shadow">
+      <feOffset dx="0" dy="2"/>
+      <feGaussianBlur stdDeviation="2" result="offset-blur"/>
+      <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
+      <feFlood flood-color="black" flood-opacity="0.3" result="color"/>
+      <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
+      <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
+    </filter>
+    <!-- Background Gradient -->
+    <linearGradient id="badge-sections_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#64748B"/>
+      <stop offset="1" stop-color="#0EA5E9"/>
+    </linearGradient>
+    <!-- Outer Ring Gradient -->
+    <linearGradient id="badge-sections_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B0B5B9"/>
+      <stop offset="50%" stop-color="#E1E5E8"/>
+      <stop offset="100%" stop-color="#6E7A81"/>
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="28" fill="url(#sections-bg)" stroke="#0F172A" stroke-width="2"/>
-  <circle cx="32" cy="32" r="16" fill="#0F172A" opacity="0.15"/>
-  <path d="M32 16l6 14-6 18-6-18 6-14z" fill="#0F172A" transform="rotate(90 32 32)"/>
-  <circle cx="32" cy="32" r="4" fill="#F8FAFC"/>
+  
+  <!-- Outer Ring  -->
+  <circle cx="32" cy="32" r="30" fill="url(#badge-sections_ring)" filter="url(#badge-sections_shadow)"/>
+  
+  <!-- Outer Ring Bevel -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
+  
+  <!-- Inner Background -->
+  <circle cx="32" cy="32" r="26" fill="url(#badge-sections_bg)" filter="url(#badge-sections_inner_shadow)"/>
+
+  <!-- Inner Highlight/Glass Curve -->
+  <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
+
+  <!-- Extra custom background shapes if any -->
+  
+
+  <!-- Icon Group -->
+  <g transform="translate(18, 18) scale(1.16)">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="#FFF" stroke-width="2"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="none" stroke="#FFF" stroke-width="2"/>
+  </g>
 </svg>
