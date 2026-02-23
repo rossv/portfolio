@@ -190,6 +190,8 @@ export default function BadgeCollection() {
     }
   };
 
+  const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
+
   const scrollLeftAmount = () => {
     if (badgeScrollerRef.current) {
       badgeScrollerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
@@ -268,8 +270,6 @@ export default function BadgeCollection() {
     jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
     timeSpentMsRef.current = stored.timeSpentMs;
   }, []);
-
-  const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
   useEffect(() => {
     persistBadgeState();
@@ -450,7 +450,9 @@ export default function BadgeCollection() {
           }
         });
       },
-      { threshold: 0.45 }
+      // Keep threshold low enough that very tall sections can still be marked visited.
+      // A high ratio can be impossible to reach on short viewports.
+      { threshold: 0.15 }
     );
 
     SECTION_IDS.forEach((id) => {
