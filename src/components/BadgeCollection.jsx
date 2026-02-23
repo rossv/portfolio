@@ -157,6 +157,8 @@ export default function BadgeCollection() {
   const [hoveredBadge, setHoveredBadge] = useState(null);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
   const [isDockVisible, setIsDockVisible] = useState(true);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const [progressSnapshot, setProgressSnapshot] = useState({
     bubbleCount: 0,
     projectReads: 0,
@@ -179,6 +181,39 @@ export default function BadgeCollection() {
   const lastScrollYRef = useRef(0);
   const badgeScrollerRef = useRef(null);
   const badgeItemRefs = useRef(new Map());
+
+  const checkScroll = () => {
+    if (badgeScrollerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = badgeScrollerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth - 1);
+    }
+  };
+
+  const scrollLeftAmount = () => {
+    if (badgeScrollerRef.current) {
+      badgeScrollerRef.current.scrollBy({ left: -150, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRightAmount = () => {
+    if (badgeScrollerRef.current) {
+      badgeScrollerRef.current.scrollBy({ left: 150, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    const scroller = badgeScrollerRef.current;
+    if (!scroller) return;
+
+    checkScroll();
+    const resizeObserver = new ResizeObserver(() => checkScroll());
+    resizeObserver.observe(scroller);
+    if (scroller.firstElementChild) {
+      resizeObserver.observe(scroller.firstElementChild);
+    }
+    return () => resizeObserver.disconnect();
+  }, [unlockedIds]);
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -583,38 +618,64 @@ export default function BadgeCollection() {
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
 
-          <div ref={badgeScrollerRef} className="scrollbar-hide min-w-0 flex-1 overflow-x-auto">
-            <div className="flex w-max min-w-full items-center gap-2 px-1">
-              {unlockedBadges.map((badge) => {
-                const isDismissed = dismissed.has(badge.id);
-                const isRecent = recentlyUnlocked.has(badge.id);
-                const isHovered = hoveredBadge === badge.id;
+          <div className="relative min-w-0 flex-1 flex items-center">
+            {canScrollLeft && (
+              <button
+                onClick={scrollLeftAmount}
+                className="absolute left-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-r from-white via-white/80 to-transparent pr-4 pl-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                aria-label="Scroll left"
+              >
+                <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
 
-                return (
-                  <div
-                    key={badge.id}
-                    ref={(element) => {
-                      if (element) {
-                        badgeItemRefs.current.set(badge.id, element);
-                      } else {
-                        badgeItemRefs.current.delete(badge.id);
-                      }
-                    }}
-                    className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
-                    onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
-                    onMouseLeave={() => setHoveredBadge(null)}
-                  >
-                    <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-7 w-7" : "h-10 w-10"} />
-                    {(!isDismissed || isHovered) && (
-                      <div className="text-left">
-                        <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
-                        <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            <div ref={badgeScrollerRef} onScroll={checkScroll} className="scrollbar-hide flex-1 overflow-x-auto">
+              <div className="flex w-max min-w-full items-center gap-2 px-1">
+                {unlockedBadges.map((badge) => {
+                  const isDismissed = dismissed.has(badge.id);
+                  const isRecent = recentlyUnlocked.has(badge.id);
+                  const isHovered = hoveredBadge === badge.id;
+
+                  return (
+                    <div
+                      key={badge.id}
+                      ref={(element) => {
+                        if (element) {
+                          badgeItemRefs.current.set(badge.id, element);
+                        } else {
+                          badgeItemRefs.current.delete(badge.id);
+                        }
+                      }}
+                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
+                      onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
+                      onMouseLeave={() => setHoveredBadge(null)}
+                    >
+                      <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-7 w-7" : "h-10 w-10"} />
+                      {(!isDismissed || isHovered) && (
+                        <div className="text-left">
+                          <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
+                          <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+
+            {canScrollRight && (
+              <button
+                onClick={scrollRightAmount}
+                className="absolute right-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-l from-white via-white/80 to-transparent pl-4 pr-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                aria-label="Scroll right"
+              >
+                <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
           </div>
 
           <div className="shrink-0">
