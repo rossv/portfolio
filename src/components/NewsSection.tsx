@@ -198,6 +198,8 @@ export default function NewsSection() {
 
         const handlePointerDown = (event: PointerEvent) => {
             if (event.pointerType === 'mouse' && event.button !== 0) return;
+            const target = event.target as HTMLElement | null;
+            if (target?.closest('a, button, input, textarea, select, label')) return;
             isPointerDown = true;
             startX = event.clientX;
             startScrollLeft = container.scrollLeft;
