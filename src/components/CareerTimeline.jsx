@@ -203,19 +203,19 @@ export default function CareerTimeline() {
                                         className={`
                                         p-6 rounded-2xl border transition-all duration-300 border-l-4 shadow-sm relative overflow-hidden
                                         ${selectedJob.id === item.id
-                                                ? 'bg-white/70 dark:bg-slate-900/70 shadow-xl border-white/40 dark:border-slate-700/70 lg:translate-x-2'
-                                                : 'bg-white/30 dark:bg-slate-900/40 border-transparent hover:bg-white/60 hover:dark:bg-slate-900/60 hover:shadow-md'
+                                                ? 'bg-white/80 dark:bg-slate-800/90 shadow-xl border-white/40 dark:border-slate-600/80 lg:translate-x-2'
+                                                : 'bg-white/40 dark:bg-slate-900/70 border-transparent dark:border-slate-700/70 hover:bg-white/70 hover:dark:bg-slate-800/80 hover:shadow-md'
                                             }
                                     `}
                                         style={{ borderLeftColor: item.color }}
                                     >
                                         <div className="flex justify-between items-center gap-4">
                                             <div className="flex-1">
-                                                <span className="inline-block px-3 py-1 mb-2 text-xs font-bold text-white bg-slate-900 dark:bg-slate-700 rounded-full font-mono tracking-widest">
+                                                <span className="inline-block px-3 py-1 mb-2 text-xs font-bold text-white dark:text-slate-100 bg-slate-900 dark:bg-slate-600 rounded-full font-mono tracking-widest">
                                                     {item.year}
                                                 </span>
-                                                <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1.5 leading-snug">{item.title}</h3>
-                                                <p className="font-bold text-base mt-2" style={{ color: item.color }}>{item.company}</p>
+                                                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-1.5 leading-snug">{item.title}</h3>
+                                                <p className="font-bold text-base mt-2 text-slate-700 dark:text-sky-300">{item.company}</p>
                                             </div>
                                             <div className="w-28 h-20 hidden md:flex bg-slate-100 dark:bg-slate-300 p-2 rounded-xl items-center justify-center shrink-0 ml-4 shadow-sm border border-slate-200 dark:border-slate-500">
                                                 <img
