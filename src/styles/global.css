@@ -69,7 +69,7 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
   }
 
   .section-shell--alt {
-    @apply bg-slate-50/80 dark:bg-slate-900/40;
+    @apply bg-transparent;
   }
 
   .scrollbar-hide {
