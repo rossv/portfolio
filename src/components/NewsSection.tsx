@@ -228,7 +228,15 @@ export default function NewsSection() {
             if (!isPointerDown) return;
             isPointerDown = false;
             setIsDragging(false);
-            container.releasePointerCapture(event.pointerId);
+            if (container.hasPointerCapture(event.pointerId)) {
+                container.releasePointerCapture(event.pointerId);
+            }
+        };
+
+        const handleWindowBlur = () => {
+            isPointerDown = false;
+            setIsDragging(false);
+            suppressClick = false;
         };
 
         const handleClick = (event: MouseEvent) => {
@@ -255,6 +263,7 @@ export default function NewsSection() {
         container.addEventListener('pointerup', handlePointerUp);
         container.addEventListener('pointercancel', handlePointerUp);
         container.addEventListener('click', handleClick, true);
+        window.addEventListener('blur', handleWindowBlur);
 
         return () => {
             container.removeEventListener('scroll', updateProgress);
@@ -264,6 +273,7 @@ export default function NewsSection() {
             container.removeEventListener('pointerup', handlePointerUp);
             container.removeEventListener('pointercancel', handlePointerUp);
             container.removeEventListener('click', handleClick, true);
+            window.removeEventListener('blur', handleWindowBlur);
         };
     }, []);
 
