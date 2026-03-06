@@ -3172,5 +3172,53 @@
             -80.004783,
             40.440683
         ]
+    },
+    {
+        "name": "Pittsburgh Water 2024 Annual CSO Stats",
+        "client": "Pittsburgh Water",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "SWMM",
+            "CSO",
+            "Regulatory",
+            "QA/QC"
+        ],
+        "description": "Provided QAQC of annual CSO stats modeling and claculations including review of methods and results to ensure a regulatory compliant report.",
+        "title": "Professional Engineer",
+        "project_role": "Technical Advisor, QAQC",
+        "image": "/src/assets/projects/autocalibrate.webp",
+        "start_date": "03/01/2025",
+        "end_date": "04/01/2025",
+        "client_sort": "Pittsburgh Water",
+        "coords": [
+            -79.991342,
+            40.445943
+        ]
+    },
+    {
+        "name": "Pittsburgh Water 2025 Annual CSO Stats",
+        "client": "Pittsburgh Water",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "SWMM",
+            "CSO",
+            "Regulatory",
+            "QA/QC"
+        ],
+        "description": "Provided QAQC of annual CSO stats modeling and claculations including review of methods and results to ensure a regulatory compliant report.",
+        "title": "Professional Engineer",
+        "project_role": "Technical Advisor, QAQC",
+        "image": "/src/assets/projects/autocalibrate.webp",
+        "start_date": "03/01/2026",
+        "end_date": "04/01/2026",
+        "client_sort": "Pittsburgh Water",
+        "coords": [
+            -79.991342,
+            40.445943
+        ]
     }
 ]
