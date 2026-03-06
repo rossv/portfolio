@@ -71,10 +71,16 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
                     {item.description}
                 </p>
 
-                <div className="flex items-center text-indigo-600 dark:text-indigo-400 text-sm font-semibold group-hover:translate-x-1 transition-transform duration-300">
+                <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center text-indigo-600 dark:text-indigo-400 text-sm font-semibold group-hover:translate-x-1 transition-transform duration-300"
+                    aria-label={`Read article: ${item.title}`}
+                >
                     Read Article
                     <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </div>
+                </a>
             </div>
         </motion.div>
     );
@@ -198,6 +204,8 @@ export default function NewsSection() {
 
         const handlePointerDown = (event: PointerEvent) => {
             if (event.pointerType === 'mouse' && event.button !== 0) return;
+            const target = event.target as HTMLElement | null;
+            if (target?.closest('a, button, input, textarea, select, label')) return;
             isPointerDown = true;
             startX = event.clientX;
             startScrollLeft = container.scrollLeft;
@@ -220,7 +228,15 @@ export default function NewsSection() {
             if (!isPointerDown) return;
             isPointerDown = false;
             setIsDragging(false);
-            container.releasePointerCapture(event.pointerId);
+            if (container.hasPointerCapture(event.pointerId)) {
+                container.releasePointerCapture(event.pointerId);
+            }
+        };
+
+        const handleWindowBlur = () => {
+            isPointerDown = false;
+            setIsDragging(false);
+            suppressClick = false;
         };
 
         const handleClick = (event: MouseEvent) => {
@@ -247,6 +263,7 @@ export default function NewsSection() {
         container.addEventListener('pointerup', handlePointerUp);
         container.addEventListener('pointercancel', handlePointerUp);
         container.addEventListener('click', handleClick, true);
+        window.addEventListener('blur', handleWindowBlur);
 
         return () => {
             container.removeEventListener('scroll', updateProgress);
@@ -256,6 +273,7 @@ export default function NewsSection() {
             container.removeEventListener('pointerup', handlePointerUp);
             container.removeEventListener('pointercancel', handlePointerUp);
             container.removeEventListener('click', handleClick, true);
+            window.removeEventListener('blur', handleWindowBlur);
         };
     }, []);
 
@@ -272,12 +290,6 @@ export default function NewsSection() {
 
     return (
         <section id="news" className="section-shell section-shell--alt relative overflow-hidden">
-            {/* Background Decoration */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/2"></div>
-                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl translate-y-1/2 translate-x-1/2"></div>
-            </div>
-
             <div className="mx-auto px-6 relative z-10 w-full max-w-none">
                 <div className="text-center mb-16">
                     <motion.div
