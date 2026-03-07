@@ -16,7 +16,7 @@ import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import ThemeToggle from './ThemeToggle';
 import projects from '../data/project.json';
 
-const BADGE_STORAGE_KEY = 'badgeState:v1';
+const BADGE_STORAGE_KEY = 'badgeState:v2';
 
 const BADGES = [
   {
@@ -117,7 +117,7 @@ const BADGES = [
   },
 ];
 
-const SECTION_IDS = ['skills', 'timeline', 'achievements', 'projects', 'footer'];
+const SECTION_IDS = ['skills', 'timeline', 'leadership', 'achievements', 'projects', 'footer'];
 const TOTAL_FOOTER_LINKS = 4;
 const BUBBLE_THRESHOLDS = [100, 1000, 5000];
 const TOTAL_PROJECT_CARDS = projects.length;
