@@ -568,6 +568,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 projects={filteredProjects}
                                 className="h-[300px] w-full shadow-md border-slate-200 dark:border-slate-700"
                                 onProjectClick={handleMapProjectClick}
+                                allowTouchInteractions={false}
                             />
                         </div>
 
