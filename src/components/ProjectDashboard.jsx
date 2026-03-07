@@ -480,7 +480,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     }, [selectedProject]);
 
     return (
-        <div className="rounded-2xl relative h-[calc(100vh-80px)] min-h-[640px] max-h-[1240px]">
+        <div className="rounded-2xl relative h-[calc(100vh-24px)] min-h-[760px] max-h-[1320px] lg:h-[calc(100vh-80px)] lg:min-h-[640px] lg:max-h-[1240px]">
 
             {/* Layout Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
