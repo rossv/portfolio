@@ -242,6 +242,10 @@ export default function ExperienceMap({ projects = [], className = "", onProject
         interactiveLayerIds={[clusterLayer.id, unclusteredPointLayer.id]}
         onClick={onClick}
         attributionControl={false}
+        dragPan={true}
+        dragRotate={true}
+        touchZoomRotate={true}
+        scrollZoom={true}
       >
         <Source
           id="projects"
