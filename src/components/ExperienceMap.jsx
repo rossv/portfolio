@@ -40,7 +40,7 @@ const unclusteredPointLayer = {
   }
 };
 
-export default function ExperienceMap({ projects = [], className = "", onProjectClick, allowTouchInteractions = true }) {
+export default function ExperienceMap({ projects = [], className = "", onProjectClick }) {
   const mapRef = useRef(null);
   const [popupInfo, setPopupInfo] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -229,12 +229,6 @@ export default function ExperienceMap({ projects = [], className = "", onProject
             strokeWidth="1" />
         </svg>
       </div>
-      {!allowTouchInteractions && (
-        <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-full border border-slate-200/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-600 shadow-lg backdrop-blur-sm dark:border-slate-600/70 dark:bg-slate-900/85 dark:text-slate-200 pointer-events-none">
-          Scroll page here • Tap map markers only
-        </div>
-      )}
-
       <Map
         ref={mapRef}
         style={{ borderRadius: '1rem', overflow: 'hidden' }}
@@ -248,10 +242,10 @@ export default function ExperienceMap({ projects = [], className = "", onProject
         interactiveLayerIds={[clusterLayer.id, unclusteredPointLayer.id]}
         onClick={onClick}
         attributionControl={false}
-        dragPan={allowTouchInteractions}
-        dragRotate={allowTouchInteractions}
-        touchZoomRotate={allowTouchInteractions}
-        scrollZoom={allowTouchInteractions}
+        dragPan={true}
+        dragRotate={true}
+        touchZoomRotate={true}
+        scrollZoom={true}
       >
         <Source
           id="projects"
