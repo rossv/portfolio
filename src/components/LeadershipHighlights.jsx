@@ -1,4 +1,6 @@
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Award } from 'lucide-react';
 
 import wetWeatherLeadImg from '../assets/projects/pwsa-wet-weather-program-manager.webp';
 import gisTechnicalLeadImg from '../assets/recognition/recognition-gis-technical-lead.webp';
@@ -12,55 +14,116 @@ const leadershipRoles = [
     title: 'Hydraulic Modeling Task Lead',
     context: 'Pittsburgh Water Wet Weather Program',
     timeframe: 'Current Role',
+    periods: [{ start: '2024-01', end: null, label: 'Since Jan 2024' }],
     details:
-      'Lead hydraulic modeling strategy, technical review, and delivery coordination for one of Pittsburgh\'s most complex wet-weather initiatives.',
+      "Lead hydraulic modeling strategy, technical review, and delivery coordination for one of Pittsburgh's most complex wet-weather initiatives.",
     image: wetWeatherLeadImg,
     emphasis: 'Project Leadership',
-  },
-  {
-    title: 'Supervisor',
-    context: 'Wade Trim',
-    timeframe: 'Current Role',
-    details: 'Mentor staff, guide technical growth, and support team performance through project delivery and career development.',
-    image: leadershipAcademyImg,
-    emphasis: 'People Leadership',
+    group: 'Project Leads',
   },
   {
     title: 'GIS Technical Lead',
     context: 'Advanced Design Practice',
-    timeframe: 'Since 2022',
+    timeframe: 'Since Dec 2022',
+    periods: [{ start: '2022-12', end: null, label: 'Since Dec 2022' }],
     details: 'Set GIS direction, standards, and implementation support across projects and teams.',
     image: gisTechnicalLeadImg,
-    emphasis: 'Technical Leadership',
+    emphasis: 'Formal Role',
+    group: 'Formal Roles',
   },
   {
     title: 'Optimization & Data Science Lead',
     context: 'Office of Applied Technology',
-    timeframe: 'Since 2024',
+    timeframe: 'Since Jun 2024',
+    periods: [{ start: '2024-06', end: null, label: 'Since Jun 2024' }],
     details: 'Drive automation, optimization workflows, and data-informed engineering decisions.',
     image: optimizationDataScienceImg,
-    emphasis: 'Innovation Leadership',
+    emphasis: 'Formal Role',
+    group: 'Formal Roles',
   },
   {
     title: 'Sewers of the Future Lead',
     context: 'Wet Weather Practice',
-    timeframe: 'Since 2024',
+    timeframe: 'Since Jun 2024',
+    periods: [{ start: '2024-06', end: null, label: 'Since Jun 2024' }],
     details: 'Advance strategy and technical pilots that modernize sewer system planning and operations.',
     image: sewersFutureImg,
-    emphasis: 'Strategic Leadership',
+    emphasis: 'Formal Role',
+    group: 'Formal Roles',
+  },
+  {
+    title: 'Supervisor',
+    context: 'Current and Previous Roles',
+    timeframe: 'Jan 2017 – Apr 2021, resumed Apr 2024',
+    periods: [
+      { start: '2017-01', end: '2021-04', label: 'Jan 2017 – Apr 2021' },
+      { start: '2024-04', end: null, label: 'Resumed Apr 2024' },
+    ],
+    details: 'Mentor staff, guide technical growth, and support team performance through project delivery and career development.',
+    image: leadershipAcademyImg,
+    emphasis: 'People Leadership',
+    group: 'Other Roles',
   },
   {
     title: 'AI Task Force Member',
     context: 'Wade Trim',
-    timeframe: 'Since 2023',
+    timeframe: 'Since Sep 2023',
+    periods: [{ start: '2023-09', end: null, label: 'Since Sep 2023' }],
     details: 'Support responsible adoption of AI tools and practical use cases for engineering teams.',
     image: aiTaskForceImg,
     emphasis: 'Emerging Technology',
+    group: 'Other Roles',
+  },
+  {
+    title: 'Standards Committee Member',
+    context: 'Engineering Practice Committee',
+    timeframe: 'Since Jun 2024',
+    periods: [{ start: '2024-06', end: null, label: 'Since Jun 2024' }],
+    details: 'Help define and refine standards that improve delivery consistency, QA, and technical alignment across teams.',
+    image: leadershipAcademyImg,
+    emphasis: 'Standards & Governance',
+    group: 'Other Roles',
   },
 ];
 
+const groupOrder = ['Project Leads', 'Formal Roles', 'Other Roles'];
+const barGradient = 'from-cyan-500 via-blue-500 to-indigo-500';
+
+function parseMonth(value) {
+  const [year, month] = value.split('-').map(Number);
+  return new Date(year, month - 1, 1);
+}
+
+function monthDiff(startDate, endDate) {
+  return (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+}
+
 export default function LeadershipHighlights() {
-  const [featuredRole, ...supportingRoles] = leadershipRoles;
+  const [activeRoleIndex, setActiveRoleIndex] = useState(0);
+
+  const timelineMeta = useMemo(() => {
+    const starts = leadershipRoles.flatMap((role) => role.periods.map((period) => parseMonth(period.start)));
+    const timelineStart = new Date(Math.min(...starts.map((date) => date.getTime())));
+    const timelineEnd = new Date();
+    const totalMonths = Math.max(monthDiff(timelineStart, timelineEnd) + 1, 1);
+
+    return { timelineStart, timelineEnd, totalMonths };
+  }, []);
+
+  const groupedRoles = useMemo(
+    () =>
+      groupOrder
+        .map((group) => ({
+          group,
+          roles: leadershipRoles
+            .map((role, index) => ({ role, index }))
+            .filter(({ role }) => role.group === group),
+        }))
+        .filter((entry) => entry.roles.length > 0),
+    [],
+  );
+
+  const activeRole = leadershipRoles[activeRoleIndex];
 
   return (
     <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden">
@@ -76,59 +139,112 @@ export default function LeadershipHighlights() {
           viewport={{ once: true }}
           className="mb-10"
         >
-          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-3">
-            Leadership Roles
-          </h2>
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+              Leadership Growth Timeline
+            </h2>
+            <motion.div
+              whileHover={{ y: -3, scale: 1.03 }}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/30 border border-amber-300/60 dark:border-amber-700/50"
+            >
+              <Award className="w-4 h-4 text-amber-700 dark:text-amber-300" />
+              <span className="text-xs font-bold uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">Leadership Academy Alumni</span>
+            </motion.div>
+          </div>
           <p className="text-slate-600 dark:text-slate-300 max-w-3xl text-lg">
-            Key project, people, and innovation leadership responsibilities across wet weather, GIS, optimization, and AI initiatives.
+            Explore each lane to see when responsibilities began and how roles evolved in parallel across project leadership, formal leadership tracks, and organizational contributions.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-5">
+          <div className="rounded-3xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm p-5 md:p-7">
+            {groupedRoles.map((groupBlock) => (
+              <div key={groupBlock.group} className="mb-6 last:mb-0">
+                <p className="text-xs uppercase tracking-[0.15em] font-bold text-indigo-700 dark:text-indigo-300 mb-3">{groupBlock.group}</p>
+                <div className="space-y-3">
+                  {groupBlock.roles.map(({ role, index }) => {
+                    const isActive = index === activeRoleIndex;
+
+                    return (
+                      <motion.button
+                        key={role.title}
+                        type="button"
+                        onClick={() => setActiveRoleIndex(index)}
+                        onMouseEnter={() => setActiveRoleIndex(index)}
+                        whileHover={{ scale: 1.01, x: 3 }}
+                        className={`w-full text-left rounded-2xl p-3 border transition ${
+                          isActive
+                            ? 'border-cyan-400/80 dark:border-cyan-500/80 bg-cyan-50/80 dark:bg-cyan-900/20'
+                            : 'border-slate-200/70 dark:border-slate-700/70 hover:border-cyan-300/70 dark:hover:border-cyan-700/70'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3 mb-2">
+                          <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-slate-100">{role.title}</h3>
+                          <span className="text-[10px] md:text-xs uppercase tracking-wider font-mono text-slate-500 dark:text-slate-400">{role.timeframe}</span>
+                        </div>
+                        <div className="relative h-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                          {role.periods.map((period, periodIndex) => {
+                            const startDate = parseMonth(period.start);
+                            const periodEnd = period.end ? parseMonth(period.end) : timelineMeta.timelineEnd;
+                            const leftOffset = (monthDiff(timelineMeta.timelineStart, startDate) / timelineMeta.totalMonths) * 100;
+                            const width = ((monthDiff(startDate, periodEnd) + 1) / timelineMeta.totalMonths) * 100;
+
+                            return (
+                              <motion.div
+                                key={`${role.title}-${period.start}-${period.end ?? 'current'}`}
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${width}%` }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.65, delay: 0.06 * (index + periodIndex), ease: 'easeOut' }}
+                                className={`absolute top-1 bottom-1 rounded-md bg-gradient-to-r ${barGradient} ${
+                                  isActive ? 'opacity-100' : 'opacity-75'
+                                }`}
+                                style={{ left: `${leftOffset}%` }}
+                              />
+                            );
+                          })}
+                          <div className="absolute inset-0 flex items-center px-2">
+                            <span className="text-[11px] md:text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">{role.context}</span>
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <motion.article
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-2 rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 bg-slate-900 text-white relative min-h-[360px]"
+            key={activeRole.title}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 bg-slate-900 text-white relative min-h-[340px]"
           >
             <img
-              src={featuredRole.image.src || featuredRole.image}
-              alt={`${featuredRole.title} visual`}
+              src={activeRole.image.src || activeRole.image}
+              alt={`${activeRole.title} visual`}
               className="absolute inset-0 w-full h-full object-cover opacity-45"
             />
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/75 to-indigo-900/40" />
-            <div className="relative z-10 p-8 md:p-10 h-full flex flex-col justify-end gap-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">{featuredRole.emphasis}</span>
-              <h3 className="text-3xl md:text-4xl font-extrabold leading-tight">{featuredRole.title}</h3>
-              <p className="text-cyan-100 font-semibold">{featuredRole.context}</p>
-              <p className="text-slate-200 max-w-2xl">{featuredRole.details}</p>
-              <span className="text-xs font-mono uppercase tracking-wider text-slate-300">{featuredRole.timeframe}</span>
+            <div className="relative z-10 p-8 h-full flex flex-col justify-end gap-4">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">{activeRole.emphasis}</span>
+              <h3 className="text-3xl font-extrabold leading-tight">{activeRole.title}</h3>
+              <p className="text-cyan-100 font-semibold">{activeRole.context}</p>
+              <p className="text-slate-200">{activeRole.details}</p>
+              <div className="flex flex-wrap gap-2">
+                {activeRole.periods.map((period) => (
+                  <span
+                    key={`${activeRole.title}-${period.start}-${period.end ?? 'current'}-label`}
+                    className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-cyan-500/20 border border-cyan-300/30 text-cyan-100"
+                  >
+                    {period.label}
+                  </span>
+                ))}
+              </div>
             </div>
           </motion.article>
-
-          <div className="space-y-4">
-            {supportingRoles.map((role, index) => (
-              <motion.article
-                key={role.title}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="rounded-2xl p-4 md:p-5 border border-slate-200/70 dark:border-slate-700/70 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm flex gap-4"
-              >
-                <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                  <img src={role.image.src || role.image} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-300 mb-1">{role.emphasis}</p>
-                  <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-tight">{role.title}</h4>
-                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">{role.context}</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{role.details}</p>
-                  <p className="text-[10px] uppercase tracking-wider font-mono text-slate-400 dark:text-slate-500 mt-2">{role.timeframe}</p>
-                </div>
-              </motion.article>
-            ))}
-          </div>
         </div>
       </div>
     </section>
