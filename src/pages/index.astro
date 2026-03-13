@@ -5,6 +5,7 @@ import WaterBanner from '../components/WaterBanner.astro';
 import ProjectPortfolio from '../components/ProjectPortfolio';
 import SkillsRadar from '../components/SkillsRadar';
 import CareerTimeline from '../components/CareerTimeline';
+import LeadershipHighlights from '../components/LeadershipHighlights';
 import Achievements from '../components/Achievements';
 import NewsSection from '../components/NewsSection';
 
@@ -40,6 +41,8 @@ import Footer from '../components/Footer';
   <section id="timeline" class="section-shell section-shell--alt bg-transparent">
     <CareerTimeline client:idle />
   </section>
+
+  <LeadershipHighlights client:visible />
 
   <Achievements client:visible />
 

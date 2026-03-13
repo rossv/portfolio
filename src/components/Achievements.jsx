@@ -2,10 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import innovatorAwardImg from '../assets/recognition/innovator-award.webp';
 import leadershipAcademyImg from '../assets/recognition/recognition-leadership-academy.webp';
-import optimizationDataScienceImg from '../assets/recognition/recognition-optimization-data-science.webp';
-import sewersFutureImg from '../assets/recognition/recognition-sewers-future.webp';
-import aiTaskForceImg from '../assets/recognition/recognition-ai-task-force.webp';
-import gisTechnicalLeadImg from '../assets/recognition/recognition-gis-technical-lead.webp';
 import daleCarnegieImg from '../assets/recognition/recognition-dale-carnegie.webp';
 import asceEwriImg from '../assets/recognition/recognition-asce-ewri.webp';
 
@@ -27,50 +23,6 @@ const positions = [
         image: leadershipAcademyImg,
         icon: (
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" /></svg>
-        )
-    },
-    {
-        title: "Optimization & Data Science Lead",
-        category: "Innovation",
-        company: "Wade Trim",
-        year: "Since 2024",
-        details: "Innovation Lead",
-        image: optimizationDataScienceImg,
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-        )
-    },
-    {
-        title: "Sewers of the Future Lead",
-        category: "Strategy",
-        company: "Wade Trim",
-        year: "Since 2024",
-        details: "Under Wet Weather Practice",
-        image: sewersFutureImg,
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7m0 0L9 7" /></svg>
-        )
-    },
-    {
-        title: "AI Task Force",
-        category: "Committee",
-        company: "Wade Trim",
-        year: "Since 2023",
-        details: "Member",
-        image: aiTaskForceImg,
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-        )
-    },
-    {
-        title: "GIS Technical Lead",
-        category: "Leadership",
-        company: "Wade Trim",
-        year: "Since 2022",
-        details: "Under Advanced Design Practice",
-        image: gisTechnicalLeadImg,
-        icon: (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
         )
     },
     {
@@ -210,10 +162,10 @@ export default function Achievements() {
                 >
                     <div>
                         <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-2 tracking-tight">
-                            Recognition & Insights
+                            Recognition, Awards & Insights
                         </h2>
                         <p className="text-slate-600 dark:text-slate-400 max-w-xl text-lg">
-                            Highlighting industry leadership, technical contributions, and recognition.
+                            Recognitions, awards, and public-facing contributions across innovation and technical communication.
                         </p>
                     </div>
                     {/* Decorative Line */}
