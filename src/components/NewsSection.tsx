@@ -309,14 +309,16 @@ export default function NewsSection() {
                 <div className="relative">
                     <div
                         ref={scrollRef}
-                        className={`flex gap-8 overflow-x-auto overflow-y-hidden pb-6 w-full snap-x snap-proximity scrollbar-hide select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+                        className={`overflow-x-auto overflow-y-hidden w-full snap-x snap-proximity scrollbar-hide select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                         style={{ scrollSnapType: 'x proximity' }}
                     >
-                        {sortedNews.map((item, index) => (
-                            <div key={item.id} className="shrink-0 snap-start">
-                                <NewsCard item={item} index={index} />
-                            </div>
-                        ))}
+                        <div className="flex w-max min-w-full justify-center gap-8 pb-6">
+                            {sortedNews.map((item, index) => (
+                                <div key={item.id} className="shrink-0 snap-start">
+                                    <NewsCard item={item} index={index} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                     <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
                     <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
