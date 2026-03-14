@@ -53,13 +53,20 @@ const leadershipRoles = [
   },
   {
     title: 'Supervisor',
-    context: 'Current and Previous Roles',
-    timeframe: 'Jan 2017 – Apr 2021, resumed Apr 2024',
-    periods: [
+    context: 'Pittsburgh Office',
+    legacyTimeframe: 'Jan 2017 – Apr 2021, resumed Apr 2024',
+    legacyPeriods: [
       { start: '2017-01', end: '2021-04', label: 'Jan 2017 – Apr 2021' },
       { start: '2024-04', end: null, label: 'Resumed Apr 2024' },
     ],
-    details: 'Mentor staff, guide technical growth, and support team performance through project delivery and career development.',
+    legacyDetails: 'Mentor staff, guide technical growth, and support team performance through project delivery and career development.',
+    timeframe: '2017-2021, 2024-present',
+    periods: [
+      { start: '2017-01', end: '2021-04', label: '2017-2021', showBar: false },
+      { start: '2024-04', end: null, label: '2024-present', showBar: true },
+    ],
+    details:
+      'Mentor staff, guide technical growth, and support team performance through project delivery and career development, with six direct reports.',
     image: leadershipAcademyImg,
     emphasis: 'People Leadership',
     group: 'Other Roles',
@@ -76,7 +83,7 @@ const leadershipRoles = [
   },
   {
     title: 'Standards Committee Member',
-    context: 'Engineering Practice Committee',
+    context: 'GIS Subcommittee',
     timeframe: 'Since Jun 2024',
     periods: [{ start: '2024-06', end: null, label: 'Since Jun 2024' }],
     details: 'Help define and refine standards that improve delivery consistency, QA, and technical alignment across teams.',
@@ -215,13 +222,15 @@ export default function LeadershipHighlights() {
                             <span className="text-[10px] md:text-xs uppercase tracking-wider font-mono text-slate-500 dark:text-slate-400">{role.timeframe}</span>
                           </div>
                           <div className="relative h-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                            {role.periods.map((period, periodIndex) => {
-                              const startDate = parseMonth(period.start);
-                              const periodEnd = period.end ? parseMonth(period.end) : timelineMeta.timelineEnd;
-                              const leftOffset = (monthDiff(timelineMeta.timelineStart, startDate) / timelineMeta.totalMonths) * 100;
-                              const width = ((monthDiff(startDate, periodEnd) + 1) / timelineMeta.totalMonths) * 100;
+                            {role.periods
+                              .filter((period) => period.showBar !== false)
+                              .map((period, periodIndex) => {
+                                const startDate = parseMonth(period.start);
+                                const periodEnd = period.end ? parseMonth(period.end) : timelineMeta.timelineEnd;
+                                const leftOffset = (monthDiff(timelineMeta.timelineStart, startDate) / timelineMeta.totalMonths) * 100;
+                                const width = ((monthDiff(startDate, periodEnd) + 1) / timelineMeta.totalMonths) * 100;
 
-                              return (
+                                return (
                                 <motion.div
                                   key={`${role.title}-${period.start}-${period.end ?? 'current'}`}
                                   initial={{ width: 0 }}
