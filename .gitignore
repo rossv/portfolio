@@ -2,3 +2,13 @@
 node_modules
 dist
 build
+.astro
+coverage
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.orig
+.DS_Store
+Thumbs.db
