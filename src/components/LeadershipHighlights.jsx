@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Award } from 'lucide-react';
 
 import wetWeatherLeadImg from '../assets/projects/pwsa-wet-weather-program-manager.webp';
@@ -125,6 +125,38 @@ export default function LeadershipHighlights() {
 
   const activeRole = leadershipRoles[activeRoleIndex];
 
+  const renderRoleDetails = (role) => (
+    <motion.article
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 bg-slate-900 text-white relative min-h-[340px]"
+    >
+      <img
+        src={role.image.src || role.image}
+        alt={`${role.title} visual`}
+        className="absolute inset-0 w-full h-full object-cover opacity-45"
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/75 to-indigo-900/40" />
+      <div className="relative z-10 p-8 h-full flex flex-col justify-end gap-4">
+        <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">{role.emphasis}</span>
+        <h3 className="text-3xl font-extrabold leading-tight">{role.title}</h3>
+        <p className="text-cyan-100 font-semibold">{role.context}</p>
+        <p className="text-slate-200">{role.details}</p>
+        <div className="flex flex-wrap gap-2">
+          {role.periods.map((period) => (
+            <span
+              key={`${role.title}-${period.start}-${period.end ?? 'current'}-label`}
+              className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-cyan-500/20 border border-cyan-300/30 text-cyan-100"
+            >
+              {period.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.article>
+  );
+
   return (
     <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -166,48 +198,68 @@ export default function LeadershipHighlights() {
                     const isActive = index === activeRoleIndex;
 
                     return (
-                      <motion.button
-                        key={role.title}
-                        type="button"
-                        onClick={() => setActiveRoleIndex(index)}
-                        onMouseEnter={() => setActiveRoleIndex(index)}
-                        whileHover={{ scale: 1.01, x: 3 }}
-                        className={`w-full text-left rounded-2xl p-3 border transition ${
-                          isActive
-                            ? 'border-cyan-400/80 dark:border-cyan-500/80 bg-cyan-50/80 dark:bg-cyan-900/20'
-                            : 'border-slate-200/70 dark:border-slate-700/70 hover:border-cyan-300/70 dark:hover:border-cyan-700/70'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between gap-3 mb-2">
-                          <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-slate-100">{role.title}</h3>
-                          <span className="text-[10px] md:text-xs uppercase tracking-wider font-mono text-slate-500 dark:text-slate-400">{role.timeframe}</span>
-                        </div>
-                        <div className="relative h-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                          {role.periods.map((period, periodIndex) => {
-                            const startDate = parseMonth(period.start);
-                            const periodEnd = period.end ? parseMonth(period.end) : timelineMeta.timelineEnd;
-                            const leftOffset = (monthDiff(timelineMeta.timelineStart, startDate) / timelineMeta.totalMonths) * 100;
-                            const width = ((monthDiff(startDate, periodEnd) + 1) / timelineMeta.totalMonths) * 100;
-
-                            return (
-                              <motion.div
-                                key={`${role.title}-${period.start}-${period.end ?? 'current'}`}
-                                initial={{ width: 0 }}
-                                whileInView={{ width: `${width}%` }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.65, delay: 0.06 * (index + periodIndex), ease: 'easeOut' }}
-                                className={`absolute top-1 bottom-1 rounded-md bg-gradient-to-r ${barGradient} ${
-                                  isActive ? 'opacity-100' : 'opacity-75'
-                                }`}
-                                style={{ left: `${leftOffset}%` }}
-                              />
-                            );
-                          })}
-                          <div className="absolute inset-0 flex items-center px-2">
-                            <span className="text-[11px] md:text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">{role.context}</span>
+                      <div key={role.title}>
+                        <motion.button
+                          type="button"
+                          onClick={() => setActiveRoleIndex(index)}
+                          onMouseEnter={() => setActiveRoleIndex(index)}
+                          whileHover={{ scale: 1.01, x: 3 }}
+                          className={`w-full text-left rounded-2xl p-3 border transition ${
+                            isActive
+                              ? 'border-cyan-400/80 dark:border-cyan-500/80 bg-cyan-50/80 dark:bg-cyan-900/20'
+                              : 'border-slate-200/70 dark:border-slate-700/70 hover:border-cyan-300/70 dark:hover:border-cyan-700/70'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3 mb-2">
+                            <h3 className="text-sm md:text-base font-bold text-slate-900 dark:text-slate-100">{role.title}</h3>
+                            <span className="text-[10px] md:text-xs uppercase tracking-wider font-mono text-slate-500 dark:text-slate-400">{role.timeframe}</span>
                           </div>
+                          <div className="relative h-8 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                            {role.periods.map((period, periodIndex) => {
+                              const startDate = parseMonth(period.start);
+                              const periodEnd = period.end ? parseMonth(period.end) : timelineMeta.timelineEnd;
+                              const leftOffset = (monthDiff(timelineMeta.timelineStart, startDate) / timelineMeta.totalMonths) * 100;
+                              const width = ((monthDiff(startDate, periodEnd) + 1) / timelineMeta.totalMonths) * 100;
+
+                              return (
+                                <motion.div
+                                  key={`${role.title}-${period.start}-${period.end ?? 'current'}`}
+                                  initial={{ width: 0 }}
+                                  whileInView={{ width: `${width}%` }}
+                                  viewport={{ once: true }}
+                                  transition={{ duration: 0.65, delay: 0.06 * (index + periodIndex), ease: 'easeOut' }}
+                                  className={`absolute top-1 bottom-1 rounded-md bg-gradient-to-r ${barGradient} ${
+                                    isActive ? 'opacity-100' : 'opacity-75'
+                                  }`}
+                                  style={{ left: `${leftOffset}%` }}
+                                />
+                              );
+                            })}
+                            <div className="absolute inset-0 flex items-center px-2">
+                              <span className="text-[11px] md:text-xs font-semibold text-slate-700 dark:text-slate-200 truncate">{role.context}</span>
+                            </div>
+                          </div>
+                        </motion.button>
+
+                        <div className="xl:hidden">
+                          <AnimatePresence initial={false}>
+                            {isActive && (
+                              <motion.div
+                                key={`${role.title}-mobile-details`}
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.25, ease: 'easeOut' }}
+                                className="overflow-hidden"
+                              >
+                                <div className="pt-3">
+                                  {renderRoleDetails(role)}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </div>
-                      </motion.button>
+                      </div>
                     );
                   })}
                 </div>
@@ -215,36 +267,9 @@ export default function LeadershipHighlights() {
             ))}
           </div>
 
-          <motion.article
-            key={activeRole.title}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 bg-slate-900 text-white relative min-h-[340px]"
-          >
-            <img
-              src={activeRole.image.src || activeRole.image}
-              alt={`${activeRole.title} visual`}
-              className="absolute inset-0 w-full h-full object-cover opacity-45"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/75 to-indigo-900/40" />
-            <div className="relative z-10 p-8 h-full flex flex-col justify-end gap-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">{activeRole.emphasis}</span>
-              <h3 className="text-3xl font-extrabold leading-tight">{activeRole.title}</h3>
-              <p className="text-cyan-100 font-semibold">{activeRole.context}</p>
-              <p className="text-slate-200">{activeRole.details}</p>
-              <div className="flex flex-wrap gap-2">
-                {activeRole.periods.map((period) => (
-                  <span
-                    key={`${activeRole.title}-${period.start}-${period.end ?? 'current'}-label`}
-                    className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-cyan-500/20 border border-cyan-300/30 text-cyan-100"
-                  >
-                    {period.label}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </motion.article>
+          <div className="hidden xl:block">
+            {renderRoleDetails(activeRole)}
+          </div>
         </div>
       </div>
     </section>
