@@ -130,24 +130,24 @@ export default function LeadershipHighlights() {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
-      className="rounded-3xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 bg-slate-900 text-white relative min-h-[340px]"
+      className="relative min-h-[340px] overflow-hidden rounded-3xl border border-slate-200/70 bg-white text-slate-900 shadow-[0_24px_70px_rgba(148,163,184,0.2)] dark:border-slate-700/60 dark:bg-slate-900 dark:text-white dark:shadow-none"
     >
       <img
         src={role.image.src || role.image}
         alt={`${role.title} visual`}
-        className="absolute inset-0 w-full h-full object-cover opacity-45"
+        className="absolute inset-0 h-full w-full object-cover opacity-25 dark:opacity-45"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/75 to-indigo-900/40" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/82 to-cyan-100/70 dark:from-slate-900/95 dark:via-slate-900/75 dark:to-indigo-900/40" />
       <div className="relative z-10 p-8 h-full flex flex-col justify-end gap-4">
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">{role.emphasis}</span>
-        <h3 className="text-3xl font-extrabold leading-tight">{role.title}</h3>
-        <p className="text-cyan-100 font-semibold">{role.context}</p>
-        <p className="text-slate-200">{role.details}</p>
+        <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">{role.emphasis}</span>
+        <h3 className="text-3xl font-extrabold leading-tight text-slate-900 dark:text-white">{role.title}</h3>
+        <p className="font-semibold text-cyan-900 dark:text-cyan-100">{role.context}</p>
+        <p className="text-slate-700 dark:text-slate-200">{role.details}</p>
         <div className="flex flex-wrap gap-2">
           {role.periods.map((period) => (
             <span
               key={`${role.title}-${period.start}-${period.end ?? 'current'}-label`}
-              className="text-[11px] font-semibold rounded-full px-2.5 py-1 bg-cyan-500/20 border border-cyan-300/30 text-cyan-100"
+              className="rounded-full border border-cyan-500/25 bg-cyan-500/12 px-2.5 py-1 text-[11px] font-semibold text-cyan-900 dark:border-cyan-300/30 dark:bg-cyan-500/20 dark:text-cyan-100"
             >
               {period.label}
             </span>
