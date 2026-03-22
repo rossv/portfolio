@@ -654,7 +654,7 @@ export default function BadgeCollection() {
                       onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
                       onMouseLeave={() => setHoveredBadge(null)}
                     >
-                      <img src={badge.icon.src || badge.icon} alt="" className={isDismissed && !isHovered ? "h-7 w-7" : "h-10 w-10"} />
+                      <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isHovered ? "h-7 w-7" : "h-10 w-10"} />
                       {(!isDismissed || isHovered) && (
                         <div className="text-left">
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>

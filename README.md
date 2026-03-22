@@ -46,7 +46,7 @@ The app uses the following variables:
 - `BASE_PATH`: base path for deployment (defaults to `/`).
 - `GITHUB_REPOSITORY`: optional fallback used to infer `site` and `base` in CI contexts.
 
-See [`/.env.example`](/C:/GitRepos/portfolio/.env.example) for local development values.
+See [`/.env.example`](/.env.example) for local development values.
 
 ## Scripts
 
@@ -64,7 +64,7 @@ See [`/.env.example`](/C:/GitRepos/portfolio/.env.example) for local development
 
 Deploys via GitHub Actions workflow:
 
-- Workflow file: [`/.github/workflows/deploy.yaml`](/C:/GitRepos/portfolio/.github/workflows/deploy.yaml)
+- Workflow file: [`/.github/workflows/deploy.yaml`](/.github/workflows/deploy.yaml)
 - Trigger: push to `main`
 - Build action: `withastro/action@v2`
 - Publish action: `actions/deploy-pages@v4`
