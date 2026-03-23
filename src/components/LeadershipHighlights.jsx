@@ -22,6 +22,17 @@ const leadershipRoles = [
     group: 'Project Leads',
   },
   {
+    title: 'Lead Modeler',
+    context: 'KLH Engineers',
+    timeframe: '2012 – 2021',
+    periods: [{ start: '2012-12', end: '2021-03', label: '2012 – 2021' }],
+    details:
+      'Served as the go-to engineer for all H&H modeling. Directed modeling strategy, QA, and delivery for municipal systems across multiple clients.',
+    image: wetWeatherLeadImg,
+    emphasis: 'Technical Leadership',
+    group: 'Project Leads',
+  },
+  {
     title: 'GIS Technical Lead',
     context: 'Advanced Design Practice',
     timeframe: 'Since Dec 2022',
@@ -52,6 +63,28 @@ const leadershipRoles = [
     group: 'Formal Roles',
   },
   {
+    title: 'GIS Manager',
+    context: 'KLH Engineers',
+    timeframe: '2016 – 2021',
+    periods: [{ start: '2016-05', end: '2021-03', label: '2016 – 2021' }],
+    details:
+      'Managed all GIS systems and staff. Drove adoption of modern tools and maintained spatial asset management for municipal clients.',
+    image: gisTechnicalLeadImg,
+    emphasis: 'Technical & People Leadership',
+    group: 'Formal Roles',
+  },
+  {
+    title: 'IT Coordinator',
+    context: 'KLH Engineers',
+    timeframe: '2016 – 2021',
+    periods: [{ start: '2016-05', end: '2021-03', label: '2016 – 2021' }],
+    details:
+      'Managed company-wide IT infrastructure and deployed new services, modernizing business processes and internal tooling.',
+    image: aiTaskForceImg,
+    emphasis: 'Operations Leadership',
+    group: 'Formal Roles',
+  },
+  {
     title: 'Supervisor',
     context: 'Pittsburgh Office',
     legacyTimeframe: 'Jan 2017 – Apr 2021, resumed Apr 2024',
@@ -62,7 +95,7 @@ const leadershipRoles = [
     legacyDetails: 'Mentor staff, guide technical growth, and support team performance through project delivery and career development.',
     timeframe: '2017-2021, 2024-present',
     periods: [
-      { start: '2017-01', end: '2021-04', label: '2017-2021', showBar: false },
+      { start: '2017-01', end: '2021-04', label: '2017-2021', showBar: true },
       { start: '2024-04', end: null, label: '2024-present', showBar: true },
     ],
     details:
@@ -180,7 +213,7 @@ export default function LeadershipHighlights() {
         >
           <div className="flex flex-wrap items-center gap-3 mb-3">
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-              Leadership Growth Timeline
+              Leadership, Built Over Time
             </h2>
             <motion.div
               whileHover={{ y: -3, scale: 1.03 }}
@@ -191,7 +224,7 @@ export default function LeadershipHighlights() {
             </motion.div>
           </div>
           <p className="text-slate-600 dark:text-slate-300 max-w-3xl text-lg">
-            Explore each lane to see when responsibilities began and how roles evolved in parallel across project leadership, formal leadership tracks, and organizational contributions.
+            Not a sudden rise — a steady climb. Each role here represents a new level of trust earned, from managing systems and staff at KLH to leading citywide programs and shaping how a firm thinks about technology.
           </p>
         </motion.div>
 
