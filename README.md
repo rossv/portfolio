@@ -34,6 +34,12 @@ cp .env.example .env
 npm run dev
 ```
 
+Alternative start command:
+
+```bash
+npm run start
+```
+
 Default local URL: `http://localhost:4321`
 
 ## Environment Variables
@@ -46,13 +52,15 @@ The app uses the following variables:
 - `BASE_PATH`: base path for deployment (defaults to `/`).
 - `GITHUB_REPOSITORY`: optional fallback used to infer `site` and `base` in CI contexts.
 
-See [`/.env.example`](/C:/GitRepos/portfolio/.env.example) for local development values.
+See [`.env.example`](.env.example) for local development values.
 
 ## Scripts
 
 - `npm run dev`: run local dev server.
+- `npm run start`: alias for local dev server.
 - `npm run build`: production build.
 - `npm run preview`: preview the production build locally.
+- `npm run astro -- <args>`: run Astro CLI commands directly.
 
 ## Routes
 
@@ -64,7 +72,7 @@ See [`/.env.example`](/C:/GitRepos/portfolio/.env.example) for local development
 
 Deploys via GitHub Actions workflow:
 
-- Workflow file: [`/.github/workflows/deploy.yaml`](/C:/GitRepos/portfolio/.github/workflows/deploy.yaml)
+- Workflow file: [`.github/workflows/deploy.yaml`](.github/workflows/deploy.yaml)
 - Trigger: push to `main`
 - Build action: `withastro/action@v2`
 - Publish action: `actions/deploy-pages@v4`
