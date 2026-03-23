@@ -142,9 +142,9 @@ export default function LeadershipHighlights() {
       <img
         src={role.image.src || role.image}
         alt={`${role.title} visual`}
-        className="absolute inset-0 h-full w-full object-cover opacity-25 dark:opacity-45"
+        className="absolute inset-0 h-full w-full object-cover opacity-45 dark:opacity-45"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/82 to-cyan-100/70 dark:from-slate-900/95 dark:via-slate-900/75 dark:to-indigo-900/40" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/88 via-white/68 to-cyan-100/58 dark:from-slate-900/95 dark:via-slate-900/75 dark:to-indigo-900/40" />
       <div className="relative z-10 p-8 h-full flex flex-col justify-end gap-4">
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-700 dark:text-cyan-300">{role.emphasis}</span>
         <h3 className="text-3xl font-extrabold leading-tight text-slate-900 dark:text-white">{role.title}</h3>

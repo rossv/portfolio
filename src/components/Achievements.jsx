@@ -264,6 +264,7 @@ export default function Achievements() {
                                     <img
                                         src={item.image.src || item.image}
                                         alt=""
+                                        aria-hidden="true"
                                         className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-65 dark:opacity-70 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
                                         style={{
                                             WebkitMaskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
