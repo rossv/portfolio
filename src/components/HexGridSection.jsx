@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database } from 'lucide-react';
+import { Bot, Code2, Database, Globe, Workflow } from 'lucide-react';
 
 // --- IMPORTS (Verified Paths) ---
 
@@ -83,7 +83,8 @@ const icons = [
     { id: 'field', icon: fieldMapsIcon, label: "Field Maps", group: "gis", isImage: true },
     { id: 'surv', icon: survey123Icon, label: "Survey123", group: "gis", isImage: true },
     { id: 'quick', icon: quickCaptureIcon, label: "QuickCapture", group: "gis", isImage: true },
-    { id: 'trim', icon: trimbleIcon, label: "Trimble GPS", group: "gis", isImage: true },
+    { id: 'google-earth-pro', icon: Globe, label: "Google Earth Pro", group: "gis", isImage: false },
+    { id: 'trim', icon: trimbleIcon, label: "Trimble GNSS", group: "gis", isImage: true },
 
     // --- Group: Coding ---
     { id: 'py', icon: pythonIcon, label: "Python", group: "coding", isImage: true },
@@ -93,6 +94,9 @@ const icons = [
     { id: 'vba', icon: vbaIcon, label: "VBA", group: "coding", isImage: true },
     { id: 'gas', icon: gasIcon, label: "Google Apps Script", group: "coding", isImage: true },
     { id: 'ai', icon: chatgptIcon, label: "Generative AI", group: "coding", isImage: true },
+    { id: 'claude-code', icon: Code2, label: "Claude Code", group: "coding", isImage: false },
+    { id: 'codex', icon: Bot, label: "Codex", group: "coding", isImage: false },
+    { id: 'power-automate', icon: Workflow, label: "Power Automate", group: "coding", isImage: false },
     { id: 'anti', icon: antigravityIcon, label: "Antigravity", group: "coding", isImage: true },
 
     // --- Group: Engineering / Viz / Data (Eng) ---
