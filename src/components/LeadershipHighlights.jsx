@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Award } from 'lucide-react';
 
 import wetWeatherLeadImg from '../assets/projects/pwsa-wet-weather-program-manager.webp';
+import stPeteLosImg from '../assets/projects/stpete_LOS.webp';
 import gisTechnicalLeadImg from '../assets/recognition/recognition-gis-technical-lead.webp';
 import optimizationDataScienceImg from '../assets/recognition/recognition-optimization-data-science.webp';
 import sewersFutureImg from '../assets/recognition/recognition-sewers-future.webp';
@@ -19,7 +20,18 @@ const leadershipRoles = [
       "Lead hydraulic modeling strategy, technical review, and delivery coordination for one of Pittsburgh's most complex wet-weather initiatives.",
     image: wetWeatherLeadImg,
     emphasis: 'Project Leadership',
-    group: 'Project Leads',
+    group: 'Notable Project and Program Leads',
+  },
+  {
+    title: 'St. Pete LOS Project Lead',
+    context: 'City of St. Petersburg, FL',
+    timeframe: 'Since Aug 2025',
+    periods: [{ start: '2025-08', end: null, label: 'Since Aug 2025' }],
+    details:
+      'Lead level-of-service and resiliency analysis initiatives for municipal water systems, including optimization-focused technical delivery.',
+    image: stPeteLosImg,
+    emphasis: 'Project Leadership',
+    group: 'Notable Project and Program Leads',
   },
   {
     title: 'Lead Modeler',
@@ -30,7 +42,7 @@ const leadershipRoles = [
       'Served as the go-to engineer for all H&H modeling. Directed modeling strategy, QA, and delivery for municipal systems across multiple clients.',
     image: wetWeatherLeadImg,
     emphasis: 'Technical Leadership',
-    group: 'Project Leads',
+    group: 'Formal Roles',
   },
   {
     title: 'GIS Technical Lead',
@@ -126,7 +138,7 @@ const leadershipRoles = [
   },
 ];
 
-const groupOrder = ['Project Leads', 'Formal Roles', 'Other Roles'];
+const groupOrder = ['Notable Project and Program Leads', 'Formal Roles', 'Other Roles'];
 const barGradient = 'from-cyan-500 via-blue-500 to-indigo-500';
 
 function parseMonth(value) {
@@ -224,7 +236,7 @@ export default function LeadershipHighlights() {
             </motion.div>
           </div>
           <p className="text-slate-600 dark:text-slate-300 max-w-3xl text-lg">
-            Not a sudden rise — a steady climb. Each role here represents a new level of trust earned, from managing systems and staff at KLH to leading citywide programs and shaping how a firm thinks about technology.
+            Project and formal roles leading others in tasks, technical advances, and technology management.
           </p>
         </motion.div>
 
