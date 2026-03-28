@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Code2, Database, Workflow } from 'lucide-react';
+import { Bot, Code2, Database, Globe, Workflow } from 'lucide-react';
 
 // --- IMPORTS (Verified Paths) ---
 
@@ -83,6 +83,7 @@ const icons = [
     { id: 'field', icon: fieldMapsIcon, label: "Field Maps", group: "gis", isImage: true },
     { id: 'surv', icon: survey123Icon, label: "Survey123", group: "gis", isImage: true },
     { id: 'quick', icon: quickCaptureIcon, label: "QuickCapture", group: "gis", isImage: true },
+    { id: 'google-earth-pro', icon: Globe, label: "Google Earth Pro", group: "gis", isImage: false },
     { id: 'trim', icon: trimbleIcon, label: "Trimble GNSS", group: "gis", isImage: true },
 
     // --- Group: Coding ---
