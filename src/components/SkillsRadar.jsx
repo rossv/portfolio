@@ -147,10 +147,6 @@ export default function SkillsRadar({ className = "" }) {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius={isMobile ? "55%" : "65%"} data={data}>
                 <PolarGrid stroke="#64748b" strokeOpacity={0.2} />
-                <PolarAngleAxis
-                  dataKey="subject"
-                  tick={<CustomTick />}
-                />
                 <PolarRadiusAxis angle={30} domain={[0, 2000]} tick={false} axisLine={false} />
                 <Radar
                   name="Ross"
@@ -175,6 +171,10 @@ export default function SkillsRadar({ className = "" }) {
                       />
                     );
                   }}
+                />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  tick={<CustomTick />}
                 />
               </RadarChart>
             </ResponsiveContainer>
