@@ -3129,7 +3129,8 @@
             "Hydraulics",
             "LOS",
             "Resiliency",
-            "Optimization"
+            "Optimization",
+            "Featured"
         ],
         "description": "Level of service and resiliency analysis for municipal water systems.",
         "title": "Professional Engineer",

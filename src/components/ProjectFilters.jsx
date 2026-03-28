@@ -201,12 +201,14 @@ export default function ProjectFilters({
     selectedCategories,
     selectedRoles,
     selectedTags,
+    featuredOnly,
     onYearChange,
     onCompanyChange,
     onClientChange,
     onCategoryChange,
     onRoleChange,
     onTagChange,
+    onFeaturedToggle,
     onReset,
     filterText
 }) {
@@ -226,6 +228,7 @@ export default function ProjectFilters({
         selectedCategories.length > 0 ||
         selectedRoles.length > 0 ||
         selectedTags.length > 0 ||
+        featuredOnly ||
         (filterText && filterText.length > 0);
 
     return (
@@ -294,6 +297,18 @@ export default function ProjectFilters({
                 onToggle={() => toggleDropdown('tags')}
                 close={closeDropdown}
             />
+
+            <button
+                type="button"
+                onClick={onFeaturedToggle}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${featuredOnly
+                    ? 'bg-amber-500/15 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border-amber-300/60 dark:border-amber-700/60'
+                    : 'bg-white/10 dark:bg-slate-800/20 backdrop-blur-sm text-slate-700 dark:text-slate-300 border-white/20 dark:border-slate-700/30 hover:bg-white/20 dark:hover:bg-slate-800/40'
+                    }`}
+                aria-pressed={featuredOnly}
+            >
+                <span>Featured</span>
+            </button>
         </div>
     );
 }

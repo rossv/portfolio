@@ -104,6 +104,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
+    const [featuredOnly, setFeaturedOnly] = useState(false);
 
     // Scroll Reference for resetting scroll
     const scrollContainerRef = useRef(null);
@@ -243,6 +244,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 if (!hasTag) return false;
             }
 
+            if (featuredOnly && !(project.tags ?? []).includes('Featured')) {
+                return false;
+            }
+
             return true;
         });
 
@@ -271,7 +276,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             return endB - endA;
         });
 
-    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags]);
+    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags, featuredOnly]);
 
     useEffect(() => {
         onFilteredProjects?.(filteredProjects);
@@ -346,6 +351,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         setSelectedCategories([]);
         setSelectedRoles([]);
         setSelectedTags([]);
+        setFeaturedOnly(false);
     };
 
     const activeFilterChips = useMemo(() => {
@@ -378,6 +384,9 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         selectedTags.forEach(tag => {
             chips.push({ key: `tag-${tag}`, label: `Tag: ${tag}` });
         });
+        if (featuredOnly) {
+            chips.push({ key: 'featured-only', label: 'Featured only' });
+        }
 
         return chips;
     }, [
@@ -388,6 +397,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         selectedCategories,
         selectedRoles,
         selectedTags,
+        featuredOnly,
     ]);
 
     // Expandable Card State
@@ -506,7 +516,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 </div>
 
                                 <AnimatePresence>
-                                    {(filterText || selectedYears.length > 0 || selectedCompanies.length > 0 || selectedClients.length > 0 || selectedCategories.length > 0 || selectedRoles.length > 0 || selectedTags.length > 0) && (
+                                    {(filterText || selectedYears.length > 0 || selectedCompanies.length > 0 || selectedClients.length > 0 || selectedCategories.length > 0 || selectedRoles.length > 0 || selectedTags.length > 0 || featuredOnly) && (
                                         <motion.button
                                             initial={{ width: 0, opacity: 0, scale: 0.8 }}
                                             animate={{ width: 'auto', opacity: 1, scale: 1 }}
@@ -535,12 +545,14 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 selectedCategories={selectedCategories}
                                 selectedRoles={selectedRoles}
                                 selectedTags={selectedTags}
+                                featuredOnly={featuredOnly}
                                 onYearChange={(item) => handleToggle(setSelectedYears, item)}
                                 onCompanyChange={(item) => handleToggle(setSelectedCompanies, item)}
                                 onClientChange={(item) => handleToggle(setSelectedClients, item)}
                                 onCategoryChange={(item) => handleToggle(setSelectedCategories, item)}
                                 onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
                                 onTagChange={(item) => handleTagToggle(typeof item === 'string' ? item : item.label)}
+                                onFeaturedToggle={() => setFeaturedOnly(prev => !prev)}
                                 onReset={handleReset}
                                 filterText={filterText}
                             />
