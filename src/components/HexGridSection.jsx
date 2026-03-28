@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Code2, Database, Globe, Workflow } from 'lucide-react';
 
 // --- IMPORTS (Verified Paths) ---
 
@@ -12,6 +11,10 @@ import gasIcon from '../assets/icons/coding/google_apps_script.png';
 import githubIcon from '../assets/icons/coding/github.png';
 import chatgptIcon from '../assets/icons/coding/chatgpt.png';
 import antigravityIcon from '../assets/icons/coding/antigravity.png';
+import claudeIcon from '../assets/icons/coding/claude.png';
+import codexIcon from '../assets/icons/coding/codex.png';
+import sqlIcon from '../assets/icons/coding/sql.png';
+import powerAutomateIcon from '../assets/icons/coding/power.png';
 
 // 2. Data (src/assets/icons/data/)
 import excelIcon from '../assets/icons/data/excel.png';
@@ -40,6 +43,7 @@ import fieldMapsIcon from '../assets/icons/gis/fieldmaps.png';
 import qgisIcon from '../assets/icons/gis/qgis.png';
 import survey123Icon from '../assets/icons/gis/survey123.png';
 import trimbleIcon from '../assets/icons/gis/trimble_r2.png';
+import earthIcon from '../assets/icons/gis/earth.png';
 
 // 5. HH (src/assets/icons/hh/)
 import epanetIcon from '../assets/icons/hh/epanet.png';
@@ -83,20 +87,20 @@ const icons = [
     { id: 'field', icon: fieldMapsIcon, label: "Field Maps", group: "gis", isImage: true },
     { id: 'surv', icon: survey123Icon, label: "Survey123", group: "gis", isImage: true },
     { id: 'quick', icon: quickCaptureIcon, label: "QuickCapture", group: "gis", isImage: true },
-    { id: 'google-earth-pro', icon: Globe, label: "Google Earth Pro", group: "gis", isImage: false },
+    { id: 'google-earth-pro', icon: earthIcon, label: "Google Earth Pro", group: "gis", isImage: true },
     { id: 'trim', icon: trimbleIcon, label: "Trimble GNSS", group: "gis", isImage: true },
 
     // --- Group: Coding ---
     { id: 'py', icon: pythonIcon, label: "Python", group: "coding", isImage: true },
     { id: 'js', icon: jsIcon, label: "JavaScript", group: "coding", isImage: true },
-    { id: 'sql', icon: Database, label: "SQL", group: "coding", isImage: false },
+    { id: 'sql', icon: sqlIcon, label: "SQL", group: "coding", isImage: true },
     { id: 'git', icon: githubIcon, label: "GitHub", group: "coding", isImage: true },
     { id: 'vba', icon: vbaIcon, label: "VBA", group: "coding", isImage: true },
     { id: 'gas', icon: gasIcon, label: "Google Apps Script", group: "coding", isImage: true },
     { id: 'ai', icon: chatgptIcon, label: "Generative AI", group: "coding", isImage: true },
-    { id: 'claude-code', icon: Code2, label: "Claude Code", group: "coding", isImage: false },
-    { id: 'codex', icon: Bot, label: "Codex", group: "coding", isImage: false },
-    { id: 'power-automate', icon: Workflow, label: "Power Automate", group: "coding", isImage: false },
+    { id: 'claude-code', icon: claudeIcon, label: "Claude Code", group: "coding", isImage: true },
+    { id: 'codex', icon: codexIcon, label: "Codex", group: "coding", isImage: true },
+    { id: 'power-automate', icon: powerAutomateIcon, label: "Power Automate", group: "coding", isImage: true },
     { id: 'anti', icon: antigravityIcon, label: "Antigravity", group: "coding", isImage: true },
 
     // --- Group: Engineering / Viz / Data (Eng) ---
