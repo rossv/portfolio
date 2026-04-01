@@ -694,7 +694,7 @@ export default function BadgeCollection() {
                 {unlockedBadges.map((badge) => {
                   const isDismissed = dismissed.has(badge.id);
                   const isRecent = recentlyUnlocked.has(badge.id);
-                  const isHovered = hoveredBadge === badge.id;
+                  const isActive = (isTouchMode ? selectedBadge : hoveredBadge) === badge.id;
 
                   return (
                     <button
@@ -707,7 +707,7 @@ export default function BadgeCollection() {
                           badgeItemRefs.current.delete(badge.id);
                         }
                       }}
-                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed ? 'badge-collapsed' : ''}`}
+                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isActive ? 'badge-collapsed' : ''}`}
                       onMouseEnter={() => {
                         if (!isDismissed || isTouchMode) return;
                         setHoveredBadge(badge.id);
@@ -724,10 +724,10 @@ export default function BadgeCollection() {
                           centerBadgeInView(badge.id);
                         }
                       }}
-                      aria-pressed={isTouchMode ? selectedBadge === badge.id : isHovered}
+                      aria-pressed={isActive}
                     >
-                      <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed ? "h-7 w-7" : "h-10 w-10"} />
-                      {!isDismissed && (
+                      <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isActive ? "h-7 w-7" : "h-10 w-10"} />
+                      {(!isDismissed || isActive) && (
                         <div className="text-left">
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
                           <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
@@ -755,22 +755,6 @@ export default function BadgeCollection() {
           <div className="shrink-0">
             <ThemeToggle />
           </div>
-        </div>
-
-        <div className="min-h-10 px-2">
-          {(() => {
-            const activeBadgeId = isTouchMode ? selectedBadge : hoveredBadge;
-            const activeBadge = unlockedBadges.find((badge) => badge.id === activeBadgeId);
-
-            if (!activeBadge) return null;
-
-            return (
-              <div className="mx-auto w-full max-w-xl rounded-xl border border-slate-200/80 bg-white/95 px-3 py-2 text-left shadow-md backdrop-blur transition-opacity dark:border-slate-700/80 dark:bg-slate-900/95">
-                <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{activeBadge.name}</p>
-                <p className="text-[11px] text-slate-600 dark:text-slate-300">{activeBadge.description}</p>
-              </div>
-            );
-          })()}
         </div>
 
         {isProgressOpen && (
