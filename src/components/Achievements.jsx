@@ -194,7 +194,7 @@ export default function Achievements() {
                             <h3 className="text-3xl lg:text-4xl font-extrabold leading-tight mb-4 text-white drop-shadow-lg">
                                 {award.title}
                             </h3>
-                            <p className="text-slate-200 text-lg font-medium leading-relaxed max-sm drop-shadow-md">
+                            <p className="text-slate-200 text-lg font-medium leading-relaxed max-sm:text-center drop-shadow-md">
                                 {award.description}
                             </p>
                         </div>
