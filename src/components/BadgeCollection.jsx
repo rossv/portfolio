@@ -155,6 +155,7 @@ export default function BadgeCollection() {
   const [dismissed, setDismissed] = useState(new Set());
   const [recentlyUnlocked, setRecentlyUnlocked] = useState(new Set());
   const [hoveredBadge, setHoveredBadge] = useState(null);
+  const [isTouchMode, setIsTouchMode] = useState(false);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
   const [isDockVisible, setIsDockVisible] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -190,6 +191,32 @@ export default function BadgeCollection() {
     }
   };
 
+
+
+  const centerBadgeInView = (badgeId, behavior = 'smooth') => {
+    const scroller = badgeScrollerRef.current;
+    const badgeElement = badgeItemRefs.current.get(badgeId);
+    if (!scroller || !badgeElement) return;
+
+    const scrollerRect = scroller.getBoundingClientRect();
+    const badgeRect = badgeElement.getBoundingClientRect();
+    const safetyPadding = 24;
+
+    const isFullyVisible =
+      badgeRect.left >= scrollerRect.left + safetyPadding &&
+      badgeRect.right <= scrollerRect.right - safetyPadding;
+
+    if (isFullyVisible) return;
+
+    const targetScrollLeft =
+      badgeElement.offsetLeft - (scroller.clientWidth / 2) + (badgeElement.clientWidth / 2);
+
+    scroller.scrollTo({
+      left: Math.max(0, targetScrollLeft),
+      behavior,
+    });
+  };
+
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
   const scrollLeftAmount = () => {
@@ -216,6 +243,29 @@ export default function BadgeCollection() {
     }
     return () => resizeObserver.disconnect();
   }, [unlockedIds]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const mediaQuery = window.matchMedia('(hover: none), (pointer: coarse)');
+
+    const updateInputMode = () => {
+      setIsTouchMode(mediaQuery.matches);
+      if (mediaQuery.matches) {
+        setHoveredBadge(null);
+      }
+    };
+
+    updateInputMode();
+    mediaQuery.addEventListener('change', updateInputMode);
+
+    return () => mediaQuery.removeEventListener('change', updateInputMode);
+  }, []);
+
+  useEffect(() => {
+    if (!hoveredBadge) return;
+    centerBadgeInView(hoveredBadge, isTouchMode ? 'smooth' : 'auto');
+  }, [hoveredBadge, isTouchMode]);
 
   const persistBadgeState = () => {
     if (typeof window === 'undefined') return;
@@ -641,8 +691,9 @@ export default function BadgeCollection() {
                   const isHovered = hoveredBadge === badge.id;
 
                   return (
-                    <div
+                    <button
                       key={badge.id}
+                      type="button"
                       ref={(element) => {
                         if (element) {
                           badgeItemRefs.current.set(badge.id, element);
@@ -650,9 +701,24 @@ export default function BadgeCollection() {
                           badgeItemRefs.current.delete(badge.id);
                         }
                       }}
-                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isHovered ? 'badge-collapsed' : ''}`}
-                      onMouseEnter={() => isDismissed && setHoveredBadge(badge.id)}
-                      onMouseLeave={() => setHoveredBadge(null)}
+                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed ? 'badge-collapsed' : ''}`}
+                      onMouseEnter={() => {
+                        if (!isDismissed || isTouchMode) return;
+                        setHoveredBadge(badge.id);
+                      }}
+                      onMouseLeave={() => {
+                        if (isTouchMode) return;
+                        setHoveredBadge(null);
+                      }}
+                      onClick={() => {
+                        if (isDismissed) {
+                          if (isTouchMode) {
+                            setHoveredBadge((prev) => (prev === badge.id ? null : badge.id));
+                          }
+                          centerBadgeInView(badge.id);
+                        }
+                      }}
+                      aria-pressed={isHovered}
                     >
                       <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isHovered ? "h-7 w-7" : "h-10 w-10"} />
                       {(!isDismissed || isHovered) && (
@@ -661,7 +727,7 @@ export default function BadgeCollection() {
                           <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
                         </div>
                       )}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
