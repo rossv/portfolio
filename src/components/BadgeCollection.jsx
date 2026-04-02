@@ -393,7 +393,7 @@ export default function BadgeCollection() {
       const currentY = window.scrollY;
       const delta = currentY - lastScrollYRef.current;
 
-      if (currentY <= 24 || delta < -6) {
+      if (delta < -6) {
         setIsDockVisible(true);
       } else if (delta > 10) {
         setIsDockVisible(false);
