@@ -710,7 +710,7 @@ export default function BadgeCollection() {
               </button>
             )}
 
-            <div ref={badgeScrollerRef} onScroll={checkScroll} className="scrollbar-hide flex-1 overflow-x-auto">
+            <div ref={badgeScrollerRef} onScroll={checkScroll} className="scrollbar-hide -my-1 flex-1 overflow-x-auto py-1">
               <div className="flex w-max min-w-full items-center gap-2 px-1">
                 {unlockedBadges.length === 0 && (
                   <p className="truncate px-2 text-xs text-slate-500 dark:text-slate-400">
