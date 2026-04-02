@@ -127,6 +127,7 @@ const TIME_BADGE_THRESHOLDS = [
   { id: 'quarter-hour', ms: 15 * 60 * 1000 },
   { id: 'hour-mark', ms: 60 * 60 * 1000 },
 ];
+const DOCK_AUTOHIDE_MS = 8000;
 
 const parseStoredState = (rawValue) => {
   if (!rawValue) return null;
@@ -158,7 +159,8 @@ export default function BadgeCollection() {
   const [selectedBadge, setSelectedBadge] = useState(null);
   const [isTouchMode, setIsTouchMode] = useState(false);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
-  const [isDockVisible, setIsDockVisible] = useState(true);
+  const [isDockVisible, setIsDockVisible] = useState(false);
+  const [isDockInteracting, setIsDockInteracting] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [progressSnapshot, setProgressSnapshot] = useState({
@@ -403,6 +405,17 @@ export default function BadgeCollection() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (!isDockVisible) return undefined;
+    if (isProgressOpen || isDockInteracting || recentlyUnlocked.size > 0) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setIsDockVisible(false);
+    }, DOCK_AUTOHIDE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [isDockVisible, isProgressOpen, isDockInteracting, recentlyUnlocked]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -668,6 +681,8 @@ export default function BadgeCollection() {
     <div
       className={`fixed inset-x-0 z-50 px-3 transition-transform duration-300 ease-out md:px-4 ${isDockVisible ? 'translate-y-0' : '-translate-y-[140%]'}`}
       style={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
+      onMouseEnter={() => setIsDockInteracting(true)}
+      onMouseLeave={() => setIsDockInteracting(false)}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
         <div className="flex items-center gap-2 overflow-hidden rounded-full border border-slate-200/90 bg-white/85 p-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
