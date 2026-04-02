@@ -670,7 +670,7 @@ export default function BadgeCollection() {
       style={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
-        <div className="flex items-center gap-2 overflow-hidden rounded-full border border-slate-200/90 bg-white/85 p-1.5 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
+        <div className="flex items-center gap-2 overflow-hidden rounded-full border border-slate-200/90 bg-white/85 p-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
           <button
             type="button"
             className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
