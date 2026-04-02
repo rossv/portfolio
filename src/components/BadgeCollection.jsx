@@ -30,18 +30,21 @@ const BADGES = [
     name: 'Bubble Novice',
     description: 'Collected 100 floating bubbles.',
     icon: badgeBubbles,
+    iconAccent: 'bg-cyan-100 text-cyan-700 ring-cyan-300/70 dark:bg-cyan-500/20 dark:text-cyan-200 dark:ring-cyan-400/40',
   },
   {
     id: 'bubble-collector-1000',
     name: 'Bubble Enthusiast',
     description: 'Collected 1,000 floating bubbles.',
     icon: badgeBubbles,
+    iconAccent: 'bg-violet-100 text-violet-700 ring-violet-300/70 dark:bg-violet-500/20 dark:text-violet-200 dark:ring-violet-400/40',
   },
   {
     id: 'bubble-collector-5000',
     name: 'Bubble Master',
     description: 'Collected 5,000 floating bubbles.',
     icon: badgeBubbles,
+    iconAccent: 'bg-amber-100 text-amber-700 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
   },
   {
     id: 'magic-lamp',
@@ -749,7 +752,11 @@ export default function BadgeCollection() {
                       }}
                       aria-pressed={isActive}
                     >
-                      <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isActive ? "h-7 w-7" : "h-10 w-10"} />
+                      <div
+                        className={`rounded-full ring-1 p-1 ${badge.iconAccent || 'bg-fuchsia-100 text-fuchsia-700 ring-fuchsia-300/70 dark:bg-fuchsia-500/20 dark:text-fuchsia-200 dark:ring-fuchsia-400/40'}`}
+                      >
+                        <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isActive ? "h-7 w-7" : "h-10 w-10"} />
+                      </div>
                       {(!isDismissed || isActive) && (
                         <div className="text-left">
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
