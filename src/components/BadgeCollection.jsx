@@ -665,19 +665,22 @@ export default function BadgeCollection() {
   };
 
   return (
-    <div className={`fixed inset-x-0 top-4 z-50 px-3 transition-transform duration-300 ease-out md:px-4 ${isDockVisible ? 'translate-y-0' : '-translate-y-[140%]'}`}>
+    <div
+      className={`fixed inset-x-0 z-50 px-3 transition-transform duration-300 ease-out md:px-4 ${isDockVisible ? 'translate-y-0' : '-translate-y-[140%]'}`}
+      style={{ top: 'max(0.75rem, env(safe-area-inset-top))' }}
+    >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
         <div className="flex items-center gap-2 overflow-hidden rounded-full border border-slate-200/90 bg-white/85 p-1.5 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
           <button
             type="button"
-            className="shrink-0 rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+            className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
             onClick={() => setIsProgressOpen((prev) => !prev)}
           >
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
 
           <div className="relative min-w-0 flex-1 flex items-center">
-            {canScrollLeft && (
+            {canScrollLeft && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollLeftAmount}
                 className="absolute left-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-r from-white via-white/80 to-transparent pr-4 pl-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
@@ -691,6 +694,11 @@ export default function BadgeCollection() {
 
             <div ref={badgeScrollerRef} onScroll={checkScroll} className="scrollbar-hide flex-1 overflow-x-auto">
               <div className="flex w-max min-w-full items-center gap-2 px-1">
+                {unlockedBadges.length === 0 && (
+                  <p className="truncate px-2 text-xs text-slate-500 dark:text-slate-400">
+                    Unlock badges by exploring the site.
+                  </p>
+                )}
                 {unlockedBadges.map((badge) => {
                   const isDismissed = dismissed.has(badge.id);
                   const isRecent = recentlyUnlocked.has(badge.id);
@@ -739,7 +747,7 @@ export default function BadgeCollection() {
               </div>
             </div>
 
-            {canScrollRight && (
+            {canScrollRight && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollRightAmount}
                 className="absolute right-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-l from-white via-white/80 to-transparent pl-4 pr-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
