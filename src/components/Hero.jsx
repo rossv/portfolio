@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import portrait from '../assets/portrait.png';
+import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
 import waterNetworkIcon from '../assets/icons/hero/water-network.png';
@@ -271,23 +271,23 @@ export default function Hero() {
                         <>
                             {/* Floating Bubbles */}
                             <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
-                                <img src={aiChipIcon.src} alt="AI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                                <img src={aiChipIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
 
                             <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
-                                <img src={gisMapIcon.src} alt="GIS" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                                <img src={gisMapIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
 
                             <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
-                                <img src={codingLaptopIcon.src} alt="Coding" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                                <img src={codingLaptopIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
 
                             <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
-                                <img src={webUiIcon.src} alt="Web UI" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                                <img src={webUiIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
 
                             <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
-                                <img src={waterNetworkIcon.src} alt="H&H" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                                <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
                         </>
                     )}

@@ -1,4 +1,4 @@
-import { Github, Linkedin } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -50,6 +50,16 @@ export default function Footer() {
                             aria-label="GitHub"
                         >
                             <Github className="w-7 h-7" />
+                        </a>
+
+                        <a
+                            href="mailto:ross.volkwein@gmail.com"
+                            data-badge-action="footer-link"
+                            data-footer-id="email"
+                            className="text-slate-500 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-sky-400 transition-all duration-300 transform hover:scale-110 bg-white/80 dark:bg-slate-900/70 ring-1 ring-slate-200/70 dark:ring-slate-700/70 shadow-sm hover:shadow-md rounded-full p-3"
+                            aria-label="Email Ross Volkwein"
+                        >
+                            <Mail className="w-7 h-7" />
                         </a>
 
                         <a
