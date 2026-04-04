@@ -61,6 +61,22 @@ const ogImageUrl = new URL(ogImage, Astro.site);
         document.documentElement.classList.remove('dark');
       }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ross Volkwein",
+      "jobTitle": "Professional Engineer & GIS Professional",
+      "url": "https://www.rossvolkwein.com",
+      "email": "mailto:ross.volkwein@gmail.com",
+      "sameAs": [
+        "https://www.linkedin.com/in/rossvolkwein/",
+        "https://github.com/rossv/",
+        "https://stackexchange.com/users/3363150/rossv",
+        "https://gis-portfolio-volkwein.hub.arcgis.com/"
+      ]
+    }
+    </script>
 	</head>
 	<body class="font-mono text-slate-900 dark:text-slate-50 antialiased selection:bg-blue-200 selection:text-slate-900 dark:selection:bg-blue-900 dark:selection:text-white transition-colors duration-300">
     <FluidBackground client:load />

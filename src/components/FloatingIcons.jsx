@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Map as MapIcon } from 'lucide-react';
 
 const PythonLogo = ({ className }) => (
@@ -67,52 +67,48 @@ const AppDashboard = ({ className }) => (
     </svg>
 );
 
-const FloatingItem = ({ children, delay, x, y, duration, size = "w-24 h-24", rotationRange = [-10, 10] }) => (
-    <motion.div
-        className={`absolute z-0 pointer-events-none ${size} flex items-center justify-center p-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 shadow-xl`}
-        initial={{ left: x, top: y, opacity: 0 }}
-        animate={{
-            y: [0, -20, 0],
-            rotate: [0, ...rotationRange, 0],
-            opacity: 0.8
-        }}
-        transition={{
-            y: {
-                duration: duration,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: delay
-            },
-            rotate: {
-                duration: duration * 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: delay
-            },
-            opacity: { duration: 1 }
-        }}
-    >
-        {children}
-    </motion.div>
-);
+const FloatingItem = ({ children, delay, x, y, duration, size = "w-24 h-24", rotationRange = [-10, 10] }) => {
+    const prefersReducedMotion = useReducedMotion();
+    return (
+        <motion.div
+            className={`absolute z-0 pointer-events-none ${size} flex items-center justify-center p-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 shadow-xl`}
+            initial={{ left: x, top: y, opacity: 0 }}
+            animate={prefersReducedMotion
+                ? { opacity: 0.8 }
+                : { y: [0, -20, 0], rotate: [0, ...rotationRange, 0], opacity: 0.8 }
+            }
+            transition={prefersReducedMotion
+                ? { opacity: { duration: 1 } }
+                : {
+                    y: { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay },
+                    rotate: { duration: duration * 1.5, repeat: Infinity, ease: "easeInOut", delay: delay },
+                    opacity: { duration: 1 }
+                }
+            }
+        >
+            {children}
+        </motion.div>
+    );
+};
 
-const Bubble = ({ x, y, size, delay, duration }) => (
-    <motion.div
-        className={`absolute z-0 pointer-events-none rounded-full bg-blue-300/10 backdrop-blur-[1px] border border-white/10 shadow-sm`}
-        style={{ width: size, height: size }}
-        initial={{ left: x, top: y, opacity: 0 }}
-        animate={{
-            y: [0, -30, 0],
-            opacity: [0.3, 0.6, 0.3]
-        }}
-        transition={{
-            duration: duration,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: delay
-        }}
-    />
-);
+const Bubble = ({ x, y, size, delay, duration }) => {
+    const prefersReducedMotion = useReducedMotion();
+    return (
+        <motion.div
+            className={`absolute z-0 pointer-events-none rounded-full bg-blue-300/10 backdrop-blur-[1px] border border-white/10 shadow-sm`}
+            style={{ width: size, height: size }}
+            initial={{ left: x, top: y, opacity: 0 }}
+            animate={prefersReducedMotion
+                ? { opacity: 0.3 }
+                : { y: [0, -30, 0], opacity: [0.3, 0.6, 0.3] }
+            }
+            transition={prefersReducedMotion
+                ? { opacity: { duration: 1 } }
+                : { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay }
+            }
+        />
+    );
+};
 
 export default function FloatingIcons() {
     const [isMobile, setIsMobile] = useState(false);
@@ -158,7 +154,7 @@ export default function FloatingIcons() {
         };
 
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+        <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none select-none">
             {!isMobile && (
                 <>
                     {/* Python - Top Left */}
