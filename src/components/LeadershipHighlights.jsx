@@ -211,7 +211,7 @@ export default function LeadershipHighlights() {
   );
 
   return (
-    <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden">
+    <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden xl:overflow-visible">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/3 w-[420px] h-[420px] rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[520px] h-[520px] rounded-full bg-indigo-500/10 blur-3xl" />
