@@ -211,7 +211,7 @@ export default function LeadershipHighlights() {
   );
 
   return (
-    <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden">
+    <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden xl:overflow-visible">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/3 w-[420px] h-[420px] rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[520px] h-[520px] rounded-full bg-indigo-500/10 blur-3xl" />
@@ -241,7 +241,7 @@ export default function LeadershipHighlights() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-5">
+        <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-5 xl:items-start">
           <div className="rounded-3xl border border-slate-200/70 dark:border-slate-700/60 bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm p-5 md:p-7">
             {groupedRoles.map((groupBlock) => (
               <div key={groupBlock.group} className="mb-6 last:mb-0">
@@ -322,7 +322,7 @@ export default function LeadershipHighlights() {
             ))}
           </div>
 
-          <div className="hidden xl:block">
+          <div className="hidden xl:block xl:sticky xl:top-24">
             {renderRoleDetails(activeRole)}
           </div>
         </div>
