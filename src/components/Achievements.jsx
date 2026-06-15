@@ -29,6 +29,29 @@ const SPEAKING_LOCATIONS = [
     { city: 'Palm Springs, CA', lng: -116.5453, lat: 33.8303 },
 ];
 
+// Fixed framing for the static base map. The same center/zoom is used by
+// projectToPercent so the HTML pin overlay lines up exactly with the image.
+const MAP_VIEW = { lng: -97, lat: 37.5, zoom: 3.1, w: 800, h: 400 };
+
+// Web Mercator (512px tiles, matching Mapbox) -> percentage position within
+// the base map image, so pins stay aligned at any rendered size.
+function projectToPercent(lng, lat) {
+    const { lng: clng, lat: clat, zoom, w, h } = MAP_VIEW;
+    const worldSize = 512 * Math.pow(2, zoom);
+    const toXY = (lo, la) => {
+        const x = ((lo + 180) / 360) * worldSize;
+        const s = Math.sin((la * Math.PI) / 180);
+        const y = (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * worldSize;
+        return { x, y };
+    };
+    const p = toXY(lng, lat);
+    const c = toXY(clng, clat);
+    return {
+        left: ((w / 2 + (p.x - c.x)) / w) * 100,
+        top: ((h / 2 + (p.y - c.y)) / h) * 100,
+    };
+}
+
 // Track the <html> dark class so the static map style matches the theme.
 function useIsDark() {
     const [isDark, setIsDark] = useState(false);
@@ -43,30 +66,61 @@ function useIsDark() {
     return isDark;
 }
 
-// Small, non-interactive map of where I've spoken (Mapbox Static Images API —
-// no extra JS bundle). Renders nothing if the public token isn't configured.
-function SpeakingLocationsMap() {
+// Small map of where I've spoken: a Mapbox static base image (no GL JS) with
+// an HTML pin overlay so the pins are real, hover/click-able DOM elements that
+// link to the presentation cards. Renders nothing without a public token.
+function SpeakingLocationsMap({ activeKey, setActive }) {
     const isDark = useIsDark();
     if (!MAPBOX_TOKEN) return null;
 
     const style = isDark ? 'dark-v11' : 'light-v11';
-    const markers = SPEAKING_LOCATIONS.map((l) => `pin-s+4f46e5(${l.lng},${l.lat})`).join(',');
-    const src = `https://api.mapbox.com/styles/v1/mapbox/${style}/static/${markers}/auto/800x400@2x?access_token=${MAPBOX_TOKEN}&padding=60`;
+    const { lng, lat, zoom, w, h } = MAP_VIEW;
+    const base = `https://api.mapbox.com/styles/v1/mapbox/${style}/static/${lng},${lat},${zoom}/${w}x${h}@2x?access_token=${MAPBOX_TOKEN}`;
 
     return (
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6 w-full max-w-2xl mx-auto">
-            <div className="relative aspect-[2/1] rounded-2xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 shadow-sm bg-slate-100 dark:bg-slate-800">
-                <img
-                    src={src}
-                    alt={`Map of speaking locations: ${SPEAKING_LOCATIONS.map((l) => l.city).join(', ')}`}
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover"
-                />
-                <span className="absolute left-3 bottom-2 text-[10px] font-mono uppercase tracking-widest text-slate-700 dark:text-slate-200 bg-white/75 dark:bg-slate-900/70 backdrop-blur px-2 py-0.5 rounded">
-                    {SPEAKING_LOCATIONS.length} speaking locations
-                </span>
-            </div>
+        <div className="absolute inset-0">
+            <img
+                src={base}
+                alt="Map of cities where I've presented"
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover"
+            />
+            <span className="absolute left-3 top-2 z-20 text-[10px] font-mono uppercase tracking-widest text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-900/75 backdrop-blur px-2 py-0.5 rounded pointer-events-none">
+                Where I've presented
+            </span>
+            {SPEAKING_LOCATIONS.map((loc) => {
+                const { left, top } = projectToPercent(loc.lng, loc.lat);
+                const active = activeKey === loc.city;
+                return (
+                    <button
+                        key={loc.city}
+                        type="button"
+                        onMouseEnter={() => setActive(loc.city)}
+                        onMouseLeave={() => setActive(null)}
+                        onFocus={() => setActive(loc.city)}
+                        onBlur={() => setActive(null)}
+                        onClick={() => setActive(active ? null : loc.city)}
+                        aria-label={loc.city}
+                        style={{ left: `${left}%`, top: `${top}%` }}
+                        className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+                    >
+                        {active && (
+                            <span className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-400/40 animate-ping" />
+                        )}
+                        <span
+                            className={`block rounded-full ring-2 ring-white dark:ring-slate-900 shadow-md transition-all duration-200 ${
+                                active ? 'h-4 w-4 bg-indigo-500' : 'h-2.5 w-2.5 bg-indigo-500/80'
+                            }`}
+                        />
+                        {active && (
+                            <span className="absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-slate-900 px-1.5 py-0.5 text-[10px] font-mono text-white shadow-lg">
+                                {loc.city}
+                            </span>
+                        )}
+                    </button>
+                );
+            })}
         </div>
     );
 }
@@ -121,6 +175,7 @@ const presentations = [
         types: ["Presentation"],
         roles: ["Panelist"],
         featured: true,
+        locationKey: 'Tampa, FL',
         image: tampaImg
     },
     {
@@ -128,6 +183,7 @@ const presentations = [
         conference: "FWRC 2026 - Daytona Beach, FL",
         types: ["Presentation"],
         roles: ["Presenter"],
+        locationKey: 'Daytona Beach, FL',
         image: daytonaImg
     },
     {
@@ -136,6 +192,7 @@ const presentations = [
         types: ["Presentation"],
         roles: ["Co-Presenter"],
         featured: true,
+        locationKey: 'Cleveland, OH',
         image: clevelandImg
     },
     {
@@ -144,6 +201,7 @@ const presentations = [
         types: ["Presentation"],
         roles: ["Lead Presenter"],
         link: "https://www.3riverswetweather.org/sites/default/files/Conference%20booklet%202025%20for%20web%20-4.pdf",
+        locationKey: 'Monroeville, PA',
         image: monroevilleImg
     },
     {
@@ -152,6 +210,7 @@ const presentations = [
         types: ["Paper", "Presentation"],
         roles: ["Co-Author"],
         link: "https://www.icwmm.org/Archive/2025-C034-01/exploration-of-model-parameter-optimization-strategies-for-improved-swmm-model-calibrations",
+        locationKey: 'Toronto, ON',
         image: torontoImg
     },
     {
@@ -159,6 +218,7 @@ const presentations = [
         conference: "PA KeystoneGIS Conference - State College, PA 2024",
         types: ["Presentation"],
         roles: ["Lead Presenter"],
+        locationKey: 'State College, PA',
         image: stateCollegeImg
     },
     {
@@ -166,6 +226,7 @@ const presentations = [
         conference: "IMGIS 2024 - Palm Springs, CA",
         types: ["Presentation"],
         roles: ["Presenter"],
+        locationKey: 'Palm Springs, CA',
         image: palmSprings2Img
     },
     {
@@ -173,6 +234,7 @@ const presentations = [
         conference: "Optimatics North America Users Conference - Denver, CO 2024",
         types: ["Presentation"],
         roles: ["Presenter"],
+        locationKey: 'Denver, CO',
         image: denverImg
     },
     {
@@ -181,6 +243,7 @@ const presentations = [
         types: ["Paper", "Presentation"],
         roles: ["Lead Author"],
         link: "https://ascelibrary.org/doi/abs/10.1061/41173(414)328",
+        locationKey: 'Palm Springs, CA',
         image: palmSprings1Img
     }
 ];
@@ -204,7 +267,7 @@ const getPresentationGradient = (types) => {
     return "bg-gradient-to-br from-purple-50 via-white to-white dark:from-purple-950/25 dark:via-slate-900 dark:to-slate-900";
 };
 
-const BentoItem = ({ children, className = "", delay = 0 }) => (
+const BentoItem = ({ children, className = "", delay = 0, ...rest }) => (
     <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -212,12 +275,14 @@ const BentoItem = ({ children, className = "", delay = 0 }) => (
         viewport={{ once: true }}
         transition={{ duration: 0.4, delay }}
         className={`bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden relative group ${className}`}
+        {...rest}
     >
         {children}
     </motion.div>
 );
 
 export default function Achievements() {
+    const [activeLocation, setActiveLocation] = useState(null);
     return (
         <section id="achievements" className="section-shell bg-transparent relative">
             {/* Background Decoration */}
@@ -321,15 +386,27 @@ export default function Achievements() {
                         <span className="h-px bg-slate-300 dark:bg-slate-600 flex-1"></span>
                     </div>
 
-                    {/* 3b. Map of speaking locations */}
-                    <SpeakingLocationsMap />
+                    {/* 3b. Map of speaking locations (folded into the grid) */}
+                    {MAPBOX_TOKEN && (
+                        <BentoItem className="md:col-span-2 !p-0 aspect-[2/1]">
+                            <SpeakingLocationsMap activeKey={activeLocation} setActive={setActiveLocation} />
+                        </BentoItem>
+                    )}
 
                     {/* 4. Papers & Presentations */}
                     {presentations.map((item, i) => (
                         <BentoItem
                             key={i + "paper"}
                             delay={0.3 + (i * 0.05)}
-                            className={`${item.featured ? 'md:col-span-2' : ''} hover:border-blue-300 dark:hover:border-blue-700 ${getPresentationGradient(item.types)} relative overflow-hidden group/card`}
+                            onMouseEnter={() => item.locationKey && setActiveLocation(item.locationKey)}
+                            onMouseLeave={() => setActiveLocation(null)}
+                            onFocus={() => item.locationKey && setActiveLocation(item.locationKey)}
+                            onBlur={() => setActiveLocation(null)}
+                            className={`${item.featured ? 'md:col-span-2' : ''} ${getPresentationGradient(item.types)} relative overflow-hidden group/card transition-shadow ${
+                                activeLocation && activeLocation === item.locationKey
+                                    ? 'ring-2 ring-indigo-400 dark:ring-indigo-500 border-indigo-300 dark:border-indigo-700'
+                                    : 'hover:border-blue-300 dark:hover:border-blue-700'
+                            }`}
                         >
                             {/* Background Image - Higher vibrancy, focused at the bottom */}
                             {item.image && (
