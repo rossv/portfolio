@@ -7,6 +7,7 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
     const buttonRef = useRef(null);
     const listId = useId();
     const [searchTerm, setSearchTerm] = useState('');
+    const [alignRight, setAlignRight] = useState(false);
     const inputRef = useRef(null);
 
     // Click outside to close
@@ -19,10 +20,19 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
 
         if (isOpen) {
             document.addEventListener("mousedown", handleClickOutside);
-            // Focus input when opened
-            setTimeout(() => {
-                inputRef.current?.focus();
-            }, 100);
+            // Anchor the menu to the right when a left-anchored menu would
+            // overflow the viewport (right-most triggers on narrow screens).
+            if (buttonRef.current) {
+                const rect = buttonRef.current.getBoundingClientRect();
+                setAlignRight(rect.left + 256 > window.innerWidth - 8);
+            }
+            // Focus the search input on open — but not on touch devices, where
+            // it would immediately pop the soft keyboard and shift the layout.
+            if (!window.matchMedia('(pointer: coarse)').matches) {
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 100);
+            }
         } else {
             // Reset search when closed
             setSearchTerm('');
@@ -156,7 +166,7 @@ const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, 
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 5, scale: 0.95 }}
                         transition={{ duration: 0.1 }}
-                        className="absolute top-full left-0 mt-2 w-64 max-h-80 overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-xl border border-white/20 dark:border-slate-700/50 z-50 flex flex-col"
+                        className={`absolute top-full ${alignRight ? 'right-0' : 'left-0'} mt-2 w-64 max-w-[calc(100vw-1rem)] max-h-80 overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-xl border border-white/20 dark:border-slate-700/50 z-50 flex flex-col`}
                         id={listId}
                         role="listbox"
                         tabIndex={-1}

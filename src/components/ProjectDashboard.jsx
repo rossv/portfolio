@@ -490,7 +490,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     }, [selectedProject]);
 
     return (
-        <div className="rounded-2xl relative h-[calc(100vh-24px)] min-h-[760px] max-h-[1320px] lg:h-[calc(100vh-80px)] lg:min-h-[640px] lg:max-h-[1240px]">
+        <div className="rounded-2xl relative h-auto lg:h-[calc(100dvh-80px)] lg:min-h-[640px] lg:max-h-[1240px]">
 
             {/* Layout Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
@@ -622,7 +622,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             {/* Expanded Card Modal */}
             <AnimatePresence>
                 {selectedProject && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center p-4" onClick={closeModal}>
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50" onClick={closeModal}>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -645,7 +645,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                     const imageSrc = getProjectImageSrc(selectedProject.image);
 
                                     return imageSrc && (
-                                        <div className="w-[calc(100%+4rem)] h-80 -mx-8 -mt-8 mb-6 relative group">
+                                        <div className="w-[calc(100%+4rem)] h-48 sm:h-72 -mx-8 -mt-8 mb-6 relative group">
                                             <div className="absolute inset-0 z-10 bg-gradient-to-t from-white dark:from-slate-900 via-transparent to-transparent opacity-90"></div>
                                             <img
                                                 src={imageSrc}

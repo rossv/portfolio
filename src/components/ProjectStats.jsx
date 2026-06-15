@@ -173,8 +173,8 @@ export default function ProjectStats({ projects }) {
                     {tagData.map((tag, i) => (
                         <span
                             key={tag.text}
-                            className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded text-xs"
-                            style={{ opacity: 1 - (i * 0.05) }}
+                            className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-1 rounded text-xs"
+                            style={{ opacity: Math.max(0.6, 1 - (i * 0.05)) }}
                         >
                             {tag.text}
                         </span>
