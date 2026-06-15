@@ -418,7 +418,7 @@ export default function Achievements() {
                                         src={item.image.src || item.image}
                                         alt=""
                                         aria-hidden="true"
-                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-45 dark:opacity-50 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
+                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-55 dark:opacity-60 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
                                         style={{
                                             WebkitMaskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
                                             maskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
@@ -427,7 +427,7 @@ export default function Achievements() {
                                     {/* Bottom Masking gradient — keep some scrim at the
                                         very bottom too, where the footer text sits over the
                                         strongest part of the photo. */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-white/75 via-white/80 to-white/95 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/80" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-white/75 to-white/95 dark:from-slate-900/40 dark:via-slate-900/52 dark:to-slate-900/75" />
                                 </div>
                             )}
 
