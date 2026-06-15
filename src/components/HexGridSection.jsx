@@ -160,6 +160,8 @@ const Hexagon = ({ icon: IconOrImage, id, label, delay, isImage, group, activeGr
                         <img
                             src={IconOrImage.src || IconOrImage}
                             alt={label}
+                            loading="lazy"
+                            decoding="async"
                             className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain transition-all duration-300
                  ${isHoveredGroup || activeGroup === group ? 'scale-110 grayscale-0 opacity-100' : ''}
                  ${isDimmed ? 'scale-90 grayscale opacity-40' : ''}
