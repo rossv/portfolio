@@ -12,6 +12,7 @@ import monroevilleImg from '../assets/skylines/monroeville.webp';
 import palmSprings1Img from '../assets/skylines/palm_springs_1.webp';
 import palmSprings2Img from '../assets/skylines/palm_springs_2.webp';
 import stateCollegeImg from '../assets/skylines/state_college.webp';
+import tampaImg from '../assets/skylines/tampa.webp';
 import torontoImg from '../assets/skylines/toronto.webp';
 
 const positions = [
@@ -59,8 +60,16 @@ const award = {
 
 const presentations = [
     {
+        title: "Debate: AI-enabled digital twins will fundamentally change who — and what — makes operational decisions in water utilities",
+        conference: "Tampa, FL",
+        types: ["Presentation"],
+        roles: ["Panelist"],
+        featured: true,
+        image: tampaImg
+    },
+    {
         title: "Hydraulic Model Optimization for Cost-Effective SSO Reduction",
-        conference: "Daytona Beach, FL · April 2026",
+        conference: "FWRC 2026 - Daytona Beach, FL",
         types: ["Presentation"],
         roles: ["Presenter"],
         image: daytonaImg
