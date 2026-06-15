@@ -1,11 +1,27 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Cursor() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
+    const reduceMotion = useReducedMotion();
+
+    // Only enable the custom cursor for genuine mouse users (fine pointer +
+    // hover capability). 'ontouchstart'/maxTouchPoints misfires on hybrid
+    // touchscreen laptops driven by a mouse; matchMedia is the reliable test
+    // and matches the convention used elsewhere in the app.
+    const [enabled, setEnabled] = useState(false);
+    useEffect(() => {
+        const mql = window.matchMedia('(hover: hover) and (pointer: fine)');
+        const apply = () => setEnabled(mql.matches);
+        apply();
+        mql.addEventListener('change', apply);
+        return () => mql.removeEventListener('change', apply);
+    }, []);
 
     useEffect(() => {
+        if (!enabled) return;
+
         const updateMousePosition = (e) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
         };
@@ -25,15 +41,9 @@ export default function Cursor() {
             window.removeEventListener('mousemove', updateMousePosition);
             window.removeEventListener('mouseover', handleMouseOver);
         };
-    }, []);
+    }, [enabled]);
 
-    // Only show on non-touch devices
-    const [isTouch, setIsTouch] = useState(false);
-    useEffect(() => {
-        setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    }, []);
-
-    if (isTouch) return null;
+    if (!enabled) return null;
 
     return (
         <motion.div
@@ -43,12 +53,14 @@ export default function Cursor() {
                 y: mousePosition.y - 16,
                 scale: isHovering ? 2.5 : 1,
             }}
-            transition={{
-                type: "spring",
-                stiffness: 150,
-                damping: 15,
-                mass: 0.1
-            }}
+            transition={reduceMotion
+                ? { duration: 0 }
+                : {
+                    type: "spring",
+                    stiffness: 150,
+                    damping: 15,
+                    mass: 0.1
+                }}
         >
             <div className="w-2 h-2 bg-white rounded-full"></div>
             <motion.div

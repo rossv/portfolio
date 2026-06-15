@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
@@ -10,12 +10,11 @@ import aiChipIcon from '../assets/icons/hero/ai-chip.png';
 import gisMapIcon from '../assets/icons/hero/gis-map.png';
 
 function FloatingElement({ children, delay = 0, className = "" }) {
+    const reduce = useReducedMotion();
     return (
         <motion.div
-            animate={{
-                y: [0, -10, 0],
-            }}
-            transition={{
+            animate={reduce ? undefined : { y: [0, -10, 0] }}
+            transition={reduce ? undefined : {
                 duration: 3,
                 repeat: Infinity,
                 repeatType: "reverse",
@@ -40,8 +39,9 @@ export default function Hero() {
         offset: ["start start", "end start"]
     });
 
-    const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-    const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+    const reduce = useReducedMotion();
+    const yText = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "50%"]);
+    const yImage = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
     useEffect(() => {
         const stored = localStorage.getItem('spaceNerdMode') === 'stars';
@@ -193,7 +193,8 @@ export default function Hero() {
                     </span>
                 </motion.p>
 
-                <motion.div
+                <motion.nav
+                    aria-label="Page sections"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.95 }}
@@ -220,7 +221,7 @@ export default function Hero() {
                             </span>
                         </motion.button>
                     ))}
-                </motion.div>
+                </motion.nav>
 
                 <motion.div
                     initial={{ opacity: 0 }}
