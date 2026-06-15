@@ -61,7 +61,7 @@ const award = {
 const presentations = [
     {
         title: "Debate: AI-enabled digital twins will fundamentally change who — and what — makes operational decisions in water utilities",
-        conference: "Tampa, FL",
+        conference: "SWAN Annual Conference 2026 - Tampa, FL",
         types: ["Presentation"],
         roles: ["Panelist"],
         featured: true,
