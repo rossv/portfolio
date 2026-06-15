@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import innovatorAwardImg from '../assets/recognition/innovator-award.webp';
 import leadershipAcademyImg from '../assets/recognition/recognition-leadership-academy.webp';
@@ -14,6 +14,62 @@ import palmSprings2Img from '../assets/skylines/palm_springs_2.webp';
 import stateCollegeImg from '../assets/skylines/state_college.webp';
 import tampaImg from '../assets/skylines/tampa.webp';
 import torontoImg from '../assets/skylines/toronto.webp';
+
+const MAPBOX_TOKEN = import.meta.env.PUBLIC_MAPBOX_ACCESS_TOKEN;
+
+// Unique cities from the speaking engagements below, [lng, lat].
+const SPEAKING_LOCATIONS = [
+    { city: 'Tampa, FL', lng: -82.4572, lat: 27.9506 },
+    { city: 'Daytona Beach, FL', lng: -81.0228, lat: 29.2108 },
+    { city: 'Cleveland, OH', lng: -81.6944, lat: 41.4993 },
+    { city: 'Monroeville, PA', lng: -79.7881, lat: 40.4212 },
+    { city: 'State College, PA', lng: -77.8600, lat: 40.7934 },
+    { city: 'Toronto, ON', lng: -79.3832, lat: 43.6532 },
+    { city: 'Denver, CO', lng: -104.9903, lat: 39.7392 },
+    { city: 'Palm Springs, CA', lng: -116.5453, lat: 33.8303 },
+];
+
+// Track the <html> dark class so the static map style matches the theme.
+function useIsDark() {
+    const [isDark, setIsDark] = useState(false);
+    useEffect(() => {
+        const el = document.documentElement;
+        const update = () => setIsDark(el.classList.contains('dark'));
+        update();
+        const observer = new MutationObserver(update);
+        observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+        return () => observer.disconnect();
+    }, []);
+    return isDark;
+}
+
+// Small, non-interactive map of where I've spoken (Mapbox Static Images API —
+// no extra JS bundle). Renders nothing if the public token isn't configured.
+function SpeakingLocationsMap() {
+    const isDark = useIsDark();
+    if (!MAPBOX_TOKEN) return null;
+
+    const style = isDark ? 'dark-v11' : 'light-v11';
+    const markers = SPEAKING_LOCATIONS.map((l) => `pin-s+4f46e5(${l.lng},${l.lat})`).join(',');
+    const src = `https://api.mapbox.com/styles/v1/mapbox/${style}/static/${markers}/auto/800x400@2x?access_token=${MAPBOX_TOKEN}&padding=60`;
+
+    return (
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6 w-full max-w-2xl mx-auto">
+            <div className="relative aspect-[2/1] rounded-2xl overflow-hidden border border-slate-200/70 dark:border-slate-700/60 shadow-sm bg-slate-100 dark:bg-slate-800">
+                <img
+                    src={src}
+                    alt={`Map of speaking locations: ${SPEAKING_LOCATIONS.map((l) => l.city).join(', ')}`}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                />
+                <span className="absolute left-3 bottom-2 text-[10px] font-mono uppercase tracking-widest text-slate-700 dark:text-slate-200 bg-white/75 dark:bg-slate-900/70 backdrop-blur px-2 py-0.5 rounded">
+                    {SPEAKING_LOCATIONS.length} speaking locations
+                </span>
+            </div>
+        </div>
+    );
+}
 
 const positions = [
     {
@@ -264,6 +320,9 @@ export default function Achievements() {
                         <span className="text-sm font-bold uppercase tracking-widest text-slate-500">Publications & Speaking</span>
                         <span className="h-px bg-slate-300 dark:bg-slate-600 flex-1"></span>
                     </div>
+
+                    {/* 3b. Map of speaking locations */}
+                    <SpeakingLocationsMap />
 
                     {/* 4. Papers & Presentations */}
                     {presentations.map((item, i) => (
