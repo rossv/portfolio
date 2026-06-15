@@ -290,7 +290,10 @@ export default function HexGridSection() {
                     ))}
                 </div>
 
-                {/* Group Label - Keep near the hex grid on all breakpoints */}
+                {/* Group Label — mobile: in-flow below the grid (whole section
+                    fits on screen). Desktop: floats fixed at the bottom of the
+                    viewport so it stays visible while hovering icons near the
+                    top of a tall grid. */}
                 <div className={`mt-6 flex justify-center md:hidden transition-all duration-300 transform ${activeGroup ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
                     <div className="bg-slate-900/90 text-indigo-400 border border-indigo-500/30 px-4 py-2 rounded-lg shadow-2xl backdrop-blur-md font-mono text-sm font-bold tracking-widest uppercase flex items-center gap-3">
                         <span className="block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
@@ -300,7 +303,7 @@ export default function HexGridSection() {
                         {activeGroup === 'eng' && "Engineering & Visualization"}
                     </div>
                 </div>
-                <div className={`mt-6 hidden md:flex justify-center transition-all duration-300 transform ${activeGroup ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
+                <div className={`fixed bottom-6 left-1/2 z-50 hidden md:flex justify-center transition-all duration-300 ${activeGroup ? '-translate-x-1/2 translate-y-0 opacity-100' : '-translate-x-1/2 translate-y-4 opacity-0 pointer-events-none'}`}>
                     <div className="bg-slate-900/90 text-indigo-400 border border-indigo-500/30 px-5 py-2.5 rounded-lg shadow-2xl backdrop-blur-md font-mono text-sm md:text-base font-bold tracking-widest uppercase flex items-center gap-3">
                         <span className="block w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
                         {activeGroup === 'hh' && "Hydrology & Hydraulics"}
