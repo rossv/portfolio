@@ -282,14 +282,16 @@ export default function Achievements() {
                                         src={item.image.src || item.image}
                                         alt=""
                                         aria-hidden="true"
-                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-65 dark:opacity-70 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
+                                        className="absolute inset-x-0 bottom-0 w-full h-40 object-cover object-bottom opacity-45 dark:opacity-50 mix-blend-multiply dark:mix-blend-normal dark:brightness-110 dark:saturate-125 scale-110 group-hover/card:scale-100 transition-transform duration-1000 ease-out"
                                         style={{
                                             WebkitMaskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
                                             maskImage: "linear-gradient(to top, black 0%, black 55%, transparent 100%)",
                                         }}
                                     />
-                                    {/* Bottom Masking gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/70 to-white/95 dark:via-slate-900/45 dark:to-slate-900/70" />
+                                    {/* Bottom Masking gradient — keep some scrim at the
+                                        very bottom too, where the footer text sits over the
+                                        strongest part of the photo. */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-white/75 via-white/80 to-white/95 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/80" />
                                 </div>
                             )}
 
@@ -331,7 +333,7 @@ export default function Achievements() {
                                                 className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full flex items-center
                                                     ${role.includes("Lead") || role.includes("Presenter") ?
                                                         'bg-slate-800 text-white dark:bg-white dark:text-slate-900' :
-                                                        'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                                                        'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                                                     }`}
                                             >
                                                 {role}
@@ -339,7 +341,7 @@ export default function Achievements() {
                                         ))}
                                     </div>
 
-                                    <h4 className={`${item.featured ? 'text-xl' : 'text-base'} font-bold text-slate-900 dark:text-slate-100 leading-snug mb-2`}>
+                                    <h4 className={`${item.featured ? 'text-xl' : 'text-base'} font-bold text-slate-900 dark:text-white leading-snug mb-2 drop-shadow-sm`}>
                                         {item.link ? (
                                             <a
                                                 href={item.link}
@@ -356,7 +358,7 @@ export default function Achievements() {
                                         )}
                                     </h4>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 font-bold drop-shadow-sm transition-colors group-hover/card:text-indigo-700 dark:group-hover/card:text-indigo-300">
+                                <div className="mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50 flex items-center gap-2 text-sm text-slate-800 dark:text-slate-100 font-bold drop-shadow transition-colors group-hover/card:text-indigo-700 dark:group-hover/card:text-indigo-300">
                                     <svg className="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                     <span className="">{item.conference}</span>
                                 </div>
