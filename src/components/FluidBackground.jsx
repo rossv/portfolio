@@ -29,6 +29,9 @@ export default function FluidBackground() {
         // rule only covers CSS animations, not this canvas.)
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let animationFrameId;
+        // Click effects, drawn on the same canvas as the particles.
+        const ripples = []; // water: expanding rings | space: warp pulse
+        const sparks = [];  // space: radial starburst
         let bubbleCollectCount = Number.parseInt(window.localStorage.getItem('bubbleCollectCount') || '0', 10);
         if (!Number.isFinite(bubbleCollectCount) || bubbleCollectCount < 0) {
             bubbleCollectCount = 0;
@@ -203,6 +206,49 @@ export default function FluidBackground() {
             particles.push(new ParticleType());
         }
 
+        // Spawn a themed click effect at (x, y). No-op under reduced motion.
+        const spawnClickEffect = (x, y) => {
+            if (prefersReduced) return;
+            if (isStarfield) {
+                // Space-nerd: a warp pulse ring + a radial burst of sparks.
+                ripples.push({ x, y, age: 0, maxAge: 34, kind: 'warp' });
+                const count = 16;
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.35;
+                    const speed = Math.random() * 3.2 + 1.8;
+                    sparks.push({
+                        x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        life: 0,
+                        maxLife: Math.random() * 26 + 26,
+                        size: Math.random() * 1.4 + 0.9,
+                        color: starColors[Math.floor(Math.random() * starColors.length)],
+                    });
+                }
+            } else {
+                // Water: a couple of expanding ripple rings + a splash that
+                // nudges nearby bubbles outward.
+                ripples.push({ x, y, age: 0, maxAge: 46, kind: 'ripple' });
+                ripples.push({ x, y, age: -9, maxAge: 46, kind: 'ripple' });
+                particles.forEach((p) => {
+                    const dx = p.x - x;
+                    const dy = p.y - y;
+                    const d = Math.hypot(dx, dy);
+                    if (d > 0.001 && d < 90) {
+                        const f = ((90 - d) / 90) * 2.6;
+                        p.vx += (dx / d) * f;
+                        p.vy += (dy / d) * f;
+                    }
+                });
+            }
+            // Bound the work if someone clicks rapidly.
+            if (ripples.length > 12) ripples.splice(0, ripples.length - 12);
+            if (sparks.length > 160) sparks.splice(0, sparks.length - 160);
+        };
+
+        const handlePointerDown = (e) => spawnClickEffect(e.clientX, e.clientY);
+
         // Scroll handling
         const updateScroll = () => {
             scrollRef.current = window.scrollY;
@@ -252,6 +298,43 @@ export default function FluidBackground() {
                 });
             }
 
+            // Click effects (same canvas/layer as the particles).
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                r.age += 1;
+                if (r.age < 0) continue; // delayed start
+                const t = r.age / r.maxAge;
+                if (t >= 1) { ripples.splice(i, 1); continue; }
+                const ease = 1 - Math.pow(1 - t, 2); // ease-out expansion
+                if (r.kind === 'warp') {
+                    ctx.beginPath();
+                    ctx.arc(r.x, r.y, ease * 95, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(196, 181, 253, ${(1 - t) * 0.55})`; // violet
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(r.x, r.y, ease * 72, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - t) * 0.45})`; // sky/cyan
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const s = sparks[i];
+                s.life += 1;
+                if (s.life >= s.maxLife) { sparks.splice(i, 1); continue; }
+                s.x += s.vx;
+                s.y += s.vy;
+                s.vx *= 0.93;
+                s.vy *= 0.93;
+                const a = 1 - s.life / s.maxLife;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fillStyle = `${s.color}${a})`;
+                ctx.fill();
+            }
+
             if (!prefersReduced) {
                 animationFrameId = requestAnimationFrame(render);
             }
@@ -279,6 +362,7 @@ export default function FluidBackground() {
         window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('touchmove', handleTouchMove);
+        window.addEventListener('pointerdown', handlePointerDown);
 
         // Initial scroll position
         scrollRef.current = window.scrollY;
@@ -291,6 +375,7 @@ export default function FluidBackground() {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('touchmove', handleTouchMove);
+            window.removeEventListener('pointerdown', handlePointerDown);
             cancelAnimationFrame(animationFrameId);
         };
     }, [isStarfield]);
