@@ -166,15 +166,17 @@ export default function ExperienceMap({ projects = [], className = "", onProject
       // With high clusterMaxZoom, we assume this is a truly single point (or we are at max zoom).
       const projectData = parseProjectProperties(feature.properties);
 
-      setPopupInfo({
-        longitude: coordinates[0],
-        latitude: coordinates[1],
-        project: projectData
-      });
-
-      // Also notify parent directly if they want to handle it (like opening modal)
+      // Single project: open the modal directly. Previously this also set a
+      // popup, which then sat stranded underneath the modal. Fall back to a
+      // popup only when no modal handler is wired up.
       if (onProjectClick) {
         onProjectClick(projectData);
+      } else {
+        setPopupInfo({
+          longitude: coordinates[0],
+          latitude: coordinates[1],
+          project: projectData
+        });
       }
     }
   };
@@ -321,12 +323,8 @@ export default function ExperienceMap({ projects = [], className = "", onProject
                           if (onProjectClick) {
                             onProjectClick(parsedProps);
                           }
-                          // Also update popup to show single item (optional, but maybe better to just close or let modal take over)
-                          setPopupInfo({
-                            longitude: popupInfo.longitude,
-                            latitude: popupInfo.latitude,
-                            project: parsedProps
-                          });
+                          // Close the popup so it isn't left behind the modal.
+                          setPopupInfo(null);
                         }}
                       >
                         {leaf.properties.name}
