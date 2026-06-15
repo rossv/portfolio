@@ -1,0 +1,14 @@
+{
+  "name": "Ross Volkwein — PE, GISP",
+  "short_name": "R. Volkwein",
+  "description": "Engineering and geospatial portfolio of Ross Volkwein.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}

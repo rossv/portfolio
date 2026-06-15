@@ -9,11 +9,11 @@ interface Props {
 	title: string;
 	description: string;
 	canonicalPath: string;
-	ogImage: string;
+	ogImage?: string;
 	noindex?: boolean;
 }
 
-const { title, description, canonicalPath, ogImage, noindex = false } = Astro.props;
+const { title, description, canonicalPath, ogImage = '/og-image.png', noindex = false } = Astro.props;
 const canonicalUrl = new URL(canonicalPath, Astro.site);
 const ogImageUrl = new URL(ogImage, Astro.site);
 ---
@@ -27,17 +27,26 @@ const ogImageUrl = new URL(ogImage, Astro.site);
         <meta name="theme-color" content="#F4F3F1" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
 		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+		<link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
+		<link rel="manifest" href={`${import.meta.env.BASE_URL}site.webmanifest`} />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="canonical" href={canonicalUrl.toString()} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalUrl.toString()} />
-		<meta property="og:image" content={ogImageUrl.toString()} />
 		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Ross Volkwein" />
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:image" content={ogImageUrl.toString()} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Ross Volkwein — Professional Engineer and GIS Professional" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImageUrl.toString()} />
+		<meta name="twitter:image:alt" content="Ross Volkwein — Professional Engineer and GIS Professional" />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
         <GoogleAnalytics />
 		<title>{title}</title>
@@ -61,22 +70,37 @@ const ogImageUrl = new URL(ogImage, Astro.site);
         document.documentElement.classList.remove('dark');
       }
     </script>
-    <script type="application/ld+json">
-    {
+    <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Ross Volkwein",
-      "jobTitle": "Professional Engineer & GIS Professional",
-      "url": "https://www.rossvolkwein.com",
-      "email": "mailto:ross.volkwein@gmail.com",
-      "sameAs": [
-        "https://www.linkedin.com/in/rossvolkwein/",
-        "https://github.com/rossv/",
-        "https://stackexchange.com/users/3363150/rossv",
-        "https://gis-portfolio-volkwein.hub.arcgis.com/"
-      ]
-    }
-    </script>
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Ross Volkwein",
+        "jobTitle": "Professional Engineer & GIS Professional",
+        "url": "https://www.rossvolkwein.com",
+        "email": "mailto:ross.volkwein@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Pittsburgh",
+          "addressRegion": "PA",
+          "addressCountry": "US"
+        },
+        "knowsAbout": [
+          "Hydraulic Modeling",
+          "Hydrologic Modeling",
+          "Geographic Information Systems",
+          "Stormwater Management",
+          "Civil Engineering",
+          "Python"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/rossvolkwein/",
+          "https://github.com/rossv/",
+          "https://stackexchange.com/users/3363150/rossv",
+          "https://gis-portfolio-volkwein.hub.arcgis.com/"
+        ]
+      }
+    })} />
 	</head>
 	<body class="font-mono text-slate-900 dark:text-slate-50 antialiased selection:bg-blue-200 selection:text-slate-900 dark:selection:bg-blue-900 dark:selection:text-white transition-colors duration-300">
     <FluidBackground client:load />
