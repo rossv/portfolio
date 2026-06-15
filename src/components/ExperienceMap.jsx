@@ -276,8 +276,17 @@ export default function ExperienceMap({ projects = [], className = "", onProject
               {popupInfo.project && (
                 <div>
                   <h4
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open project: ${popupInfo.project.name}`}
                     className="font-bold text-slate-900 dark:text-slate-100 text-lg mb-1 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors"
                     onClick={() => onProjectClick && onProjectClick(popupInfo.project)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.currentTarget.click();
+                      }
+                    }}
                   >
                     {popupInfo.project.name}
                   </h4>
@@ -297,6 +306,15 @@ export default function ExperienceMap({ projects = [], className = "", onProject
                   {popupInfo.clusterLeaves.map((leaf) => (
                     <div key={leaf.properties.name} className="border-b border-slate-100 dark:border-slate-800 last:border-0 pb-2 last:pb-0">
                       <h5 className="font-bold text-slate-800 dark:text-slate-200 text-sm hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Open project: ${leaf.properties.name}`}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.currentTarget.click();
+                          }
+                        }}
                         onClick={() => {
                           const parsedProps = parseProjectProperties(leaf.properties);
                           // Notify parent to open modal DIRECTLY when clicking a list item

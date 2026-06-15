@@ -7,10 +7,20 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
     return (
         <motion.div
             layout
+            role="button"
+            tabIndex={0}
+            aria-expanded={isHovered}
+            aria-label={`${label} license — ${isHovered ? 'hide' : 'show'} details`}
             className={`relative cursor-pointer overflow-hidden rounded bg-transparent ${isHovered ? 'z-50' : 'z-10'}`}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={() => setIsHovered(!isHovered)}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsHovered((v) => !v);
+                }
+            }}
             initial={false}
         >
             <motion.div

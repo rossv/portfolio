@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Visible keyboard focus indicator for all interactive elements.
+   Uses :focus-visible so mouse clicks don't show a ring. indigo-500
+   reads well on both light and dark backgrounds. Per-element
+   focus-visible: utilities still override this (higher specificity). */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
 .vignette-layer {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 1) 100%);
 }

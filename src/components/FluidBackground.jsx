@@ -24,6 +24,10 @@ export default function FluidBackground() {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
+        // Respect reduced-motion: draw a single static frame instead of the
+        // continuous, mouse-reactive rAF loop. (The global CSS reduced-motion
+        // rule only covers CSS animations, not this canvas.)
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let animationFrameId;
         let bubbleCollectCount = Number.parseInt(window.localStorage.getItem('bubbleCollectCount') || '0', 10);
         if (!Number.isFinite(bubbleCollectCount) || bubbleCollectCount < 0) {
@@ -248,7 +252,9 @@ export default function FluidBackground() {
                 });
             }
 
-            animationFrameId = requestAnimationFrame(render);
+            if (!prefersReduced) {
+                animationFrameId = requestAnimationFrame(render);
+            }
         };
 
         const handleResize = () => {
