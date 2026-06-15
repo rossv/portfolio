@@ -359,7 +359,7 @@ export default function NewsSection() {
                     <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
                     <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
 
-                    {/* Page-over arrows (desktop, reveal on hover/focus) */}
+                    {/* Page-over arrows (desktop) — solid and always visible while scrollable */}
                     {canScroll && (
                         <>
                             <button
@@ -367,18 +367,18 @@ export default function NewsSection() {
                                 onClick={() => scrollByPage(-1)}
                                 disabled={atStart}
                                 aria-label="Scroll to previous news"
-                                className="hidden md:flex items-center justify-center absolute left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-100 shadow-lg ring-1 ring-slate-200/70 dark:ring-slate-700/70 backdrop-blur transition-all duration-200 hover:bg-white hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:opacity-100 opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                                className="hidden md:flex items-center justify-center absolute left-2 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 shadow-xl ring-1 ring-slate-900/10 dark:ring-white/10 transition-all duration-200 hover:bg-indigo-600 hover:text-white hover:scale-105 disabled:opacity-0 disabled:pointer-events-none"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
                             </button>
                             <button
                                 type="button"
                                 onClick={() => scrollByPage(1)}
                                 disabled={atEnd}
                                 aria-label="Scroll to next news"
-                                className="hidden md:flex items-center justify-center absolute right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-100 shadow-lg ring-1 ring-slate-200/70 dark:ring-slate-700/70 backdrop-blur transition-all duration-200 hover:bg-white hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:opacity-100 opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                                className="hidden md:flex items-center justify-center absolute right-2 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-300 shadow-xl ring-1 ring-slate-900/10 dark:ring-white/10 transition-all duration-200 hover:bg-indigo-600 hover:text-white hover:scale-105 disabled:opacity-0 disabled:pointer-events-none"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
                             </button>
                         </>
                     )}
