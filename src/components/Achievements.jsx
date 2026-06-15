@@ -6,6 +6,7 @@ import daleCarnegieImg from '../assets/recognition/recognition-dale-carnegie.web
 import asceEwriImg from '../assets/recognition/recognition-asce-ewri.webp';
 
 import clevelandImg from '../assets/skylines/cleveland.webp';
+import daytonaImg from '../assets/skylines/daytona_beach.webp';
 import denverImg from '../assets/skylines/denver.webp';
 import monroevilleImg from '../assets/skylines/monroeville.webp';
 import palmSprings1Img from '../assets/skylines/palm_springs_1.webp';
@@ -57,6 +58,13 @@ const award = {
 };
 
 const presentations = [
+    {
+        title: "Hydraulic Model Optimization for Cost-Effective SSO Reduction",
+        conference: "Daytona Beach, FL · April 2026",
+        types: ["Presentation"],
+        roles: ["Presenter"],
+        image: daytonaImg
+    },
     {
         title: "Building a More Accurate AI Chatbot for Engineering",
         conference: "OneWater 2025 - Cleveland, OH",
