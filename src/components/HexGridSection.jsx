@@ -295,7 +295,7 @@ export default function HexGridSection() {
                         {activeGroup === 'hh' && "Hydrology & Hydraulics"}
                         {activeGroup === 'gis' && "Geographic Information Systems"}
                         {activeGroup === 'coding' && "Development & Automation"}
-                        {activeGroup === 'eng' && "Engineering & Visuualization"}
+                        {activeGroup === 'eng' && "Engineering & Visualization"}
                     </div>
                 </div>
                 <div className={`mt-6 hidden md:flex justify-center transition-all duration-300 transform ${activeGroup ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'}`}>
@@ -304,7 +304,7 @@ export default function HexGridSection() {
                         {activeGroup === 'hh' && "Hydrology & Hydraulics"}
                         {activeGroup === 'gis' && "Geographic Information Systems"}
                         {activeGroup === 'coding' && "Development & Automation"}
-                        {activeGroup === 'eng' && "Engineering & Visuualization"}
+                        {activeGroup === 'eng' && "Engineering & Visualization"}
                     </div>
                 </div>
 

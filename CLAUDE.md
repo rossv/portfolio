@@ -30,7 +30,7 @@ No lint, typecheck, or test scripts are currently configured in `package.json`.
 | UI Components | React 18 (JSX) |
 | Styling | Tailwind CSS 3 (dark mode via `class`) |
 | Animation | Framer Motion |
-| Mapping | Mapbox GL / react-map-gl, Leaflet / react-leaflet |
+| Mapping | Mapbox GL / react-map-gl |
 | Charts | Recharts |
 | Icons | Lucide React |
 | Fonts | Syne (sans), Space Mono (mono) |
