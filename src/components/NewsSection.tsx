@@ -90,8 +90,35 @@ const NewsCard = ({ item, index }: { item: NewsItem; index: number }) => {
 
 export default function NewsSection() {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const progressRef = useRef<HTMLDivElement>(null);
+    const autoScrollStopRef = useRef<(() => void) | null>(null);
     const [scrollProgress, setScrollProgress] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [canScroll, setCanScroll] = useState(false);
+
+    const stopAutoScroll = () => {
+        autoScrollStopRef.current?.();
+    };
+
+    const scrollByPage = (dir: number) => {
+        const container = scrollRef.current;
+        if (!container) return;
+        stopAutoScroll();
+        container.scrollBy({ left: dir * container.clientWidth * 0.85, behavior: 'smooth' });
+    };
+
+    const scrubToClientX = (clientX: number) => {
+        const container = scrollRef.current;
+        const track = progressRef.current;
+        if (!container || !track) return;
+        const rect = track.getBoundingClientRect();
+        const frac = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        container.scrollLeft = frac * maxScrollLeft;
+    };
+
+    const atStart = scrollProgress <= 0.01;
+    const atEnd = scrollProgress >= 0.99;
 
     useEffect(() => {
         const container = scrollRef.current;
@@ -151,6 +178,10 @@ export default function NewsSection() {
             animationFrameId = 0;
         };
 
+        // Let manual controls (drag, arrows, scrubber) stop the auto-advance
+        // for good, so it never yanks the strip back while the user navigates.
+        autoScrollStopRef.current = stopAnimation;
+
         const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         const handlePreferenceChange = () => {
             if (mediaQuery.matches) {
@@ -179,6 +210,7 @@ export default function NewsSection() {
 
         return () => {
             stopAnimation();
+            autoScrollStopRef.current = null;
             container.removeEventListener('mouseenter', handlePause);
             container.removeEventListener('mouseleave', handleResume);
             container.removeEventListener('focusin', handlePause);
@@ -213,6 +245,7 @@ export default function NewsSection() {
             startScrollLeft = container.scrollLeft;
             suppressClick = false;
             setIsDragging(true);
+            stopAutoScroll();
             container.setPointerCapture(event.pointerId);
         };
 
@@ -250,6 +283,7 @@ export default function NewsSection() {
 
         const updateProgress = () => {
             const maxScrollLeft = container.scrollWidth - container.clientWidth;
+            setCanScroll(maxScrollLeft > 1);
             if (maxScrollLeft <= 0) {
                 setScrollProgress(0);
                 return;
@@ -308,13 +342,13 @@ export default function NewsSection() {
                     </motion.div>
                 </div>
 
-                <div className="relative">
+                <div className="relative group">
                     <div
                         ref={scrollRef}
                         className={`overflow-x-auto overflow-y-hidden w-full snap-x snap-proximity scrollbar-hide select-none ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                         style={{ scrollSnapType: 'x proximity' }}
                     >
-                        <div className="flex w-max min-w-full justify-center gap-8 pb-6">
+                        <div className={`flex w-max min-w-full ${canScroll ? 'justify-start' : 'justify-center'} gap-8 pb-6`}>
                             {sortedNews.map((item, index) => (
                                 <div key={item.id} className="shrink-0 snap-start">
                                     <NewsCard item={item} index={index} />
@@ -324,16 +358,68 @@ export default function NewsSection() {
                     </div>
                     <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
                     <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white/70 via-white/20 to-transparent dark:from-slate-950/60 dark:via-slate-950/20" />
+
+                    {/* Page-over arrows (desktop, reveal on hover/focus) */}
+                    {canScroll && (
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => scrollByPage(-1)}
+                                disabled={atStart}
+                                aria-label="Scroll to previous news"
+                                className="hidden md:flex items-center justify-center absolute left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-100 shadow-lg ring-1 ring-slate-200/70 dark:ring-slate-700/70 backdrop-blur transition-all duration-200 hover:bg-white hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:opacity-100 opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => scrollByPage(1)}
+                                disabled={atEnd}
+                                aria-label="Scroll to next news"
+                                className="hidden md:flex items-center justify-center absolute right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-100 shadow-lg ring-1 ring-slate-200/70 dark:ring-slate-700/70 backdrop-blur transition-all duration-200 hover:bg-white hover:text-indigo-600 dark:hover:text-indigo-300 focus-visible:opacity-100 opacity-0 group-hover:opacity-100 disabled:opacity-0 disabled:pointer-events-none"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                            </button>
+                        </>
+                    )}
                 </div>
-                <div className="relative mt-4 h-1.5 w-full max-w-3xl mx-auto rounded-full bg-slate-200/70 dark:bg-slate-700/50 overflow-hidden">
+                {canScroll && (
                     <div
-                        className="absolute top-0 h-full rounded-full bg-gradient-to-r from-indigo-400/60 via-purple-400/60 to-indigo-400/60 transition-[left] duration-150"
-                        style={{
-                            width: '30%',
-                            left: `${scrollProgress * 70}%`,
+                        ref={progressRef}
+                        role="slider"
+                        tabIndex={0}
+                        aria-label="News scroll position"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={Math.round(scrollProgress * 100)}
+                        onPointerDown={(e) => {
+                            stopAutoScroll();
+                            e.currentTarget.setPointerCapture(e.pointerId);
+                            scrubToClientX(e.clientX);
                         }}
-                    />
-                </div>
+                        onPointerMove={(e) => {
+                            if (e.currentTarget.hasPointerCapture(e.pointerId)) scrubToClientX(e.clientX);
+                        }}
+                        onPointerUp={(e) => {
+                            if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'ArrowLeft') { e.preventDefault(); scrollByPage(-1); }
+                            else if (e.key === 'ArrowRight') { e.preventDefault(); scrollByPage(1); }
+                        }}
+                        className="relative mt-4 h-4 flex items-center w-full max-w-3xl mx-auto cursor-pointer touch-none group/scrub"
+                    >
+                        <div className="relative h-1.5 w-full rounded-full bg-slate-200/70 dark:bg-slate-700/50 overflow-hidden transition-all group-hover/scrub:h-2">
+                            <div
+                                className="absolute top-0 h-full rounded-full bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 transition-[left] duration-150"
+                                style={{
+                                    width: '30%',
+                                    left: `${scrollProgress * 70}%`,
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );
