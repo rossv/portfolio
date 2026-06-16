@@ -8,6 +8,7 @@ import webUiIcon from '../assets/icons/hero/web-ui.png';
 import codingLaptopIcon from '../assets/icons/hero/coding-laptop.png';
 import aiChipIcon from '../assets/icons/hero/ai-chip.png';
 import gisMapIcon from '../assets/icons/hero/gis-map.png';
+import waterMoleculeIcon from '../assets/icons/hero/water-molecule.png';
 
 function FloatingElement({ children, delay = 0, className = "" }) {
     const reduce = useReducedMotion();
@@ -289,6 +290,10 @@ export default function Hero() {
 
                             <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
                                 <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                            </FloatingElement>
+
+                            <FloatingElement delay={2.5} className="absolute -left-10 bottom-12 hidden xl:block">
+                                <img src={waterMoleculeIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
                             </FloatingElement>
                         </>
                     )}
