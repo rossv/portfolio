@@ -1,5 +1,13 @@
 # Changelog
 
+## Week of 2026-06-22
+
+### Highlights
+- Added a "Tools I built" facet to the project dashboard: an `isTool` flag on entries, a dedicated filter toggle, and distinct tool cards (TOOL badge, monospace stack chips, optional Live/Code/Internal links) ([#180](https://github.com/rossv/portfolio/pull/180)).
+
+### Key PR Links
+- [#180](https://github.com/rossv/portfolio/pull/180): Add a "Tools I built" facet to the project dashboard.
+
 ## Week of 2026-03-09
 
 ### Highlights
