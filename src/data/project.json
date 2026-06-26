@@ -1,6 +1,7 @@
 [
     {
         "name": "GIS Hydrology Intersection Tool",
+        "isTool": true,
         "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
@@ -47,6 +48,7 @@
     },
     {
         "name": "Contact Search Tool",
+        "isTool": true,
         "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
@@ -255,6 +257,7 @@
     },
     {
         "name": "CEC Go Development",
+        "isTool": true,
         "client": "Civil & Environmental Consultants",
         "company": "Civil & Environmental Consultants",
         "location": "Rosslyn Farms, PA",
@@ -497,6 +500,7 @@
     },
     {
         "name": "Act 537 Maps using Python",
+        "isTool": true,
         "client": "Internal",
         "company": "KLH Engineers",
         "location": "Rostraver, PA",
@@ -520,6 +524,7 @@
     },
     {
         "name": "Flow Data Processing Script",
+        "isTool": true,
         "client": "Internal",
         "company": "KLH Engineers",
         "location": "Rostraver, PA",
@@ -1067,6 +1072,7 @@
     },
     {
         "name": "Carnegie Overflow Regression Model",
+        "isTool": true,
         "client": "Borough of Carnegie",
         "company": "KLH Engineers",
         "location": "Carnegie, PA",
@@ -1113,6 +1119,7 @@
     },
     {
         "name": "Order Entry System",
+        "isTool": true,
         "client": "KLH Engineers, Inc.",
         "company": "KLH Engineers",
         "location": "Robinson, PA",
@@ -1162,6 +1169,7 @@
     },
     {
         "name": "Company Intranet",
+        "isTool": true,
         "client": "KLH Engineers, Inc.",
         "company": "KLH Engineers",
         "location": "Robinson, PA",
@@ -2581,6 +2589,7 @@
     },
     {
         "name": "Saddle Creek Groundwater Monitoring Dashboard",
+        "isTool": true,
         "client": "City of Omaha",
         "company": "Wade Trim",
         "location": "Omaha, NE",
@@ -2862,6 +2871,7 @@
     },
     {
         "name": "Python Out File Reader Script",
+        "isTool": true,
         "client": "Internal",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
@@ -3042,6 +3052,7 @@
     },
     {
         "name": "Model Toolkit & Flow Data Review Tool",
+        "isTool": true,
         "client": "Internal",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",
@@ -3146,6 +3157,7 @@
     },
     {
         "name": "SWMM Autocalibrator",
+        "isTool": true,
         "client": "Internal",
         "company": "Wade Trim",
         "location": "Pittsburgh, PA",

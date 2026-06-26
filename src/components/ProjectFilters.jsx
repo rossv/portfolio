@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, X, Filter, Check } from 'lucide-react';
+import { ChevronDown, X, Filter, Check, Terminal } from 'lucide-react';
 
 const FilterDropdown = ({ title, options, selected, onChange, isOpen, onToggle, close }) => {
     const dropdownRef = useRef(null);
@@ -212,6 +212,7 @@ export default function ProjectFilters({
     selectedRoles,
     selectedTags,
     featuredOnly,
+    toolsOnly,
     onYearChange,
     onCompanyChange,
     onClientChange,
@@ -219,6 +220,7 @@ export default function ProjectFilters({
     onRoleChange,
     onTagChange,
     onFeaturedToggle,
+    onToolsToggle,
     onReset,
     filterText
 }) {
@@ -239,6 +241,7 @@ export default function ProjectFilters({
         selectedRoles.length > 0 ||
         selectedTags.length > 0 ||
         featuredOnly ||
+        toolsOnly ||
         (filterText && filterText.length > 0);
 
     return (
@@ -318,6 +321,19 @@ export default function ProjectFilters({
                 aria-pressed={featuredOnly}
             >
                 <span>Featured</span>
+            </button>
+
+            <button
+                type="button"
+                onClick={onToolsToggle}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all border ${toolsOnly
+                    ? 'bg-sky-500/15 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 border-sky-300/60 dark:border-sky-700/60'
+                    : 'bg-white/10 dark:bg-slate-800/20 backdrop-blur-sm text-slate-700 dark:text-slate-300 border-white/20 dark:border-slate-700/30 hover:bg-white/20 dark:hover:bg-slate-800/40'
+                    }`}
+                aria-pressed={toolsOnly}
+            >
+                <Terminal size={15} className={toolsOnly ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400'} />
+                <span>Tools I built</span>
             </button>
         </div>
     );
