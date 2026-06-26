@@ -3233,5 +3233,280 @@
             -79.991342,
             40.445943
         ]
+    },
+    {
+        "name": "RainCheck",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, Coding, Tool Development",
+        "tags": [
+            "Hydrology",
+            "Calibration",
+            "React",
+            "Tool Development",
+            "Analytics"
+        ],
+        "description": "A rainfall event-analysis web app that ingests rain gauge and radar records, separates them into discrete storm events, and ranks each event’s severity against historical statistics — turning raw precipitation data into the design and reporting numbers an engineer actually needs.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "React",
+            "Vite",
+            "Recharts",
+            "TypeScript"
+        ]
+    },
+    {
+        "name": "Watershed Explorer",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, GIS, Tool Development",
+        "tags": [
+            "Hydrology",
+            "Watershed Delineation",
+            "Web GIS",
+            "React",
+            "Tool Development"
+        ],
+        "description": "A one-click watershed delineation tool: pick a point and it delineates the contributing area, then automatically derives rainfall, land-use, and time-of-concentration inputs and generates a runoff hydrograph — compressing a multi-step hydrologic workflow into a single web interface.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "React",
+            "Vite",
+            "TypeScript",
+            "Mapbox GL"
+        ]
+    },
+    {
+        "name": "Data Downloader",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Coding, Tool Development",
+        "tags": [
+            "Automation",
+            "React",
+            "Tool Development",
+            "Web Apps",
+            "Data Science"
+        ],
+        "description": "A unified front end for pulling environmental and climate data from nine-plus providers (NOAA CDO, USGS, Synoptic, HRRR, Open-Meteo, NWS, and more) through one map-based interface, replacing a pile of provider-specific download scripts.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "React 19",
+            "Vite 7",
+            "TypeScript"
+        ]
+    },
+    {
+        "name": "Graph Digitizer",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Coding, Tool Development",
+        "tags": [
+            "Data Science",
+            "Automation",
+            "React",
+            "Tool Development"
+        ],
+        "description": "A browser-based plot digitizer that turns charts and graphs trapped in PDFs or images back into tabular data — set the axes, trace the curve, and export the points for reuse in analysis.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "React",
+            "Vite",
+            "Konva",
+            "Zustand"
+        ]
+    },
+    {
+        "name": "Pathfinder",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, Coding, Tool Development",
+        "tags": [
+            "SWMM",
+            "Optimization",
+            "Python",
+            "Tool Development"
+        ],
+        "description": "A SWMM optimization app that runs a genetic algorithm (NSGA-II) across many candidate decisions — pipe sizes, storage, controls — to find the trade-off front that best meets defined objectives, automating what would otherwise be hundreds of manual model runs.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "Python",
+            "Streamlit",
+            "pyswmm",
+            "NSGA-II"
+        ]
+    },
+    {
+        "name": "RFF Utilities",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, Coding, Tool Development",
+        "tags": [
+            "Hydrology",
+            "Python",
+            "Tool Development",
+            "Batch Processing"
+        ],
+        "description": "A desktop toolkit for SWMM5-RAIN radar-rainfall (.rff) binary files: read, visualize, export, and merge gauge-adjusted radar rainfall that is otherwise locked in a proprietary binary format.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "Python",
+            "PyQt5",
+            "PyInstaller"
+        ]
+    },
+    {
+        "name": "ArcGIS Pro Standards Add-in",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "GIS, Coding, Tool Development",
+        "tags": [
+            "ArcGIS Pro",
+            "Automation",
+            "Tool Development",
+            "SOP"
+        ],
+        "description": "A .NET add-in that bakes Wade Trim’s GIS standards directly into ArcGIS Pro — syncing standard files, managing favorites and layouts, and prompting staff when a newer version is available — so every project starts from the same baseline.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "C#",
+            ".NET",
+            "ArcGIS Pro SDK"
+        ]
+    },
+    {
+        "name": "Water Supply Mass Balance",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, Coding, Tool Development",
+        "tags": [
+            "Water Distribution",
+            "React",
+            "Tool Development",
+            "Analytics"
+        ],
+        "description": "A single-page app for water-supply mass-balance modeling — balancing sources, demands, and storage over time to test supply scenarios without spinning up a full hydraulic model.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "1/1/2026",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "React 18",
+            "Vite"
+        ]
+    },
+    {
+        "name": "Percent Capture Tool",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling, Coding, Tool Development",
+        "tags": [
+            "CSO",
+            "SWMM",
+            "Python",
+            "Tool Development"
+        ],
+        "description": "A desktop tool that computes combined-sewer-overflow percent capture directly from SWMM .out results or CSV exports, standardizing a metric that is central to CSO long-term control reporting.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "8/1/2025",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "Python",
+            "PyQt5"
+        ]
+    },
+    {
+        "name": "GIS Tools toolbox",
+        "client": "Wade Trim",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "GIS, Coding, Tool Development",
+        "tags": [
+            "ArcGIS Pro",
+            "Automation",
+            "Python",
+            "Tool Development"
+        ],
+        "description": "An ArcGIS Pro Python toolbox of GIS utilities — including an optimized in-memory network trace — that packages repetitive geoprocessing into repeatable, shareable tools.",
+        "title": "",
+        "project_role": "Lead Developer",
+        "image": "",
+        "start_date": "10/1/2025",
+        "end_date": "Present",
+        "client_sort": "Wade Trim",
+        "isTool": true,
+        "internal": true,
+        "stack": [
+            "Python",
+            "arcpy",
+            "ArcGIS Pro"
+        ]
     }
 ]
