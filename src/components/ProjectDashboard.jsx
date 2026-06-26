@@ -1,7 +1,7 @@
 // ... imports
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X } from 'lucide-react';
+import { Search, X, ExternalLink, Github, Terminal, Lock } from 'lucide-react';
 import projects from '../data/project.json';
 import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
@@ -105,6 +105,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const [selectedRoles, setSelectedRoles] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
     const [featuredOnly, setFeaturedOnly] = useState(false);
+    const [toolsOnly, setToolsOnly] = useState(false);
 
     // Scroll Reference for resetting scroll
     const scrollContainerRef = useRef(null);
@@ -248,6 +249,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 return false;
             }
 
+            if (toolsOnly && !project.isTool) {
+                return false;
+            }
+
             return true;
         });
 
@@ -276,7 +281,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             return endB - endA;
         });
 
-    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags, featuredOnly]);
+    }, [filterText, selectedYears, selectedClients, selectedCompanies, selectedCategories, selectedRoles, selectedTags, featuredOnly, toolsOnly]);
 
     useEffect(() => {
         onFilteredProjects?.(filteredProjects);
@@ -352,6 +357,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         setSelectedRoles([]);
         setSelectedTags([]);
         setFeaturedOnly(false);
+        setToolsOnly(false);
     };
 
     const activeFilterChips = useMemo(() => {
@@ -387,6 +393,9 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         if (featuredOnly) {
             chips.push({ key: 'featured-only', label: 'Featured only' });
         }
+        if (toolsOnly) {
+            chips.push({ key: 'tools-only', label: 'Tools I built' });
+        }
 
         return chips;
     }, [
@@ -398,6 +407,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
         selectedRoles,
         selectedTags,
         featuredOnly,
+        toolsOnly,
     ]);
 
     // Expandable Card State
@@ -516,7 +526,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 </div>
 
                                 <AnimatePresence>
-                                    {(filterText || selectedYears.length > 0 || selectedCompanies.length > 0 || selectedClients.length > 0 || selectedCategories.length > 0 || selectedRoles.length > 0 || selectedTags.length > 0 || featuredOnly) && (
+                                    {(filterText || selectedYears.length > 0 || selectedCompanies.length > 0 || selectedClients.length > 0 || selectedCategories.length > 0 || selectedRoles.length > 0 || selectedTags.length > 0 || featuredOnly || toolsOnly) && (
                                         <motion.button
                                             initial={{ width: 0, opacity: 0, scale: 0.8 }}
                                             animate={{ width: 'auto', opacity: 1, scale: 1 }}
@@ -546,6 +556,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 selectedRoles={selectedRoles}
                                 selectedTags={selectedTags}
                                 featuredOnly={featuredOnly}
+                                toolsOnly={toolsOnly}
                                 onYearChange={(item) => handleToggle(setSelectedYears, item)}
                                 onCompanyChange={(item) => handleToggle(setSelectedCompanies, item)}
                                 onClientChange={(item) => handleToggle(setSelectedClients, item)}
@@ -553,6 +564,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 onRoleChange={(item) => handleToggle(setSelectedRoles, item)}
                                 onTagChange={(item) => handleTagToggle(typeof item === 'string' ? item : item.label)}
                                 onFeaturedToggle={() => setFeaturedOnly(prev => !prev)}
+                                onToolsToggle={() => setToolsOnly(prev => !prev)}
                                 onReset={handleReset}
                                 filterText={filterText}
                             />
@@ -658,7 +670,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
 
                                 {/* ... Content ... */}
                                 <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
-                                    <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        {selectedProject.isTool && <ToolBadge />}
+                                        <span className="text-sm font-bold text-slate-500 uppercase tracking-widest">{selectedProject.category}</span>
+                                    </div>
                                     <div className="flex items-center gap-2 self-end sm:self-auto">
                                         {selectedProject.start_date && <span className="text-sm font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full whitespace-nowrap shrink-0">{formatDateRange(selectedProject.start_date, selectedProject.end_date)}</span>}
                                         <button
@@ -701,6 +716,12 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                 <div className="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 mb-8 leading-relaxed">
                                     {selectedProject.description}
                                 </div>
+                                {selectedProject.isTool && (
+                                    <div className="mb-6 flex flex-col gap-3">
+                                        <ToolStack project={selectedProject} max={12} />
+                                        <ToolLinks links={selectedProject.links} internal={selectedProject.internal} size="lg" />
+                                    </div>
+                                )}
                                 <div className="flex flex-wrap gap-2 mt-auto">
                                     {(selectedProject.tags ?? []).map(tag => (
                                         <span key={tag} className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-md text-sm font-medium">#{tag}</span>
@@ -715,8 +736,82 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     );
 }
 
+// Small "TOOL" eyebrow badge shown on tool entries (cards + modal).
+function ToolBadge() {
+    return (
+        <span className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-700 dark:text-sky-300 border border-sky-400/40 shrink-0">
+            <Terminal size={11} aria-hidden="true" /> Tool
+        </span>
+    );
+}
+
+// Monospace tech-stack chips for tools (falls back to tags when no explicit stack).
+function ToolStack({ project, max = 4 }) {
+    const items = (project.stack?.length ? project.stack : (project.tags ?? [])).slice(0, max);
+    if (!items.length) return null;
+    return (
+        <div className="flex flex-wrap gap-1.5">
+            {items.map(s => (
+                <span
+                    key={s}
+                    className="px-2 py-0.5 rounded font-mono text-[11px] bg-slate-900/5 dark:bg-sky-300/10 text-slate-600 dark:text-sky-200/90 border border-slate-900/10 dark:border-sky-300/20"
+                >
+                    {s}
+                </span>
+            ))}
+        </div>
+    );
+}
+
+// Optional action row: Live demo / source code links, or an "Internal tool" pill.
+// Anchors stop propagation so clicking a link doesn't also open the card modal.
+function ToolLinks({ links, internal, size = 'sm' }) {
+    const hasLive = Boolean(links?.live);
+    const hasRepo = Boolean(links?.repo);
+    if (!hasLive && !hasRepo && !internal) return null;
+
+    const base = 'inline-flex items-center gap-1.5 rounded-lg font-semibold transition-colors';
+    const pad = size === 'lg' ? 'px-3.5 py-2 text-sm' : 'px-2.5 py-1.5 text-xs';
+    const icon = size === 'lg' ? 16 : 13;
+
+    return (
+        <div className="flex flex-wrap items-center gap-2">
+            {hasLive && (
+                <a
+                    href={links.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Open the live demo in a new tab"
+                    className={`${base} ${pad} bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-300/50 dark:border-sky-700/50 hover:bg-sky-500/25`}
+                >
+                    <ExternalLink size={icon} aria-hidden="true" /> Live demo
+                </a>
+            )}
+            {hasRepo && (
+                <a
+                    href={links.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="View the source code on GitHub in a new tab"
+                    className={`${base} ${pad} bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-300/50 dark:border-slate-600/50 hover:bg-slate-500/20`}
+                >
+                    <Github size={icon} aria-hidden="true" /> Code
+                </a>
+            )}
+            {!hasLive && !hasRepo && internal && (
+                <span className={`${base} ${pad} bg-slate-400/10 text-slate-500 dark:text-slate-400 border border-slate-300/40 dark:border-slate-700/50`}>
+                    <Lock size={size === 'lg' ? 15 : 12} aria-hidden="true" /> Internal tool
+                </span>
+            )}
+        </div>
+    );
+}
+
 // Sub-component for individual card (Extracted from old ProjectGrid but simplified/styled)
 function ProjectCard({ project, onClick, isSelected, isFeatured }) {
+    const isTool = Boolean(project.isTool);
     // Truncate description to ~80 chars for tighter tiles
     const truncatedDescription = project.description?.length > 80
         ? project.description.substring(0, 80) + "..."
@@ -726,14 +821,23 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
 
     return (
         <div className="h-full">
-            <motion.button
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 whileHover={{ y: -5, scale: isFeatured ? 1.04 : 1.02 }}
                 onClick={onClick}
-                type="button"
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onClick(e);
+                    }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-haspopup="dialog"
                 aria-pressed={isSelected}
-                className={`relative bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all text-left w-full ${isFeatured ? 'border-2 xl:scale-[1.02]' : ''}`}
+                aria-label={`View details for ${project.name}`}
+                className={`relative bg-white/10 dark:bg-slate-900/20 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/10 dark:border-slate-700/30 border-t-4 flex flex-col h-full group cursor-pointer hover:bg-white/20 dark:hover:bg-slate-900/40 hover:shadow-xl transition-all text-left w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/70 ${isFeatured ? 'border-2 xl:scale-[1.02]' : ''} ${isTool ? 'ring-1 ring-sky-400/20 dark:ring-sky-400/15' : ''}`}
                 style={{
                     borderTopColor: accentColor,
                     borderColor: isFeatured ? accentColor : undefined,
@@ -745,9 +849,12 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
                     className="absolute inset-x-0 top-0 h-1 rounded-t-xl opacity-80"
                     style={{ backgroundColor: accentColor }}
                 />
-                <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{project.category}</span>
-                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap">{formatDateRange(project.start_date, project.end_date)}</span>}
+                <div className="flex justify-between items-start mb-2 gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                        {isTool && <ToolBadge />}
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest truncate">{project.category}</span>
+                    </div>
+                    {project.start_date && <span className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap shrink-0">{formatDateRange(project.start_date, project.end_date)}</span>}
                 </div>
                 {isFeatured && (
                     <span
@@ -792,15 +899,22 @@ function ProjectCard({ project, onClick, isSelected, isFeatured }) {
                     {truncatedDescription}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mt-auto">
-                    {(project.tags ?? []).slice(0, 3).map(tag => (
-                        <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded text-xs">#{tag}</span>
-                    ))}
-                    {(project.tags ?? []).length > 3 && (
-                        <span className="px-2 py-1 bg-slate-50 dark:bg-slate-800/50 text-slate-400 rounded text-xs">+{(project.tags ?? []).length - 3}</span>
-                    )}
-                </div>
-            </motion.button>
+                {isTool ? (
+                    <div className="flex flex-col gap-3 mt-auto">
+                        <ToolStack project={project} />
+                        <ToolLinks links={project.links} internal={project.internal} />
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap gap-2 mt-auto">
+                        {(project.tags ?? []).slice(0, 3).map(tag => (
+                            <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded text-xs">#{tag}</span>
+                        ))}
+                        {(project.tags ?? []).length > 3 && (
+                            <span className="px-2 py-1 bg-slate-50 dark:bg-slate-800/50 text-slate-400 rounded text-xs">+{(project.tags ?? []).length - 3}</span>
+                        )}
+                    </div>
+                )}
+            </motion.div>
         </div>
     );
 }
