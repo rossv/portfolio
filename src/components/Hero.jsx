@@ -122,7 +122,7 @@ export default function Hero() {
     ];
 
     return (
-        <section ref={targetRef} className="relative min-h-screen flex flex-col xl:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
+        <section ref={targetRef} className="hero-shell relative min-h-screen flex flex-col xl:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
 
 
             {/* Text Content - Left/Top */}
