@@ -112,6 +112,18 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const modalRef = useRef(null);
     const lastFocusedElementRef = useRef(null);
 
+    // Let the header "Tools Architected" stat flip on the "Tools I built" filter.
+    // This island hydrates lazily, so honor a flag set before mount as well as the live event.
+    useEffect(() => {
+        const revealTools = () => {
+            setToolsOnly(true);
+            if (typeof window !== 'undefined') window.__wtShowTools = false;
+        };
+        if (typeof window !== 'undefined' && window.__wtShowTools) revealTools();
+        window.addEventListener('wt:show-tools', revealTools);
+        return () => window.removeEventListener('wt:show-tools', revealTools);
+    }, []);
+
     // Extract unique options for filters
     const allYears = useMemo(() => {
         const yearSet = new Set();
