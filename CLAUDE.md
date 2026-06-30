@@ -53,7 +53,7 @@ portfolio/
 │   ├── constants/
 │   │   └── tagHierarchy.js   # TAG_HIERARCHY — canonical tag categories for filtering
 │   ├── data/
-│   │   ├── projects.json     # Full project portfolio (~137KB)
+│   │   ├── project.json      # Full project portfolio (~150KB)
 │   │   ├── careerTimeline.json
 │   │   └── news.json
 │   ├── layouts/
@@ -112,7 +112,7 @@ Components are React `.jsx` files (with one `.tsx` exception). Astro uses React 
 
 ## Data Conventions
 
-### projects.json
+### project.json
 
 Each project entry contains:
 - `name`, `client`, `company`, `location` — identification
