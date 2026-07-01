@@ -3051,7 +3051,7 @@
         ]
     },
     {
-        "name": "Model Toolkit & Flow Data Review Tool",
+        "name": "H&H Studio (formerly Model Toolkit)",
         "isTool": true,
         "client": "Internal",
         "company": "Wade Trim",
@@ -3059,17 +3059,14 @@
         "category": "Tool Development, Hydrologic & Hydraulic Modeling",
         "tags": [
             "AI",
-            "Data Ingestion",
             "Digital Delivery",
             "Node-RED",
             "Product Roadmap",
             "QA",
             "UI/UX",
-            "Dashboard",
-            "Calibration",
             "Featured"
         ],
-        "description": "Originated and led development of an enterprise platform to unify modeling workflows, tools, and data processes in a single AI-enabled environment; defined vision/roadmap/requirements through workshops and user research; worked with external developers on MVP architecture/specs, ingestion concepts, UI/UX mockups, workflow diagrams, and sprint/backlog/QA; integrated capabilities such as flow data QA/QC, ingestion/normalization, event detection, rainfall processing, and calibration dashboards",
+        "description": "Originated and led development of an enterprise platform to unify H&H modeling workflows, tools, and data processes in a single AI-enabled environment; defined vision/roadmap/requirements through workshops and user research; worked with external developers on MVP architecture/specs, ingestion concepts, UI/UX mockups, workflow diagrams, and sprint/backlog/QA. Delivers integrated modeling capabilities, including the Flow Data Review Tool.",
         "title": "Professional Engineer",
         "project_role": "Strategic Lead, Product Owner",
         "image": "/src/assets/projects/model_toolkit.webp",
@@ -3080,6 +3077,28 @@
             -80.004783,
             40.440683
         ]
+    },
+    {
+        "name": "Flow Data Review Tool",
+        "isTool": true,
+        "client": "Internal",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "category": "Tool Development, Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Data Ingestion",
+            "QA",
+            "Dashboard",
+            "Calibration",
+            "Node-RED",
+            "UI/UX"
+        ],
+        "description": "Tool for flow-monitoring data review and calibration support: flow data QA/QC, ingestion and normalization, event detection, rainfall processing, and calibration dashboards. Built as part of the H&H Studio initiative.",
+        "title": "Professional Engineer",
+        "project_role": "Strategic Lead, Product Owner",
+        "start_date": "1/8/2025",
+        "end_date": "",
+        "client_sort": "Internal"
     },
     {
         "name": "ALCOSAN Tunnel Program Manager",
