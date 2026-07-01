@@ -81,15 +81,16 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
     @apply bg-transparent;
   }
 
-  /* The hero's interactive stat fan-outs cascade downward on hover/focus.
-     Only pointer devices can trigger them, and because the hero centers its
-     content in a min-h-screen box, the room below the stats shrinks as the
-     viewport gets shorter (a wide, short window is the tight case). So reserve
-     extra bottom room that scales inversely with viewport height — tall windows
-     keep the base 3rem; short/wide windows get up to ~14rem of clearance. */
+  /* Reserve room beneath the hero so the stat fan-outs usually open into empty
+     space rather than over the next section (the fan renders in a portal, so
+     it's never clipped either way — this is purely for breathing room). Only
+     pointer devices can trigger the fan, and the room below the centered hero
+     content shrinks as the viewport gets shorter, so scale the bottom padding
+     inversely with viewport height: ~15rem on a 1080px-tall window, tapering
+     back to the base 3rem on tall (>~1600px) windows. */
   @media (hover: hover) and (pointer: fine) {
     section.hero-shell {
-      padding-bottom: clamp(3rem, calc(38rem - 40vh), 14rem);
+      padding-bottom: clamp(3rem, calc(52rem - 50vh), 15rem);
     }
   }
 

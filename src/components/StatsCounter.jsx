@@ -1,5 +1,6 @@
 import { motion, useSpring, useTransform, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import projects from "../data/project.json";
 import wadeTrimLogo from "../assets/logos/wade-trim.png";
@@ -37,12 +38,13 @@ function sample(arr, n) {
 }
 
 // macOS Dock-style fan: items cascade downward with even spacing and a gentle arc lean.
+// Kept compact so all items stay in view below the stats before the fold.
 function fanPosition(i, n) {
-    const first = 14;
-    const gap = 40;
+    const first = 10;
+    const gap = 30;
     const ty = first + gap * i;
     const t = n <= 1 ? 0 : i / (n - 1);
-    const tx = 26 * (1 - Math.cos((t * Math.PI) / 2));
+    const tx = 22 * (1 - Math.cos((t * Math.PI) / 2));
     return { tx, ty };
 }
 
@@ -72,17 +74,86 @@ function Counter({ value, suffix = "" }) {
 function Stat({ value, suffix, label, numberClass, items, renderItem, onClick, ariaLabel, delay }) {
     const reduced = useReducedMotion();
     const [open, setOpen] = useState(false);
+    const [anchor, setAnchor] = useState(null); // { cx, top } in viewport coords
+    const [dim, setDim] = useState(1);           // fade when spilling onto the next section
+    const btnRef = useRef(null);
     const n = items.length;
-    const bridgeHeight = n ? fanPosition(n - 1, n).ty + 48 : 0;
+
+    const openFan = () => {
+        const el = btnRef.current;
+        if (el) {
+            const r = el.getBoundingClientRect();
+            setAnchor({ cx: r.left + r.width / 2, top: r.bottom });
+            // Fade the fan by how much it spills onto the following section, so
+            // it's less distracting over that content while staying readable.
+            const next = document.getElementById("skills");
+            const boundary = next ? next.getBoundingClientRect().top : Infinity;
+            const extent = n ? fanPosition(n - 1, n).ty + 28 : 0;
+            const overlap = extent > 0 ? Math.max(0, r.bottom + extent - boundary) / extent : 0;
+            setDim(1 - 0.35 * Math.min(1, overlap));
+        }
+        setOpen(true);
+    };
+    const closeFan = () => setOpen(false);
+
+    // The fan is a fixed overlay pinned to the button's on-screen spot, so any
+    // scroll/resize invalidates the anchor — close it (a re-hover recomputes).
+    useEffect(() => {
+        if (!open) return;
+        const close = () => setOpen(false);
+        window.addEventListener("scroll", close, { passive: true, capture: true });
+        window.addEventListener("resize", close);
+        return () => {
+            window.removeEventListener("scroll", close, { capture: true });
+            window.removeEventListener("resize", close);
+        };
+    }, [open]);
+
+    // Rendered into document.body so the hero's overflow-hidden can't clip it and
+    // the next section can't cover it — it floats above everything like a tooltip.
+    const fan = anchor && typeof document !== "undefined"
+        ? createPortal(
+            <div
+                aria-hidden="true"
+                style={{ position: "fixed", left: anchor.cx, top: anchor.top, zIndex: 70, pointerEvents: "none", opacity: dim, transition: "opacity 0.25s ease" }}
+            >
+                {items.map((item, i) => {
+                    const { tx, ty } = fanPosition(i, n);
+                    return (
+                        <span key={i} style={{ position: "absolute", left: 0, top: 0, transform: "translateX(-50%)" }}>
+                            <motion.span
+                                initial={false}
+                                animate={
+                                    open
+                                        ? { x: tx, y: ty, opacity: 1, scale: 1 }
+                                        : { x: 0, y: -10, opacity: 0, scale: 0.6 }
+                                }
+                                transition={
+                                    reduced
+                                        ? { duration: 0 }
+                                        : { duration: 0.4, ease: [0.2, 0.72, 0.28, 1], delay: open ? i * 0.045 : 0 }
+                                }
+                                className="flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/25 dark:border-slate-700/60 bg-white/90 dark:bg-slate-900/85 backdrop-blur-md px-2.5 py-0.5 text-[11px] leading-tight font-medium text-slate-700 dark:text-slate-200 shadow-lg shadow-slate-900/25"
+                            >
+                                {renderItem(item)}
+                            </motion.span>
+                        </span>
+                    );
+                })}
+            </div>,
+            document.body
+        )
+        : null;
 
     return (
         <motion.button
+            ref={btnRef}
             type="button"
             onClick={onClick}
-            onMouseEnter={() => setOpen(true)}
-            onMouseLeave={() => setOpen(false)}
-            onFocus={() => setOpen(true)}
-            onBlur={() => setOpen(false)}
+            onMouseEnter={openFan}
+            onMouseLeave={closeFan}
+            onFocus={openFan}
+            onBlur={closeFan}
             aria-label={ariaLabel}
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -96,37 +167,7 @@ function Stat({ value, suffix, label, numberClass, items, renderItem, onClick, a
             <span className="font-mono text-xs font-bold text-slate-500 uppercase tracking-wider">
                 {label}
             </span>
-
-            {/* Fan-out: an invisible bridge keeps hover alive across the gap to the pills. */}
-            <span
-                aria-hidden="true"
-                className="absolute left-1/2 top-full z-40 -translate-x-1/2"
-                style={{ width: 300, height: bridgeHeight, pointerEvents: open ? "auto" : "none" }}
-            >
-                {items.map((item, i) => {
-                    const { tx, ty } = fanPosition(i, n);
-                    return (
-                        <span key={i} className="absolute left-1/2 top-0 -translate-x-1/2">
-                            <motion.span
-                                initial={false}
-                                animate={
-                                    open
-                                        ? { x: tx, y: ty, opacity: 1, scale: 1 }
-                                        : { x: 0, y: -10, opacity: 0, scale: 0.6 }
-                                }
-                                transition={
-                                    reduced
-                                        ? { duration: 0 }
-                                        : { duration: 0.4, ease: [0.2, 0.72, 0.28, 1], delay: open ? i * 0.045 : 0 }
-                                }
-                                className="flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/20 dark:border-slate-700/50 bg-white/85 dark:bg-slate-900/75 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-200 shadow-lg shadow-slate-900/10"
-                            >
-                                {renderItem(item)}
-                            </motion.span>
-                        </span>
-                    );
-                })}
-            </span>
+            {fan}
         </motion.button>
     );
 }
@@ -157,9 +198,9 @@ export default function StatsCounter({ className = "" }) {
             <img
                 src={resolveSrc(item.logo)}
                 alt=""
-                className="h-4 w-4 shrink-0 rounded-sm object-contain"
-                width={16}
-                height={16}
+                className="h-3.5 w-3.5 shrink-0 rounded-sm object-contain"
+                width={14}
+                height={14}
             />
             {item.label}
         </>
@@ -168,7 +209,7 @@ export default function StatsCounter({ className = "" }) {
     const dotItem = (dotClass) => (name) => (
         <>
             <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClass}`} />
-            <span className="max-w-[200px] truncate" title={name}>{name}</span>
+            <span className="max-w-[190px] truncate" title={name}>{name}</span>
         </>
     );
 
