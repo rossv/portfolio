@@ -32,7 +32,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function ProjectStats({ projects, onSelectCategory }) {
+export default function ProjectStats({ projects, onSelectCategory, onSelectYear, onSelectTag }) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -129,13 +129,21 @@ export default function ProjectStats({ projects, onSelectCategory }) {
             </StatCard>
 
             <StatCard title="By Year">
-                <div className="w-full h-48">
+                <div className={`w-full h-48 ${onSelectYear ? 'cursor-pointer' : ''}`}>
                     {isMounted ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={yearData} barCategoryGap={4}>
                                 <XAxis dataKey="name" type="category" hide />
                                 <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                                <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 4, 4]} />
+                                <Bar
+                                    dataKey="value"
+                                    fill="#3b82f6"
+                                    radius={[4, 4, 4, 4]}
+                                    onClick={onSelectYear ? (entry) => {
+                                        const name = entry?.name ?? entry?.payload?.name;
+                                        if (name && name !== 'Unknown') onSelectYear(String(name));
+                                    } : undefined}
+                                />
                             </BarChart>
                         </ResponsiveContainer>
                     ) : (
@@ -176,13 +184,15 @@ export default function ProjectStats({ projects, onSelectCategory }) {
             <StatCard title="Top Tags">
                 <div className="flex flex-wrap gap-1 justify-center content-center">
                     {tagData.map((tag, i) => (
-                        <span
+                        <button
+                            type="button"
                             key={tag.text}
-                            className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-1 rounded text-xs"
+                            onClick={onSelectTag ? () => onSelectTag(tag.text) : undefined}
+                            className={`bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-1 rounded text-xs transition-colors ${onSelectTag ? 'cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-500/20 hover:text-blue-700 dark:hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60' : 'cursor-default'}`}
                             style={{ opacity: Math.max(0.6, 1 - (i * 0.05)) }}
                         >
                             {tag.text}
-                        </span>
+                        </button>
                     ))}
                 </div>
             </StatCard>
