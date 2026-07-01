@@ -14,6 +14,7 @@ import badgeTime15 from '../assets/badges/badge-time-15.svg';
 import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import ThemeToggle from './ThemeToggle';
+import HomeButton from './HomeButton';
 import projects from '../data/project.json';
 
 const BADGE_STORAGE_KEY = 'badgeState:v2';
@@ -782,7 +783,8 @@ export default function BadgeCollection() {
             )}
           </div>
 
-          <div className="shrink-0">
+          <div className="shrink-0 flex items-center gap-2">
+            <HomeButton />
             <ThemeToggle />
           </div>
         </div>
