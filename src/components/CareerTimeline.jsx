@@ -241,7 +241,7 @@ export default function CareerTimeline() {
 
                                 {/* Mobile/Tablet Details (Accordion style) */}
                                 <div className="lg:!hidden">
-                                    <AnimatePresence>
+                                    <AnimatePresence initial={false}>
                                         {selectedJob.id === item.id && (
                                             <motion.div
                                                 initial={{ opacity: 0, height: 0 }}
