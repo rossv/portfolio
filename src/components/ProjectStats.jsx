@@ -9,10 +9,12 @@ const StatCard = ({ title, children, className = "" }) => (
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`bg-white/10 dark:bg-slate-900/20 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-xl p-4 flex flex-col ${className}`}
+        className={`group relative overflow-hidden bg-white/10 dark:bg-slate-900/20 backdrop-blur-md border border-white/20 dark:border-slate-700/30 rounded-xl p-4 flex flex-col ${className}`}
     >
-        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">{title}</h4>
-        <div className="flex-grow flex items-center justify-center">
+        {/* Soft hover tint (shared by every stat card) */}
+        <div className="pointer-events-none absolute inset-0 bg-blue-500/5 dark:bg-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <h4 className="relative z-10 text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">{title}</h4>
+        <div className="relative z-10 flex-grow flex items-center justify-center">
             {children}
         </div>
     </motion.div>
@@ -111,8 +113,7 @@ export default function ProjectStats({ projects }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <StatCard title="Total Projects" className="justify-center items-center relative overflow-hidden group">
-                <div className="absolute inset-0 bg-blue-500/5 dark:bg-blue-400/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <StatCard title="Total Projects" className="justify-center items-center">
                 <div className="flex flex-col items-center z-10 relative">
                     <div className="text-6xl font-black text-slate-800 dark:text-slate-100 font-mono drop-shadow-sm">
                         {projects.length}
