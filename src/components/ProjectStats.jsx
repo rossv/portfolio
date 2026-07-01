@@ -32,7 +32,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function ProjectStats({ projects }) {
+export default function ProjectStats({ projects, onSelectCategory }) {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -145,7 +145,7 @@ export default function ProjectStats({ projects }) {
             </StatCard>
 
             <StatCard title="Categories">
-                <div className="w-full h-48">
+                <div className={`w-full h-48 ${onSelectCategory ? 'cursor-pointer' : ''}`}>
                     {isMounted ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -155,6 +155,10 @@ export default function ProjectStats({ projects }) {
                                     outerRadius={65}
                                     paddingAngle={2}
                                     dataKey="value"
+                                    onClick={onSelectCategory ? (entry) => {
+                                        const name = entry?.name ?? entry?.payload?.name;
+                                        if (name) onSelectCategory(name);
+                                    } : undefined}
                                 >
                                     {categoryData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
