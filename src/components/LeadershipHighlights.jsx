@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Award } from 'lucide-react';
+import FloatingIcons from './FloatingIcons';
 
 import wetWeatherLeadImg from '../assets/projects/pwsa-wet-weather-program-manager.webp';
 import stPeteLosImg from '../assets/projects/stpete_LOS.webp';
@@ -212,6 +213,7 @@ export default function LeadershipHighlights() {
 
   return (
     <section id="leadership" className="section-shell section-shell--alt relative overflow-hidden xl:overflow-visible">
+      <FloatingIcons variant="leadership" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/3 w-[420px] h-[420px] rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="absolute bottom-0 right-0 w-[520px] h-[520px] rounded-full bg-indigo-500/10 blur-3xl" />

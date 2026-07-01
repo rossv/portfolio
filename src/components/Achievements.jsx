@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import FloatingIcons from './FloatingIcons';
 import innovatorAwardImg from '../assets/recognition/innovator-award.webp';
 import leadershipAcademyImg from '../assets/recognition/recognition-leadership-academy.webp';
 import daleCarnegieImg from '../assets/recognition/recognition-dale-carnegie.webp';
@@ -285,6 +286,7 @@ export default function Achievements() {
     const [activeLocation, setActiveLocation] = useState(null);
     return (
         <section id="achievements" className="section-shell bg-transparent relative">
+            <FloatingIcons variant="recognition" />
             {/* Background Decoration */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
