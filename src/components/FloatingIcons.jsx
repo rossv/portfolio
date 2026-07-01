@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Map as MapIcon } from 'lucide-react';
+import {
+    Map as MapIcon,
+    Terminal, GitBranch, Database, Cog, Layers,
+    Users, Presentation, Lightbulb, GraduationCap, Compass,
+    Trophy, FileText, Mic, Newspaper, BadgeCheck,
+} from 'lucide-react';
 
 const PythonLogo = ({ className }) => (
     <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -110,91 +115,126 @@ const Bubble = ({ x, y, size, delay, duration }) => {
     );
 };
 
-export default function FloatingIcons() {
-    const [isMobile, setIsMobile] = useState(false);
+// Lucide-based bubble sets for the non-skills sections. Each render fn takes a
+// className so the icon fills its floating bubble.
+const LINE = (Icon, tint) => (cls) => <Icon className={`${cls} ${tint}`} strokeWidth={1.5} />;
 
+const VARIANTS = {
+    toolkit: {
+        items: [
+            { render: LINE(Terminal, 'text-indigo-500/80'), x: '4%', y: '20%', delay: 0, duration: 6, size: 'w-20 h-20' },
+            { render: LINE(GitBranch, 'text-cyan-500/80'), x: '89%', y: '15%', delay: 1, duration: 7, size: 'w-20 h-20' },
+            { render: LINE(Database, 'text-emerald-500/80'), x: '8%', y: '68%', delay: 0.5, duration: 6.5, size: 'w-20 h-20' },
+            { render: LINE(Cog, 'text-slate-500/80'), x: '90%', y: '62%', delay: 1.5, duration: 5.5, size: 'w-16 h-16' },
+            { render: LINE(Layers, 'text-indigo-500/80'), x: '84%', y: '82%', delay: 2, duration: 6, size: 'w-16 h-16' },
+        ],
+        bubbles: [
+            { x: '3%', y: '45%', size: 18, delay: 0, duration: 4 },
+            { x: '93%', y: '38%', size: 22, delay: 2, duration: 5 },
+            { x: '6%', y: '90%', size: 14, delay: 1, duration: 3.5 },
+        ],
+    },
+    leadership: {
+        items: [
+            { render: LINE(Users, 'text-cyan-500/80'), x: '4%', y: '20%', delay: 0, duration: 6, size: 'w-20 h-20' },
+            { render: LINE(Presentation, 'text-indigo-500/80'), x: '89%', y: '15%', delay: 1, duration: 7, size: 'w-20 h-20' },
+            { render: LINE(Lightbulb, 'text-amber-500/80'), x: '7%', y: '68%', delay: 0.5, duration: 6.5, size: 'w-16 h-16' },
+            { render: LINE(GraduationCap, 'text-emerald-500/80'), x: '90%', y: '64%', delay: 1.5, duration: 5.5, size: 'w-20 h-20' },
+            { render: LINE(Compass, 'text-slate-500/80'), x: '85%', y: '84%', delay: 2, duration: 6, size: 'w-16 h-16' },
+        ],
+        bubbles: [
+            { x: '3%', y: '45%', size: 20, delay: 0, duration: 4.5 },
+            { x: '94%', y: '40%', size: 16, delay: 1.5, duration: 4 },
+            { x: '5%', y: '90%', size: 14, delay: 1, duration: 3.5 },
+        ],
+    },
+    recognition: {
+        items: [
+            { render: LINE(Trophy, 'text-amber-500/80'), x: '4%', y: '20%', delay: 0, duration: 6, size: 'w-20 h-20' },
+            { render: LINE(FileText, 'text-indigo-500/80'), x: '89%', y: '15%', delay: 1, duration: 7, size: 'w-20 h-20' },
+            { render: LINE(Mic, 'text-cyan-500/80'), x: '8%', y: '68%', delay: 0.5, duration: 6.5, size: 'w-16 h-16' },
+            { render: LINE(Newspaper, 'text-slate-500/80'), x: '90%', y: '62%', delay: 1.5, duration: 5.5, size: 'w-20 h-20' },
+            { render: LINE(BadgeCheck, 'text-emerald-500/80'), x: '85%', y: '84%', delay: 2, duration: 6, size: 'w-16 h-16' },
+        ],
+        bubbles: [
+            { x: '3%', y: '45%', size: 18, delay: 0, duration: 4 },
+            { x: '93%', y: '40%', size: 22, delay: 2, duration: 5 },
+            { x: '6%', y: '90%', size: 14, delay: 1, duration: 3.5 },
+        ],
+    },
+};
+
+// The bubbles are a desktop, pointer-only flourish (matches the hero's
+// client:media gate) — render nothing otherwise, on all variants.
+function useDesktopHover() {
+    const [ok, setOk] = useState(false);
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+        const mq = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+        const update = () => setOk(mq.matches);
+        update();
+        mq.addEventListener('change', update);
+        return () => mq.removeEventListener('change', update);
     }, []);
+    return ok;
+}
 
-    const floatingPositions = isMobile
-        ? {
-            python: { x: "6%", y: "60%" },
-            sewer: { x: "72%", y: "62%" },
-            pipe: { x: "14%", y: "72%" },
-            dashboard: { x: "66%", y: "78%" },
-            map: { x: "82%", y: "54%" },
+export default function FloatingIcons({ variant = 'skills' }) {
+    const canShow = useDesktopHover();
+    if (!canShow) return null;
+
+    if (variant === 'skills') {
+        // Original hero/skills bubbles (H&H + GIS + coding themed).
+        const pos = {
+            python: { x: '4%', y: '15%' },
+            sewer: { x: '85%', y: '12%' },
+            pipe: { x: '12%', y: '22%' },
+            dashboard: { x: '80%', y: '22%' },
+            map: { x: '90%', y: '18%' },
             bubbles: [
-                { x: "6%", y: "18%", size: 16, delay: 0, duration: 4 },
-                { x: "90%", y: "22%", size: 24, delay: 2, duration: 5 },
-                { x: "4%", y: "86%", size: 18, delay: 1, duration: 3 },
-                { x: "92%", y: "78%", size: 22, delay: 3, duration: 6 },
-                { x: "80%", y: "92%", size: 14, delay: 1.5, duration: 4.5 },
-            ],
-        }
-        : {
-            python: { x: "4%", y: "15%" },
-            sewer: { x: "85%", y: "12%" },
-            pipe: { x: "12%", y: "22%" },
-            dashboard: { x: "80%", y: "22%" },
-            map: { x: "90%", y: "18%" },
-            bubbles: [
-                { x: "40%", y: "10%", size: 20, delay: 0, duration: 4 },
-                { x: "60%", y: "80%", size: 30, delay: 2, duration: 5 },
-                { x: "90%", y: "50%", size: 15, delay: 1, duration: 3 },
-                { x: "20%", y: "40%", size: 25, delay: 3, duration: 6 },
-                { x: "50%", y: "90%", size: 18, delay: 1.5, duration: 4.5 },
+                { x: '40%', y: '10%', size: 20, delay: 0, duration: 4 },
+                { x: '60%', y: '80%', size: 30, delay: 2, duration: 5 },
+                { x: '90%', y: '50%', size: 15, delay: 1, duration: 3 },
+                { x: '20%', y: '40%', size: 25, delay: 3, duration: 6 },
+                { x: '50%', y: '90%', size: 18, delay: 1.5, duration: 4.5 },
             ],
         };
+        return (
+            <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+                <FloatingItem x={pos.python.x} y={pos.python.y} delay={0} duration={6}>
+                    <PythonLogo className="w-full h-full drop-shadow-md" />
+                </FloatingItem>
+                <FloatingItem x={pos.sewer.x} y={pos.sewer.y} delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
+                    <SewerNetwork className="w-full h-full drop-shadow-md" />
+                </FloatingItem>
+                <FloatingItem x={pos.pipe.x} y={pos.pipe.y} delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
+                    <PipeSection className="w-full h-full drop-shadow-md" />
+                </FloatingItem>
+                <FloatingItem x={pos.dashboard.x} y={pos.dashboard.y} delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
+                    <AppDashboard className="w-full h-full drop-shadow-md" />
+                </FloatingItem>
+                <FloatingItem x={pos.map.x} y={pos.map.y} delay={1.5} duration={5} size="w-20 h-20">
+                    <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
+                </FloatingItem>
+                {pos.bubbles.map((b, i) => (
+                    <Bubble key={`${b.x}-${b.y}-${i}`} x={b.x} y={b.y} size={b.size} delay={b.delay} duration={b.duration} />
+                ))}
+            </div>
+        );
+    }
 
+    const config = VARIANTS[variant];
+    if (!config) return null;
     return (
         <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-            {!isMobile && (
-                <>
-                    {/* Python - Top Left */}
-                    <FloatingItem x={floatingPositions.python.x} y={floatingPositions.python.y} delay={0} duration={6}>
-                        <PythonLogo className="w-full h-full drop-shadow-md" />
-                    </FloatingItem>
-
-                    {/* Sewer Network - Top Right */}
-                    <FloatingItem x={floatingPositions.sewer.x} y={floatingPositions.sewer.y} delay={2} duration={8} size="w-28 h-28" rotationRange={[-5, 5]}>
-                        <SewerNetwork className="w-full h-full drop-shadow-md" />
-                    </FloatingItem>
-
-                    {/* Pipe Section - Upper Left (Staggered) */}
-                    <FloatingItem x={floatingPositions.pipe.x} y={floatingPositions.pipe.y} delay={0.5} duration={7} size="w-28 h-28" rotationRange={[-15, 15]}>
-                        <PipeSection className="w-full h-full drop-shadow-md" />
-                    </FloatingItem>
-
-                    {/* App Dashboard - Upper Right (Staggered) */}
-                    <FloatingItem x={floatingPositions.dashboard.x} y={floatingPositions.dashboard.y} delay={1} duration={6.5} size="w-24 h-24" rotationRange={[-5, 5]}>
-                        <AppDashboard className="w-full h-full drop-shadow-md" />
-                    </FloatingItem>
-
-                    {/* Map - Lower Right */}
-                    <FloatingItem x={floatingPositions.map.x} y={floatingPositions.map.y} delay={1.5} duration={5} size="w-20 h-20">
-                        <MapIcon className="w-full h-full text-emerald-500/80 drop-shadow-md" strokeWidth={1.5} />
-                    </FloatingItem>
-                </>
-            )}
-
-            {/* Bubbles */}
-            {floatingPositions.bubbles.map((bubble, index) => (
-                <Bubble
-                    key={`${bubble.x}-${bubble.y}-${index}`}
-                    x={bubble.x}
-                    y={bubble.y}
-                    size={bubble.size}
-                    delay={bubble.delay}
-                    duration={bubble.duration}
-                />
+            {config.items.map((it, i) => (
+                <FloatingItem key={i} x={it.x} y={it.y} delay={it.delay} duration={it.duration} size={it.size} rotationRange={it.rotationRange}>
+                    {it.render('w-full h-full drop-shadow-md')}
+                </FloatingItem>
+            ))}
+            {config.bubbles.map((b, i) => (
+                <Bubble key={`${b.x}-${b.y}-${i}`} x={b.x} y={b.y} size={b.size} delay={b.delay} duration={b.duration} />
             ))}
         </div>
-    )
+    );
 }

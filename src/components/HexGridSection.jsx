@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import FloatingIcons from './FloatingIcons';
 
 // --- IMPORTS (Verified Paths) ---
 
@@ -236,7 +237,8 @@ export default function HexGridSection() {
 
     return (
         <section ref={sectionRef} className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
-            <div className="container mx-auto px-2 text-center">
+            <FloatingIcons variant="toolkit" />
+            <div className="container mx-auto px-2 text-center relative z-10">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
