@@ -3527,5 +3527,142 @@
             "arcpy",
             "ArcGIS Pro"
         ]
+    },
+    {
+        "name": "ArcMap Layout Automator",
+        "isTool": true,
+        "client": "Internal",
+        "company": "KLH Engineers",
+        "location": "Pittsburgh, PA",
+        "category": "Tool Development, GIS",
+        "tags": [
+            "ArcMap",
+            "Python",
+            "Automation",
+            "Batch Processing",
+            "Tool Development"
+        ],
+        "description": "Python/arcpy tool that automates map-layout production in ArcMap — batch-generating and updating map-series layouts, elements, and extents to eliminate repetitive manual layout work.",
+        "title": "Project Engineer",
+        "project_role": "Developer",
+        "stack": [
+            "Python",
+            "arcpy",
+            "ArcMap"
+        ],
+        "internal": true,
+        "start_date": "1/1/2014",
+        "end_date": "12/31/2015",
+        "client_sort": "Internal"
+    },
+    {
+        "name": "ArcMap Layout Exporter",
+        "isTool": true,
+        "client": "Internal",
+        "company": "KLH Engineers",
+        "location": "Pittsburgh, PA",
+        "category": "Tool Development, GIS",
+        "tags": [
+            "ArcMap",
+            "Python",
+            "Automation",
+            "Batch Processing",
+            "Tool Development"
+        ],
+        "description": "Python/arcpy tool that batch-exports ArcMap layouts and map series to PDF/image in a single run — the ArcMap predecessor to the later ArcGIS Pro Bulk Layout Exporter.",
+        "title": "GIS Manager",
+        "project_role": "Developer",
+        "stack": [
+            "Python",
+            "arcpy",
+            "ArcMap"
+        ],
+        "internal": true,
+        "start_date": "1/1/2016",
+        "end_date": "12/31/2016",
+        "client_sort": "Internal"
+    },
+    {
+        "name": "ArcGIS Pro Bulk Layout Exporter",
+        "isTool": true,
+        "client": "Internal",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "category": "Tool Development, GIS",
+        "tags": [
+            "ArcGIS Pro",
+            "Python",
+            "Automation",
+            "Batch Processing",
+            "Tool Development"
+        ],
+        "description": "ArcGIS Pro Python toolbox that bulk-exports every layout in a project to PDF/image in one run, with recursive-folder and per-page options — the 'Export All Layouts' tool in the Wade Trim GIS Tools toolbox.",
+        "title": "Professional Engineer",
+        "project_role": "Developer",
+        "stack": [
+            "Python",
+            "arcpy",
+            "ArcGIS Pro"
+        ],
+        "internal": true,
+        "start_date": "1/1/2022",
+        "end_date": "12/31/2022",
+        "client_sort": "Internal"
+    },
+    {
+        "name": "GSD Personal Productivity App",
+        "isTool": true,
+        "client": "Personal",
+        "company": "Personal",
+        "location": "Pittsburgh, PA",
+        "category": "Coding, Tool Development",
+        "tags": [
+            "React",
+            "Tool Development",
+            "Dashboard",
+            "UI/UX",
+            "Analytics",
+            "SQL",
+            "Automation"
+        ],
+        "description": "Personal productivity and time-tracking web app (Next.js/React + Supabase on Vercel): logs time against clients/projects, two-way syncs with Google Sheets timesheets, and surfaces analytics via insights, calendar, and activity views.",
+        "title": "Professional Engineer",
+        "project_role": "Developer, Product Owner",
+        "stack": [
+            "Next.js",
+            "React",
+            "Supabase",
+            "TypeScript",
+            "Tailwind",
+            "Vercel"
+        ],
+        "internal": true,
+        "start_date": "4/8/2026",
+        "end_date": "",
+        "client_sort": "Personal"
+    },
+    {
+        "name": "Municipality of Bethel Park - Zoning Map Cleanup and Application Development",
+        "client": "Municipality of Bethel Park",
+        "company": "Wade Trim",
+        "location": "Bethel Park, PA",
+        "category": "GIS, Planning",
+        "tags": [
+            "ArcGIS Pro",
+            "Parcel Data",
+            "Web Apps",
+            "Data Migration",
+            "Python"
+        ],
+        "description": "Cleaned up and standardized the municipality's zoning GIS data and developed an application to manage and serve zoning information.",
+        "title": "Professional Engineer",
+        "project_role": "Project Engineer, GIS Lead",
+        "start_date": "5/30/2023",
+        "end_date": "2/9/2026",
+        "client_sort": "Bethel Park",
+        "coords": [
+            -80.045,
+            40.327
+        ]
     }
 ]
