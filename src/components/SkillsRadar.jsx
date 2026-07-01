@@ -206,13 +206,6 @@ export default function SkillsRadar({ className = "" }) {
                 }
                 onClick={(event) => event.stopPropagation()}
               >
-                <button
-                  type="button"
-                  className="absolute top-2 right-2 text-slate-500 hover:text-indigo-500 transition-colors text-xs font-mono"
-                  onClick={handleSkillClear}
-                >
-                  Close
-                </button>
                 <h4 className="text-indigo-600 dark:text-indigo-400 font-bold mb-2 font-mono text-sm border-b border-indigo-500/20 pb-1">
                   {hoveredSkill.subject}
                 </h4>
