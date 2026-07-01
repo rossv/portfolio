@@ -119,7 +119,7 @@ export default function ProjectStats({ projects, onSelectCategory, onSelectYear,
                         {projects.length}
                     </div>
                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-bold uppercase tracking-widest">
-                        Projects Found
+                        Projects
                     </div>
                 </div>
                 {/* Decorative Background */}
