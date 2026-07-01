@@ -607,7 +607,12 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                             />
                         </div>
 
-                        <ProjectStats projects={filteredProjects} onSelectCategory={(cat) => handleToggle(setSelectedCategories, cat)} />
+                        <ProjectStats
+                            projects={filteredProjects}
+                            onSelectCategory={(cat) => handleToggle(setSelectedCategories, cat)}
+                            onSelectYear={(year) => handleToggle(setSelectedYears, year)}
+                            onSelectTag={(tag) => handleToggle(setSelectedTags, tag)}
+                        />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 xl:gap-7 mt-4">
                             {filteredProjects.map((project, index) => (
