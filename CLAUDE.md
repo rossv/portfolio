@@ -18,7 +18,7 @@ npm run preview      # Preview production build locally
 npm run astro -- <args>  # Run Astro CLI directly
 ```
 
-No lint, typecheck, or test scripts are currently configured in `package.json`.
+No lint, typecheck, or test scripts are currently configured in `package.json`. (`@astrojs/check` and `typescript` are present as devDependencies but are not wired to a script; run `npx astro check` manually if needed.)
 
 ---
 
@@ -44,11 +44,14 @@ No lint, typecheck, or test scripts are currently configured in `package.json`.
 portfolio/
 ├── src/
 │   ├── assets/          # Images, icons, logos, videos (organized by category)
-│   │   ├── badges/      # Recognition badges
+│   │   ├── badges/      # Recognition badges (SVG)
 │   │   ├── icons/       # Tool/skill icons (coding, data, eng-viz, gis, hero, hh)
 │   │   ├── logos/       # Company logos
 │   │   ├── projects/    # Project images (WebP preferred)
-│   │   └── skylines/    # City skyline images
+│   │   ├── recognition/ # Award/recognition photos (WebP)
+│   │   ├── skylines/    # City skyline images
+│   │   ├── videos/      # Background video clips (WebM)
+│   │   └── portrait.webp
 │   ├── components/      # React (.jsx/.tsx) and Astro (.astro) components
 │   ├── constants/
 │   │   └── tagHierarchy.js   # TAG_HIERARCHY — canonical tag categories for filtering
@@ -61,17 +64,22 @@ portfolio/
 │   ├── pages/
 │   │   ├── index.astro       # Main landing page (all sections)
 │   │   ├── portfolio.astro   # Redirects to /#projects (noindex)
-│   │   └── CV.astro          # Redirects to /#timeline (noindex)
+│   │   ├── CV.astro          # Redirects to /#timeline (noindex)
+│   │   └── 404.astro         # Custom not-found page
 │   ├── styles/               # Global CSS
 │   ├── utils/
 │   │   └── companyColors.js  # Company name → color mapping
 │   └── env.d.ts
-├── public/                   # Static assets served as-is
+├── public/                   # Static assets served as-is (favicons, manifest, og-image, assets/news/)
+├── scripts/                  # Node maintenance scripts (not run in CI)
+│   ├── generate-og.mjs        # Regenerate public/og-image.png
+│   └── optimize-images.mjs    # Batch image compression helper
 ├── astro.config.mjs          # Astro + Vite configuration
 ├── tailwind.config.mjs       # Tailwind theme (colors, fonts, patterns)
 ├── .env.example              # Environment variable template
 ├── .github/workflows/deploy.yaml
 ├── AGENTS.md                 # Workflow reference (keep in sync with this file)
+├── README.md                  # Setup/usage docs (keep in sync with this file)
 └── CHANGELOG.md
 ```
 
@@ -96,10 +104,11 @@ Components are React `.jsx` files (with one `.tsx` exception). Astro uses React 
 | `ProjectDashboard.jsx` | React | Main project grid/dashboard |
 | `ProjectFilters.jsx` | React | Tag-based project filtering |
 | `ProjectStats.jsx` | React | Project statistics summary |
-| `ProjectPortfolio.jsx` | React | Project portfolio container |
+| `ProjectPortfolio.jsx` | React | Thin wrapper that renders `ProjectDashboard` |
 | `ExperienceMap.jsx` | React | Mapbox map of project locations |
 | `Achievements.jsx` | React | Achievements/recognition display |
 | `ThemeToggle.jsx` | React | Dark/light mode toggle |
+| `HomeButton.jsx` | React | Back-to-top button, styled to match `ThemeToggle` |
 | `Cursor.jsx` | React | Custom cursor |
 | `FluidBackground.jsx` | React | Animated fluid background |
 | `WaterBanner.astro` | Astro | Static water-themed banner |
@@ -200,7 +209,9 @@ Components using these libraries must use a client directive (`client:load`) and
 
 - Project images: `src/assets/projects/` — use WebP format, keep files reasonably sized
 - Icons are loaded with Vite's `import.meta.glob` in `ProjectDashboard.jsx`
-- The `portrait.png` (~5.6MB) is intentionally high-resolution; do not compress without review
+- `src/assets/portrait.webp` is the hero portrait; it has already been optimized (~160KB) via `scripts/optimize-images.mjs`
+- `public/assets/news/` holds images referenced by `src/data/news.json` / `NewsSection.tsx`
+- `scripts/optimize-images.mjs` and `scripts/generate-og.mjs` are manual maintenance scripts (run with `node scripts/<name>.mjs`), not part of the build pipeline
 
 ---
 
