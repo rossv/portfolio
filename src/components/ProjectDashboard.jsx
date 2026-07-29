@@ -1,7 +1,7 @@
 // ... imports
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ExternalLink, Github, Terminal, Lock } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Search, X, ExternalLink, Github, Terminal, Lock, ChevronDown } from 'lucide-react';
 import projects from '../data/project.json';
 import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
@@ -106,6 +106,10 @@ export default function ProjectDashboard({ onFilteredProjects }) {
     const [selectedTags, setSelectedTags] = useState([]);
     const [featuredOnly, setFeaturedOnly] = useState(false);
     const [toolsOnly, setToolsOnly] = useState(false);
+
+    // Hint that the card list keeps going below the fold
+    const [showScrollHint, setShowScrollHint] = useState(false);
+    const prefersReducedMotion = useReducedMotion();
 
     // Scroll Reference for resetting scroll
     const scrollContainerRef = useRef(null);
@@ -305,6 +309,45 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             scrollContainerRef.current.scrollTop = 0;
         }
     }, [filteredProjects]);
+
+    // Show the scroll hint only while cards remain below the visible area.
+    // Recomputed on scroll, on filter changes, and whenever the list or
+    // viewport is resized (lazy images, window resize, layout shifts).
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        const SLACK = 24; // px tolerance so a hairline overflow doesn't trigger the hint
+
+        const update = () => {
+            const overflow = container.scrollHeight - container.clientHeight;
+            const remaining = overflow - container.scrollTop;
+            setShowScrollHint(overflow > SLACK && remaining > SLACK);
+        };
+
+        update();
+        container.addEventListener('scroll', update, { passive: true });
+
+        const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null;
+        if (observer) {
+            observer.observe(container);
+            Array.from(container.children).forEach(child => observer.observe(child));
+        }
+
+        return () => {
+            container.removeEventListener('scroll', update);
+            observer?.disconnect();
+        };
+    }, [filteredProjects]);
+
+    const handleScrollHintClick = () => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+        container.scrollBy({
+            top: container.clientHeight * 0.85,
+            behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        });
+    };
 
     // Handlers
     const handleToggle = (setter, item) => {
@@ -518,7 +561,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
 
                 {/* Left Column: Search & List (Scrollable) */}
-                <div className="lg:col-span-7 xl:col-span-8 flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
+                <div className="lg:col-span-7 xl:col-span-8 relative flex flex-col h-full bg-transparent rounded-2xl overflow-hidden">
 
                     {/* Sticky Header: Search & Filters */}
                     <div className="p-4 md:p-6 z-30 lg:sticky lg:top-4 bg-transparent transition-all">
@@ -634,6 +677,31 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                         )}
 
                     </div>
+
+                    {/* Scroll Hint: nudges the user when more cards sit below the fold */}
+                    <AnimatePresence>
+                        {showScrollHint && (
+                            <motion.button
+                                type="button"
+                                onClick={handleScrollHintClick}
+                                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
+                                transition={{ duration: 0.25 }}
+                                aria-label="Scroll down for more projects"
+                                className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-full border border-white/40 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-lg backdrop-blur transition-colors hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/90 dark:hover:bg-slate-900/90"
+                            >
+                                <span>More projects</span>
+                                <motion.span
+                                    className="flex"
+                                    animate={prefersReducedMotion ? undefined : { y: [0, 3, 0] }}
+                                    transition={prefersReducedMotion ? undefined : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                                >
+                                    <ChevronDown size={14} />
+                                </motion.span>
+                            </motion.button>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* Right Column: Map (Desktop Sticky) */}
