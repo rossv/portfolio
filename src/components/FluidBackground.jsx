@@ -6,6 +6,9 @@ import { createFleet } from '../utils/spaceMode/launchFleet';
 import { paletteFor as geoPaletteFor } from '../utils/geoMode/palette';
 import { createTerrain } from '../utils/geoMode/terrain';
 import { createFlood } from '../utils/geoMode/flood';
+import { paletteFor as techPaletteFor } from '../utils/techMode/palette';
+import { createPipeline } from '../utils/techMode/pipeline';
+import { createWaveform } from '../utils/techMode/waveform';
 import { readMode, reflectMode, MODE_EVENT } from '../utils/siteMode';
 
 export default function FluidBackground() {
@@ -80,6 +83,7 @@ export default function FluidBackground() {
 
         const isStarfield = mode === 'stars';
         const isGeo = mode === 'geo';
+        const isTech = mode === 'tech';
 
         /* ---------- space mode ------------------------------------- */
         // Each mode builds only its own pieces, so the others carry no cost.
@@ -107,6 +111,23 @@ export default function FluidBackground() {
                 flood.replay();
             } else {
                 flood.settle();
+            }
+        }
+
+        /* ---------- technologist mode ------------------------------ */
+        let pipeline = null;
+        let waveform = null;
+
+        if (isTech) {
+            const techPalette = techPaletteFor(isDark);
+            pipeline = createPipeline(ctx, techPalette);
+            waveform = createWaveform(ctx, techPalette);
+            pipeline.resize(width, height);
+            waveform.resize(width, height);
+            // The graph fires on arrival, the way the fleet launches.
+            if (arrivedRef.current && !prefersReduced) {
+                arrivedRef.current = false;
+                pipeline.run();
             }
         }
 
@@ -244,6 +265,10 @@ export default function FluidBackground() {
                 // Geospatial: a survey ping, echoing the placement pulse but
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
+            } else if (isTech) {
+                // Technologist: inject packets from the nearest node, so a
+                // click sends data down the graph.
+                pipeline?.pulse(x, y);
             } else {
                 if (prefersReduced) return;
                 // Water: a couple of expanding ripple rings + a splash that
@@ -311,6 +336,9 @@ export default function FluidBackground() {
                 // so the two are not competing for the same lines.
                 flood.dim(currentScroll);
                 flood.frame(dt, currentScroll);
+            } else if (isTech) {
+                pipeline.frame(now, dt, currentScroll, mouseRef.current);
+                waveform.frame(now, currentScroll);
             } else {
                 particles.forEach(p => {
                     p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
@@ -414,6 +442,8 @@ export default function FluidBackground() {
             fleet?.resize(width, height);
             terrain?.resize(width, height);
             flood?.resize(width, height);
+            pipeline?.resize(width, height);
+            waveform?.resize(width, height);
         };
 
         const handleMouseMove = (e) => {
