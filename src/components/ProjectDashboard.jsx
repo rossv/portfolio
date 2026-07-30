@@ -2,13 +2,15 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Search, X, ExternalLink, Github, Terminal, Lock, ChevronDown } from 'lucide-react';
-import projects from '../data/project.json';
+import rawProjects from '../data/project.json';
+import { visibleProjects } from '../utils/visibleProjects';
 import ProjectFilters from './ProjectFilters';
 import ProjectStats from './ProjectStats';
 import ExperienceMap from './ExperienceMap';
 import { getCompanyColor } from '../utils/companyColors';
 import { TAG_HIERARCHY } from '../constants/tagHierarchy';
 
+const projects = visibleProjects(rawProjects);
 
 // Dynamic Asset Imports using Vite glob
 // This loads all images from the projects directory

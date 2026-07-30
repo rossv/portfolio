@@ -15,7 +15,10 @@ import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import ThemeToggle from './ThemeToggle';
 import HomeButton from './HomeButton';
-import projects from '../data/project.json';
+import rawProjects from '../data/project.json';
+import { visibleProjects } from '../utils/visibleProjects';
+
+const projects = visibleProjects(rawProjects);
 
 const BADGE_STORAGE_KEY = 'badgeState:v2';
 
