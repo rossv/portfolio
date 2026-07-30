@@ -263,7 +263,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                 if (!hasTag) return false;
             }
 
-            if (featuredOnly && !(project.tags ?? []).includes('Featured')) {
+            if (featuredOnly && !project.featured) {
                 return false;
             }
 
@@ -666,7 +666,7 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                                     project={project}
                                     onClick={(event) => handleCardClick(project, event)}
                                     isSelected={selectedProject?.name === project.name}
-                                    isFeatured={(project.tags ?? []).includes('Featured')}
+                                    isFeatured={!!project.featured}
                                 />
                             ))}
                         </div>
