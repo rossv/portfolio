@@ -4,13 +4,14 @@
 // Clicking the sky places a star, which then joins the network like any other
 // node and survives resizes.
 
-import { STAR_TINTS, ACCENT, rand } from './sprites';
+import { rand } from './sprites';
 
 const PLACED_CAP = 150;   // oldest placed star retires past this
 const REACH = 320;        // cursor radius that recruits nodes
 const LINK = 170;         // max distance between linked nodes
 
-export function createStarfield(ctx, starSprites) {
+export function createStarfield(ctx, starSprites, palette) {
+    const TINTS = palette.starTints;
     let stars = [];
     let width = 0;
     let height = 0;
@@ -29,7 +30,7 @@ export function createStarfield(ctx, starSprites) {
         amp: rand(0.1, 0.3),
         phase: rand(0, Math.PI * 2),
         rate: rand(0.0006, 0.002),
-        tint: Math.floor(Math.random() * STAR_TINTS.length),
+        tint: Math.floor(Math.random() * TINTS.length),
         par: rand(0.06, 0.34),
     });
 
@@ -42,14 +43,7 @@ export function createStarfield(ctx, starSprites) {
         canvas.height = h;
         const g = canvas.getContext('2d');
 
-        const clouds = [
-            { x: 0.22, y: 0.30, r: 0.55, c: '124, 58, 237', a: 0.30 },
-            { x: 0.74, y: 0.22, r: 0.42, c: '30, 64, 175', a: 0.26 },
-            { x: 0.60, y: 0.72, r: 0.50, c: '13, 148, 136', a: 0.16 },
-            { x: 0.08, y: 0.80, r: 0.34, c: '192, 38, 211', a: 0.12 },
-        ];
-
-        for (const cl of clouds) {
+        for (const cl of palette.nebula) {
             const cx = cl.x * w;
             const cy = cl.y * h;
             const rr = cl.r * Math.max(w, h);
@@ -64,7 +58,7 @@ export function createStarfield(ctx, starSprites) {
         // Breaks the banding so the clouds read as dust rather than gradients.
         g.globalAlpha = 0.05;
         for (let i = 0; i < 900; i++) {
-            g.fillStyle = i % 3 ? 'rgba(196, 181, 253, 1)' : 'rgba(255, 255, 255, 1)';
+            g.fillStyle = i % 3 ? palette.dust[0] : palette.dust[1];
             g.fillRect(rand(0, w), rand(0, h), rand(1, 2.5), rand(1, 2.5));
         }
         g.globalAlpha = 1;
@@ -94,7 +88,7 @@ export function createStarfield(ctx, starSprites) {
             amp: rand(0.05, 0.14),
             phase: rand(0, Math.PI * 2),
             rate: rand(0.0008, 0.0018),
-            tint: 3,            // violet, so a placed star reads as yours
+            tint: palette.placedTint,   // violet, so a placed star reads as yours
             par: 0.02,          // barely parallaxed, so it stays put
             placed: true,
             born: performance.now(),
@@ -107,7 +101,7 @@ export function createStarfield(ctx, starSprites) {
         if (!nebula) return;
         const dx = Math.sin(t * 0.00004) * 26 - scrollDelta * 0.06;
         const dy = Math.cos(t * 0.00003) * 18 - scrollDelta * 0.10;
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = palette.nebulaAlpha;
         ctx.drawImage(nebula, dx, dy, width + 60, height + 60);
         ctx.globalAlpha = 1;
     }
@@ -131,12 +125,12 @@ export function createStarfield(ctx, starSprites) {
             // pulse together the way a shared linear ramp made them.
             const a = Math.min(1, Math.max(0.05, s.base + s.amp * Math.sin(t * s.rate + s.phase)));
 
-            ctx.globalAlpha = a * (s.placed ? 1 : 0.8);
+            ctx.globalAlpha = a * (s.placed ? 1 : palette.starGlow);
             const d = s.r * (s.placed ? 8 : 6);
             ctx.drawImage(starSprites[s.tint], s.x - d / 2, s.y - d / 2, d, d);
             ctx.globalAlpha = 1;
 
-            ctx.fillStyle = STAR_TINTS[s.tint] + a + ')';
+            ctx.fillStyle = TINTS[s.tint] + a + ')';
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.r * 0.5, 0, Math.PI * 2);
             ctx.fill();
@@ -146,7 +140,7 @@ export function createStarfield(ctx, starSprites) {
                 const age = (now - s.born) / 700;
                 if (age < 1) {
                     const ease = 1 - (1 - age) ** 2;
-                    ctx.strokeStyle = `rgba(${ACCENT.node}, ${(1 - age) * 0.8})`;
+                    ctx.strokeStyle = `rgba(${palette.node}, ${(1 - age) * 0.8})`;
                     ctx.lineWidth = 1.5;
                     ctx.beginPath();
                     ctx.arc(s.x, s.y, 6 + ease * 42, 0, Math.PI * 2);
@@ -166,13 +160,13 @@ export function createStarfield(ctx, starSprites) {
             if (da > REACH) continue;
             const fade = 1 - da / REACH;
 
-            ctx.strokeStyle = `rgba(${ACCENT.link}, ${fade * 0.42})`;
+            ctx.strokeStyle = `rgba(${palette.link}, ${fade * 0.42})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(mouse.x, mouse.y);
             ctx.stroke();
 
-            ctx.strokeStyle = `rgba(${ACCENT.node}, ${fade * 0.55})`;
+            ctx.strokeStyle = `rgba(${palette.node}, ${fade * 0.55})`;
             ctx.beginPath();
             ctx.arc(a.x, a.y, 3.5 + a.r, 0, Math.PI * 2);
             ctx.stroke();
@@ -182,7 +176,7 @@ export function createStarfield(ctx, starSprites) {
                 const dist = Math.hypot(a.x - b.x, a.y - b.y);
                 if (dist > LINK) continue;
                 const link = (1 - dist / LINK) * fade;
-                ctx.strokeStyle = `rgba(${ACCENT.node}, ${link * 0.85})`;
+                ctx.strokeStyle = `rgba(${palette.node}, ${link * 0.85})`;
                 ctx.beginPath();
                 ctx.moveTo(a.x, a.y);
                 ctx.lineTo(b.x, b.y);
@@ -193,7 +187,7 @@ export function createStarfield(ctx, starSprites) {
         // A reticle, so the cursor reads as an instrument rather than a pointer.
         if (mouse.x > -1000) {
             const rr = Math.max(26, Math.min(width, height) * 0.028);
-            ctx.strokeStyle = `rgba(${ACCENT.link}, 0.5)`;
+            ctx.strokeStyle = `rgba(${palette.link}, 0.5)`;
             ctx.lineWidth = 1.2;
             ctx.beginPath();
             ctx.arc(mouse.x, mouse.y, rr, 0, Math.PI * 2);
