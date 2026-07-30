@@ -128,8 +128,12 @@ const Hexagon = ({ icon: IconOrImage, id, label, delay, isImage, group, activeGr
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: delay * 0.03, type: "spring" }}
             viewport={{ once: true, margin: "-50px" }}
-            // Increased size for mobile from w-20/h-24 to w-24/h-28
-            className="relative w-16 h-20 sm:w-20 sm:h-24 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer"
+            // Increased size for mobile from w-20/h-24 to w-24/h-28.
+            // The tile lifts to z-50 while its tooltip is up, so the label
+            // clears the rows stacked below it rather than sliding underneath.
+            className={`relative w-16 h-20 sm:w-20 sm:h-24 md:w-28 md:h-32 flex-shrink-0 group cursor-pointer
+                ${showActiveTooltip ? 'z-50' : 'z-10 hover:z-50'}
+            `}
             onMouseEnter={() => setActiveGroup(group)}
             onClick={(e) => {
                 e.stopPropagation();
@@ -189,7 +193,7 @@ const Hexagon = ({ icon: IconOrImage, id, label, delay, isImage, group, activeGr
             <div className={`absolute -bottom-4 left-1/2 -translate-x-1/2 transition-opacity duration-300 z-50 pointer-events-none translate-y-2 group-hover:translate-y-0
                 ${showActiveTooltip ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}
             `}>
-                <div className="bg-slate-900/95 text-white text-[10px] md:text-sm py-1 px-2 rounded backdrop-blur-sm whitespace-nowrap shadow-xl border border-slate-700 font-mono tracking-tight">
+                <div className="bg-slate-950 text-white text-[10px] md:text-sm py-1 px-2 rounded whitespace-nowrap shadow-xl shadow-black/40 border border-slate-600 font-mono tracking-tight">
                     {label}
                 </div>
             </div>
@@ -274,17 +278,14 @@ export default function HexGridSection() {
                     {chunks.map((rowIcons, rowIndex) => (
                         <div
                             key={rowIndex}
-                            // Adjusted margins to relax vertical overlap slightly
-                            className={`flex justify-center gap-1 sm:gap-2 md:gap-3 z-10 ${rowIndex > 0 ? '-mt-3 sm:-mt-5 md:-mt-6' : ''}`}
-                            // Flipping Z-index: classic "stacking down" feel where lower rows might overlap upper ones?
-                            // Or keep top on top? User said "bottom row overlapping above row".
-                            // If bottom overlaps above, that means bottom is ON TOP.
-                            // If that was the COMPLAINT ("overlapping the above row"), then currently top is on top.
-                            // ... Wait, if the user complained "bottom row overlapping above row", they might mean "Bottom row is cutting into the top row".
-                            // If I originally had Top on Top (50-index), then Top cuts into Bottom.
-                            // If user thinks Bottom cuts into Top, maybe my z-index was wrong?
-                            // Let's stick with 50-index (Top on Top) but relax margins so the cut isn't as deep.
-                            style={{ position: 'relative', zIndex: 10 + rowIndex }}
+                            // Adjusted margins to relax vertical overlap slightly.
+                            // Deliberately no z-index on the row: an explicit one
+                            // makes each row its own stacking context, which traps a
+                            // hovered tile's tooltip below every row beneath it.
+                            // Rows already paint in DOM order — later rows over
+                            // earlier ones — so the overlap is unchanged either way.
+                            className={`flex justify-center gap-1 sm:gap-2 md:gap-3 ${rowIndex > 0 ? '-mt-3 sm:-mt-5 md:-mt-6' : ''}`}
+                            style={{ position: 'relative' }}
                         >
                             {rowIcons.map((icon, iconIndex) => (
                                 <Hexagon
