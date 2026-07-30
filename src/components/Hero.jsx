@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { readMode, reflectMode, writeMode, nextMode, MODE_EVENT } from '../utils/siteMode';
+import { readMode, reflectMode, writeMode, MODE_EVENT, MODE_LABELS } from '../utils/siteMode';
 import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
@@ -30,6 +30,22 @@ function FloatingElement({ children, delay = 0, className = "" }) {
     );
 }
 
+// Each of the words describing the work switches the backdrop to its own
+// theme. Kept deliberately unmarked — no button chrome — so the paragraph
+// still reads as a sentence and finding them stays a small discovery.
+function ModeWord({ mode, children, className = '' }) {
+    return (
+        <button
+            type="button"
+            onClick={() => writeMode(mode)}
+            aria-label={`Switch the backdrop to ${MODE_LABELS[mode]}`}
+            className={`cursor-pointer underline decoration-dotted decoration-transparent underline-offset-4 transition-colors hover:text-indigo-600 hover:decoration-current dark:hover:text-sky-300 ${className}`}
+        >
+            {children}
+        </button>
+    );
+}
+
 export default function Hero() {
     const targetRef = useRef(null);
     const [mode, setMode] = useState('water');
@@ -52,12 +68,6 @@ export default function Hero() {
         return () => window.removeEventListener(MODE_EVENT, handleMode);
     }, []);
 
-    // Triple-clicking the portrait cycles the backdrop: water, space nerd,
-    // geospatial. FluidBackground listens and plays each mode's arrival.
-    const handleModeClick = (event) => {
-        if (event.detail !== 3) return;
-        writeMode(nextMode(mode));
-    };
     const scrollToSection = (id, event) => {
         if (event) {
             event.preventDefault();
@@ -141,17 +151,10 @@ export default function Hero() {
                 >
                     <span className="absolute -left-4 top-0 text-slate-300 dark:text-slate-700 text-4xl -z-10 animate-pulse"></span>
                     Delivering technical solutions driven by emerging technologies. <br />
-                    Expertise in <span className="font-bold text-slate-900 dark:text-white">H&H Modeling</span>, <span className="font-bold text-slate-900 dark:text-white">GIS</span>, and <span className="font-bold text-slate-900 dark:text-white">Python</span>. <br />
+                    Expertise in <ModeWord mode="water" className="font-bold text-slate-900 dark:text-white">H&H Modeling</ModeWord>, <ModeWord mode="geo" className="font-bold text-slate-900 dark:text-white">GIS</ModeWord>, and <ModeWord mode="tech" className="font-bold text-slate-900 dark:text-white">Python</ModeWord>. <br />
                     <span className="text-xs md:text-sm opacity-75 mt-2 block">
-                        Technologist • Geospatial &{' '}
-                        <button
-                            type="button"
-                            onClick={handleModeClick}
-                            className="hover:text-indigo-600 dark:hover:text-sky-300 transition-colors"
-                            aria-label="Triple click to cycle the backdrop: water, space nerd, geospatial"
-                        >
-                            Space Nerd
-                        </button>{' '}
+                        <ModeWord mode="tech">Technologist</ModeWord> • <ModeWord mode="geo">Geospatial</ModeWord> &{' '}
+                        <ModeWord mode="stars">Space Nerd</ModeWord>{' '}
                         • Pittsburgh
                     </span>
                 </motion.p>

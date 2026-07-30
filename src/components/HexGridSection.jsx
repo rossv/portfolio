@@ -151,10 +151,14 @@ const Hexagon = ({ icon: IconOrImage, id, label, delay, isImage, group, activeGr
                     clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
                 }}
             >
-                <div className={`w-full h-full transition-all duration-300 flex items-center justify-center relative
+                {/* Glassy enough to read against any backdrop — the space,
+                    geospatial and technologist canvases all run behind this —
+                    while the gaps between hexes stay clear so the background
+                    still shows through the grid. */}
+                <div className={`w-full h-full transition-all duration-300 flex items-center justify-center relative backdrop-blur-md
             ${isHoveredGroup
-                        ? 'bg-indigo-500/20 shadow-[inset_0_0_15px_rgba(99,102,241,0.2)]'
-                        : 'bg-slate-100/10 dark:bg-slate-900/40 backdrop-blur-md'}
+                        ? 'bg-indigo-500/30 shadow-[inset_0_0_15px_rgba(99,102,241,0.35)]'
+                        : 'bg-white/55 dark:bg-slate-900/60 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.09)]'}
         `}>
 
                     {isImage ? (
@@ -238,6 +242,13 @@ export default function HexGridSection() {
     return (
         <section ref={sectionRef} className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
             <FloatingIcons variant="toolkit" />
+            {/* A soft wash behind the section so the heading and copy hold up
+                over a busy canvas. Radial and edge-to-transparent, so it never
+                reads as a panel sitting on the page. */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(248,250,252,0.82),rgba(248,250,252,0)_70%)] dark:bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(2,6,23,0.8),rgba(2,6,23,0)_70%)]"
+            />
             <div className="container mx-auto px-2 text-center relative z-10">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
