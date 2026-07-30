@@ -244,6 +244,11 @@ export default function FluidBackground() {
                 // sparks double as its birth effect.
                 starfield?.place(x, y);
                 placedRef.current.push({ x, y });
+                // Fires before the reduced-motion bail below, so the Stargazer
+                // badge is still earnable without the birth animation.
+                window.dispatchEvent(
+                    new CustomEvent('star-place', { detail: { count: placedRef.current.length } })
+                );
                 if (prefersReduced) return;
                 ripples.push({ x, y, age: 0, maxAge: 34, kind: 'warp' });
                 const count = 16;

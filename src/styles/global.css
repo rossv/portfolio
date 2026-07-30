@@ -105,8 +105,14 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
 }
 
 @layer utilities {
+  /* Badge chips ease open and closed on one shared curve. Everything that
+     moves — the chip's padding, the icon's size, the label's reveal — uses
+     the same duration and easing, so hovering reads as a single unfolding
+     instead of three separate jumps. The label stays mounted and clipped for
+     the same reason: mounting it on hover made the width snap open. */
   .badge-chip {
-    @apply flex items-center gap-2 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700/80 shadow-lg px-2.5 py-1.5 backdrop-blur;
+    @apply flex items-center rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700/80 shadow-lg px-2.5 py-1.5 backdrop-blur;
+    transition: padding 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
   }
 
   .badge-pop {
@@ -114,11 +120,33 @@ html.dark .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
   }
 
   .badge-collapsed {
-    @apply px-1.5 py-1 cursor-pointer transition-all duration-300;
+    @apply px-1.5 py-1 cursor-pointer;
   }
 
-  .badge-collapsed:hover {
-    @apply scale-110;
+  .badge-chip__icon {
+    transition: height 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                width 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  /* Clipped to nothing when collapsed. Max-height as well as max-width, or a
+     collapsed chip would stay as tall as the label's two lines of text. */
+  .badge-chip__label {
+    @apply overflow-hidden text-left;
+    max-width: 0;
+    max-height: 0;
+    opacity: 0;
+    margin-left: 0;
+    transition: max-width 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                max-height 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                margin-left 420ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                opacity 300ms ease-out 60ms;
+  }
+
+  .badge-chip.is-open .badge-chip__label {
+    @apply ml-2;
+    max-width: 9.5rem;
+    max-height: 4rem;
+    opacity: 1;
   }
 
   .section-shell {
