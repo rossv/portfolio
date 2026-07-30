@@ -50,7 +50,10 @@ import waterVideo from '../assets/videos/water-boomerang-alpha.webm';
     }
   }
 
-  :global(:root[data-space-nerd="stars"]) .water-banner-container {
+  /* Space mode replaces this with the aurora, geospatial with the flood
+     inundation raster, so the video steps aside for both. */
+  :global(:root[data-space-nerd="stars"]) .water-banner-container,
+  :global(:root[data-site-mode="geo"]) .water-banner-container {
     opacity: 0;
     visibility: hidden;
   }
