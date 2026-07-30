@@ -2,12 +2,15 @@ import { motion, useSpring, useTransform, useInView, useReducedMotion } from "fr
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import projects from "../data/project.json";
+import rawProjects from "../data/project.json";
+import { visibleProjects } from "../utils/visibleProjects";
 import wadeTrimLogo from "../assets/logos/wade-trim.png";
 import klhLogo from "../assets/logos/klh.png";
 import cecLogo from "../assets/logos/cec.png";
 import pittLogo from "../assets/logos/pitt.png";
 import netlLogo from "../assets/logos/netl.png";
+
+const projects = visibleProjects(rawProjects);
 
 // Astro's image imports resolve to an object ({ src, ... }); plain bundlers give a string.
 const resolveSrc = (img) => (img && img.src) || img;
