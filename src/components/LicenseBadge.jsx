@@ -25,7 +25,7 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
         >
             <motion.div
                 layout
-                className={`flex items-center ${bgColor} text-white shadow-lg`}
+                className={`space-accent-pill flex items-center ${bgColor} text-white shadow-lg`}
                 style={{ borderRadius: '0.25rem' }} // standard rounded
             >
                 <motion.div

@@ -32,9 +32,6 @@ function FloatingElement({ children, delay = 0, className = "" }) {
 export default function Hero() {
     const targetRef = useRef(null);
     const [isStarfield, setIsStarfield] = useState(false);
-    const [showRocket, setShowRocket] = useState(false);
-    const rocketTimeoutRef = useRef(null);
-    const hideRocketTimeoutRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -53,17 +50,7 @@ export default function Hero() {
             setIsStarfield(event.detail?.enabled ?? false);
         };
         window.addEventListener('space-nerd-toggle', handleToggle);
-        return () => {
-            window.removeEventListener('space-nerd-toggle', handleToggle);
-            if (rocketTimeoutRef.current) {
-                clearTimeout(rocketTimeoutRef.current);
-                rocketTimeoutRef.current = null;
-            }
-            if (hideRocketTimeoutRef.current) {
-                clearTimeout(hideRocketTimeoutRef.current);
-                hideRocketTimeoutRef.current = null;
-            }
-        };
+        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
     }, []);
 
     const handleSpaceNerdClick = (event) => {
@@ -74,27 +61,11 @@ export default function Hero() {
         setIsStarfield(nextState);
         localStorage.setItem('spaceNerdMode', nextState ? 'stars' : 'water');
         document.documentElement.dataset.spaceNerd = nextState ? 'stars' : 'water';
+        // FluidBackground listens for this and flies the launch fleet on its
+        // canvas, so the rockets are no longer this component's concern.
         window.dispatchEvent(
             new CustomEvent('space-nerd-toggle', { detail: { enabled: nextState } })
         );
-        // Launch rocket animation when entering space nerd mode
-        if (rocketTimeoutRef.current) {
-            clearTimeout(rocketTimeoutRef.current);
-            rocketTimeoutRef.current = null;
-        }
-        if (hideRocketTimeoutRef.current) {
-            clearTimeout(hideRocketTimeoutRef.current);
-            hideRocketTimeoutRef.current = null;
-        }
-        if (nextState) {
-            rocketTimeoutRef.current = setTimeout(() => {
-                setShowRocket(true);
-                // Hide rocket after animation completes
-                hideRocketTimeoutRef.current = setTimeout(() => {
-                    setShowRocket(false);
-                }, 9000);
-            }, 500); // Short delay before rocket appears
-        }
     };
     const scrollToSection = (id, event) => {
         if (event) {
@@ -144,7 +115,7 @@ export default function Hero() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-sky-500 dark:from-indigo-400 dark:to-sky-300"
+                        className="space-accent-text text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-sky-500 dark:from-indigo-400 dark:to-sky-300"
                     >
                         VOLKWEIN
                     </motion.div>
@@ -210,7 +181,7 @@ export default function Hero() {
                             className={`group relative inline-flex items-center gap-2 rounded-full border border-slate-900/10 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-slate-800 dark:text-slate-100 shadow-lg shadow-indigo-500/10 backdrop-blur transition-all duration-300 cursor-pointer`}
                         >
                             <span
-                                className={`absolute inset-0 rounded-full bg-gradient-to-r ${section.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-90`}
+                                className={`space-accent-fill absolute inset-0 rounded-full bg-gradient-to-r ${section.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-active:opacity-90`}
                                 aria-hidden="true"
                             ></span>
                             <span className="relative z-10 flex items-center gap-2">
@@ -320,120 +291,6 @@ export default function Hero() {
                 </div>
             </motion.div>
 
-            {/* SpaceX Falcon 9-style Rocket Fleet Animation */}
-            {showRocket && (
-                <>
-                    {/* Fleet of rockets at different positions with staggered launch times */}
-                    {[
-                        { left: '15%', delay: 0.6 },
-                        { left: '35%', delay: 0 },
-                        { left: '50%', delay: 1.2 },
-                        { left: '65%', delay: 0.3 },
-                        { left: '85%', delay: 0.9 },
-                    ].map((rocket, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ y: '100vh' }}
-                            animate={{ y: '-120vh' }}
-                            transition={{
-                                duration: 6,
-                                ease: [0.2, 0.8, 0.2, 1],
-                                delay: rocket.delay
-                            }}
-                            style={{ left: rocket.left }}
-                            className="fixed bottom-0 z-[100] pointer-events-none -translate-x-1/2"
-                        >
-                            {/* Rocket Container */}
-                            <div className="relative flex flex-col items-center">
-                                {/* Falcon 9 First Stage */}
-                                <svg width="40" height="200" viewBox="0 0 40 200" className="drop-shadow-2xl">
-                                    {/* Nose Cone / Dragon Capsule */}
-                                    <ellipse cx="20" cy="12" rx="12" ry="12" fill="#f8f8f8" stroke="#888" strokeWidth="0.5" />
-                                    <path d="M8 12 L20 0 L32 12" fill="#f8f8f8" stroke="#888" strokeWidth="0.5" />
-
-                                    {/* Trunk Section */}
-                                    <rect x="8" y="12" width="24" height="20" fill="#e8e8e8" stroke="#888" strokeWidth="0.5" />
-                                    <rect x="10" y="14" width="2" height="16" fill="#1a1a1a" /> {/* Solar panel */}
-                                    <rect x="28" y="14" width="2" height="16" fill="#1a1a1a" />
-
-                                    {/* Interstage */}
-                                    <rect x="7" y="32" width="26" height="10" fill="#2a2a2a" />
-
-                                    {/* Second Stage */}
-                                    <rect x="8" y="42" width="24" height="40" fill="#f0f0f0" stroke="#888" strokeWidth="0.5" />
-
-
-                                    {/* Interstage 2 */}
-                                    <rect x="6" y="82" width="28" height="8" fill="#1a1a1a" />
-
-                                    {/* First Stage (Main Body) */}
-                                    <rect x="7" y="90" width="26" height="80" fill="#f0f0f0" stroke="#888" strokeWidth="0.5" />
-                                    <text x="20" y="130" textAnchor="middle" fontSize="8" fill="#1a1a1a" fontWeight="bold">FALCON 9</text>
-
-                                    {/* Grid Fins */}
-                                    <rect x="2" y="95" width="5" height="12" fill="#2a2a2a" rx="1" />
-                                    <rect x="33" y="95" width="5" height="12" fill="#2a2a2a" rx="1" />
-
-                                    {/* Landing Legs (folded) */}
-                                    <path d="M7 170 L3 185 L7 180" fill="#2a2a2a" />
-                                    <path d="M33 170 L37 185 L33 180" fill="#2a2a2a" />
-
-                                    {/* Engine Section */}
-                                    <rect x="5" y="170" width="30" height="15" fill="#1a1a1a" />
-
-                                    {/* Merlin Engines */}
-                                    <ellipse cx="12" cy="188" rx="4" ry="3" fill="#333" stroke="#666" strokeWidth="0.5" />
-                                    <ellipse cx="20" cy="190" rx="5" ry="4" fill="#333" stroke="#666" strokeWidth="0.5" />
-                                    <ellipse cx="28" cy="188" rx="4" ry="3" fill="#333" stroke="#666" strokeWidth="0.5" />
-
-                                    {/* Engine Glow */}
-                                    <ellipse cx="20" cy="192" rx="3" ry="2" fill="#ff6600">
-                                        <animate attributeName="opacity" values="0.8;1;0.8" dur="0.1s" repeatCount="indefinite" />
-                                    </ellipse>
-                                </svg>
-
-                                {/* Exhaust Plume */}
-                                <motion.div
-                                    animate={{
-                                        scaleY: [1, 1.3, 1],
-                                        opacity: [0.9, 1, 0.9]
-                                    }}
-                                    transition={{ duration: 0.1, repeat: Infinity }}
-                                    className="relative -mt-2"
-                                >
-                                    <svg width="60" height="150" viewBox="0 0 60 150">
-                                        <defs>
-                                            <linearGradient id={`exhaustGradient${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" stopColor="#ff4400" />
-                                                <stop offset="30%" stopColor="#ff8800" />
-                                                <stop offset="60%" stopColor="#ffcc00" />
-                                                <stop offset="100%" stopColor="transparent" />
-                                            </linearGradient>
-                                            <filter id={`exhaustBlur${index}`}>
-                                                <feGaussianBlur stdDeviation="2" />
-                                            </filter>
-                                        </defs>
-
-                                        {/* Main Exhaust */}
-                                        <ellipse cx="30" cy="60" rx="15" ry="60" fill={`url(#exhaustGradient${index})`} filter={`url(#exhaustBlur${index})`} />
-
-                                        {/* Inner bright core */}
-                                        <ellipse cx="30" cy="40" rx="6" ry="35" fill="#fff8e0" opacity="0.9" />
-
-                                        {/* Mach diamonds effect */}
-                                        <ellipse cx="30" cy="15" rx="4" ry="4" fill="#ffffff" opacity="0.8">
-                                            <animate attributeName="opacity" values="0.6;1;0.6" dur="0.05s" repeatCount="indefinite" />
-                                        </ellipse>
-                                        <ellipse cx="30" cy="30" rx="3" ry="3" fill="#ffeecc" opacity="0.6">
-                                            <animate attributeName="opacity" values="0.4;0.8;0.4" dur="0.05s" repeatCount="indefinite" />
-                                        </ellipse>
-                                    </svg>
-                                </motion.div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </>
-            )}
         </section>
     );
 }

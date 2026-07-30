@@ -11,6 +11,22 @@
   outline-offset: 2px;
 }
 
+/* Space nerd mode runs a "Split" accent palette: violet leads, the site's
+   cyan stays on as the secondary, so the mode reads as space without
+   discarding the water identity. Water mode keeps the original colours,
+   including the per-section nav accents. */
+:root[data-space-nerd="stars"] .space-accent-text {
+  background-image: linear-gradient(to right, #a78bfa, #7dd3fc);
+}
+
+:root[data-space-nerd="stars"] .space-accent-fill {
+  background-image: linear-gradient(to right, rgba(167, 139, 250, 0.9), rgba(125, 211, 252, 0.9));
+}
+
+:root[data-space-nerd="stars"] .space-accent-pill {
+  background-color: #6d28d9;
+}
+
 .vignette-layer {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 1) 100%);
 }

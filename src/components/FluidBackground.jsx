@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { makeStarSprites, makePuffSprites, makeWarmGlow, STAR_TINTS } from '../utils/spaceMode/sprites';
+import { createStarfield } from '../utils/spaceMode/starfield';
+import { createAurora } from '../utils/spaceMode/aurora';
+import { createFleet } from '../utils/spaceMode/launchFleet';
 
 export default function FluidBackground() {
     const canvasRef = useRef(null);
@@ -7,6 +11,8 @@ export default function FluidBackground() {
 
     const scrollRef = useRef(0);
     const lastScrollRef = useRef(0);
+    // Set when the mode is switched on, so the fleet only flies on arrival.
+    const launchRef = useRef(false);
 
     useEffect(() => {
         const stored = localStorage.getItem('spaceNerdMode') === 'stars';
@@ -15,6 +21,8 @@ export default function FluidBackground() {
 
         const handleToggle = (event) => {
             const nextState = event.detail?.enabled ?? false;
+            // Entering the mode launches the fleet; the effect below reads this.
+            if (nextState) launchRef.current = true;
             setIsStarfield(nextState);
         };
         window.addEventListener('space-nerd-toggle', handleToggle);
@@ -30,7 +38,7 @@ export default function FluidBackground() {
         const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let animationFrameId;
         // Click effects, drawn on the same canvas as the particles.
-        const ripples = []; // water: expanding rings | space: warp pulse
+        const ripples = []; // water: expanding rings | space: placement pulse
         const sparks = [];  // space: radial starburst
         let bubbleCollectCount = Number.parseInt(window.localStorage.getItem('bubbleCollectCount') || '0', 10);
         if (!Number.isFinite(bubbleCollectCount) || bubbleCollectCount < 0) {
@@ -43,9 +51,6 @@ export default function FluidBackground() {
         canvas.width = width;
         canvas.height = height;
 
-        const particles = [];
-        const particleCount = isStarfield ? 200 : 120;
-
         // Water-themed palette (Cyan, Sky, Blue, Teal)
         const colors = [
             'rgba(6, 182, 212, ', // cyan-500
@@ -54,12 +59,28 @@ export default function FluidBackground() {
             'rgba(20, 184, 166, '  // teal-500
         ];
 
-        const starColors = [
-            'rgba(255, 255, 255, ',
-            'rgba(191, 219, 254, ',
-            'rgba(165, 243, 252, ',
-            'rgba(196, 181, 253, '
-        ];
+        /* ---------- space mode ------------------------------------- */
+        // Built only for the starfield, so water mode carries no extra cost.
+        let starfield = null;
+        let aurora = null;
+        let fleet = null;
+
+        if (isStarfield) {
+            const starSprites = makeStarSprites();
+            starfield = createStarfield(ctx, starSprites);
+            aurora = createAurora(ctx);
+            fleet = createFleet(ctx, { puffSprites: makePuffSprites(), warmGlow: makeWarmGlow() });
+            starfield.resize(width, height);
+            aurora.resize(width, height, 1);
+            fleet.resize(width, height);
+            if (launchRef.current && !prefersReduced) {
+                launchRef.current = false;
+                fleet.launch();
+            }
+        }
+
+        /* ---------- water mode ------------------------------------- */
+        const particles = [];
 
         class Particle {
             constructor() {
@@ -141,76 +162,17 @@ export default function FluidBackground() {
             }
         }
 
-        class Star {
-            constructor() {
-                this.reset(true);
-            }
-
-            reset(initial = false) {
-                this.x = Math.random() * width;
-                this.y = initial ? Math.random() * height : -20;
-                this.radius = Math.random() * 1.8 + 0.4;
-                this.speed = Math.random() * 0.6 + 0.2;
-                this.alpha = Math.random() * 0.5 + 0.4;
-                this.twinkle = Math.random() * 0.015 + 0.005;
-                this.color = starColors[Math.floor(Math.random() * starColors.length)];
-                this.depth = Math.random() * 0.8 + 0.2;
-            }
-
-            update(mouseX, mouseY, scrollDelta) {
-                this.y += this.speed + scrollDelta * 0.15 * this.depth;
-                if (this.y > height + 30) {
-                    this.reset();
-                }
-
-                const dx = mouseX - this.x;
-                const dy = mouseY - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const influence = Math.max(0, 160 - distance) / 160;
-                this.x += (dx / 200) * influence * this.depth;
-
-                this.alpha += this.twinkle;
-                if (this.alpha > 1 || this.alpha < 0.2) {
-                    this.twinkle *= -1;
-                }
-            }
-
-            draw() {
-                const glow = this.radius * 6;
-                const gradient = ctx.createRadialGradient(
-                    this.x,
-                    this.y,
-                    0,
-                    this.x,
-                    this.y,
-                    glow
-                );
-                gradient.addColorStop(0, `${this.color}${this.alpha})`);
-                gradient.addColorStop(1, `${this.color}0)`);
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, glow, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `${this.color}${this.alpha})`;
-                ctx.fill();
-            }
-        }
-
-        const ParticleType = isStarfield ? Star : Particle;
-
-        // Initialize particles
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new ParticleType());
+        if (!isStarfield) {
+            for (let i = 0; i < 120; i++) particles.push(new Particle());
         }
 
         // Spawn a themed click effect at (x, y). No-op under reduced motion.
         const spawnClickEffect = (x, y) => {
-            if (prefersReduced) return;
             if (isStarfield) {
-                // Space-nerd: a warp pulse ring + a radial burst of sparks.
+                // Space-nerd: clicking the sky places a star. The pulse and
+                // sparks double as its birth effect.
+                starfield?.place(x, y);
+                if (prefersReduced) return;
                 ripples.push({ x, y, age: 0, maxAge: 34, kind: 'warp' });
                 const count = 16;
                 for (let i = 0; i < count; i++) {
@@ -223,10 +185,11 @@ export default function FluidBackground() {
                         life: 0,
                         maxLife: Math.random() * 26 + 26,
                         size: Math.random() * 1.4 + 0.9,
-                        color: starColors[Math.floor(Math.random() * starColors.length)],
+                        color: STAR_TINTS[Math.floor(Math.random() * STAR_TINTS.length)],
                     });
                 }
             } else {
+                if (prefersReduced) return;
                 // Water: a couple of expanding ripple rings + a splash that
                 // nudges nearby bubbles outward.
                 ripples.push({ x, y, age: 0, maxAge: 46, kind: 'ripple' });
@@ -247,7 +210,13 @@ export default function FluidBackground() {
             if (sparks.length > 160) sparks.splice(0, sparks.length - 160);
         };
 
-        const handlePointerDown = (e) => spawnClickEffect(e.clientX, e.clientY);
+        const handlePointerDown = (e) => {
+            // Ignore clicks on real UI: placing a star behind a button or a
+            // project card is never what was meant.
+            if (e.target instanceof Element && e.target.closest('a, button, input, [role="button"]')) return;
+            spawnClickEffect(e.clientX, e.clientY);
+            if (prefersReduced) render();
+        };
 
         // Scroll handling
         const updateScroll = () => {
@@ -255,18 +224,31 @@ export default function FluidBackground() {
         };
         window.addEventListener('scroll', updateScroll);
 
+        let lastFrame = 0;
+
         const render = () => {
+            const now = performance.now();
+            // Clamped so a backgrounded tab does not resume with a huge step.
+            const dt = Math.min(48, lastFrame ? now - lastFrame : 16);
+            lastFrame = now;
+
             const currentScroll = scrollRef.current;
             const scrollDelta = currentScroll - lastScrollRef.current;
             lastScrollRef.current = currentScroll;
 
             ctx.clearRect(0, 0, width, height);
 
+            // Camera rumble while craft are still low. Held under 3px: more
+            // than that and it fights the page content sitting on top.
+            const shake = fleet ? fleet.rumble() : 0;
+            ctx.save();
+            if (shake > 0.02) {
+                ctx.translate(Math.sin(now * 0.11) * shake, Math.cos(now * 0.17) * shake * 0.7);
+            }
+
             if (isStarfield) {
-                particles.forEach(p => {
-                    p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
-                    p.draw();
-                });
+                starfield.frame(now, scrollDelta, mouseRef.current);
+                aurora.frame(now, currentScroll);
             } else {
                 particles.forEach(p => {
                     p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
@@ -335,6 +317,14 @@ export default function FluidBackground() {
                 ctx.fill();
             }
 
+            // The fleet flies above the field but still behind page content.
+            if (fleet) {
+                fleet.frame(dt);
+                fleet.decayRumble();
+            }
+
+            ctx.restore();
+
             if (!prefersReduced) {
                 animationFrameId = requestAnimationFrame(render);
             }
@@ -345,6 +335,9 @@ export default function FluidBackground() {
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
+            starfield?.resize(width, height);
+            aurora?.resize(width, height, 1);
+            fleet?.resize(width, height);
         };
 
         const handleMouseMove = (e) => {
@@ -387,7 +380,9 @@ export default function FluidBackground() {
 
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full opacity-70 dark:opacity-50"
+                // Space mode runs brighter: the stars are points of light, and
+                // holding the whole canvas at 50% muted them rather than the glow.
+                className={isStarfield ? 'absolute inset-0 w-full h-full opacity-95' : 'absolute inset-0 w-full h-full opacity-70 dark:opacity-50'}
             />
         </div>
     );
