@@ -681,25 +681,38 @@ export default function ProjectDashboard({ onFilteredProjects }) {
                     {/* Scroll Hint: nudges the user when more cards sit below the fold */}
                     <AnimatePresence>
                         {showScrollHint && (
-                            <motion.button
-                                type="button"
-                                onClick={handleScrollHintClick}
-                                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
+                            <motion.div
+                                // x is animated rather than set via -translate-x-1/2: Framer writes an
+                                // inline transform that would otherwise drop Tailwind's centering.
+                                initial={{ opacity: 0, x: '-50%', y: prefersReducedMotion ? 0 : 8 }}
+                                animate={{ opacity: 1, x: '-50%', y: 0 }}
+                                exit={{ opacity: 0, x: '-50%', y: prefersReducedMotion ? 0 : 8 }}
                                 transition={{ duration: 0.25 }}
-                                aria-label="Scroll down for more projects"
-                                className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 rounded-full border border-white/40 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-lg backdrop-blur transition-colors hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/90 dark:hover:bg-slate-900/90"
+                                className="absolute bottom-4 left-1/2 z-20"
                             >
-                                <span>More projects</span>
+                                {/* Pulsing halo behind the pill */}
                                 <motion.span
-                                    className="flex"
-                                    animate={prefersReducedMotion ? undefined : { y: [0, 3, 0] }}
-                                    transition={prefersReducedMotion ? undefined : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                                    aria-hidden="true"
+                                    className="pointer-events-none absolute inset-0 rounded-full bg-blue-500/30 dark:bg-blue-400/25 blur-md"
+                                    animate={prefersReducedMotion ? { opacity: 0.4 } : { opacity: [0.3, 0.75, 0.3], scale: [0.97, 1.08, 0.97] }}
+                                    transition={prefersReducedMotion ? undefined : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleScrollHintClick}
+                                    aria-label="Scroll down for more projects"
+                                    className="relative flex items-center gap-1.5 rounded-full border border-white/40 dark:border-slate-700/60 bg-white/70 dark:bg-slate-900/70 px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 shadow-lg backdrop-blur transition-colors hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/90 dark:hover:bg-slate-900/90"
                                 >
-                                    <ChevronDown size={14} />
-                                </motion.span>
-                            </motion.button>
+                                    <span>More projects</span>
+                                    <motion.span
+                                        className="flex"
+                                        animate={prefersReducedMotion ? undefined : { y: [0, 3, 0] }}
+                                        transition={prefersReducedMotion ? undefined : { duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+                                    >
+                                        <ChevronDown size={14} />
+                                    </motion.span>
+                                </button>
+                            </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
