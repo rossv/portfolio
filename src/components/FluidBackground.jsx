@@ -3,34 +3,38 @@ import { makeStarSprites, makePuffSprites, makeWarmGlow, paletteFor } from '../u
 import { createStarfield } from '../utils/spaceMode/starfield';
 import { createAurora } from '../utils/spaceMode/aurora';
 import { createFleet } from '../utils/spaceMode/launchFleet';
+import { paletteFor as geoPaletteFor } from '../utils/geoMode/palette';
+import { createTerrain } from '../utils/geoMode/terrain';
+import { createFlood } from '../utils/geoMode/flood';
+import { readMode, reflectMode, MODE_EVENT } from '../utils/siteMode';
 
 export default function FluidBackground() {
     const canvasRef = useRef(null);
     const mouseRef = useRef({ x: -1000, y: -1000 });
-    const [isStarfield, setIsStarfield] = useState(false);
+    const [mode, setMode] = useState('water');
     // Space mode is drawn light-on-dark or ink-on-paper, so the canvas has to
     // follow the theme. ThemeToggle only flips a class, hence the observer.
     const [isDark, setIsDark] = useState(true);
 
     const scrollRef = useRef(0);
     const lastScrollRef = useRef(0);
-    // Set when the mode is switched on, so the fleet only flies on arrival.
-    const launchRef = useRef(false);
+    // Set when a mode is switched on, so its arrival animation only plays on
+    // arrival — the fleet launch, and the flood's raster scan.
+    const arrivedRef = useRef(false);
     // Placed stars outlive a palette rebuild.
     const placedRef = useRef([]);
 
     useEffect(() => {
-        const stored = localStorage.getItem('spaceNerdMode') === 'stars';
-        setIsStarfield(stored);
-        document.documentElement.dataset.spaceNerd = stored ? 'stars' : 'water';
+        const stored = readMode();
+        setMode(stored);
+        reflectMode(stored);
 
-        const handleToggle = (event) => {
-            const nextState = event.detail?.enabled ?? false;
-            // Entering the mode launches the fleet; the effect below reads this.
-            if (nextState) launchRef.current = true;
-            setIsStarfield(nextState);
+        const handleMode = (event) => {
+            const next = event.detail?.mode ?? 'water';
+            arrivedRef.current = true;
+            setMode(next);
         };
-        window.addEventListener('space-nerd-toggle', handleToggle);
+        window.addEventListener(MODE_EVENT, handleMode);
 
         const root = document.documentElement;
         const readTheme = () => setIsDark(root.classList.contains('dark'));
@@ -39,7 +43,7 @@ export default function FluidBackground() {
         observer.observe(root, { attributes: true, attributeFilter: ['class'] });
 
         return () => {
-            window.removeEventListener('space-nerd-toggle', handleToggle);
+            window.removeEventListener(MODE_EVENT, handleMode);
             observer.disconnect();
         };
     }, []);
@@ -74,8 +78,11 @@ export default function FluidBackground() {
             'rgba(20, 184, 166, '  // teal-500
         ];
 
+        const isStarfield = mode === 'stars';
+        const isGeo = mode === 'geo';
+
         /* ---------- space mode ------------------------------------- */
-        // Built only for the starfield, so water mode carries no extra cost.
+        // Each mode builds only its own pieces, so the others carry no cost.
         let starfield = null;
         let aurora = null;
         let fleet = null;
@@ -83,6 +90,25 @@ export default function FluidBackground() {
         const palette = paletteFor(isDark);
         // Click sparks and the placement pulse follow the same palette.
         const sparkTints = palette.starTints;
+
+        /* ---------- geospatial mode -------------------------------- */
+        let terrain = null;
+        let flood = null;
+
+        if (isGeo) {
+            const geoPalette = geoPaletteFor(isDark);
+            terrain = createTerrain(ctx, geoPalette);
+            flood = createFlood(ctx, geoPalette);
+            terrain.resize(width, height);
+            flood.resize(width, height);
+            // The scan replays on arrival; on a reload it is already settled.
+            if (arrivedRef.current && !prefersReduced) {
+                arrivedRef.current = false;
+                flood.replay();
+            } else {
+                flood.settle();
+            }
+        }
 
         if (isStarfield) {
             starfield = createStarfield(ctx, makeStarSprites(palette), palette);
@@ -97,8 +123,8 @@ export default function FluidBackground() {
             fleet.resize(width, height);
             // Restore whatever was placed before the last palette rebuild.
             for (const p of placedRef.current) starfield.place(p.x, p.y);
-            if (launchRef.current && !prefersReduced) {
-                launchRef.current = false;
+            if (arrivedRef.current && !prefersReduced) {
+                arrivedRef.current = false;
                 fleet.launch();
             }
         }
@@ -186,7 +212,7 @@ export default function FluidBackground() {
             }
         }
 
-        if (!isStarfield) {
+        if (mode === 'water') {
             for (let i = 0; i < 120; i++) particles.push(new Particle());
         }
 
@@ -213,6 +239,11 @@ export default function FluidBackground() {
                         color: sparkTints[Math.floor(Math.random() * sparkTints.length)],
                     });
                 }
+            } else if (isGeo) {
+                if (prefersReduced) return;
+                // Geospatial: a survey ping, echoing the placement pulse but
+                // in the topo palette rather than the star tints.
+                ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
             } else {
                 if (prefersReduced) return;
                 // Water: a couple of expanding ripple rings + a splash that
@@ -274,6 +305,12 @@ export default function FluidBackground() {
             if (isStarfield) {
                 starfield.frame(now, scrollDelta, mouseRef.current);
                 aurora.frame(now, currentScroll);
+            } else if (isGeo) {
+                terrain.frame(now, mouseRef.current);
+                // Knock the contours back under the band before drawing it,
+                // so the two are not competing for the same lines.
+                flood.dim(currentScroll);
+                flood.frame(dt, currentScroll);
             } else {
                 particles.forEach(p => {
                     p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
@@ -319,6 +356,18 @@ export default function FluidBackground() {
                     ctx.strokeStyle = `rgba(${palette.link}, ${(1 - t) * 0.55})`;
                     ctx.lineWidth = 2;
                     ctx.stroke();
+                } else if (r.kind === 'ping') {
+                    // Survey ping: two rings, the trailing one lagging.
+                    const geo = geoPaletteFor(isDark);
+                    for (const lag of [0, 0.22]) {
+                        const k = t - lag;
+                        if (k <= 0) continue;
+                        ctx.beginPath();
+                        ctx.arc(r.x, r.y, (1 - Math.pow(1 - k, 2)) * 88, 0, Math.PI * 2);
+                        ctx.strokeStyle = `rgba(${geo.index}, ${(1 - k) * 0.5})`;
+                        ctx.lineWidth = 1.4;
+                        ctx.stroke();
+                    }
                 } else {
                     ctx.beginPath();
                     ctx.arc(r.x, r.y, ease * 72, 0, Math.PI * 2);
@@ -363,6 +412,8 @@ export default function FluidBackground() {
             starfield?.resize(width, height);
             aurora?.resize(width, height, 1);
             fleet?.resize(width, height);
+            terrain?.resize(width, height);
+            flood?.resize(width, height);
         };
 
         const handleMouseMove = (e) => {
@@ -396,9 +447,9 @@ export default function FluidBackground() {
             window.removeEventListener('pointerdown', handlePointerDown);
             cancelAnimationFrame(animationFrameId);
         };
-        // Only space mode reads the palette, so a theme change in water mode
-        // must not tear down and restart the bubbles.
-    }, [isStarfield, isStarfield && isDark]);
+        // Only the canvas modes read a palette, so a theme change in water
+        // mode must not tear down and restart the bubbles.
+    }, [mode, mode !== 'water' && isDark]);
 
     return (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-canvas dark:bg-slate-950 transition-colors duration-300">
@@ -407,9 +458,12 @@ export default function FluidBackground() {
 
             <canvas
                 ref={canvasRef}
-                // Space mode runs brighter: the stars are points of light, and
-                // holding the whole canvas at 50% muted them rather than the glow.
-                className={isStarfield ? 'absolute inset-0 w-full h-full opacity-95' : 'absolute inset-0 w-full h-full opacity-70 dark:opacity-50'}
+                // The canvas modes run brighter: their marks are points and
+                // lines, and holding the whole canvas at 50% muted the marks
+                // rather than the glow.
+                className={mode === 'water'
+                    ? 'absolute inset-0 w-full h-full opacity-70 dark:opacity-50'
+                    : 'absolute inset-0 w-full h-full opacity-95'}
             />
         </div>
     );

@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { readMode, reflectMode, writeMode, nextMode, MODE_EVENT } from '../utils/siteMode';
 import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
@@ -31,7 +32,7 @@ function FloatingElement({ children, delay = 0, className = "" }) {
 
 export default function Hero() {
     const targetRef = useRef(null);
-    const [isStarfield, setIsStarfield] = useState(false);
+    const [mode, setMode] = useState('water');
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -42,30 +43,20 @@ export default function Hero() {
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
     useEffect(() => {
-        const stored = localStorage.getItem('spaceNerdMode') === 'stars';
-        setIsStarfield(stored);
-        document.documentElement.dataset.spaceNerd = stored ? 'stars' : 'water';
+        const stored = readMode();
+        setMode(stored);
+        reflectMode(stored);
 
-        const handleToggle = (event) => {
-            setIsStarfield(event.detail?.enabled ?? false);
-        };
-        window.addEventListener('space-nerd-toggle', handleToggle);
-        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
+        const handleMode = (event) => setMode(event.detail?.mode ?? 'water');
+        window.addEventListener(MODE_EVENT, handleMode);
+        return () => window.removeEventListener(MODE_EVENT, handleMode);
     }, []);
 
-    const handleSpaceNerdClick = (event) => {
-        if (event.detail !== 3) {
-            return;
-        }
-        const nextState = !isStarfield;
-        setIsStarfield(nextState);
-        localStorage.setItem('spaceNerdMode', nextState ? 'stars' : 'water');
-        document.documentElement.dataset.spaceNerd = nextState ? 'stars' : 'water';
-        // FluidBackground listens for this and flies the launch fleet on its
-        // canvas, so the rockets are no longer this component's concern.
-        window.dispatchEvent(
-            new CustomEvent('space-nerd-toggle', { detail: { enabled: nextState } })
-        );
+    // Triple-clicking the portrait cycles the backdrop: water, space nerd,
+    // geospatial. FluidBackground listens and plays each mode's arrival.
+    const handleModeClick = (event) => {
+        if (event.detail !== 3) return;
+        writeMode(nextMode(mode));
     };
     const scrollToSection = (id, event) => {
         if (event) {
@@ -155,9 +146,9 @@ export default function Hero() {
                         Technologist • Geospatial &{' '}
                         <button
                             type="button"
-                            onClick={handleSpaceNerdClick}
+                            onClick={handleModeClick}
                             className="hover:text-indigo-600 dark:hover:text-sky-300 transition-colors"
-                            aria-label="Triple click to toggle space nerd mode"
+                            aria-label="Triple click to cycle the backdrop: water, space nerd, geospatial"
                         >
                             Space Nerd
                         </button>{' '}
@@ -240,7 +231,7 @@ export default function Hero() {
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                     </div>
 
-                    {!isStarfield && (
+                    {mode === 'water' && (
                         <>
                             {/* Floating Bubbles */}
                             <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
