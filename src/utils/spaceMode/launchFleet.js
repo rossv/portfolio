@@ -7,7 +7,7 @@
 // Craft sit on several depth planes: distant ones are smaller, dimmer and
 // slower, and the nearest draw last so they pass in front.
 
-import { ACCENT, rand } from './sprites';
+import { rand } from './sprites';
 
 const FLIGHT = 6000;      // ms for one climb, matching the original animation
 const SMOKE_CAP = 260;    // this is a background: an unbounded column greys out the page
@@ -20,7 +20,7 @@ const DEPTHS = [1.15, 0.62, 0.95, 0.72, 1.05, 0.55, 0.85, 0.68];
 // Heavier vehicles climb slower, so the fleet staggers itself.
 const CLIMB = { saturn: 1.22, shuttle: 1.16, starship: 1.18, falcon: 1.0, soyuz: 1.04 };
 
-export function createFleet(ctx, { puffSprites, warmGlow }) {
+export function createFleet(ctx, { puffSprites, warmGlow, palette }) {
     let rockets = [];
     const smoke = [];
     const embers = [];
@@ -78,7 +78,7 @@ export function createFleet(ctx, { puffSprites, warmGlow }) {
             s.r += s.grow * (dt / 16);
             // Cools from ember-orange through grey to cold blue-grey.
             const sprite = k < 0.16 ? puffSprites[0] : k < 0.6 ? puffSprites[1] : puffSprites[2];
-            ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, k * 1.25)) * 0.18;
+            ctx.globalAlpha = Math.sin(Math.PI * Math.min(1, k * 1.25)) * palette.smoke;
             ctx.drawImage(sprite, s.x - s.r, s.y - s.r, s.r * 2, s.r * 2);
         }
         ctx.globalAlpha = 1;
@@ -153,7 +153,7 @@ export function createFleet(ctx, { puffSprites, warmGlow }) {
     }
 
     function rim(x, top, bottom) {
-        ctx.strokeStyle = `rgba(${ACCENT.node}, 0.55)`;
+        ctx.strokeStyle = `rgba(${palette.node}, 0.55)`;
         ctx.lineWidth = 1.1;
         ctx.beginPath();
         ctx.moveTo(x, top);
@@ -488,7 +488,14 @@ export function createFleet(ctx, { puffSprites, warmGlow }) {
             ctx.scale(cs * r.depth, cs * r.depth);
             // Distance haze: far craft sit back into the sky.
             ctx.globalAlpha = 0.55 + r.depth * 0.42;
+            // On paper, pale hulls need an edge or they disappear into it.
+            if (palette.craftEdge) {
+                ctx.shadowColor = palette.craftEdge;
+                ctx.shadowBlur = 6 / (cs * r.depth);
+            }
             DRAWERS[r.type](p, r.seed);
+            ctx.shadowColor = 'transparent';
+            ctx.shadowBlur = 0;
             ctx.globalAlpha = 1;
             ctx.restore();
             plumeExpand = 1;

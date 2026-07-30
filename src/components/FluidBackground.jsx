@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { makeStarSprites, makePuffSprites, makeWarmGlow, STAR_TINTS } from '../utils/spaceMode/sprites';
+import { makeStarSprites, makePuffSprites, makeWarmGlow, paletteFor } from '../utils/spaceMode/sprites';
 import { createStarfield } from '../utils/spaceMode/starfield';
 import { createAurora } from '../utils/spaceMode/aurora';
 import { createFleet } from '../utils/spaceMode/launchFleet';
@@ -8,11 +8,16 @@ export default function FluidBackground() {
     const canvasRef = useRef(null);
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const [isStarfield, setIsStarfield] = useState(false);
+    // Space mode is drawn light-on-dark or ink-on-paper, so the canvas has to
+    // follow the theme. ThemeToggle only flips a class, hence the observer.
+    const [isDark, setIsDark] = useState(true);
 
     const scrollRef = useRef(0);
     const lastScrollRef = useRef(0);
     // Set when the mode is switched on, so the fleet only flies on arrival.
     const launchRef = useRef(false);
+    // Placed stars outlive a palette rebuild.
+    const placedRef = useRef([]);
 
     useEffect(() => {
         const stored = localStorage.getItem('spaceNerdMode') === 'stars';
@@ -26,7 +31,17 @@ export default function FluidBackground() {
             setIsStarfield(nextState);
         };
         window.addEventListener('space-nerd-toggle', handleToggle);
-        return () => window.removeEventListener('space-nerd-toggle', handleToggle);
+
+        const root = document.documentElement;
+        const readTheme = () => setIsDark(root.classList.contains('dark'));
+        readTheme();
+        const observer = new MutationObserver(readTheme);
+        observer.observe(root, { attributes: true, attributeFilter: ['class'] });
+
+        return () => {
+            window.removeEventListener('space-nerd-toggle', handleToggle);
+            observer.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -65,14 +80,23 @@ export default function FluidBackground() {
         let aurora = null;
         let fleet = null;
 
+        const palette = paletteFor(isDark);
+        // Click sparks and the placement pulse follow the same palette.
+        const sparkTints = palette.starTints;
+
         if (isStarfield) {
-            const starSprites = makeStarSprites();
-            starfield = createStarfield(ctx, starSprites);
-            aurora = createAurora(ctx);
-            fleet = createFleet(ctx, { puffSprites: makePuffSprites(), warmGlow: makeWarmGlow() });
+            starfield = createStarfield(ctx, makeStarSprites(palette), palette);
+            aurora = createAurora(ctx, palette);
+            fleet = createFleet(ctx, {
+                puffSprites: makePuffSprites(palette),
+                warmGlow: makeWarmGlow(palette),
+                palette,
+            });
             starfield.resize(width, height);
             aurora.resize(width, height, 1);
             fleet.resize(width, height);
+            // Restore whatever was placed before the last palette rebuild.
+            for (const p of placedRef.current) starfield.place(p.x, p.y);
             if (launchRef.current && !prefersReduced) {
                 launchRef.current = false;
                 fleet.launch();
@@ -172,6 +196,7 @@ export default function FluidBackground() {
                 // Space-nerd: clicking the sky places a star. The pulse and
                 // sparks double as its birth effect.
                 starfield?.place(x, y);
+                placedRef.current.push({ x, y });
                 if (prefersReduced) return;
                 ripples.push({ x, y, age: 0, maxAge: 34, kind: 'warp' });
                 const count = 16;
@@ -185,7 +210,7 @@ export default function FluidBackground() {
                         life: 0,
                         maxLife: Math.random() * 26 + 26,
                         size: Math.random() * 1.4 + 0.9,
-                        color: STAR_TINTS[Math.floor(Math.random() * STAR_TINTS.length)],
+                        color: sparkTints[Math.floor(Math.random() * sparkTints.length)],
                     });
                 }
             } else {
@@ -291,7 +316,7 @@ export default function FluidBackground() {
                 if (r.kind === 'warp') {
                     ctx.beginPath();
                     ctx.arc(r.x, r.y, ease * 95, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(196, 181, 253, ${(1 - t) * 0.55})`; // violet
+                    ctx.strokeStyle = `rgba(${palette.link}, ${(1 - t) * 0.55})`;
                     ctx.lineWidth = 2;
                     ctx.stroke();
                 } else {
@@ -371,7 +396,9 @@ export default function FluidBackground() {
             window.removeEventListener('pointerdown', handlePointerDown);
             cancelAnimationFrame(animationFrameId);
         };
-    }, [isStarfield]);
+        // Only space mode reads the palette, so a theme change in water mode
+        // must not tear down and restart the bubbles.
+    }, [isStarfield, isStarfield && isDark]);
 
     return (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none bg-canvas dark:bg-slate-950 transition-colors duration-300">
