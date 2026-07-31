@@ -26,6 +26,8 @@ export default function FluidBackground() {
     const arrivedRef = useRef(false);
     // Placed stars outlive a palette rebuild.
     const placedRef = useRef([]);
+    // As do nodes clicked into the technologist graph.
+    const techNodesRef = useRef([]);
 
     useEffect(() => {
         const stored = readMode();
@@ -120,7 +122,9 @@ export default function FluidBackground() {
 
         if (isTech) {
             const techPalette = techPaletteFor(isDark);
-            pipeline = createPipeline(ctx, techPalette);
+            // resize() re-applies whatever is in the ref, so nodes clicked in
+            // before a theme flip come back with the rebuilt graph.
+            pipeline = createPipeline(ctx, techPalette, techNodesRef.current);
             waveform = createWaveform(ctx, techPalette);
             pipeline.resize(width, height);
             waveform.resize(width, height);
@@ -271,9 +275,11 @@ export default function FluidBackground() {
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
             } else if (isTech) {
-                // Technologist: light the node nearest the pointer and fire its
-                // own edges for an immediate local response, then kick the whole
-                // graph, so a click sends data all the way down every lane.
+                // Technologist: drop a node into the nearest lane and wire it
+                // in. pulse() then finds it as the node nearest the pointer and
+                // fires its edges for an immediate local response, and the run
+                // sends data all the way down every lane — through the new node.
+                pipeline?.addNode(x, y);
                 pipeline?.pulse(x, y);
                 pipeline?.run();
             } else {
@@ -345,6 +351,9 @@ export default function FluidBackground() {
                 flood.frame(dt, currentScroll);
             } else if (isTech) {
                 pipeline.frame(now, dt, currentScroll, mouseRef.current);
+                // Fade the lanes out behind the band before drawing it, so the
+                // trace is not competing with the graph for the same lines.
+                waveform.dim(currentScroll);
                 waveform.frame(now, currentScroll);
             } else {
                 particles.forEach(p => {

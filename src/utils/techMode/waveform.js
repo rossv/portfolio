@@ -25,6 +25,23 @@ export function createWaveform(ctx, palette) {
         bandCtx = band.getContext('2d');
     }
 
+    // Fades the pipeline lanes out behind the band, so the trace is not read
+    // against a graph of similarly thin lines. Drawn on the main canvas,
+    // before the band itself — the same trick flood.dim() uses for contours.
+    function dim(scrollY) {
+        if (!bandCtx) return;
+        const top = BAND_TOP - scrollY - 40;
+        const bot = BAND_TOP - scrollY + bandH * 0.8;
+        if (bot < 0) return;
+        const grad = ctx.createLinearGradient(0, top, 0, bot);
+        grad.addColorStop(0, `rgba(${palette.groundRgb}, 0)`);
+        grad.addColorStop(0.16, `rgba(${palette.groundRgb}, 0.7)`);
+        grad.addColorStop(0.7, `rgba(${palette.groundRgb}, 0.7)`);
+        grad.addColorStop(1, `rgba(${palette.groundRgb}, 0)`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, top, width, bot - top);
+    }
+
     function frame(t, scrollY) {
         if (!bandCtx) return;
         if (scrollY > BAND_TOP + bandH) return;
@@ -73,11 +90,6 @@ export function createWaveform(ctx, palette) {
             g.stroke();
         }
 
-        g.font = `10px ${getComputedStyle(document.body).fontFamily}`;
-        g.textAlign = 'left';
-        g.fillStyle = `rgba(${palette.dim}, 0.45)`;
-        g.fillText('1.024 kHz · ±2.5 V', 14, mid + bandH * 0.26);
-
         // The same downward fade as WaterBanner's CSS mask.
         g.globalCompositeOperation = 'destination-out';
         const mask = g.createLinearGradient(0, bandH * 0.72, 0, bandH);
@@ -90,5 +102,5 @@ export function createWaveform(ctx, palette) {
         ctx.drawImage(band, 0, BAND_TOP - scrollY, width, bandH);
     }
 
-    return { resize, frame };
+    return { resize, frame, dim };
 }
