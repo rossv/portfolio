@@ -26,8 +26,10 @@ export default function FluidBackground() {
     const arrivedRef = useRef(false);
     // Placed stars outlive a palette rebuild.
     const placedRef = useRef([]);
-    // As do nodes clicked into the technologist graph.
+    // As do nodes clicked into the technologist graph, and ground raised in
+    // the geospatial one.
     const techNodesRef = useRef([]);
+    const geoPeaksRef = useRef([]);
 
     useEffect(() => {
         const stored = readMode();
@@ -103,7 +105,9 @@ export default function FluidBackground() {
 
         if (isGeo) {
             const geoPalette = geoPaletteFor(isDark);
-            terrain = createTerrain(ctx, geoPalette);
+            // Raised ground is held in normalised coordinates, so it comes
+            // through a theme rebuild at whatever height it had reached.
+            terrain = createTerrain(ctx, geoPalette, geoPeaksRef.current);
             flood = createFlood(ctx, geoPalette);
             terrain.resize(width, height);
             flood.resize(width, height);
@@ -270,8 +274,12 @@ export default function FluidBackground() {
                     });
                 }
             } else if (isGeo) {
+                // Geospatial: the click raises the ground and leaves a spot
+                // elevation on it. Fires before the reduced-motion bail, so the
+                // terrain still records the click without the bloom.
+                terrain?.addPeak(x, y, { instant: prefersReduced });
                 if (prefersReduced) return;
-                // Geospatial: a survey ping, echoing the placement pulse but
+                // A survey ping over the top, echoing the placement pulse but
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
             } else if (isTech) {
@@ -344,7 +352,7 @@ export default function FluidBackground() {
                 starfield.frame(now, scrollDelta, mouseRef.current);
                 aurora.frame(now, currentScroll);
             } else if (isGeo) {
-                terrain.frame(now, mouseRef.current);
+                terrain.frame(now, dt, mouseRef.current);
                 // Knock the contours back under the band before drawing it,
                 // so the two are not competing for the same lines.
                 flood.dim(currentScroll);

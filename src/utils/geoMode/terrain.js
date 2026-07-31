@@ -6,9 +6,38 @@
 //
 // The field drifts, but very slowly on purpose: a full breath takes minutes,
 // so the terrain reads as still unless you watch for it.
+//
+// Clicking raises the ground. A placed peak is the same kind of Gaussian the
+// cursor already contributes, so the click persists a mechanism the field
+// function was built around rather than adding one beside it; the contours
+// re-solve around it on the next frame and new rings bloom outward. Clicking
+// an existing rise again stacks it higher instead of dropping a second peak
+// alongside, so repeat clicks read as building one hill.
+//
+// Each rise is marked the way a topo sheet marks a spot elevation: a small
+// cross and a bare figure, no prefix and no leader. The figure is read off the
+// terrain excluding the cursor probe — the probe is an artifact of where the
+// pointer happens to be, and including it made the number climb as you
+// approached the very label you were trying to read.
 
 const LEVELS = 14;
 const LMAX = 1.9;
+
+const PLACED_CAP = 14;         // click-placed rises
+const PLACED_AMP = 0.62;       // a fresh rise
+const PLACED_SIGMA = 0.085;
+const STACK_RADIUS = 0.055;    // normalised: inside this, a click stacks
+const STACK_STEP = 0.34;
+const STACK_MAX = 2.4;
+const GROW_MS = 140;           // amplitude ease-in, so contours bloom
+const MARK_R = 4;              // spot-elevation cross
+const LABEL_PX = 11;
+const LABEL_NEAR = 150;        // cursor distance at which a figure is fully up
+const LABEL_REST = 0.46;
+const LABEL_LIT = 0.92;
+// Feet, so a figure reads as an Allegheny-plateau spot elevation.
+const ELEV_BASE = 720;
+const ELEV_SCALE = 260;
 
 const PEAKS = Array.from({ length: 5 }, (_, i) => ({
     x: 0.15 + ((i * 0.19) % 0.8),
@@ -20,7 +49,10 @@ const PEAKS = Array.from({ length: 5 }, (_, i) => ({
     dy: (i % 3 ? -1 : 1) * 0.0000011,
 }));
 
-export function createTerrain(ctx, palette) {
+// `placed` is owned by the caller and holds click-placed rises. They are kept
+// in normalised coordinates, which is what the field function works in, so
+// they need no re-application on resize and survive a theme rebuild intact.
+export function createTerrain(ctx, palette, placed = []) {
     let width = 0;
     let height = 0;
     let cell = 0;
@@ -39,7 +71,9 @@ export function createTerrain(ctx, palette) {
         field = new Float32Array(gx * gy);
     }
 
-    function fieldAt(nx, ny, t, mouse) {
+    // The surface itself: drifting peaks plus anything clicked into it. This is
+    // what a spot elevation reports.
+    function terrainAt(nx, ny, t) {
         let v = 0;
         for (const p of PEAKS) {
             const px = p.x + Math.sin(t * p.dx * 60) * 0.035;
@@ -48,6 +82,17 @@ export function createTerrain(ctx, palette) {
             const ey = (ny - py) / p.sy;
             v += p.amp * Math.exp(-(ex * ex + ey * ey));
         }
+        for (const p of placed) {
+            const ex = (nx - p.x) / PLACED_SIGMA;
+            const ey = (ny - p.y) / PLACED_SIGMA;
+            v += p.shown * Math.exp(-(ex * ex + ey * ey));
+        }
+        return v;
+    }
+
+    // What gets contoured: the surface plus the cursor probe.
+    function fieldAt(nx, ny, t, mouse) {
+        let v = terrainAt(nx, ny, t);
         if (mouse.x > -1000) {
             const ex = (nx - mouse.x / width) / 0.1;
             const ey = (ny - mouse.y / height) / 0.1;
@@ -56,8 +101,95 @@ export function createTerrain(ctx, palette) {
         return v;
     }
 
-    function frame(t, mouse) {
+    // Raise the ground at a screen position. A click near an existing rise
+    // stacks that one higher rather than adding a peak beside it.
+    function addPeak(x, y, { instant = false } = {}) {
+        const nx = x / width;
+        const ny = y / height;
+
+        let hit = null;
+        let bestD = Infinity;
+        for (const p of placed) {
+            const d = Math.hypot(p.x - nx, p.y - ny);
+            if (d < bestD) { bestD = d; hit = p; }
+        }
+
+        if (hit && bestD < STACK_RADIUS) {
+            hit.amp = Math.min(STACK_MAX, hit.amp + STACK_STEP);
+            if (instant) hit.shown = hit.amp;
+            return hit;
+        }
+
+        if (placed.length >= PLACED_CAP) placed.shift();
+        const peak = { x: nx, y: ny, amp: PLACED_AMP, shown: instant ? PLACED_AMP : 0 };
+        placed.push(peak);
+        return peak;
+    }
+
+    // Spot elevations, drawn over the contours. The dimmer contour sienna
+    // rather than the index colour, so a mark never out-weighs the index
+    // contours it sits among.
+    function drawMarks(t, mouse) {
+        if (!placed.length) return;
+
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.font = `${LABEL_PX}px "Space Mono", ui-monospace, monospace`;
+        ctx.lineWidth = 1;
+
+        for (const p of placed) {
+            if (p.shown < 0.02) continue;
+
+            const x = p.x * width;
+            const y = p.y * height;
+
+            // Subtle at rest, readable with the cursor on it. Squared falloff,
+            // so it lights the one mark you are on and not the region.
+            let near = 0;
+            if (mouse.x > -1000) {
+                const d = Math.hypot(x - mouse.x, y - mouse.y);
+                if (d < LABEL_NEAR) {
+                    const k = 1 - d / LABEL_NEAR;
+                    near = k * k;
+                }
+            }
+            // Fades up with the rise, so the mark arrives as the ground does.
+            const grow = Math.min(1, p.shown / PLACED_AMP);
+            const a = (LABEL_REST + (LABEL_LIT - LABEL_REST) * near) * grow;
+
+            ctx.strokeStyle = `rgba(${palette.line}, ${a * 0.85})`;
+            ctx.fillStyle = `rgba(${palette.line}, ${a})`;
+
+            ctx.beginPath();
+            ctx.moveTo(x - MARK_R, y - MARK_R);
+            ctx.lineTo(x + MARK_R, y + MARK_R);
+            ctx.moveTo(x + MARK_R, y - MARK_R);
+            ctx.lineTo(x - MARK_R, y + MARK_R);
+            ctx.stroke();
+
+            const text = String(Math.round(ELEV_BASE + terrainAt(p.x, p.y, t) * ELEV_SCALE));
+            const tw = ctx.measureText(text).width;
+            // Flip to the other side of the cross rather than run off the edge.
+            if (x + MARK_R + 3.5 + tw + 4 > width) {
+                ctx.textAlign = 'right';
+                ctx.fillText(text, x - MARK_R - 3.5, y + 0.5);
+                ctx.textAlign = 'left';
+            } else {
+                ctx.fillText(text, x + MARK_R + 3.5, y + 0.5);
+            }
+        }
+    }
+
+    function frame(t, dt, mouse) {
         if (!field) return;
+
+        // Ease each rise up to its amplitude, so a click blooms rings outward
+        // rather than snapping a finished hill into place.
+        for (const p of placed) {
+            if (p.shown === p.amp) continue;
+            p.shown += (p.amp - p.shown) * Math.min(1, dt / GROW_MS);
+            if (Math.abs(p.amp - p.shown) < 0.002) p.shown = p.amp;
+        }
 
         for (let j = 0; j < gy; j++) {
             for (let i = 0; i < gx; i++) {
@@ -109,7 +241,9 @@ export function createTerrain(ctx, palette) {
                 }
             }
         }
+
+        drawMarks(t, mouse);
     }
 
-    return { resize, frame };
+    return { resize, frame, addPeak };
 }
