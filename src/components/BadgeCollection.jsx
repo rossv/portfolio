@@ -26,6 +26,7 @@ import HomeButton from './HomeButton';
 import rawProjects from '../data/project.json';
 import { visibleProjects } from '../utils/visibleProjects';
 import { MODES, MODE_EVENT, readMode } from '../utils/siteMode';
+import { FOOTER_LINK_IDS } from '../constants/footerLinks';
 
 const projects = visibleProjects(rawProjects);
 
@@ -176,7 +177,9 @@ const BADGES = [
 ];
 
 const SECTION_IDS = ['skills', 'timeline', 'leadership', 'achievements', 'projects', 'footer'];
-const TOTAL_FOOTER_LINKS = 4;
+// Derived, not hand-written: the footer had five links against a hard-coded
+// total of four, so Footer Friend unlocked a link early.
+const TOTAL_FOOTER_LINKS = FOOTER_LINK_IDS.length;
 const BUBBLE_THRESHOLDS = [100, 1000, 5000];
 const TOTAL_PROJECT_CARDS = projects.length;
 const TIME_BADGE_THRESHOLDS = [
@@ -205,7 +208,10 @@ const parseStoredState = (rawValue) => {
       projectTotal: Number.isFinite(parsed.projectTotal) ? parsed.projectTotal : 0,
       jobReads: Array.isArray(parsed.jobReads) ? parsed.jobReads : [],
       jobTotal: Number.isFinite(parsed.jobTotal) ? parsed.jobTotal : 0,
-      footerClicks: Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [],
+      // Dropped links stay in a returning visitor's storage, so a stale id
+      // would otherwise still count toward Footer Friend.
+      footerClicks: (Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [])
+        .filter((id) => FOOTER_LINK_IDS.includes(id)),
       visitedSections: Array.isArray(parsed.visitedSections) ? parsed.visitedSections : [],
       timeSpentMs: Number.isFinite(parsed.timeSpentMs) ? parsed.timeSpentMs : 0,
       // Added after v2 shipped; absent for anyone with existing progress, so
@@ -765,7 +771,7 @@ export default function BadgeCollection() {
       }
       if (action === 'footer-link') {
         const footerId = actionEl.getAttribute('data-footer-id');
-        if (footerId) {
+        if (FOOTER_LINK_IDS.includes(footerId)) {
           footerClicksRef.current.add(footerId);
           setProgressSnapshot((prev) => ({ ...prev, footerClicks: footerClicksRef.current.size }));
           persistBadgeState();
