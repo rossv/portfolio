@@ -2972,7 +2972,15 @@
             "ArcGIS",
             "ArcGIS Field Maps",
             "ArcGIS Pro",
-            "ArcGIS Online"
+            "ArcGIS Online",
+            "Trimble R2",
+            "Web GIS",
+            "Web Mapping",
+            "Python",
+            "Digital Delivery",
+            "Client Portals",
+            "SharePoint",
+            "Regulatory"
         ],
         "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Oversaw field data collection and integration into SWMM updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data; and contributed to the winning proposal development.",
         "title": "Professional Engineer",
@@ -3499,7 +3507,7 @@
         "title": "Professional Engineer",
         "project_role": "Technical Advisor, QAQC",
         "image": "",
-        "start_date": "6/30/2025",
+        "start_date": "6/24/2025",
         "end_date": "Present",
         "client_sort": "Pittsburgh Water",
         "coords": [
@@ -4038,5 +4046,92 @@
         "gsd_codes": [
             "MBP203124H"
         ]
+    },
+    {
+        "name": "GIS Maintenance",
+        "client": "Moon Township Municipal Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "",
+        "category": "Asset Management, GIS",
+        "tags": [
+            "ArcGIS",
+            "ArcMap",
+            "ArcGIS Pro",
+            "Data Migration",
+            "GIS Migration",
+            "Staff Training"
+        ],
+        "description": "I maintained and updated GIS data for various waterline and sewer projects over several years. My work involved troubleshooting, revising maps, and integrating GPS data into existing systems. I provided ongoing GIS support and training, ensuring that the GIS architecture was up to date and functional for internal stakeholders.",
+        "title": "",
+        "project_role": "",
+        "image": "/src/assets/projects/gis-maintenance.webp",
+        "start_date": "1/6/2017",
+        "end_date": "3/3/2021",
+        "client_sort": "Moon Township Municipal Authority",
+        "gsd_codes": [
+            "327-155"
+        ],
+        "draft": true
+    },
+    {
+        "name": "LMCPR PCMP - Review And Guidelines",
+        "client": "Metropolitan Sewer District of Greater Cincinnati",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Calibration",
+            "Hydraulics",
+            "Hydrology",
+            "Model Review",
+            "SWMM",
+            "Documentation"
+        ],
+        "description": "I worked on the LMCPR PCMP project, focusing on the review and guidelines related to hydrologic and hydraulic modeling. My contributions involved troubleshooting, conducting detailed reviews, and addressing questions throughout the project’s lifecycle. I utilized SWMM for calibration reviews, coordinated with team members, and documented findings for internal use.",
+        "title": "",
+        "project_role": "",
+        "image": "/src/assets/projects/lmcpr-pcmp-review-and-guidelines.webp",
+        "start_date": "5/26/2021",
+        "end_date": "10/19/2021",
+        "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
+        "gsd_codes": [
+            "MSD201515H"
+        ],
+        "draft": true
+    },
+    {
+        "name": "GIS Services",
+        "client": "Authority of the Borough of Charleroi",
+        "company": "KLH Engineers, Inc.",
+        "location": "",
+        "category": "GIS, Asset Management",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Collector",
+            "ArcGIS Field Maps",
+            "ArcGIS Desktop",
+            "ArcGIS Online",
+            "ArcGIS Pro",
+            "ArcMap",
+            "GIS Migration",
+            "GNSS",
+            "GPS",
+            "Trimble R2",
+            "Web GIS",
+            "Staff Training",
+            "QA/QC",
+            "Documentation"
+        ],
+        "description": "I worked on various GIS projects focused on data management and visualization using ArcGIS tools. My tasks included data cleaning, training, and updating GIS maps for internal applications.",
+        "title": "",
+        "project_role": "",
+        "image": "/src/assets/projects/gis-services.webp",
+        "start_date": "5/17/2017",
+        "end_date": "3/2/2021",
+        "client_sort": "Authority of the Borough of Charleroi",
+        "gsd_codes": [
+            "388-30"
+        ],
+        "draft": true
     }
 ]
