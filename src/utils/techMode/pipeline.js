@@ -19,6 +19,11 @@
 //
 // Packets flow on arrival, on every click, and on an idle cadence in between,
 // so the graph is never inert for long.
+//
+// A click also drops a node into the nearest lane and wires it into the
+// flanking columns. It takes a real column index, so the existing run wave
+// carries packets through it with no special handling — the node someone
+// placed becomes part of the pathway rather than an ornament beside it.
 
 const LANES = [
     {
@@ -54,13 +59,44 @@ const EDGE_PACKET_CAP = 6;    // bounds rapid clicking
 const AUTO_MIN = 5200;        // idle cadence: soonest a lane fires again
 const AUTO_VAR = 4200;
 const FIRST_AUTO = 2800;      // first idle run lands shortly after arrival's
+const PLACED_CAP = 24;        // click-placed nodes; past this a click only fires
+const PLACED_FANOUT = 2;      // wires per side on a placed node
 
-export function createPipeline(ctx, palette) {
+// `placed` is owned by the caller and holds click-placed nodes as normalised
+// graph coordinates, so they survive both a resize (which rebuilds the lanes)
+// and a theme change (which rebuilds this whole module).
+export function createPipeline(ctx, palette, placed = []) {
     let width = 0;
     let height = 0;
     let lanes = [];
     let autoT = 0;
     let autoNext = FIRST_AUTO;
+
+    // Slot a node into a lane at graph coordinates (gx, gy). It adopts the
+    // column index of the nearest column and wires to the closest few nodes on
+    // either side: inbound from the column before, outbound to the one after.
+    // On the first or last column one side comes up empty, which leaves the
+    // node a new source or a new sink — still a pathway, just a shorter one.
+    function attach(lane, gx, gy, lit) {
+        let ci = 0;
+        let bestD = Infinity;
+        for (const n of lane.nodes) {
+            const d = Math.abs(n.x - gx);
+            if (d < bestD) { bestD = d; ci = n.ci; }
+        }
+
+        const node = { label: 'placed', x: gx, y: gy, ci, lit };
+        lane.nodes.push(node);
+
+        const near = (c) => lane.nodes
+            .filter((n) => n.ci === c && n !== node)
+            .sort((a, b) => Math.hypot(a.x - gx, a.y - gy) - Math.hypot(b.x - gx, b.y - gy))
+            .slice(0, PLACED_FANOUT);
+        for (const f of near(ci - 1)) lane.edges.push({ f, t: node, packets: [] });
+        for (const t of near(ci + 1)) lane.edges.push({ f: node, t, packets: [] });
+
+        return node;
+    }
 
     function resize(w, h) {
         width = w;
@@ -99,6 +135,32 @@ export function createPipeline(ctx, palette) {
 
             return { ...cfg, graphW, nodes, edges, cols, runT: null, pan: 0 };
         });
+
+        // Re-apply anything clicked into the graph, once every lane exists.
+        // Unlit, so resizing the window does not flash them all as new.
+        for (const p of placed) {
+            const lane = lanes[p.li];
+            if (lane) attach(lane, p.nx * lane.graphW, p.ny * h, 0);
+        }
+    }
+
+    // Drop a node at a screen position, into whichever lane runs nearest it.
+    function addNode(x, y) {
+        if (!lanes.length || placed.length >= PLACED_CAP) return null;
+
+        let lane = lanes[0];
+        let li = 0;
+        let bestD = Infinity;
+        lanes.forEach((l, i) => {
+            const d = Math.abs(l.cy * height - y);
+            if (d < bestD) { bestD = d; lane = l; li = i; }
+        });
+
+        const gx = x + lane.pan;
+        placed.push({ li, nx: gx / lane.graphW, ny: y / height });
+        // Arrives lit, so it gets the same birth ring a fired node gets and
+        // then decays into looking like every other node in the lane.
+        return attach(lane, gx, y, 1);
     }
 
     const fireColumn = (lane, ci) => {
@@ -231,5 +293,5 @@ export function createPipeline(ctx, palette) {
         }
     }
 
-    return { resize, frame, run, pulse };
+    return { resize, frame, run, pulse, addNode };
 }

@@ -6,6 +6,9 @@
 export const PALETTES = {
     dark: {
         ground: '#020617',
+        // The same colour as an rgb triple, for gradients that fade the
+        // backdrop out toward the page ground (see waveform's dim()).
+        groundRgb: '2, 6, 23',
         kw: '255, 212, 59',      // Python yellow — packets, active nodes
         fn: '77, 171, 247',      // Python blue — nodes, the trace
         dim: '108, 132, 163',
@@ -16,6 +19,7 @@ export const PALETTES = {
     },
     light: {
         ground: '#f8fafc',
+        groundRgb: '248, 250, 252',
         kw: '180, 83, 9',
         fn: '30, 100, 170',
         dim: '110, 124, 147',
