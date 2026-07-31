@@ -176,7 +176,7 @@
         "client": "Park7 Group",
         "company": "Civil & Environmental Consultants",
         "location": "North Oakland, PA",
-        "category": "Land Development, Permitting, Stormwater Design",
+        "category": "Land Development, Permitting, Stormwater",
         "tags": [
             "ArcGIS",
             "ArcGIS Desktop",
@@ -265,7 +265,6 @@
             "CAD",
             "Infraworks",
             "Microsoft Project",
-            "Featured",
             "Hydraulics",
             "Visualization"
         ],
@@ -282,7 +281,8 @@
         ],
         "gsd_codes": [
             "153-612"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "CEC Go Development",
@@ -343,7 +343,7 @@
         "client": "North Huntingdon Township",
         "company": "KLH Engineers",
         "location": "North Huntingdon Township",
-        "category": "Erosion & Sedimentation Control, Permitting, Stormwater Design",
+        "category": "Erosion & Sedimentation Control, Permitting, Stormwater",
         "tags": [
             "AutoCAD",
             "CAD"
@@ -398,8 +398,7 @@
             "Flumes",
             "Laser Depth Gauge",
             "SketchUp",
-            "Vectrino",
-            "Featured"
+            "Vectrino"
         ],
         "description": "Planned and coordinated a new Environmental Fluid Mechanics Laboratory that included four large flumes and several small exhibits. I worked with several other members of the research group to rehabilitate an old flume that was previously in storage. We also built an intermediate-sized flume and planned and constructed a small flume, including channel design, plumbing, pump selection, electrical coordination, and a sediment collection system.",
         "title": "Research Assistant",
@@ -411,7 +410,8 @@
         "coords": [
             -79.95,
             40.44
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Tipon Channel Physical Model",
@@ -445,8 +445,7 @@
         "tags": [
             "C++",
             "HEC-RAS",
-            "River 2D",
-            "Featured"
+            "River 2D"
         ],
         "description": "Pool-Riffle stream structures can be found in nature and can demonstrate self-maintaining qualities by alternating high and low flows and then reversing flow regimes during high flow events. Modeling of these structures is typically done using one-dimensional models such as HEC-RAS. However, the reversal mechanism may not be found when a two-dimensional model is used. I compared a HEC-RAS and River2D model for several geometries and flow regimes to demonstrate the need to model these structures using more complex models. This paper was recognized at the 2011 World Environmental & Water Resources Congress for coming in 1st place for the student competition.",
         "title": "Undergraduate Student",
@@ -458,7 +457,8 @@
         "coords": [
             -79.95,
             40.44
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Mt. Lebanon Painter's Run Hydraulic Models",
@@ -790,8 +790,7 @@
             "ArcGIS",
             "ArcGIS Desktop",
             "Calibration",
-            "InfoWater Pro",
-            "Featured"
+            "InfoWater Pro"
         ],
         "description": "Provided GIS and water modeling troubleshooting to support EWW master planning.",
         "title": "Project Engineer",
@@ -806,7 +805,8 @@
         ],
         "gsd_codes": [
             "126-220"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "EWW Water System Consolidation Plan Update",
@@ -819,8 +819,7 @@
             "Storage Tanks",
             "Pump Station",
             "Hydraulics",
-            "Water Distribution",
-            "Featured"
+            "Water Distribution"
         ],
         "description": "Following the acquisition of Millcreek Township Water Authority, I oversaw the completion of an update and expansion of the InfoWater model. This involved adding nine pump stations and five water tanks across several new pressure districts. The new model was calibrated, and results supported a revised Master Plan. I resolved data challenges and stabilized the model for use in master planning.",
         "title": "Senior Project Engineer",
@@ -835,7 +834,8 @@
         ],
         "gsd_codes": [
             "126-262"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "NHTMA Larimer Model",
@@ -906,8 +906,7 @@
             "Hydrant Testing",
             "InfoWater Pro",
             "Water Distribution",
-            "WaterCAD",
-            "Featured"
+            "WaterCAD"
         ],
         "description": "I completed the upgrade of an existing WaterCAD hydraulic model to an InfoWater Pro water distribution model. This project included integrating various system updates, such as the incorporation of the latest infrastructure data. The system encompassed three tank sites, a treatment plant, and various interconnections. Calibration of the model was achieved through hydrant flow and pressure testing throughout the system. Additionally, I implemented data exchange tools to facilitate bi-directional information exchange between the model and GIS data.",
         "title": "Senior Project Engineer",
@@ -923,7 +922,8 @@
         "gsd_codes": [
             "327-175",
             "327-183"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Frey Pump Station Model",
@@ -1233,7 +1233,7 @@
         "client": "Indy Apple, LLC",
         "company": "Civil & Environmental Consultants",
         "location": "Indiana, PA",
-        "category": "Land Development, Grading, Erosion & Sedimentation Control, Permitting, Stormwater Design",
+        "category": "Land Development, Grading, Erosion & Sedimentation Control, Permitting, Stormwater",
         "tags": [
             "AutoCAD",
             "CAD",
@@ -1348,8 +1348,7 @@
             "InfoSWMM",
             "Pump Station",
             "SSOAP",
-            "SWMM",
-            "Featured"
+            "SWMM"
         ],
         "description": "Worked with the Authority to determine site locations for 10 flow meters and three rain gauges for a SWMM model of the Authority's main interceptors and several key pump stations and siphons. Worked on the project but did not complete it due to a job change.",
         "title": "Senior Project Engineer",
@@ -1364,7 +1363,8 @@
         ],
         "gsd_codes": [
             "173-103"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Fairfield Site Plan",
@@ -1594,8 +1594,7 @@
             "InfoSWMM",
             "SWMM",
             "Sewer Separation",
-            "Stormwater",
-            "Featured"
+            "Stormwater"
         ],
         "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); and managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements. For the second round of ALCOSAN GROW grants, I submitted reimbursement and new separation projects totaling over $1 million. I also submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
         "title": "Senior Project Engineer",
@@ -1628,8 +1627,7 @@
             "InfoSWMM",
             "SWMM",
             "Sewer Separation",
-            "Stormwater",
-            "Featured"
+            "Stormwater"
         ],
         "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); and managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements. For the second round of ALCOSAN GROW grants, I submitted reimbursement and new separation projects totaling over $1 million. I also submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
         "title": "Senior Project Engineer",
@@ -1662,8 +1660,7 @@
             "InfoSWMM",
             "SWMM",
             "Sewer Separation",
-            "Stormwater",
-            "Featured"
+            "Stormwater"
         ],
         "description": "Secured over $1.2M in ALCOSAN GROW grant funding for green infrastructure and sewer separation projects; provided preliminary stormwater designs including major separation concepts (Broadway Ave, Cubbage Ave); and managed grant applications, reimbursement documentation, and supporting hydraulic analysis to meet ALCOSAN requirements. For the second round of ALCOSAN GROW grants, I submitted reimbursement and new separation projects totaling over $1 million. I also submitted GROW grant applications for green source reduction projects for Carnegie Borough totaling nearly $200,000.",
         "title": "Senior Project Engineer",
@@ -1685,7 +1682,7 @@
         "client": "Findlay Township Municipal Authority",
         "company": "KLH Engineers",
         "location": "Findlay Township, PA",
-        "category": "Erosion & Sedimentation Control, Permitting, Stormwater Design",
+        "category": "Erosion & Sedimentation Control, Permitting, Stormwater",
         "tags": [
             "AutoCAD",
             "CAD",
@@ -1858,7 +1855,7 @@
         "client": "Authority of the Borough of Charleroi",
         "company": "KLH Engineers",
         "location": "Charleroi, PA",
-        "category": "Erosion & Sedimentation Control, Permitting, Stormwater Design",
+        "category": "Erosion & Sedimentation Control, Permitting, Stormwater",
         "tags": [
             "AutoCAD",
             "CAD",
@@ -2054,13 +2051,12 @@
         "client": "Hampton Township",
         "company": "KLH Engineers",
         "location": "Hampton, PA",
-        "category": "Visualization, Wastewater",
+        "category": "Visualization, Hydrologic & Hydraulic Modeling",
         "tags": [
             "Lumion",
-            "InfoWorks 360",
+            "Infraworks",
             "Navisworks Manage",
-            "WWTP",
-            "Featured"
+            "WWTP"
         ],
         "description": "Created a 3D visualization rendering walkthrough of a new WWTP design to demonstrate site visuals and operations using Lumion, InfoWorks 360, and Navisworks Manage.",
         "title": "Project Engineer",
@@ -2075,7 +2071,8 @@
         ],
         "gsd_codes": [
             "270-65"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Cokeburg - Misc",
@@ -2267,8 +2264,7 @@
             "QA/QC",
             "Rate Setting",
             "SSOAP",
-            "SWMM",
-            "Featured"
+            "SWMM"
         ],
         "description": "To come into compliance with PA DEP, KVWPCA communities completed sewer separation projects and plant upgrades. To establish new rates and determine flow values, I completed a post-construction H&H model using six months of flow data from 75 flow meters. The model was modified and calibrated to reflect current flow conditions and used to establish new rates. I also implemented model updates and managed post-processing, QA/QC, and flow-monitor data management.",
         "title": "Senior Project Engineer",
@@ -2283,7 +2279,8 @@
         ],
         "gsd_codes": [
             "342-30"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "MS4 Permit and Program",
@@ -2787,8 +2784,7 @@
             "ArcGIS",
             "ArcGIS Desktop",
             "ArcPad",
-            "Leak Detection System",
-            "Field Work"
+            "Leak Detection System"
         ],
         "description": "NETL was to deploy a new mobile air quality monitoring trailer. Testing of this trailer was proposed to be in the Allegheny National Forest which is dense with oil and gas wells. Utilizing a Leak Detection System, the team planned an efficient route to drive throughout and around the forest to detect methane and hydrocarbons from leaking wells. We identified several areas with significant levels of methane detected and presented our findings to staff.",
         "title": "Intern",
@@ -2912,8 +2908,7 @@
             "Data Science",
             "IoT",
             "Power BI",
-            "Dashboard",
-            "Featured"
+            "Dashboard"
         ],
         "description": "Built a Power BI dashboard to ingest groundwater well readings from IoT sensors.",
         "title": "Professional Engineer",
@@ -2928,7 +2923,8 @@
         ],
         "gsd_codes": [
             "OMA200804O"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Alterantives Southerly Tunnel Gate",
@@ -2940,7 +2936,7 @@
             "Calibration",
             "Gates/Controls",
             "InfoWorks ICM SE",
-            "Hydraulic Modeling"
+            "Hydraulics"
         ],
         "description": "Supported the Northeast Ohio Regional Sewer District on the Alts SOT Gate effort, including pulling HGLs and hydrographs from model runs. Key focus areas: Calibration, Gates/Controls, Hydraulic Modeling, Northeast Ohio Regional Sewer District.",
         "title": "Professional Engineer",
@@ -2976,8 +2972,7 @@
             "ArcGIS",
             "ArcGIS Field Maps",
             "ArcGIS Pro",
-            "ArcGIS Online",
-            "Featured"
+            "ArcGIS Online"
         ],
         "description": "Lead engineer for a $17M contract managing a 100-meter flow monitor plan and SWMM model expansion. Oversaw field data collection and integration into SWMM updates; developed GIS tools supporting flow/asset data collection, InfoAsset Manager integration, and project dashboards; managed a ~130-meter flow monitoring plan including data review, subcontractor coordination, QA/QC, and deliverables; supported LiDAR scanning of diversion structures to capture weir/pipe geometry and provide client-facing access to scan data; and contributed to the winning proposal development.",
         "title": "Professional Engineer",
@@ -2992,7 +2987,8 @@
         ],
         "gsd_codes": [
             "PWS200201H"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Smith Creek Landfill - Asset Management",
@@ -3001,8 +2997,7 @@
         "location": "St. Clair, MI",
         "category": "Asset Management",
         "tags": [
-            "Cartegraph",
-            "Asset Management"
+            "Cartegraph"
         ],
         "description": "Used Cartegraph to manage assets for a landfill client.",
         "title": "Professional Engineer",
@@ -3140,8 +3135,7 @@
             "InfoWater Pro",
             "SOP",
             "Staff Training",
-            "Water Distribution",
-            "Featured"
+            "Water Distribution"
         ],
         "description": "Embedded on-site at the Cleveland Water Department, I documented existing water distribution modeling practices and procedures. This involved conducting a thorough review of available documentation and interviewing staff to assess knowledge gaps and prepare for future staffing transitions. A report outlining the steps to be taken during a staffing transition and recommendations for modernizing Standard Operating Procedures was subsequently compiled including improvements to GIS practices, upgrades from InfoWater to InfoWater Pro and use of SCADA.",
         "title": "Professional Engineer",
@@ -3156,7 +3150,8 @@
         ],
         "gsd_codes": [
             "CWP500201E"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "CM16 Calibration Review",
@@ -3303,10 +3298,8 @@
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Pumps/Storage",
-            "Hydraulic Modeling",
+            "Hydraulics",
             "Optimization",
-            "Optimatics",
-            "Optimizer",
             "EPANET"
         ],
         "description": "Supported Brevard County Utilities on the South Beaches project, including reviewing pump curve model updates. Key focus areas: Pumps/Storage, Hydraulic Modeling, Brevard County.",
@@ -3361,7 +3354,7 @@
         "client": "City of Mt. Clemens",
         "company": "Wade Trim",
         "location": "Mt. Clemens, MI",
-        "category": "Water Model",
+        "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Water Distribution",
             "Calibration",
@@ -3425,8 +3418,7 @@
             "Node-RED",
             "Product Roadmap",
             "QA",
-            "UI/UX",
-            "Featured"
+            "UI/UX"
         ],
         "description": "Originated and led development of an enterprise platform to unify H&H modeling workflows, tools, and data processes in a single AI-enabled environment; defined vision/roadmap/requirements through workshops and user research; worked with external developers on MVP architecture/specs, ingestion concepts, UI/UX mockups, workflow diagrams, and sprint/backlog/QA. Delivers integrated modeling capabilities, including the Flow Data Review Tool.",
         "title": "Professional Engineer",
@@ -3438,7 +3430,8 @@
         "coords": [
             -80.004783,
             40.440683
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Flow Data Review Tool",
@@ -3527,8 +3520,7 @@
             "Hydraulics",
             "LOS",
             "Resiliency",
-            "Optimization",
-            "Featured"
+            "Optimization"
         ],
         "description": "Level of service and resiliency analysis for municipal water systems.",
         "title": "Professional Engineer",
@@ -3543,7 +3535,8 @@
         ],
         "gsd_codes": [
             "STP202011M"
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "SWMM Autocalibrator",
@@ -3561,8 +3554,7 @@
             "Reinforcement Learning",
             "RMSE",
             "SWMM",
-            "AI",
-            "Featured"
+            "AI"
         ],
         "description": "Led development, testing, and deployment of an autocalibration toolkit for SWMM-based models to automate calibration workflows; coordinated with internal SMEs and external partners to evaluate algorithms and cloud-based optimization methods; iterated on parameter normalization, uncertainty handling, multi-event scoring, calibration metrics, and visualization; supported applications for multiple utilities and delivered presentations, documentation, and trainings",
         "title": "Professional Engineer",
@@ -3574,7 +3566,8 @@
         "coords": [
             -80.004783,
             40.440683
-        ]
+        ],
+        "featured": true
     },
     {
         "name": "Pittsburgh Water 2024 Annual CSO Stats",
