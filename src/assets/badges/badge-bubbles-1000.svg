@@ -1,18 +1,18 @@
 <svg width="78" height="78" viewBox="-7 -4 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <!-- Inner Drop Shadow -->
-    <filter id="badge-journeyman_shadow" x="-50%" y="-50%" width="200%" height="200%">
+    <filter id="badge-bubbles-1000_shadow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/>
     </filter>
     <!-- Glow -->
-    <filter id="badge-journeyman_glow" x="-50%" y="-50%" width="200%" height="200%">
+    <filter id="badge-bubbles-1000_glow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
-    <filter id="badge-journeyman_inner_shadow">
+    <filter id="badge-bubbles-1000_inner_shadow">
       <feOffset dx="0" dy="2"/>
       <feGaussianBlur stdDeviation="2" result="offset-blur"/>
       <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse"/>
@@ -20,38 +20,39 @@
       <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
       <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
     </filter>
-    <!-- Background Gradient -->
-    <linearGradient id="badge-journeyman_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#84CC16"/>
-      <stop offset="1" stop-color="#22C55E"/>
+    <!-- Background Gradient: the original bubble pink through violet, kept for
+         continuity with the badge this tier family started as. -->
+    <linearGradient id="badge-bubbles-1000_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
     </linearGradient>
     <!-- Outer Ring Gradient -->
-    <linearGradient id="badge-journeyman_ring" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#A56A49"/>
-      <stop offset="50%" stop-color="#D28D69"/>
-      <stop offset="100%" stop-color="#774229"/>
+    <linearGradient id="badge-bubbles-1000_ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E9D5FF"/>
+      <stop offset="50%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
     </linearGradient>
   </defs>
-  
+
   <!-- Outer Ring  -->
-  <circle cx="32" cy="32" r="30" fill="url(#badge-journeyman_ring)" filter="url(#badge-journeyman_shadow)"/>
-  
+  <circle cx="32" cy="32" r="30" fill="url(#badge-bubbles-1000_ring)" filter="url(#badge-bubbles-1000_shadow)"/>
+
   <!-- Outer Ring Bevel -->
   <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
   <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
-  
+
   <!-- Inner Background -->
-  <circle cx="32" cy="32" r="26" fill="url(#badge-journeyman_bg)" filter="url(#badge-journeyman_inner_shadow)"/>
+  <circle cx="32" cy="32" r="26" fill="url(#badge-bubbles-1000_bg)" filter="url(#badge-bubbles-1000_inner_shadow)"/>
 
   <!-- Inner Highlight/Glass Curve -->
   <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
   <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
 
   <!-- Extra custom background shapes if any -->
-  
 
-  <!-- Icon Group -->
+
+  <!-- Icon Group: two bubbles. -->
   <g transform="translate(18, 18) scale(1.16)">
-    <path d="m8 3 4 8 5-5 5 15H2L8 3z" fill="none" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="8.5" cy="16.5" r="2.7" fill="none" stroke="#FFF" stroke-width="1.5"/><circle cx="14" cy="9" r="4.3" fill="none" stroke="#FFF" stroke-width="1.5"/><path d="M11.7 6.6a3 3 0 0 1 2.3-1" fill="none" stroke="#FFF" stroke-width="1.2" stroke-linecap="round"/>
   </g>
 </svg>

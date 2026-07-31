@@ -1,7 +1,7 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="78" height="78" viewBox="-7 -4 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <filter id="f_shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.4"/>
     </filter>
     <filter id="f_inner">
       <feOffset dx="0" dy="2"/>
@@ -11,11 +11,11 @@
       <feComposite operator="in" in="color" in2="inverse" result="shadow"/>
       <feComposite operator="over" in="shadow" in2="SourceGraphic"/>
     </filter>
-    <linearGradient id="bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+    <linearGradient id="badge-footer_bg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#F97316"/>
       <stop offset="1" stop-color="#EAB308"/>
     </linearGradient>
-    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="badge-footer_ring" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#B0B5B9"/>
       <stop offset="50%" stop-color="#E1E5E8"/>
       <stop offset="100%" stop-color="#6E7A81"/>
@@ -23,10 +23,10 @@
   </defs>
 
   <!-- Badge shell -->
-  <circle cx="32" cy="32" r="30" fill="url(#ring)" filter="url(#f_shadow)"/>
+  <circle cx="32" cy="32" r="30" fill="url(#badge-footer_ring)" filter="url(#f_shadow)"/>
   <circle cx="32" cy="32" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="1"/>
   <circle cx="32" cy="32" r="29" fill="none" stroke="#000000" stroke-opacity="0.4" stroke-width="1"/>
-  <circle cx="32" cy="32" r="26" fill="url(#bg)" filter="url(#f_inner)"/>
+  <circle cx="32" cy="32" r="26" fill="url(#badge-footer_bg)" filter="url(#f_inner)"/>
   <path d="M 10,32 A 22,22 0 0,1 54,32 A 22,12 0 0,0 10,32 Z" fill="#ffffff" opacity="0.15"/>
   <circle cx="32" cy="32" r="26" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1"/>
 

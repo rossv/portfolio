@@ -207,6 +207,15 @@ export default function HexGridSection() {
     const [activeTileId, setActiveTileId] = useState(null);
     const sectionRef = useRef(null);
 
+    // Exploring all four groups earns the Toolsmith badge. Only the tiles
+    // announce a group; the section's own mouse-leave reset stays silent.
+    const activateGroup = (group) => {
+        setActiveGroup(group);
+        if (group) {
+            window.dispatchEvent(new CustomEvent('toolkit-group', { detail: { group } }));
+        }
+    };
+
     useEffect(() => {
         const sectionNode = sectionRef.current;
         if (!sectionNode) {
@@ -293,7 +302,7 @@ export default function HexGridSection() {
                                     {...icon}
                                     delay={rowIndex * 2 + iconIndex}
                                     activeGroup={activeGroup}
-                                    setActiveGroup={setActiveGroup}
+                                    setActiveGroup={activateGroup}
                                     lockedGroup={lockedGroup}
                                     setLockedGroup={setLockedGroup}
                                     activeTileId={activeTileId}

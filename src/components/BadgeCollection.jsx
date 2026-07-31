@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import badgeSections from '../assets/badges/badge-sections.svg';
-import badgeBubbles from '../assets/badges/badge-bubbles.svg';
+import badgeBubbles100 from '../assets/badges/badge-bubbles-100.svg';
+import badgeBubbles1000 from '../assets/badges/badge-bubbles-1000.svg';
+import badgeBubbles5000 from '../assets/badges/badge-bubbles-5000.svg';
 import badgeMagicLamp from '../assets/badges/badge-magic-lamp.svg';
 import badgeProject1 from '../assets/badges/badge-project-1.svg';
 import badgeProject10 from '../assets/badges/badge-project-10.svg';
@@ -13,10 +15,17 @@ import badgeTime5 from '../assets/badges/badge-time-5.svg';
 import badgeTime15 from '../assets/badges/badge-time-15.svg';
 import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
+import badgeCartographer from '../assets/badges/badge-cartographer.svg';
+import badgePipeline from '../assets/badges/badge-pipeline.svg';
+import badgeModeCollector from '../assets/badges/badge-mode-collector.svg';
+import badgeStargazer from '../assets/badges/badge-stargazer.svg';
+import badgeToolsmith from '../assets/badges/badge-toolsmith.svg';
+import badgeLightsOut from '../assets/badges/badge-lights-out.svg';
 import ThemeToggle from './ThemeToggle';
 import HomeButton from './HomeButton';
 import rawProjects from '../data/project.json';
 import { visibleProjects } from '../utils/visibleProjects';
+import { MODES, MODE_EVENT, readMode } from '../utils/siteMode';
 
 const projects = visibleProjects(rawProjects);
 
@@ -33,21 +42,21 @@ const BADGES = [
     id: 'bubble-collector-100',
     name: 'Bubble Novice',
     description: 'Collected 100 floating bubbles.',
-    icon: badgeBubbles,
+    icon: badgeBubbles100,
     iconAccent: 'bg-cyan-100 text-cyan-700 ring-cyan-300/70 dark:bg-cyan-500/20 dark:text-cyan-200 dark:ring-cyan-400/40',
   },
   {
     id: 'bubble-collector-1000',
     name: 'Bubble Enthusiast',
     description: 'Collected 1,000 floating bubbles.',
-    icon: badgeBubbles,
+    icon: badgeBubbles1000,
     iconAccent: 'bg-violet-100 text-violet-700 ring-violet-300/70 dark:bg-violet-500/20 dark:text-violet-200 dark:ring-violet-400/40',
   },
   {
     id: 'bubble-collector-5000',
     name: 'Bubble Master',
     description: 'Collected 5,000 floating bubbles.',
-    icon: badgeBubbles,
+    icon: badgeBubbles5000,
     iconAccent: 'bg-amber-100 text-amber-700 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
   },
   {
@@ -122,6 +131,48 @@ const BADGES = [
     description: 'Entered space nerd mode.',
     icon: badgeSpaceNerd,
   },
+  {
+    id: 'cartographer',
+    name: 'Cartographer',
+    description: 'Entered geospatial mode.',
+    icon: badgeCartographer,
+    iconAccent: 'bg-amber-100 text-amber-800 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
+  },
+  {
+    id: 'pipeline-operator',
+    name: 'Pipeline Operator',
+    description: 'Entered technologist mode.',
+    icon: badgePipeline,
+    iconAccent: 'bg-sky-100 text-sky-800 ring-sky-300/70 dark:bg-sky-500/20 dark:text-sky-200 dark:ring-sky-400/40',
+  },
+  {
+    id: 'mode-collector',
+    name: 'Mode Collector',
+    description: 'Tried all four backdrops.',
+    icon: badgeModeCollector,
+    iconAccent: 'bg-orange-100 text-orange-800 ring-orange-300/70 dark:bg-orange-500/20 dark:text-orange-200 dark:ring-orange-400/40',
+  },
+  {
+    id: 'stargazer',
+    name: 'Stargazer',
+    description: 'Placed 25 stars in the night sky.',
+    icon: badgeStargazer,
+    iconAccent: 'bg-violet-100 text-violet-700 ring-violet-300/70 dark:bg-violet-500/20 dark:text-violet-200 dark:ring-violet-400/40',
+  },
+  {
+    id: 'toolsmith',
+    name: 'Toolsmith',
+    description: 'Explored every toolkit group.',
+    icon: badgeToolsmith,
+    iconAccent: 'bg-indigo-100 text-indigo-700 ring-indigo-300/70 dark:bg-indigo-500/20 dark:text-indigo-200 dark:ring-indigo-400/40',
+  },
+  {
+    id: 'lights-out',
+    name: 'Lights Out',
+    description: 'Flipped between light and dark.',
+    icon: badgeLightsOut,
+    iconAccent: 'bg-slate-200 text-slate-700 ring-slate-400/70 dark:bg-slate-500/20 dark:text-slate-100 dark:ring-slate-400/40',
+  },
 ];
 
 const SECTION_IDS = ['skills', 'timeline', 'leadership', 'achievements', 'projects', 'footer'];
@@ -134,6 +185,11 @@ const TIME_BADGE_THRESHOLDS = [
   { id: 'quarter-hour', ms: 15 * 60 * 1000 },
   { id: 'hour-mark', ms: 60 * 60 * 1000 },
 ];
+// One badge per backdrop that is an easter egg to find. Water is the default,
+// so arriving there earns nothing on its own — it only counts toward the set.
+const MODE_BADGES = { geo: 'cartographer', tech: 'pipeline-operator', stars: 'space-nerd' };
+const TOOLKIT_GROUPS = ['hh', 'gis', 'coding', 'eng'];
+const STARS_TARGET = 25;
 const DOCK_AUTOHIDE_MS = 8000;
 
 const parseStoredState = (rawValue) => {
@@ -152,6 +208,11 @@ const parseStoredState = (rawValue) => {
       footerClicks: Array.isArray(parsed.footerClicks) ? parsed.footerClicks : [],
       visitedSections: Array.isArray(parsed.visitedSections) ? parsed.visitedSections : [],
       timeSpentMs: Number.isFinite(parsed.timeSpentMs) ? parsed.timeSpentMs : 0,
+      // Added after v2 shipped; absent for anyone with existing progress, so
+      // these default rather than invalidating their unlocks.
+      modesSeen: Array.isArray(parsed.modesSeen) ? parsed.modesSeen : [],
+      toolkitGroups: Array.isArray(parsed.toolkitGroups) ? parsed.toolkitGroups : [],
+      starsPlaced: Number.isFinite(parsed.starsPlaced) ? parsed.starsPlaced : 0,
     };
   } catch {
     return null;
@@ -178,6 +239,9 @@ export default function BadgeCollection() {
     jobTotal: 0,
     footerClicks: 0,
     timeSpentMs: 0,
+    modesSeen: 0,
+    toolkitGroups: 0,
+    starsPlaced: 0,
   });
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
@@ -187,6 +251,9 @@ export default function BadgeCollection() {
   const footerClicksRef = useRef(new Set());
   const visitedSectionsRef = useRef(new Set());
   const timeSpentMsRef = useRef(0);
+  const modesSeenRef = useRef(new Set());
+  const toolkitGroupsRef = useRef(new Set());
+  const starsPlacedRef = useRef(0);
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
   const lastScrollYRef = useRef(0);
@@ -297,6 +364,9 @@ export default function BadgeCollection() {
         footerClicks: Array.from(footerClicksRef.current),
         visitedSections: Array.from(visitedSectionsRef.current),
         timeSpentMs: timeSpentMsRef.current,
+        modesSeen: Array.from(modesSeenRef.current),
+        toolkitGroups: Array.from(toolkitGroupsRef.current),
+        starsPlaced: starsPlacedRef.current,
       })
     );
   };
@@ -321,6 +391,9 @@ export default function BadgeCollection() {
     jobReadsRef.current = new Set(stored.jobReads);
     footerClicksRef.current = new Set(stored.footerClicks);
     visitedSectionsRef.current = new Set(stored.visitedSections);
+    modesSeenRef.current = new Set(stored.modesSeen);
+    toolkitGroupsRef.current = new Set(stored.toolkitGroups);
+    starsPlacedRef.current = stored.starsPlaced;
     setProgressSnapshot({
       bubbleCount: stored.bubbleCount,
       projectReads: stored.projectReads.length,
@@ -329,6 +402,9 @@ export default function BadgeCollection() {
       jobTotal: Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0,
       footerClicks: stored.footerClicks.length,
       timeSpentMs: stored.timeSpentMs,
+      modesSeen: stored.modesSeen.length,
+      toolkitGroups: stored.toolkitGroups.length,
+      starsPlaced: stored.starsPlaced,
     });
     projectTotalRef.current = TOTAL_PROJECT_CARDS;
     jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
@@ -491,22 +567,66 @@ export default function BadgeCollection() {
       }
     };
 
-    const handleSpaceNerdToggle = (event) => {
-      if (event.detail?.enabled) {
-        unlockBadge('space-nerd');
+    // Each backdrop that has to be discovered carries its own badge, and
+    // seeing all four earns the set. This listens to the mode event rather
+    // than the legacy space-nerd one so every backdrop is covered by the
+    // same path — siteMode still fires both.
+    const recordMode = (mode) => {
+      if (!MODES.includes(mode)) return;
+      const badgeId = MODE_BADGES[mode];
+      if (badgeId) unlockBadge(badgeId);
+      if (modesSeenRef.current.has(mode)) return;
+      modesSeenRef.current.add(mode);
+      setProgressSnapshot((prev) => ({ ...prev, modesSeen: modesSeenRef.current.size }));
+      persistBadgeState();
+      if (modesSeenRef.current.size >= MODES.length) {
+        unlockBadge('mode-collector');
       }
     };
+
+    const handleModeChange = (event) => recordMode(event.detail?.mode);
+
+    const handleToolkitGroup = (event) => {
+      const group = event.detail?.group;
+      if (!TOOLKIT_GROUPS.includes(group) || toolkitGroupsRef.current.has(group)) return;
+      toolkitGroupsRef.current.add(group);
+      setProgressSnapshot((prev) => ({ ...prev, toolkitGroups: toolkitGroupsRef.current.size }));
+      persistBadgeState();
+      if (toolkitGroupsRef.current.size >= TOOLKIT_GROUPS.length) {
+        unlockBadge('toolsmith');
+      }
+    };
+
+    const handleStarPlace = () => {
+      starsPlacedRef.current += 1;
+      setProgressSnapshot((prev) => ({ ...prev, starsPlaced: starsPlacedRef.current }));
+      persistBadgeState();
+      if (starsPlacedRef.current >= STARS_TARGET) {
+        unlockBadge('stargazer');
+      }
+    };
+
+    const handleThemeToggle = () => unlockBadge('lights-out');
+
+    // A mode restored from storage fires no event, so seed from what's stored.
+    recordMode(readMode());
 
     window.addEventListener('bubble-collect', handleBubbleCollect);
     window.addEventListener('project-open', handleProjectOpen);
     window.addEventListener('job-open', handleJobOpen);
-    window.addEventListener('space-nerd-toggle', handleSpaceNerdToggle);
+    window.addEventListener(MODE_EVENT, handleModeChange);
+    window.addEventListener('toolkit-group', handleToolkitGroup);
+    window.addEventListener('star-place', handleStarPlace);
+    window.addEventListener('theme-toggle', handleThemeToggle);
 
     return () => {
       window.removeEventListener('bubble-collect', handleBubbleCollect);
       window.removeEventListener('project-open', handleProjectOpen);
       window.removeEventListener('job-open', handleJobOpen);
-      window.removeEventListener('space-nerd-toggle', handleSpaceNerdToggle);
+      window.removeEventListener(MODE_EVENT, handleModeChange);
+      window.removeEventListener('toolkit-group', handleToolkitGroup);
+      window.removeEventListener('star-place', handleStarPlace);
+      window.removeEventListener('theme-toggle', handleThemeToggle);
     };
   }, [unlockedIds]);
 
@@ -677,7 +797,10 @@ export default function BadgeCollection() {
     footerClicksRef.current = new Set();
     visitedSectionsRef.current = new Set();
     timeSpentMsRef.current = 0;
-    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0, timeSpentMs: 0 });
+    modesSeenRef.current = new Set();
+    toolkitGroupsRef.current = new Set();
+    starsPlacedRef.current = 0;
+    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0, timeSpentMs: 0, modesSeen: 0, toolkitGroups: 0, starsPlaced: 0 });
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(BADGE_STORAGE_KEY);
       window.localStorage.removeItem('bubbleCollectCount');
@@ -725,6 +848,7 @@ export default function BadgeCollection() {
                   const isDismissed = dismissed.has(badge.id);
                   const isRecent = recentlyUnlocked.has(badge.id);
                   const isActive = (isTouchMode ? selectedBadge : hoveredBadge) === badge.id;
+                  const isOpen = !isDismissed || isActive;
 
                   return (
                     <button
@@ -737,7 +861,7 @@ export default function BadgeCollection() {
                           badgeItemRefs.current.delete(badge.id);
                         }
                       }}
-                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isDismissed && !isActive ? 'badge-collapsed' : ''}`}
+                      className={`badge-chip shrink-0 ${isRecent ? 'badge-pop' : ''} ${isOpen ? 'is-open' : 'badge-collapsed'}`}
                       onMouseEnter={() => {
                         if (!isDismissed || isTouchMode) return;
                         setHoveredBadge(badge.id);
@@ -757,16 +881,28 @@ export default function BadgeCollection() {
                       aria-pressed={isActive}
                     >
                       <div
-                        className={`rounded-full ring-1 p-1 ${badge.iconAccent || 'bg-fuchsia-100 text-fuchsia-700 ring-fuchsia-300/70 dark:bg-fuchsia-500/20 dark:text-fuchsia-200 dark:ring-fuchsia-400/40'}`}
+                        className={`shrink-0 rounded-full ring-1 p-1 ${badge.iconAccent || 'bg-fuchsia-100 text-fuchsia-700 ring-fuchsia-300/70 dark:bg-fuchsia-500/20 dark:text-fuchsia-200 dark:ring-fuchsia-400/40'}`}
                       >
-                        <img src={badge.icon.src || badge.icon} alt={badge.name} className={isDismissed && !isActive ? "h-7 w-7" : "h-10 w-10"} />
+                        {/* Sized up from h-10/h-7: each icon's viewBox now
+                            reserves room for its drop shadow, so the badge
+                            fills 77% of the box rather than 94%. These keep
+                            the drawn badge the size it was before. */}
+                        <img
+                          src={badge.icon.src || badge.icon}
+                          alt={badge.name}
+                          className={`badge-chip__icon ${isOpen ? 'h-12 w-12' : 'h-8 w-8'}`}
+                        />
                       </div>
-                      {(!isDismissed || isActive) && (
-                        <div className="text-left">
+                      {/* Always mounted, and clipped by the wrapper when
+                          collapsed, so the chip's width has something to ease
+                          against. The inner width is fixed to the wrapper's
+                          open max-width so the text does not reflow mid-reveal. */}
+                      <div className="badge-chip__label">
+                        <div className="w-[9.5rem]">
                           <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">{badge.name}</p>
-                          <p className="max-w-[140px] text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-300">{badge.description}</p>
                         </div>
-                      )}
+                      </div>
                     </button>
                   );
                 })}
@@ -799,6 +935,9 @@ export default function BadgeCollection() {
             <p className="text-slate-600 dark:text-slate-300">Project cards opened: {progressSnapshot.projectReads}/{Math.max(progressSnapshot.projectTotal, progressSnapshot.projectReads)}</p>
             <p className="text-slate-600 dark:text-slate-300">Roles opened: {progressSnapshot.jobReads}/{Math.max(progressSnapshot.jobTotal, progressSnapshot.jobReads)}</p>
             <p className="text-slate-600 dark:text-slate-300">Footer links clicked: {progressSnapshot.footerClicks}/{TOTAL_FOOTER_LINKS}</p>
+            <p className="text-slate-600 dark:text-slate-300">Backdrops tried: {progressSnapshot.modesSeen}/{MODES.length}</p>
+            <p className="text-slate-600 dark:text-slate-300">Toolkit groups explored: {progressSnapshot.toolkitGroups}/{TOOLKIT_GROUPS.length}</p>
+            <p className="text-slate-600 dark:text-slate-300">Stars placed: {Math.min(progressSnapshot.starsPlaced, STARS_TARGET)}/{STARS_TARGET}</p>
             <p className="text-slate-600 dark:text-slate-300">Time on page: {Math.floor(progressSnapshot.timeSpentMs / 60000)}m {Math.floor((progressSnapshot.timeSpentMs % 60000) / 1000)}s</p>
             {nextBubbleTier ? (
               <p className="mt-1 text-slate-600 dark:text-slate-300">

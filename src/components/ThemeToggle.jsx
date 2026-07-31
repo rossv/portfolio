@@ -22,6 +22,10 @@ export default function ThemeToggle() {
             document.documentElement.classList.remove('dark');
             localStorage.setItem('theme', 'light');
         }
+
+        // Flipping the theme earns a badge. Dispatched rather than watched for,
+        // since toggling only ever happens here.
+        window.dispatchEvent(new CustomEvent('theme-toggle', { detail: { theme: newTheme } }));
     };
 
     // return null on server to avoid hydration mismatch if possible, 
