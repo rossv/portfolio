@@ -271,9 +271,11 @@ export default function FluidBackground() {
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
             } else if (isTech) {
-                // Technologist: inject packets from the nearest node, so a
-                // click sends data down the graph.
+                // Technologist: light the node nearest the pointer and fire its
+                // own edges for an immediate local response, then kick the whole
+                // graph, so a click sends data all the way down every lane.
                 pipeline?.pulse(x, y);
+                pipeline?.run();
             } else {
                 if (prefersReduced) return;
                 // Water: a couple of expanding ripple rings + a splash that
