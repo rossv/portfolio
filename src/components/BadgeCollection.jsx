@@ -821,7 +821,7 @@ export default function BadgeCollection() {
       onMouseLeave={() => setIsDockInteracting(false)}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
-        <div className="flex items-center gap-2 overflow-x-hidden overflow-y-visible rounded-full border border-slate-200/90 bg-white/85 p-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85">
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-2 overflow-x-hidden overflow-y-visible rounded-2xl border border-slate-200/90 bg-white/85 p-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85 md:flex md:gap-2 md:rounded-full">
           <button
             type="button"
             className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
@@ -830,7 +830,7 @@ export default function BadgeCollection() {
             Badges {unlockedBadges.length}/{BADGES.length}
           </button>
 
-          <div className="relative min-w-0 flex-1 flex items-center">
+          <div className="relative col-span-3 row-start-2 flex min-w-0 w-full items-center md:w-auto md:flex-1">
             {canScrollLeft && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollLeftAmount}
@@ -928,7 +928,7 @@ export default function BadgeCollection() {
             )}
           </div>
 
-          <div className="shrink-0 flex items-center gap-2">
+          <div className="col-start-3 row-start-1 flex shrink-0 items-center gap-2">
             <HomeButton />
             <ThemeToggle />
           </div>
