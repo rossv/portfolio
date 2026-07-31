@@ -4051,7 +4051,7 @@
         "name": "GIS Maintenance",
         "client": "Moon Township Municipal Authority",
         "company": "KLH Engineers, Inc.",
-        "location": "",
+        "location": "Moon, PA",
         "category": "Asset Management, GIS",
         "tags": [
             "ArcGIS",
@@ -4062,8 +4062,8 @@
             "Staff Training"
         ],
         "description": "I maintained and updated GIS data for various waterline and sewer projects over several years. My work involved troubleshooting, revising maps, and integrating GPS data into existing systems. I provided ongoing GIS support and training, ensuring that the GIS architecture was up to date and functional for internal stakeholders.",
-        "title": "",
-        "project_role": "",
+        "title": "Senior Project Engineer",
+        "project_role": "GIS Specialist, Engineer",
         "image": "/src/assets/projects/gis-maintenance.webp",
         "start_date": "1/6/2017",
         "end_date": "3/3/2021",
@@ -4071,13 +4071,16 @@
         "gsd_codes": [
             "327-155"
         ],
-        "draft": true
+        "coords": [
+            -80.2022643066307,
+            40.4965176845465
+        ]
     },
     {
         "name": "LMCPR PCMP - Review And Guidelines",
         "client": "Metropolitan Sewer District of Greater Cincinnati",
         "company": "Wade Trim",
-        "location": "",
+        "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
         "tags": [
             "Calibration",
@@ -4088,8 +4091,8 @@
             "Documentation"
         ],
         "description": "I worked on the LMCPR PCMP project, focusing on the review and guidelines related to hydrologic and hydraulic modeling. My contributions involved troubleshooting, conducting detailed reviews, and addressing questions throughout the project’s lifecycle. I utilized SWMM for calibration reviews, coordinated with team members, and documented findings for internal use.",
-        "title": "",
-        "project_role": "",
+        "title": "Professional Engineer",
+        "project_role": "Modeler, Engineer",
         "image": "/src/assets/projects/lmcpr-pcmp-review-and-guidelines.webp",
         "start_date": "5/26/2021",
         "end_date": "10/19/2021",
@@ -4097,13 +4100,16 @@
         "gsd_codes": [
             "MSD201515H"
         ],
-        "draft": true
+        "coords": [
+            -84.5489269441742,
+            39.1111592536412
+        ]
     },
     {
         "name": "GIS Services",
         "client": "Authority of the Borough of Charleroi",
         "company": "KLH Engineers, Inc.",
-        "location": "",
+        "location": "Charleroi, PA",
         "category": "GIS, Asset Management",
         "tags": [
             "ArcGIS",
@@ -4123,8 +4129,8 @@
             "Documentation"
         ],
         "description": "I worked on various GIS projects focused on data management and visualization using ArcGIS tools. My tasks included data cleaning, training, and updating GIS maps for internal applications.",
-        "title": "",
-        "project_role": "",
+        "title": "Senior Project Engineer",
+        "project_role": "GIS Specialist, Engineer",
         "image": "/src/assets/projects/gis-services.webp",
         "start_date": "5/17/2017",
         "end_date": "3/2/2021",
@@ -4132,6 +4138,9 @@
         "gsd_codes": [
             "388-30"
         ],
-        "draft": true
+        "coords": [
+            -79.891738726048,
+            40.1327231205171
+        ]
     }
 ]
