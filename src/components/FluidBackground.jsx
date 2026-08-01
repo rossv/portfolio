@@ -89,6 +89,14 @@ export default function FluidBackground() {
         const isGeo = mode === 'geo';
         const isTech = mode === 'tech';
 
+        // On a touch screen a scroll *is* a finger drag, so touchmove feeds the
+        // pointer reaction through every scroll. Water wears that well — the
+        // bubbles just part around the finger — but terrain heaving and pipeline
+        // nodes firing on each scroll read as noise, so those modes follow taps
+        // only. Same query BadgeCollection uses for its touch branch.
+        const isCoarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+        const tracksPointerMove = mode === 'water' || !isCoarsePointer;
+
         /* ---------- space mode ------------------------------------- */
         // Each mode builds only its own pieces, so the others carry no cost.
         let starfield = null;
@@ -484,7 +492,15 @@ export default function FluidBackground() {
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('touchmove', handleTouchMove);
+        if (tracksPointerMove) {
+            window.addEventListener('touchmove', handleTouchMove);
+        } else {
+            // Park it off-canvas. This effect re-runs on a mode change, so a
+            // drag left over from water would otherwise pin a permanent bump
+            // under the last finger position once geo took over.
+            mouseRef.current.x = -1000;
+            mouseRef.current.y = -1000;
+        }
         window.addEventListener('pointerdown', handlePointerDown);
 
         // Initial scroll position
@@ -497,7 +513,7 @@ export default function FluidBackground() {
             window.removeEventListener('scroll', updateScroll);
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('touchmove', handleTouchMove);
+            if (tracksPointerMove) window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('pointerdown', handlePointerDown);
             cancelAnimationFrame(animationFrameId);
         };
