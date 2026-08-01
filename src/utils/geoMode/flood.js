@@ -57,10 +57,14 @@ export function createFlood(ctx, palette) {
         const top = BAND_TOP - scrollY - 40;
         const bot = BAND_TOP - scrollY + bandH * 0.8;
         if (bot < 0) return;
+        // 0.88 rather than 0.7, and full strength by 0.10 rather than 0.16:
+        // the contours read through the band far enough to compete with the
+        // reach and with the hero type over it. Kept in step with
+        // waveform.dim().
         const grad = ctx.createLinearGradient(0, top, 0, bot);
         grad.addColorStop(0, `rgba(${rgb}, 0)`);
-        grad.addColorStop(0.16, `rgba(${rgb}, 0.7)`);
-        grad.addColorStop(0.7, `rgba(${rgb}, 0.7)`);
+        grad.addColorStop(0.10, `rgba(${rgb}, 0.88)`);
+        grad.addColorStop(0.7, `rgba(${rgb}, 0.88)`);
         grad.addColorStop(1, `rgba(${rgb}, 0)`);
         ctx.fillStyle = grad;
         ctx.fillRect(0, top, width, bot - top);
