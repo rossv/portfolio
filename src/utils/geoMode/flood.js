@@ -14,6 +14,8 @@ import { smooth, hash, hexToRgb } from './palette';
 const BAND_TOP = 80;          // matches WaterBanner's `top-20`
 const TILES_PER_SEC = 520;    // raster-scan load rate
 const CYCLE = 15000;          // one flood in and out
+const NARROW_MAX = 768;       // matches Tailwind's md
+const TEXT_GUARD = 360;       // px the veil runs past the band on a phone
 
 export function createFlood(ctx, palette) {
     let band = null;
@@ -51,20 +53,26 @@ export function createFlood(ctx, palette) {
 
     // Knocks the contours back under the band, so the two are not competing
     // for the same lines. Drawn on the main canvas, before the band itself.
+    // The reach behind the band keeps its full 0.7: anything heavier showed
+    // through the band's own downward fade and dulled the raster.
+    //
+    // The band bottoms out at 250px tall, so on a phone the veil ended near
+    // y=283 — above the hero type, which starts near y=232 and runs past 600.
+    // The contours therefore read at full strength straight through the name.
+    // A narrow viewport runs the veil on past the band far enough to clear the
+    // type. Desktop needs none of it: its band is 412px, and the type sits
+    // below the veil where the contours are already quiet.
     function dim(scrollY) {
         if (!bandCtx) return;
         const rgb = hexToRgb(palette.ground);
+        const guard = width < NARROW_MAX ? TEXT_GUARD : 0;
         const top = BAND_TOP - scrollY - 40;
-        const bot = BAND_TOP - scrollY + bandH * 0.8;
+        const bot = BAND_TOP - scrollY + bandH * 0.8 + guard;
         if (bot < 0) return;
-        // 0.88 rather than 0.7, and full strength by 0.10 rather than 0.16:
-        // the contours read through the band far enough to compete with the
-        // reach and with the hero type over it. Kept in step with
-        // waveform.dim().
         const grad = ctx.createLinearGradient(0, top, 0, bot);
         grad.addColorStop(0, `rgba(${rgb}, 0)`);
-        grad.addColorStop(0.10, `rgba(${rgb}, 0.88)`);
-        grad.addColorStop(0.7, `rgba(${rgb}, 0.88)`);
+        grad.addColorStop(0.16, `rgba(${rgb}, 0.7)`);
+        grad.addColorStop(0.7, `rgba(${rgb}, 0.7)`);
         grad.addColorStop(1, `rgba(${rgb}, 0)`);
         ctx.fillStyle = grad;
         ctx.fillRect(0, top, width, bot - top);
