@@ -821,26 +821,32 @@ export default function BadgeCollection() {
       onMouseLeave={() => setIsDockInteracting(false)}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
-        {/* A pill at both widths, including the two-row mobile stack. Two rows
-            put the radius at ~61px, so the ends bite ~21px into where the first
-            and last rows sit: px-4 is the room that buys back, and it only
-            reads as a pill because each child is itself a pill as tall as its
-            row, nesting inside the ends. Desktop is one row and needs neither. */}
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-2 overflow-x-hidden overflow-y-visible rounded-full border border-slate-200/90 bg-white/85 px-4 py-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85 md:flex md:gap-2 md:p-2">
+        {/* One row at every width, so the pill stays a shallow stadium its
+            children nest inside. The mobile stack this replaced put the radius
+            at ~61px and left the middle grid cell of its top row empty — 89px
+            of dead space that no padding could justify. Mobile only gets wider
+            px, because 8px reads tighter against 382px than against 1280px. */}
+        <div className="flex items-center gap-2 overflow-x-hidden overflow-y-visible rounded-full border border-slate-200/90 bg-white/85 px-3 py-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85 md:p-2">
           {/* Matches HomeButton/ThemeToggle's box math rather than setting a
               flat h-11: they are py-1.5 around a 30px core (an 18px icon in a
               p-1.5 ring), so the same padding and a 30px line box here keeps
               the three pills equal at any devicePixelRatio — a fixed height
-              drifts from them once a 1px border renders as 1.33px. */}
+              drifts from them once a 1px border renders as 1.33px.
+
+              Mobile shows the bare count. Spelling out "Badges 11/22" cost
+              115px of a 347px bar, and the strip beside it needs every pixel;
+              the total still reads in full in the panel this opens. */}
           <button
             type="button"
             className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold leading-[30px] text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+            aria-label={`Badges ${unlockedBadges.length} of ${BADGES.length}. Show progress.`}
             onClick={() => setIsProgressOpen((prev) => !prev)}
           >
-            Badges {unlockedBadges.length}/{BADGES.length}
+            <span className="md:hidden">{unlockedBadges.length}</span>
+            <span className="hidden md:inline">Badges {unlockedBadges.length}/{BADGES.length}</span>
           </button>
 
-          <div className="relative col-span-3 row-start-2 flex min-w-0 w-full items-center md:w-auto md:flex-1">
+          <div className="relative flex min-w-0 flex-1 items-center">
             {canScrollLeft && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollLeftAmount}
@@ -938,7 +944,7 @@ export default function BadgeCollection() {
             )}
           </div>
 
-          <div className="col-start-3 row-start-1 flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <HomeButton />
             <ThemeToggle />
           </div>
