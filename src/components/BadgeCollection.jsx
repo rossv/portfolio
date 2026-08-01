@@ -821,10 +821,20 @@ export default function BadgeCollection() {
       onMouseLeave={() => setIsDockInteracting(false)}
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-3">
-        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-2 overflow-x-hidden overflow-y-visible rounded-2xl border border-slate-200/90 bg-white/85 p-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85 md:flex md:gap-2 md:rounded-full">
+        {/* A pill at both widths, including the two-row mobile stack. Two rows
+            put the radius at ~61px, so the ends bite ~21px into where the first
+            and last rows sit: px-4 is the room that buys back, and it only
+            reads as a pill because each child is itself a pill as tall as its
+            row, nesting inside the ends. Desktop is one row and needs neither. */}
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-2 gap-y-2 overflow-x-hidden overflow-y-visible rounded-full border border-slate-200/90 bg-white/85 px-4 py-2 shadow-lg backdrop-blur dark:border-slate-700/90 dark:bg-slate-900/85 md:flex md:gap-2 md:p-2">
+          {/* Matches HomeButton/ThemeToggle's box math rather than setting a
+              flat h-11: they are py-1.5 around a 30px core (an 18px icon in a
+              p-1.5 ring), so the same padding and a 30px line box here keeps
+              the three pills equal at any devicePixelRatio — a fixed height
+              drifts from them once a 1px border renders as 1.33px. */}
           <button
             type="button"
-            className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
+            className="shrink-0 whitespace-nowrap rounded-full border border-slate-300 bg-white/90 px-3 py-1.5 text-xs font-semibold leading-[30px] text-slate-700 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100"
             onClick={() => setIsProgressOpen((prev) => !prev)}
           >
             Badges {unlockedBadges.length}/{BADGES.length}
