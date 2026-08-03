@@ -498,21 +498,26 @@
         "tags": [
             "ArcGIS Desktop",
             "Wincan",
-            "ArcGIS"
+            "ArcGIS",
+            "ArcMap",
+            "Staff Training",
+            "CCTV",
+            "Domains"
         ],
         "description": "The Clairton Municipal Authority contracted with a pipe televising company to produce a city-wide database of pipe inspections of their combined sewer system. The deliverable was a hard drive containing hundreds of gigabytes of photos and video for each pipe in the system. Additionally, the inspections were conducted without a clear agreement of maps to be used to identify structures and pipes. As a result the Authority had a huge amount of disorganized data that was difficult to access and extract actionable information from. To solve this, I obtained various paper and digital maps that were available and processed them into one GIS with clear and logical naming conventions. I then utilized commercial software to create geolocated features for each pipe defect that was recorded by the contractor. I then linked the CCTV photos and video to the actual inspection locations. The deliverable product was a free-to-use GIS map that the Authority could use to identify exactly where problems were located in their collection system and then view the inspection video without using additional software.",
         "title": "Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/clairton-gis-cctv-integration.webp",
-        "start_date": "11/8/2013",
-        "end_date": "3/9/2020",
+        "start_date": "3/22/2013",
+        "end_date": "7/2/2020",
         "client_sort": "Clairton Municipal Authority",
         "coords": [
             -79.883889,
             40.304252
         ],
         "gsd_codes": [
-            "273-02"
+            "273-02",
+            "273-01"
         ]
     },
     {
@@ -775,9 +780,6 @@
         "coords": [
             -79.947884,
             40.617835
-        ],
-        "gsd_codes": [
-            "162-92"
         ]
     },
     {
@@ -1190,7 +1192,7 @@
         "title": "Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/greenville-stormwater-gis.webp",
-        "start_date": "7/29/2014",
+        "start_date": "3/13/2014",
         "end_date": "6/12/2018",
         "client_sort": "Greenville Sanitary Authority",
         "coords": [
@@ -1198,7 +1200,8 @@
             41.4
         ],
         "gsd_codes": [
-            "123-67"
+            "123-67",
+            "123-73"
         ]
     },
     {
@@ -1314,19 +1317,28 @@
         "location": "Richland, PA",
         "category": "GIS",
         "tags": [
-            "ArcGIS Collector",
+            "ArcGIS",
             "ArcGIS Desktop",
+            "ArcGIS Pro",
+            "Calibration",
+            "Hydrant Testing",
+            "InfoWater",
+            "InfoWater Pro",
+            "Master Plan",
+            "Roughness Calibration",
+            "Water Distribution",
+            "WaterCAD",
+            "ArcGIS Collector",
             "ArcGIS Online",
             "TerraFlex",
-            "Trimble R2",
-            "ArcGIS"
+            "Trimble R2"
         ],
         "description": "Updated the system map and worked with Precision Laser to set up a collection program using TerraFlex and an R2 unit. Later transitioned to the Collector app and ArcGIS Online.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/system-mapping-and-collection-program.webp",
-        "start_date": "5/10/2016",
-        "end_date": "11/6/2020",
+        "start_date": "10/3/2016",
+        "end_date": "9/25/2020",
         "client_sort": "Richland, Municipal Authority of the Township of",
         "coords": [
             -79.947884,
@@ -1438,7 +1450,7 @@
         "project_role": "Modeler",
         "image": "/src/assets/projects/interceptor-system-hydraulic-modeling.webp",
         "start_date": "5/18/2016",
-        "end_date": "5/22/2019",
+        "end_date": "11/7/2019",
         "client_sort": "Canonsburg-Houston Joint Authority",
         "coords": [
             -80.19,
@@ -2872,6 +2884,66 @@
         ]
     },
     {
+        "name": "PCMP CSO Model Recalibration",
+        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "company": "Wade Trim",
+        "location": "Cincinnati, OH",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Calibration",
+            "Flow Monitoring",
+            "SWMM",
+            "Sanitary Sewer",
+            "CSO",
+            "RDII"
+        ],
+        "description": "Recalibrated the hydraulic model for a group of combined sewer overflow points, reviewing flow monitoring records, adjusting rainfall-derived inflow and infiltration parameters, and re-running the model against observed data.",
+        "title": "Professional Engineer",
+        "project_role": "Modeler",
+        "image": "",
+        "start_date": "4/9/2021",
+        "end_date": "9/24/2021",
+        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "coords": [
+            -84.512,
+            39.1031
+        ],
+        "gsd_codes": [
+            "MSD201514H"
+        ],
+        "draft": true
+    },
+    {
+        "name": "Upstream Flow Monitor Model Recalibration",
+        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "company": "Wade Trim",
+        "location": "Cincinnati, OH",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Calibration",
+            "Flow Monitoring",
+            "SWMM",
+            "Sanitary Sewer",
+            "CSO",
+            "RDII"
+        ],
+        "description": "Recalibrated the hydraulic model at a set of upstream metering locations, reviewing flow monitoring records, adjusting model parameters, and re-running against observed data. A separate contract from the combined sewer overflow recalibration, covering different monitors.",
+        "title": "Professional Engineer",
+        "project_role": "Modeler",
+        "image": "",
+        "start_date": "4/12/2021",
+        "end_date": "10/13/2021",
+        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "coords": [
+            -84.512,
+            39.1031
+        ],
+        "gsd_codes": [
+            "MSD201516H"
+        ],
+        "draft": true
+    },
+    {
         "name": "Metropolitan Sewer Authority of Greater Cincinnati - Calibration Reviews",
         "client": "Metropolitan Sewer Authority of Greater Cincinnati",
         "company": "Wade Trim",
@@ -3353,10 +3425,58 @@
         "coords": [
             -80.04,
             40.32
+        ]
+    },
+    {
+        "name": "Various Bethel Park GIS Support and Administration",
+        "client": "Municipality of Bethel Park",
+        "company": "Wade Trim",
+        "location": "Bethel Park, PA",
+        "category": "Asset Management, GIS",
+        "tags": [
+            "ArcGIS",
+            "QA/QC",
+            "CCTV",
+            "ArcGIS Dashboards",
+            "ArcGIS Field Maps",
+            "ArcGIS Online",
+            "ArcGIS Pro",
+            "Data Migration",
+            "Domains",
+            "GIS Migration",
+            "GNSS",
+            "GPS",
+            "Web Apps",
+            "Web GIS",
+            "Web Mapping",
+            "Utility Schema",
+            "Digital Delivery",
+            "Staff Training",
+            "Field Maps",
+            "Stormwater",
+            "Sanitary Sewer",
+            "Parcel Data",
+            "Python"
+        ],
+        "description": "Ongoing GIS support for the municipality across successive annual work orders: routine data maintenance and QA, field data collection support, small web map and dashboard requests, staff assistance, and day-to-day administration of the ArcGIS Online organisation. The larger dedicated efforts carried out under these work orders are described in their own entries.",
+        "title": "Professional Engineer",
+        "project_role": "GIS Specialist, Engineer",
+        "image": "",
+        "start_date": "11/10/2022",
+        "end_date": "Present",
+        "client_sort": "Bethel Park, Municipality of",
+        "coords": [
+            -80.0315091517147,
+            40.3325206339631
         ],
         "gsd_codes": [
-            "MBP203124H"
-        ]
+            "MBP203122H",
+            "MBP203123H",
+            "MBP203124H",
+            "MBP203125H",
+            "MBP203126H"
+        ],
+        "draft": true
     },
     {
         "name": "Mt Clemens Connection to Great Lake Water Authority",
@@ -4043,9 +4163,6 @@
         "coords": [
             -80.045,
             40.327
-        ],
-        "gsd_codes": [
-            "MBP203124H"
         ]
     },
     {
@@ -4098,9 +4215,6 @@
         "start_date": "5/26/2021",
         "end_date": "10/19/2021",
         "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
-        "gsd_codes": [
-            "MSD201515H"
-        ],
         "coords": [
             -84.5489269441742,
             39.1111592536412
@@ -4142,6 +4256,130 @@
         "coords": [
             -79.891738726048,
             40.1327231205171
+        ]
+    },
+    {
+        "name": "Elizabeth to McKeesport Project",
+        "client": "Elizabeth Township Sanitary Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Boston, PA",
+        "category": "Erosion & Sedimentation Control, Permitting, Hydrologic & Hydraulic Modeling, Stormwater",
+        "tags": [
+            "Hydraulics",
+            "E&S",
+            "NPDES",
+            "Hydraflow"
+        ],
+        "description": "I worked on the Elizabeth to McKeesport Project, focusing on hydrologic and hydraulic modeling, as well as erosion and sedimentation control. My role involved reviewing and updating environmental plans and coordinating with team members to ensure accurate calculations and compliance with regulations.",
+        "title": "Senior Project Engineer",
+        "project_role": "Modeler, Engineer",
+        "image": "/src/assets/projects/elizabeth-to-mckeesport-project.webp",
+        "start_date": "12/12/2016",
+        "end_date": "4/7/2020",
+        "client_sort": "Elizabeth Township Sanitary Authority",
+        "gsd_codes": [
+            "542-12"
+        ],
+        "coords": [
+            -79.8294171883665,
+            40.3108439240946
+        ]
+    },
+    {
+        "name": "Conveyance System and WWTP Upgrade Study and Report",
+        "client": "Carmichaels-Cumberland Joint Sewage Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Carmichaels, PA",
+        "category": "Hydrologic & Hydraulic Modeling, Planning",
+        "tags": [
+            "Calibration",
+            "Model Review",
+            "WWTP",
+            "Pump Stations",
+            "InfoSWMM",
+            "Flow Monitoring",
+            "CSO"
+        ],
+        "description": "I conducted a study and report for a conveyance system and wastewater treatment plant (WWTP) upgrade. My work involved data analysis, model calibration, and technical support for team members.",
+        "title": "Senior Project Engineer",
+        "project_role": "Lead Modeler",
+        "image": "/src/assets/projects/conveyance-system-and-wwtp-upgrade-study-and-report.webp",
+        "start_date": "8/28/2019",
+        "end_date": "1/14/2020",
+        "client_sort": "Carmichaels-Cumberland Joint Sewage Authority",
+        "gsd_codes": [
+            "476-10"
+        ],
+        "coords": [
+            -79.9658267393491,
+            39.8973210499461
+        ]
+    },
+    {
+        "name": "2027 Small Diameter Sewer Rehabilitation",
+        "client": "Pittsburgh Water",
+        "company": "Wade Trim",
+        "location": "Pittsburgh, PA",
+        "category": "GIS, Asset Management",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Dashboards",
+            "ArcGIS Field Maps",
+            "QA/QC",
+            "CCTV",
+            "ArcGIS Pro",
+            "ArcGIS Online",
+            "Domains",
+            "Utility Schema",
+            "Web Apps",
+            "Web GIS",
+            "Data Ingestion",
+            "Python",
+            "Client Portals",
+            "Digital Delivery"
+        ],
+        "description": "I worked on the 2027 Small Diameter Sewer Rehabilitation project, focusing on GIS tool edits, dashboard development, and field mapping. My tasks included quality assurance and coordination related to data workflows and submissions.",
+        "title": "Professional Engineer",
+        "project_role": "GIS Specialist, Technical Advisor",
+        "image": "/src/assets/projects/2027-small-diameter-sewer-rehabilitation.webp",
+        "start_date": "5/18/2026",
+        "end_date": "Present",
+        "client_sort": "Pittsburgh Water",
+        "gsd_codes": [
+            "PWS200104H"
+        ],
+        "coords": [
+            -80.0027679162697,
+            40.3854252763767
+        ]
+    },
+    {
+        "name": "Applebee's Curb-in Plan",
+        "client": "Apple American Group, LLC",
+        "company": "Civil & Environmental Consultants, Inc.",
+        "location": "Pittsburgh, PA",
+        "category": "Grading, Land Development, Engineering, Stormwater",
+        "tags": [
+            "AutoCAD",
+            "Site Design",
+            "CAD",
+            "Civil 3D",
+            "Land Development",
+            "Permitting"
+        ],
+        "description": "I worked on the Applebee's Curb-in Plan, focusing on modifying and updating site plans. My role involved detailed adjustments to the layout, utilities, and document preparation.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "/src/assets/projects/applebee-s-curb-in-plan.webp",
+        "start_date": "9/30/2015",
+        "end_date": "11/9/2015",
+        "client_sort": "Apple American Group, LLC",
+        "gsd_codes": [
+            "151-105"
+        ],
+        "coords": [
+            -80.1006801631267,
+            40.4245789503485
         ]
     }
 ]
