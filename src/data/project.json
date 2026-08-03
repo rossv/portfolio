@@ -780,9 +780,6 @@
         "coords": [
             -79.947884,
             40.617835
-        ],
-        "gsd_codes": [
-            "162-92"
         ]
     },
     {
@@ -1195,7 +1192,7 @@
         "title": "Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/greenville-stormwater-gis.webp",
-        "start_date": "7/29/2014",
+        "start_date": "3/13/2014",
         "end_date": "6/12/2018",
         "client_sort": "Greenville Sanitary Authority",
         "coords": [
@@ -1203,7 +1200,8 @@
             41.4
         ],
         "gsd_codes": [
-            "123-67"
+            "123-67",
+            "123-73"
         ]
     },
     {
@@ -1319,19 +1317,28 @@
         "location": "Richland, PA",
         "category": "GIS",
         "tags": [
-            "ArcGIS Collector",
+            "ArcGIS",
             "ArcGIS Desktop",
+            "ArcGIS Pro",
+            "Calibration",
+            "Hydrant Testing",
+            "InfoWater",
+            "InfoWater Pro",
+            "Master Plan",
+            "Roughness Calibration",
+            "Water Distribution",
+            "WaterCAD",
+            "ArcGIS Collector",
             "ArcGIS Online",
             "TerraFlex",
-            "Trimble R2",
-            "ArcGIS"
+            "Trimble R2"
         ],
         "description": "Updated the system map and worked with Precision Laser to set up a collection program using TerraFlex and an R2 unit. Later transitioned to the Collector app and ArcGIS Online.",
         "title": "Senior Project Engineer",
         "project_role": "GIS Specialist",
         "image": "/src/assets/projects/system-mapping-and-collection-program.webp",
-        "start_date": "5/10/2016",
-        "end_date": "11/6/2020",
+        "start_date": "10/3/2016",
+        "end_date": "9/25/2020",
         "client_sort": "Richland, Municipal Authority of the Township of",
         "coords": [
             -79.947884,
@@ -2877,6 +2884,66 @@
         ]
     },
     {
+        "name": "PCMP CSO Model Recalibration",
+        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "company": "Wade Trim",
+        "location": "Cincinnati, OH",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Calibration",
+            "Flow Monitoring",
+            "SWMM",
+            "Sanitary Sewer",
+            "CSO",
+            "RDII"
+        ],
+        "description": "Recalibrated the hydraulic model for a group of combined sewer overflow points, reviewing flow monitoring records, adjusting rainfall-derived inflow and infiltration parameters, and re-running the model against observed data.",
+        "title": "Professional Engineer",
+        "project_role": "Modeler",
+        "image": "",
+        "start_date": "4/9/2021",
+        "end_date": "9/24/2021",
+        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "coords": [
+            -84.512,
+            39.1031
+        ],
+        "gsd_codes": [
+            "MSD201514H"
+        ],
+        "draft": true
+    },
+    {
+        "name": "Upstream Flow Monitor Model Recalibration",
+        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "company": "Wade Trim",
+        "location": "Cincinnati, OH",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "Calibration",
+            "Flow Monitoring",
+            "SWMM",
+            "Sanitary Sewer",
+            "CSO",
+            "RDII"
+        ],
+        "description": "Recalibrated the hydraulic model at a set of upstream metering locations, reviewing flow monitoring records, adjusting model parameters, and re-running against observed data. A separate contract from the combined sewer overflow recalibration, covering different monitors.",
+        "title": "Professional Engineer",
+        "project_role": "Modeler",
+        "image": "",
+        "start_date": "4/12/2021",
+        "end_date": "10/13/2021",
+        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "coords": [
+            -84.512,
+            39.1031
+        ],
+        "gsd_codes": [
+            "MSD201516H"
+        ],
+        "draft": true
+    },
+    {
         "name": "Metropolitan Sewer Authority of Greater Cincinnati - Calibration Reviews",
         "client": "Metropolitan Sewer Authority of Greater Cincinnati",
         "company": "Wade Trim",
@@ -4148,9 +4215,6 @@
         "start_date": "5/26/2021",
         "end_date": "10/19/2021",
         "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
-        "gsd_codes": [
-            "MSD201515H"
-        ],
         "coords": [
             -84.5489269441742,
             39.1111592536412
