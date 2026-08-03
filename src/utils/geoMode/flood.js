@@ -10,8 +10,8 @@
 // follows the same way and returns it to the base channel.
 
 import { smooth, hash, hexToRgb } from './palette';
+import { BAND_TOP, createReach } from './reach';
 
-const BAND_TOP = 80;          // matches WaterBanner's `top-20`
 const TILES_PER_SEC = 520;    // raster-scan load rate
 const CYCLE = 15000;          // one flood in and out
 const NARROW_MAX = 768;       // matches Tailwind's md
@@ -23,10 +23,12 @@ export function createFlood(ctx, palette) {
     let bandH = 0;
     let width = 0;
     let clock = 0;
+    let reach = null;
 
     function resize(w, h) {
         width = w;
-        bandH = Math.max(250, Math.min(450, h * 0.3));
+        reach = createReach(w, h);
+        bandH = reach.bandH;
         band = document.createElement('canvas');
         band.width = Math.max(1, Math.floor(w));
         band.height = Math.max(1, Math.floor(bandH));
@@ -39,17 +41,6 @@ export function createFlood(ctx, palette) {
     // Settle straight into a mapped, partly-flooded state — used under
     // reduced motion, where there is only one frame to tell the story.
     const settle = () => { clock = 9000; };
-
-    // The reach: a meander with non-harmonic terms so it does not read as a
-    // sine wave. Shared with nothing else, but kept here as the one alignment.
-    const chanY = (x) => bandH * 0.36
-        + Math.sin((x / width) * 6.0) * bandH * 0.135
-        + Math.sin((x / width) * 13.0 + 1.2) * bandH * 0.042;
-
-    // Floodplain width along the reach: wide flats in places, pinched in
-    // others, so the inundation edge is irregular rather than a buffer.
-    const plainWidth = (nx) => Math.max(0.35,
-        0.86 + 0.32 * Math.sin(nx * 7.3 + 0.6) + 0.17 * Math.sin(nx * 17.1 + 2.1));
 
     // Knocks the contours back under the band, so the two are not competing
     // for the same lines. Drawn on the main canvas, before the band itself.
@@ -107,10 +98,10 @@ export function createFlood(ctx, palette) {
         for (let c = 0; c < cols; c++) {
             const x = c * size;
             const cx = x + size / 2;
-            const line = chanY(cx);
+            const line = reach.chanY(cx);
             const wet = smooth((riseX - cx) / 170) * (1 - smooth((recedeX - cx) / 170));
             // Inundation widens the corridor and deepens its colour.
-            const extent = baseExtent + (floodExtent * plainWidth(cx / width) - baseExtent) * wet;
+            const extent = baseExtent + (floodExtent * reach.plainWidth(cx / width) - baseExtent) * wet;
             const boldness = 0.5 + 0.5 * wet;
 
             for (let r = -halfRows; r <= halfRows; r++) {
@@ -152,7 +143,7 @@ export function createFlood(ctx, palette) {
         g.lineWidth = 1.6;
         g.beginPath();
         for (let x = 0; x <= scannedX; x += 6) {
-            if (x === 0) g.moveTo(x, chanY(x)); else g.lineTo(x, chanY(x));
+            if (x === 0) g.moveTo(x, reach.chanY(x)); else g.lineTo(x, reach.chanY(x));
         }
         g.stroke();
 
