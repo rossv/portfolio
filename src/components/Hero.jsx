@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { readMode, reflectMode, writeMode, MODE_EVENT, MODE_LABELS } from '../utils/siteMode';
+import { useEffect, useRef } from 'react';
+import { readMode, reflectMode, writeMode, MODE_LABELS } from '../utils/siteMode';
 import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
 import LicenseBadge from './LicenseBadge';
@@ -48,7 +48,6 @@ function ModeWord({ mode, children, className = '' }) {
 
 export default function Hero() {
     const targetRef = useRef(null);
-    const [mode, setMode] = useState('water');
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -58,14 +57,11 @@ export default function Hero() {
     const yText = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "50%"]);
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
+    // Sync the stored mode onto <html> on mount, so the CSS that keys off it
+    // matches what was left set. Nothing in the hero itself varies by mode;
+    // writeMode reflects its own changes, so there is nothing to listen for.
     useEffect(() => {
-        const stored = readMode();
-        setMode(stored);
-        reflectMode(stored);
-
-        const handleMode = (event) => setMode(event.detail?.mode ?? 'water');
-        window.addEventListener(MODE_EVENT, handleMode);
-        return () => window.removeEventListener(MODE_EVENT, handleMode);
+        reflectMode(readMode());
     }, []);
 
     const scrollToSection = (id, event) => {
@@ -234,34 +230,32 @@ export default function Hero() {
                         <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
                     </div>
 
-                    {mode === 'water' && (
-                        <>
-                            {/* Floating Bubbles */}
-                            <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
-                                <img src={aiChipIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
+                    {/* The icons around the portrait belong to the portrait, not
+                        to a mode — they stay the same in every backdrop. Only the
+                        section motes in FloatingIcons swap carrier per mode. */}
+                    <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
+                        <img src={aiChipIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
-                            <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
-                                <img src={gisMapIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
+                    <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
+                        <img src={gisMapIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
-                            <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
-                                <img src={codingLaptopIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
+                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
+                        <img src={codingLaptopIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
-                            <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
-                                <img src={webUiIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
+                    <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
+                        <img src={webUiIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
-                            <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
-                                <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
+                    <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
+                        <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
-                            <FloatingElement delay={2.5} className="absolute -left-10 bottom-12 hidden xl:block">
-                                <img src={waterMoleculeIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
-                            </FloatingElement>
-                        </>
-                    )}
+                    <FloatingElement delay={2.5} className="absolute -left-10 bottom-12 hidden xl:block">
+                        <img src={waterMoleculeIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    </FloatingElement>
 
                 </motion.div>
             </motion.div>
