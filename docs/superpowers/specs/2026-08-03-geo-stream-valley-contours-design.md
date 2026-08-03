@@ -129,11 +129,17 @@ roughly 0 to 2.4. Depth 1.25 plus fall 0.90 takes the field to about −2.2, whi
 `940 + v * 120`, the range lands at roughly 676–1144ft, which is plausible for the
 Allegheny plateau.
 
-Figures are rounded to the nearest 5ft. A mark's reported elevation now changes as the
-valley slides past it, and rounding keeps the digits from churning. This is the honest
-reading: a spot elevation must agree with the contours it sits among, so it has to include
-the trench. If it reads badly in review, the fallback is to report the surface without the
-trench — recorded here so the alternative is not rediscovered from scratch.
+Figures are rounded to the nearest 5ft. A mark's reported elevation changes as the valley
+slides past it, and rounding does **not** stop that — measured after the fact, a mark on the
+thalweg reads about 865ft at rest and 1015ft by 110px of scroll, roughly thirty distinct
+values over 220px. This spec originally claimed the rounding would settle it, which was
+wrong; the 5ft step only stops single-foot flicker.
+
+Shipped as is, deliberately. A spot elevation has to agree with the contours it sits among,
+so it must include the trench, and the churn happens under the band's 0.7 veil where it is
+not legible anyway. The alternative — report the surface without the trench — was rejected
+because it makes the printed figure disagree with the lines drawn around it, which is a map
+that lies. Recorded so the trade is not rediscovered from scratch.
 
 ### Reduced motion
 
