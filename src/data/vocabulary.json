@@ -73,7 +73,8 @@
         "TecPlot",
         "Trunkline Corridors",
         "Visualization",
-        "Wincan"
+        "Wincan",
+        "Pump Stations"
       ]
     },
     {
@@ -187,6 +188,12 @@
         "Regulatory",
         "Resiliency"
       ]
+    },
+    {
+      "label": "Engineering",
+      "children": [
+        "CCTV"
+      ]
     }
   ],
   "categories": [
@@ -205,6 +212,7 @@
     "Research",
     "Stormwater",
     "Tool Development",
-    "Visualization"
+    "Visualization",
+    "Engineering"
   ]
 }
