@@ -172,8 +172,10 @@ No test runner in this repo, so verification is a build plus a driven browser ch
 2. Geo mode, desktop, dark and light: at `scrollY 0` the raster centreline sits inside the
    corridor. Probe it rather than eyeball it — sample the field down a column and confirm
    its minimum falls within a cell of `BAND_TOP + chanY(x)`.
-3. Scroll to 200 / 400 / 900: the valley stays under the raster while the band is on
-   screen, and is gone after 350px.
+3. Scroll to 100 / 250 / 400 / 900: the valley stays under the raster centreline throughout.
+   Note the two do not leave together — the thalweg sits `BAND_TOP + chanY(x)` down, so the
+   corridor clears the top of the screen at 130–206px of scroll on a 900px viewport, while
+   the band keeps drawing its lower floodplain until `BAND_TOP + bandH` (350px there).
 4. Contours cross the corridor as V's pointing upstream (left), and the field falls to the
    right.
 5. Click to raise a hill, then scroll: the cross and figure stay with the hill, and figures

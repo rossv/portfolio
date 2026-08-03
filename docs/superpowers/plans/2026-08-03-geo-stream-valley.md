@@ -15,6 +15,14 @@
 - No test runner exists in this repo and none may be added (`CLAUDE.md`). Verification is: Node check scripts against the pure maths, `npm run build`, and a driven browser pass.
 - Check scripts live in the scratchpad, never in the repo. Referred to below as `$SCRATCH`:
   `C:\Users\RVOLKW~1\AppData\Local\Temp\claude\C--GitRepos-portfolio\1437bb01-bfac-4383-8f58-4b5b6305287d\scratchpad`
+- Two things the check scripts need, learned the hard way in Tasks 1 and 2. Import the modules
+  by **absolute `file://` URL**, not by a relative path — the scratchpad is nowhere near the
+  repo. And these modules import each other **extensionlessly** (`from './reach'`), which Vite
+  resolves and plain `node` does not, so a script that reaches `terrain.js` needs a small
+  scratchpad-only resolver shim. Do not "fix" the repo's import style to suit the checks.
+- When a check fails, establish whether the assertion or the code is wrong before changing
+  either. Task 2's first run failed on test data that asserted the valley was on screen at a
+  scroll where it provably is not.
 - Work in the worktree: `C:\GitRepos\portfolio\.claude\worktrees\geo-stream-valley`, branch `worktree-geo-stream-valley`.
 - Settled values, exact — do not re-tune while implementing: valley depth `1.25`, valley half-width `90` px at `plainWidth` 1.0, downstream fall `0.90`, background drift `0.10 ×` scroll, elevation `940 + v × 120` rounded to `5` ft.
 - The valley tracks the band one for one and leaves with it. No clamp, no resting line.
@@ -436,8 +444,11 @@ Expected: `[build] Complete!`, no errors.
 Then in `npm run dev`, geospatial mode, desktop width:
 - At the top of the page the raster centreline runs along the floor of a contour corridor.
 - Contours crossing the corridor bend upstream (apex pointing left).
-- Scrolling down to ~200px keeps the corridor under the band; past ~530px the valley has
-  left with the band.
+- Scrolling down to ~100px keeps the corridor under the band. The corridor itself clears the
+  top of the screen around 130–206px of scroll — the thalweg sits `BAND_TOP + chanY(x)` down,
+  which is 130–206px on a 900px viewport — and the band's lower floodplain keeps drawing
+  until its own bottom clears at `BAND_TOP + bandH`. Do not expect the valley and the band to
+  disappear together; the valley's centreline goes first.
 - Click twice to raise ground; the figure printed reads between 676 and 1144 ft.
 - Toggle to light mode: same geometry, topo palette intact.
 - Console clean.
@@ -710,8 +721,9 @@ In `npm run dev`, geospatial mode, confirm each and note anything that looks off
 |---|---|
 | Desktop dark, scroll 0 | Centreline in the corridor floor; V's aim upstream |
 | Desktop light, scroll 0 | Same geometry; sienna contours, blue-violet raster |
-| Scroll 200 | Corridor still under the band |
-| Scroll 400 | Valley leaving with the band |
+| Scroll 100 | Corridor still under the band |
+| Scroll 250 | Corridor has cleared the top; band's lower floodplain still drawing |
+| Scroll 400 | Band gone, no valley left behind |
 | Scroll 900 | Hills only, drifted ~90px, no bare ground at the bottom |
 | Narrow (390px wide) | Band 250px; no contour crowding under the hero type |
 | Click ×3 near the valley | Stacks one rise; figure 676–1144 ft |
