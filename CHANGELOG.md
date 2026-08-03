@@ -3,10 +3,10 @@
 ## Week of 2026-08-03
 
 ### Highlights
-- Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws, with the basin falling downstream so contours cross the stream as V's aimed upstream; the ground now drifts at a tenth of scroll, and spot elevations were re-based for the deeper field.
+- Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws, with the basin falling downstream so contours cross the stream as V's aimed upstream; the ground now drifts at a tenth of scroll, and spot elevations were re-based for the deeper field ([#230](https://github.com/rossv/portfolio/pull/230)).
 
 ### Key PR Links
-- Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws.
+- [#230](https://github.com/rossv/portfolio/pull/230): Carve a stream valley into the geospatial contour field.
 
 ## Week of 2026-06-22
 
