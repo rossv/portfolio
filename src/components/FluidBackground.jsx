@@ -360,7 +360,7 @@ export default function FluidBackground() {
                 starfield.frame(now, scrollDelta, mouseRef.current);
                 aurora.frame(now, currentScroll);
             } else if (isGeo) {
-                terrain.frame(now, dt, mouseRef.current);
+                terrain.frame(now, dt, mouseRef.current, currentScroll);
                 // Knock the contours back under the band before drawing it,
                 // so the two are not competing for the same lines.
                 flood.dim(currentScroll);

@@ -20,6 +20,8 @@
 // pointer happens to be, and including it made the number climb as you
 // approached the very label you were trying to read.
 
+import { BAND_TOP, createReach } from './reach';
+
 const LEVELS = 14;
 const LMAX = 1.9;
 
@@ -35,9 +37,16 @@ const LABEL_PX = 11;
 const LABEL_NEAR = 150;        // cursor distance at which a figure is fully up
 const LABEL_REST = 0.46;
 const LABEL_LIT = 0.92;
-// Feet, so a figure reads as an Allegheny-plateau spot elevation.
-const ELEV_BASE = 720;
-const ELEV_SCALE = 260;
+
+const VALLEY_DEPTH = 1.25;     // how far the trench cuts below the ground
+const VALLEY_HALF = 90;        // px to the trench shoulder, at plainWidth 1
+const DOWNSTREAM_FALL = 0.9;   // fall from one side of the basin to the other
+
+// Feet, so a figure reads as an Allegheny-plateau spot elevation. Re-based for a
+// field that now runs negative in the valley and at the downstream end.
+const ELEV_BASE = 940;
+const ELEV_SCALE = 120;
+const ELEV_STEP = 5;           // the valley slides past a mark; don't churn digits
 
 const PEAKS = Array.from({ length: 5 }, (_, i) => ({
     x: 0.15 + ((i * 0.19) % 0.8),
@@ -49,31 +58,13 @@ const PEAKS = Array.from({ length: 5 }, (_, i) => ({
     dy: (i % 3 ? -1 : 1) * 0.0000011,
 }));
 
-// `placed` is owned by the caller and holds click-placed rises. They are kept
-// in normalised coordinates, which is what the field function works in, so
-// they need no re-application on resize and survive a theme rebuild intact.
-export function createTerrain(ctx, palette, placed = []) {
-    let width = 0;
-    let height = 0;
-    let cell = 0;
-    let gx = 0;
-    let gy = 0;
-    let field = null;
+// The surface, with no canvas in sight: drifting peaks, anything clicked into the
+// ground, the basin's fall, and the valley cut along the reach. Separate from the
+// drawing so the shape of the ground can be checked without a browser.
+export function createSurface(width, height, placed = []) {
+    const reach = createReach(width, height);
 
-    function resize(w, h) {
-        width = w;
-        height = h;
-        // Grid resolution follows the smaller dimension, so contour detail is
-        // consistent from a laptop to a large display.
-        cell = Math.max(14, Math.round(Math.min(w, h) / 46));
-        gx = Math.ceil(w / cell) + 1;
-        gy = Math.ceil(h / cell) + 1;
-        field = new Float32Array(gx * gy);
-    }
-
-    // The surface itself: drifting peaks plus anything clicked into it. This is
-    // what a spot elevation reports.
-    function terrainAt(nx, ny, t) {
+    function terrainAt(nx, ny, t, scrollY) {
         let v = 0;
         for (const p of PEAKS) {
             const px = p.x + Math.sin(t * p.dx * 60) * 0.035;
@@ -87,18 +78,60 @@ export function createTerrain(ctx, palette, placed = []) {
             const ey = (ny - p.y) / PLACED_SIGMA;
             v += p.shown * Math.exp(-(ex * ex + ey * ey));
         }
+        // The basin drains to the right. This is the term that aims the contour
+        // V's upstream where they cross the corridor — without it they cross
+        // square, and the ground says nothing about which way the water goes.
+        v -= DOWNSTREAM_FALL * nx;
+        // The valley, tracking the band one for one so the contours and the
+        // raster never disagree, and widened where the floodplain is wide. Once
+        // the band has cleared the top the thalweg is negative and the valley
+        // has gone with it, which is the whole of "let it go".
+        const thalweg = BAND_TOP - scrollY + reach.chanY(nx * width);
+        const dy = (ny * height - thalweg) / (VALLEY_HALF * reach.plainWidth(nx));
+        v -= VALLEY_DEPTH * Math.exp(-dy * dy);
         return v;
     }
 
     // What gets contoured: the surface plus the cursor probe.
-    function fieldAt(nx, ny, t, mouse) {
-        let v = terrainAt(nx, ny, t);
+    function fieldAt(nx, ny, t, scrollY, mouse) {
+        let v = terrainAt(nx, ny, t, scrollY);
         if (mouse.x > -1000) {
             const ex = (nx - mouse.x / width) / 0.1;
             const ey = (ny - mouse.y / height) / 0.1;
             v += 0.7 * Math.exp(-(ex * ex + ey * ey));
         }
         return v;
+    }
+
+    const elevationAt = (nx, ny, t, scrollY) =>
+        Math.round((ELEV_BASE + terrainAt(nx, ny, t, scrollY) * ELEV_SCALE) / ELEV_STEP)
+        * ELEV_STEP;
+
+    return { reach, terrainAt, fieldAt, elevationAt };
+}
+
+// `placed` is owned by the caller and holds click-placed rises. They are kept
+// in normalised coordinates, which is what the field function works in, so
+// they need no re-application on resize and survive a theme rebuild intact.
+export function createTerrain(ctx, palette, placed = []) {
+    let width = 0;
+    let height = 0;
+    let cell = 0;
+    let gx = 0;
+    let gy = 0;
+    let field = null;
+    let surface = null;
+
+    function resize(w, h) {
+        width = w;
+        height = h;
+        // Grid resolution follows the smaller dimension, so contour detail is
+        // consistent from a laptop to a large display.
+        cell = Math.max(14, Math.round(Math.min(w, h) / 46));
+        gx = Math.ceil(w / cell) + 1;
+        gy = Math.ceil(h / cell) + 1;
+        field = new Float32Array(gx * gy);
+        surface = createSurface(w, h, placed);
     }
 
     // Raise the ground at a screen position. A click near an existing rise
@@ -129,7 +162,7 @@ export function createTerrain(ctx, palette, placed = []) {
     // Spot elevations, drawn over the contours. The dimmer contour sienna
     // rather than the index colour, so a mark never out-weighs the index
     // contours it sits among.
-    function drawMarks(t, mouse) {
+    function drawMarks(t, mouse, scrollY) {
         if (!placed.length) return;
 
         ctx.textAlign = 'left';
@@ -167,7 +200,7 @@ export function createTerrain(ctx, palette, placed = []) {
             ctx.lineTo(x - MARK_R, y + MARK_R);
             ctx.stroke();
 
-            const text = String(Math.round(ELEV_BASE + terrainAt(p.x, p.y, t) * ELEV_SCALE));
+            const text = String(surface.elevationAt(p.x, p.y, t, scrollY));
             const tw = ctx.measureText(text).width;
             // Flip to the other side of the cross rather than run off the edge.
             if (x + MARK_R + 3.5 + tw + 4 > width) {
@@ -180,7 +213,7 @@ export function createTerrain(ctx, palette, placed = []) {
         }
     }
 
-    function frame(t, dt, mouse) {
+    function frame(t, dt, mouse, scrollY) {
         if (!field) return;
 
         // Ease each rise up to its amplitude, so a click blooms rings outward
@@ -193,7 +226,8 @@ export function createTerrain(ctx, palette, placed = []) {
 
         for (let j = 0; j < gy; j++) {
             for (let i = 0; i < gx; i++) {
-                field[j * gx + i] = fieldAt((i * cell) / width, (j * cell) / height, t, mouse);
+                field[j * gx + i] = surface.fieldAt(
+                    (i * cell) / width, (j * cell) / height, t, scrollY, mouse);
             }
         }
 
@@ -242,7 +276,7 @@ export function createTerrain(ctx, palette, placed = []) {
             }
         }
 
-        drawMarks(t, mouse);
+        drawMarks(t, mouse, scrollY);
     }
 
     return { resize, frame, addPeak };
