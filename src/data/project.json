@@ -3641,7 +3641,7 @@
         ]
     },
     {
-        "name": "LOS Resiliency Analysis",
+        "name": "Wet Weather Data Analysis, LOS Determination, & Flow Management",
         "client": "City of St. Petersburg",
         "company": "Wade Trim",
         "location": "St. Petersburg, FL",
@@ -3649,10 +3649,9 @@
         "tags": [
             "Hydraulics",
             "LOS",
-            "Resiliency",
             "Optimization"
         ],
-        "description": "Level of service and resiliency analysis for municipal water systems.",
+        "description": "Level of service and optimization analysis for municipal sewer systems.",
         "title": "Professional Engineer",
         "project_role": "Optimization Engineer",
         "image": "/src/assets/projects/stpete_LOS.webp",
