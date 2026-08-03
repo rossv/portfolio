@@ -42,6 +42,8 @@ const VALLEY_DEPTH = 1.25;     // how far the trench cuts below the ground
 const VALLEY_HALF = 90;        // px to the trench shoulder, at plainWidth 1
 const DOWNSTREAM_FALL = 0.9;   // fall from one side of the basin to the other
 
+const DRIFT = 0.1;             // ground pan, per px of scroll
+
 // Feet, so a figure reads as an Allegheny-plateau spot elevation. Re-based for a
 // field that now runs negative in the valley and at the downstream end.
 const ELEV_BASE = 940;
@@ -58,24 +60,34 @@ const PEAKS = Array.from({ length: 5 }, (_, i) => ({
     dy: (i % 3 ? -1 : 1) * 0.0000011,
 }));
 
+// Nearest-image offset, which makes the peak field tile vertically. Panning the
+// ground without this would strip the bottom of the frame bare; with it the field
+// repeats every viewport height, and since the widest peak sigma is 0.23 a
+// neighbouring copy contributes under 1% at the seam.
+const wrapN = (d) => d - Math.round(d);
+
 // The surface, with no canvas in sight: drifting peaks, anything clicked into the
 // ground, the basin's fall, and the valley cut along the reach. Separate from the
 // drawing so the shape of the ground can be checked without a browser.
-export function createSurface(width, height, placed = []) {
+export function createSurface(width, height, placed = [], { drift = DRIFT } = {}) {
     const reach = createReach(width, height);
 
+    // Screen to ground: the ground has moved up by this much.
+    const panAt = (scrollY) => (drift * scrollY) / height;
+
     function terrainAt(nx, ny, t, scrollY) {
+        const gy = ny + panAt(scrollY);
         let v = 0;
         for (const p of PEAKS) {
             const px = p.x + Math.sin(t * p.dx * 60) * 0.035;
             const py = p.y + Math.cos(t * p.dy * 60) * 0.028;
             const ex = (nx - px) / p.sx;
-            const ey = (ny - py) / p.sy;
+            const ey = wrapN(gy - py) / p.sy;
             v += p.amp * Math.exp(-(ex * ex + ey * ey));
         }
         for (const p of placed) {
             const ex = (nx - p.x) / PLACED_SIGMA;
-            const ey = (ny - p.y) / PLACED_SIGMA;
+            const ey = (gy - p.y) / PLACED_SIGMA;
             v += p.shown * Math.exp(-(ex * ex + ey * ey));
         }
         // The basin drains to the right. This is the term that aims the contour
@@ -107,13 +119,13 @@ export function createSurface(width, height, placed = []) {
         Math.round((ELEV_BASE + terrainAt(nx, ny, t, scrollY) * ELEV_SCALE) / ELEV_STEP)
         * ELEV_STEP;
 
-    return { reach, terrainAt, fieldAt, elevationAt };
+    return { reach, panAt, terrainAt, fieldAt, elevationAt };
 }
 
 // `placed` is owned by the caller and holds click-placed rises. They are kept
 // in normalised coordinates, which is what the field function works in, so
 // they need no re-application on resize and survive a theme rebuild intact.
-export function createTerrain(ctx, palette, placed = []) {
+export function createTerrain(ctx, palette, placed = [], { reduceMotion = false } = {}) {
     let width = 0;
     let height = 0;
     let cell = 0;
@@ -131,14 +143,14 @@ export function createTerrain(ctx, palette, placed = []) {
         gx = Math.ceil(w / cell) + 1;
         gy = Math.ceil(h / cell) + 1;
         field = new Float32Array(gx * gy);
-        surface = createSurface(w, h, placed);
+        surface = createSurface(w, h, placed, { drift: reduceMotion ? 0 : DRIFT });
     }
 
     // Raise the ground at a screen position. A click near an existing rise
     // stacks that one higher rather than adding a peak beside it.
-    function addPeak(x, y, { instant = false } = {}) {
+    function addPeak(x, y, { instant = false, scrollY = 0 } = {}) {
         const nx = x / width;
-        const ny = y / height;
+        const ny = y / height + surface.panAt(scrollY);
 
         let hit = null;
         let bestD = Infinity;
@@ -170,11 +182,14 @@ export function createTerrain(ctx, palette, placed = []) {
         ctx.font = `${LABEL_PX}px "Space Mono", ui-monospace, monospace`;
         ctx.lineWidth = 1;
 
+        const pan = surface.panAt(scrollY);
         for (const p of placed) {
             if (p.shown < 0.02) continue;
 
             const x = p.x * width;
-            const y = p.y * height;
+            const y = (p.y - pan) * height;
+            // Panned off the top or bottom: nothing to draw.
+            if (y < -MARK_R || y > height + MARK_R) continue;
 
             // Subtle at rest, readable with the cursor on it. Squared falloff,
             // so it lights the one mark you are on and not the region.
@@ -200,7 +215,7 @@ export function createTerrain(ctx, palette, placed = []) {
             ctx.lineTo(x - MARK_R, y + MARK_R);
             ctx.stroke();
 
-            const text = String(surface.elevationAt(p.x, p.y, t, scrollY));
+            const text = String(surface.elevationAt(p.x, (p.y - pan), t, scrollY));
             const tw = ctx.measureText(text).width;
             // Flip to the other side of the cross rather than run off the edge.
             if (x + MARK_R + 3.5 + tw + 4 > width) {

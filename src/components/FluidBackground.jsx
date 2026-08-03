@@ -115,7 +115,9 @@ export default function FluidBackground() {
             const geoPalette = geoPaletteFor(isDark);
             // Raised ground is held in normalised coordinates, so it comes
             // through a theme rebuild at whatever height it had reached.
-            terrain = createTerrain(ctx, geoPalette, geoPeaksRef.current);
+            terrain = createTerrain(ctx, geoPalette, geoPeaksRef.current, {
+                reduceMotion: prefersReduced,
+            });
             flood = createFlood(ctx, geoPalette);
             terrain.resize(width, height);
             flood.resize(width, height);
@@ -285,7 +287,7 @@ export default function FluidBackground() {
                 // Geospatial: the click raises the ground and leaves a spot
                 // elevation on it. Fires before the reduced-motion bail, so the
                 // terrain still records the click without the bloom.
-                terrain?.addPeak(x, y, { instant: prefersReduced });
+                terrain?.addPeak(x, y, { instant: prefersReduced, scrollY: scrollRef.current });
                 if (prefersReduced) return;
                 // A survey ping over the top, echoing the placement pulse but
                 // in the topo palette rather than the star tints.
