@@ -4,8 +4,18 @@
 // trace iso-lines, with every fifth drawn as a heavier index contour. The
 // cursor acts as a movable high point, so the surface responds to probing.
 //
-// The field drifts, but very slowly on purpose: a full breath takes minutes,
-// so the terrain reads as still unless you watch for it.
+// The peaks wander, but very slowly on purpose: a full breath takes minutes,
+// so on its own the terrain reads as still unless you watch for it. Scrolling
+// drives a second, far more deliberate motion — the whole field pans upward
+// with the page, so the ground reads as a place the hero is moving through
+// rather than a decal pinned to the viewport.
+//
+// Cut into that ground is a valley along the same reach the hero flood raster
+// draws (see reach.js), the basin falling downstream so contours cross the
+// stream as V's aimed upstream rather than square. The valley reads its
+// geometry from the band instead of keeping its own copy, so it tracks the
+// band frame for frame; once the band has scrolled off the top the valley
+// has gone with it too.
 //
 // Clicking raises the ground. A placed peak is the same kind of Gaussian the
 // cursor already contributes, so the click persists a mechanism the field
@@ -22,8 +32,10 @@
 
 import { BAND_TOP, createReach } from './reach';
 
-const LEVELS = 14;
-const LMAX = 1.9;
+// Contour spacing. The field now runs roughly -2.14 to +0.64 thanks to the
+// valley and the downstream fall, so a top-and-count-of-levels pair no longer
+// describes anything real — this is the one quantity that does.
+const CONTOUR_INTERVAL = 1.9 / 14;
 
 const PLACED_CAP = 14;         // click-placed rises
 const PLACED_AMP = 0.62;       // a fresh rise
@@ -246,7 +258,7 @@ export function createTerrain(ctx, palette, placed = [], { reduceMotion = false 
             }
         }
 
-        const step = LMAX / LEVELS;
+        const step = CONTOUR_INTERVAL;
 
         for (let j = 0; j < gy - 1; j++) {
             for (let i = 0; i < gx - 1; i++) {

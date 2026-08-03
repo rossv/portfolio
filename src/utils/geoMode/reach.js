@@ -23,5 +23,5 @@ export function createReach(width, height) {
     const plainWidth = (nx) => Math.max(0.35,
         0.86 + 0.32 * Math.sin(nx * 7.3 + 0.6) + 0.17 * Math.sin(nx * 17.1 + 2.1));
 
-    return { width, height, bandH, chanY, plainWidth };
+    return { bandH, chanY, plainWidth };
 }
