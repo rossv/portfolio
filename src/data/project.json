@@ -3649,6 +3649,7 @@
         "tags": [
             "Hydraulics",
             "LOS",
+            "Resiliency",
             "Optimization"
         ],
         "description": "Level of service and optimization analysis for municipal sewer systems.",
@@ -4382,6 +4383,146 @@
         "coords": [
             -80.1006801631267,
             40.4245789503485
+        ]
+    },
+    {
+        "name": "Interceptor Model",
+        "client": "Authority of the Borough of Charleroi",
+        "company": "KLH Engineers, Inc.",
+        "location": "Charleroi, PA",
+        "category": "Hydrologic & Hydraulic Modeling, Engineering",
+        "tags": [
+            "Calibration",
+            "CSO",
+            "Excel",
+            "Permitting"
+        ],
+        "description": "I worked on the Interceptor Model, focusing on calibration checks and model updates. I managed several tasks related to the CSO (Combined Sewer Overflow) calibration and developed a calculator to enhance reporting capabilities.",
+        "title": "Project Engineer",
+        "project_role": "Engineer",
+        "image": "",
+        "start_date": "5/12/2016",
+        "end_date": "2/22/2017",
+        "client_sort": "Authority of the Borough of Charleroi",
+        "gsd_codes": [
+            "388-09"
+        ],
+        "coords": [
+            -79.891700706601,
+            40.1327418077255
+        ]
+    },
+    {
+        "name": "GIS Engineering Support Services",
+        "client": "Moon Township Municipal Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Moon, PA",
+        "category": "GIS, Asset Management",
+        "tags": [
+            "ArcGIS",
+            "ArcMap",
+            "ArcGIS Desktop",
+            "Data Migration",
+            "Utility Schema",
+            "Staff Training"
+        ],
+        "description": "I provided GIS engineering support services focused on data calibration and map creation. The project involved extensive work on exhibits and GIS data analysis.",
+        "title": "Project Engineer",
+        "project_role": "GIS Specialist",
+        "image": "",
+        "start_date": "12/2/2013",
+        "end_date": "1/23/2015",
+        "client_sort": "Moon Township Municipal Authority",
+        "gsd_codes": [
+            "327-123"
+        ],
+        "coords": [
+            -80.202259158315,
+            40.496477816106
+        ]
+    },
+    {
+        "name": "Wastewater Treatment Plant and Conveyance System Upgrades",
+        "client": "Allegheny Valley Joint Sewage Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Harmar, PA",
+        "category": "Hydrologic & Hydraulic Modeling, Planning, Engineering",
+        "tags": [
+            "Interceptors",
+            "Pumps/Storage",
+            "CSO",
+            "InfoSWMM",
+            "Flow Monitoring"
+        ],
+        "description": "I contributed to the upgrades of a wastewater treatment plant and conveyance system, focusing on flow modeling and interceptor calculations. My work included sizing storage basins and revising hydraulic calculations to improve system efficiency.",
+        "title": "Senior Project Engineer",
+        "project_role": "Modeler, Engineer",
+        "image": "",
+        "start_date": "3/21/2018",
+        "end_date": "1/8/2020",
+        "client_sort": "Allegheny Valley Joint Sewage Authority",
+        "gsd_codes": [
+            "120-112"
+        ],
+        "coords": [
+            -79.8476760769976,
+            40.5306901030807
+        ]
+    },
+    {
+        "name": "Miscellaneous",
+        "client": "Oakdale Borough",
+        "company": "KLH Engineers, Inc.",
+        "location": "Oakdale, PA",
+        "category": "Permitting, Stormwater, GIS",
+        "tags": [
+            "Stormwater",
+            "ArcGIS",
+            "ArcMap",
+            "ArcGIS Pro",
+            "Documentation",
+            "MS4",
+            "PRP"
+        ],
+        "description": "I contributed to various internal projects related to municipal services and environmental impact assessments over a span from February 2017 to September 2020. My work involved inspections, meetings, and document submissions pertinent to regulatory compliance and local government inquiries.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "",
+        "start_date": "2/9/2017",
+        "end_date": "9/21/2020",
+        "client_sort": "Oakdale Borough",
+        "gsd_codes": [
+            "558-01"
+        ],
+        "coords": [
+            -80.187565402276,
+            40.398066518796
+        ]
+    },
+    {
+        "name": "Johnson Controls",
+        "client": "IDC Architects",
+        "company": "Civil & Environmental Consultants, Inc.",
+        "location": "Cranberry, PA",
+        "category": "Grading, Land Development, Engineering",
+        "tags": [
+            "Civil 3D",
+            "CAD",
+            "Land Development"
+        ],
+        "description": "I contributed to the Johnson Controls project by focusing on civil engineering tasks and engaging in discussions to refine project details. I utilized Civil3D for grading tutorials and produced sheet markups to support the development of the project.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "",
+        "start_date": "4/29/2015",
+        "end_date": "5/19/2015",
+        "client_sort": "IDC Architects",
+        "gsd_codes": [
+            "131-100"
+        ],
+        "coords": [
+            -80.1137639361416,
+            40.7099095828613
         ]
     }
 ]
