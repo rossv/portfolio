@@ -6,7 +6,9 @@
 
 import { rand } from './sprites';
 
-const PLACED_CAP = 150;   // oldest placed star retires past this
+// Exported so the caller's replay list can be held to the same length; past
+// this the oldest placed star retires.
+export const PLACED_CAP = 150;
 const REACH = 320;        // cursor radius that recruits nodes
 const LINK = 170;         // max distance between linked nodes
 
