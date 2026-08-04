@@ -4524,5 +4524,36 @@
             -80.1137639361416,
             40.7099095828613
         ]
+    },
+    {
+        "name": "GIS and Stormwater Support",
+        "client": "South Strabane Township",
+        "company": "KLH Engineers, Inc.",
+        "location": "South Strabane, PA",
+        "category": "Stormwater, GIS",
+        "tags": [
+            "ArcGIS",
+            "ArcGIS Online",
+            "ArcGIS Collector",
+            "GNSS",
+            "ArcGIS Pro",
+            "Watershed Delineation",
+            "Staff Training",
+            "Web Mapping"
+        ],
+        "description": "I provided general engineering services including stormwater management and GIS mapping for various projects. My work encompassed data collection, analysis, and tool development to support zoning and environmental compliance.",
+        "title": "Senior Project Engineer",
+        "project_role": "GIS Specialist, Engineer",
+        "image": "",
+        "start_date": "4/20/2017",
+        "end_date": "2/12/2021",
+        "client_sort": "South Strabane Township",
+        "gsd_codes": [
+            "454-02"
+        ],
+        "coords": [
+            -80.2117033257216,
+            40.19104241356
+        ]
     }
 ]
