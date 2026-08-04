@@ -89,13 +89,24 @@ export default function FluidBackground() {
         const isGeo = mode === 'geo';
         const isTech = mode === 'tech';
 
-        // On a touch screen a scroll *is* a finger drag, so touchmove feeds the
-        // pointer reaction through every scroll. Water wears that well — the
-        // bubbles just part around the finger — but terrain heaving and pipeline
-        // nodes firing on each scroll read as noise, so those modes follow taps
-        // only. Same query BadgeCollection uses for its touch branch.
+        // On a touch screen a scroll *is* a finger drag, and it also begins with
+        // a pointerdown. Water wears both well — the bubbles just part around
+        // the finger, and a ripple is cheap — but terrain heaving and pipeline
+        // nodes firing on each scroll read as noise. So on a coarse pointer
+        // those modes ignore drags (tracksPointerMove, below) and wait for a
+        // real tap before they spawn (usesTapGate). Same query BadgeCollection
+        // uses for its touch branch.
         const isCoarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
         const tracksPointerMove = mode === 'water' || !isCoarsePointer;
+
+        // A scroll begins with a pointerdown, so spawning there plants a
+        // star/peak/node on every scroll. In the canvas modes the spawn
+        // therefore waits for pointerup, and only fires if the gesture was
+        // really a tap. Water and the mouse keep the immediate spawn.
+        const usesTapGate = isCoarsePointer && mode !== 'water';
+        const TAP_SLOP = 10;    // px of movement still read as a tap
+        const TAP_TIME = 500;   // ms; longer is a press, not a tap
+        let pendingTap = null;  // { x, y, id, t, scrollY }
 
         /* ---------- space mode ------------------------------------- */
         // Each mode builds only its own pieces, so the others carry no cost.
@@ -327,17 +338,57 @@ export default function FluidBackground() {
             if (sparks.length > 160) sparks.splice(0, sparks.length - 160);
         };
 
-        const handlePointerDown = (e) => {
-            // Ignore clicks on real UI: placing a star behind a button or a
-            // project card is never what was meant.
-            if (e.target instanceof Element && e.target.closest('a, button, input, [role="button"]')) return;
-            spawnClickEffect(e.clientX, e.clientY);
+        // Ignore clicks on real UI: placing a star behind a button or a project
+        // card is never what was meant.
+        const isUiTarget = (target) =>
+            target instanceof Element && !!target.closest('a, button, input, [role="button"]');
+
+        const fireSpawn = (x, y) => {
+            spawnClickEffect(x, y);
             if (prefersReduced) render();
+        };
+
+        const handlePointerDown = (e) => {
+            if (isUiTarget(e.target)) return;
+            if (!usesTapGate) {
+                fireSpawn(e.clientX, e.clientY);
+                return;
+            }
+            pendingTap = {
+                x: e.clientX,
+                y: e.clientY,
+                id: e.pointerId,
+                t: performance.now(),
+                scrollY: window.scrollY,
+            };
+        };
+
+        const cancelTap = () => { pendingTap = null; };
+
+        const handleTapMove = (e) => {
+            if (!pendingTap || e.pointerId !== pendingTap.id) return;
+            if (Math.hypot(e.clientX - pendingTap.x, e.clientY - pendingTap.y) > TAP_SLOP) {
+                cancelTap();
+            }
+        };
+
+        const handlePointerUp = (e) => {
+            const tap = pendingTap;
+            cancelTap();
+            if (!tap || e.pointerId !== tap.id) return;
+            if (performance.now() - tap.t > TAP_TIME) return;
+            // scrollY is a backstop for a scroll event the browser delayed;
+            // pointercancel and the slop check are the primary guards.
+            if (window.scrollY !== tap.scrollY) return;
+            fireSpawn(tap.x, tap.y);
         };
 
         // Scroll handling
         const updateScroll = () => {
             scrollRef.current = window.scrollY;
+            // Inertia scrolls send few pointermove events, so the scroll event
+            // itself has to disqualify the gesture.
+            cancelTap();
         };
         window.addEventListener('scroll', updateScroll);
 
@@ -508,7 +559,15 @@ export default function FluidBackground() {
             mouseRef.current.x = -1000;
             mouseRef.current.y = -1000;
         }
-        window.addEventListener('pointerdown', handlePointerDown);
+        window.addEventListener('pointerdown', handlePointerDown, { passive: true });
+        if (usesTapGate) {
+            // pointercancel is what iOS sends when it takes the gesture over for
+            // scrolling, so it is the main disqualifier on that platform.
+            window.addEventListener('pointermove', handleTapMove, { passive: true });
+            window.addEventListener('pointerup', handlePointerUp, { passive: true });
+            window.addEventListener('pointercancel', cancelTap, { passive: true });
+            window.addEventListener('blur', cancelTap);
+        }
 
         // Initial scroll position
         scrollRef.current = window.scrollY;
@@ -522,6 +581,12 @@ export default function FluidBackground() {
             window.removeEventListener('mousemove', handleMouseMove);
             if (tracksPointerMove) window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('pointerdown', handlePointerDown);
+            if (usesTapGate) {
+                window.removeEventListener('pointermove', handleTapMove);
+                window.removeEventListener('pointerup', handlePointerUp);
+                window.removeEventListener('pointercancel', cancelTap);
+                window.removeEventListener('blur', cancelTap);
+            }
             cancelAnimationFrame(animationFrameId);
         };
         // Only the canvas modes read a palette, so a theme change in water
