@@ -12,3 +12,9 @@ coverage
 *.orig
 .DS_Store
 Thumbs.db
+
+# Local AI-assistant scratch: session settings and git worktrees. A worktree
+# here is a second checkout inside the repo, so leaving it untracked still
+# leaves it in `git status`. To share a settings file with the team later, add
+# a negation for it (e.g. `!.claude/settings.json`) — this rule hides it.
+.claude/
