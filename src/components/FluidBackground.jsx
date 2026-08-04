@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { makeStarSprites, makePuffSprites, makeWarmGlow, paletteFor } from '../utils/spaceMode/sprites';
-import { createStarfield } from '../utils/spaceMode/starfield';
+import { createStarfield, PLACED_CAP as STAR_PLACED_CAP } from '../utils/spaceMode/starfield';
 import { createAurora } from '../utils/spaceMode/aurora';
 import { createFleet } from '../utils/spaceMode/launchFleet';
 import { paletteFor as geoPaletteFor } from '../utils/geoMode/palette';
@@ -262,6 +262,11 @@ export default function FluidBackground() {
                 // sparks double as its birth effect.
                 starfield?.place(x, y);
                 placedRef.current.push({ x, y });
+                // starfield retires its own oldest past the cap, so the replay
+                // list has to retire with it or it grows without end.
+                if (placedRef.current.length > STAR_PLACED_CAP) {
+                    placedRef.current.splice(0, placedRef.current.length - STAR_PLACED_CAP);
+                }
                 // Fires before the reduced-motion bail below, so the Stargazer
                 // badge is still earnable without the birth animation.
                 window.dispatchEvent(
