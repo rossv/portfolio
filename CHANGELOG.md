@@ -4,9 +4,12 @@
 
 ### Highlights
 - Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws, with the basin falling downstream so contours cross the stream as V's aimed upstream; the ground now drifts at a tenth of scroll, and spot elevations were re-based for the deeper field ([#230](https://github.com/rossv/portfolio/pull/230)).
+- Fixed the mobile backdrop interaction: a touch scroll no longer plants stars, terrain peaks, or pipeline nodes, because the space, geospatial, and technologist modes now wait for a real tap (short, still, and with no scroll) before they spawn. Water and the mouse keep their immediate response ([#232](https://github.com/rossv/portfolio/pull/232)).
+- Held the star replay list to the starfield's placed cap, so it no longer grows past the field it rebuilds on a theme change ([#232](https://github.com/rossv/portfolio/pull/232)).
 
 ### Key PR Links
 - [#230](https://github.com/rossv/portfolio/pull/230): Carve a stream valley into the geospatial contour field.
+- [#232](https://github.com/rossv/portfolio/pull/232): Wait for a real tap before the canvas backdrops spawn on touch.
 
 ## Week of 2026-06-22
 
