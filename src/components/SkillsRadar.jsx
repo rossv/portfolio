@@ -134,7 +134,7 @@ export default function SkillsRadar({ className = "" }) {
       <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-indigo-500 rounded-br-lg"></div>
 
       <h3 className="text-slate-800 dark:text-white text-center font-bold mb-3 sm:mb-2 font-mono tracking-widest uppercase text-base sm:text-lg leading-snug">
-        Expertise Profile <span className="block sm:inline text-xs sm:text-sm text-slate-500">(Hrs)</span>
+        Expertise Profile
       </h3>
 
       <div
