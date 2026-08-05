@@ -276,7 +276,7 @@ export default function BadgeCollection() {
 
 
 
-  const centerBadgeInView = (badgeId, behavior = 'smooth') => {
+  const centerBadgeInView = (badgeId, behavior = 'smooth', expanded = false) => {
     const scroller = badgeScrollerRef.current;
     const badgeElement = badgeItemRefs.current.get(badgeId);
     if (!scroller || !badgeElement) return;
@@ -289,10 +289,19 @@ export default function BadgeCollection() {
       badgeRect.left >= scrollerRect.left + safetyPadding &&
       badgeRect.right <= scrollerRect.right - safetyPadding;
 
-    if (isFullyVisible) return;
+    // A touch-opened badge should move to the centre even when its collapsed
+    // bubble happened to be visible already. Include the label and the icon's
+    // final growth in the target width so the scroll and reveal can animate
+    // together instead of waiting for the pill to finish expanding.
+    if (isFullyVisible && !expanded) return;
+
+    const label = badgeElement.querySelector('.badge-chip__label');
+    const expandedWidth = expanded && label
+      ? badgeElement.clientWidth + label.scrollWidth + 8 + 8 + 16
+      : badgeElement.clientWidth;
 
     const targetScrollLeft =
-      badgeElement.offsetLeft - (scroller.clientWidth / 2) + (badgeElement.clientWidth / 2);
+      badgeElement.offsetLeft - (scroller.clientWidth / 2) + (expandedWidth / 2);
 
     scroller.scrollTo({
       left: Math.max(0, targetScrollLeft),
@@ -895,9 +904,14 @@ export default function BadgeCollection() {
                       onClick={() => {
                         if (isDismissed) {
                           if (isTouchMode) {
-                            setSelectedBadge((prev) => (prev === badge.id ? null : badge.id));
+                            const isOpening = selectedBadge !== badge.id;
+                            setSelectedBadge(isOpening ? badge.id : null);
+                            if (isOpening) {
+                              requestAnimationFrame(() => centerBadgeInView(badge.id, 'smooth', true));
+                            }
+                          } else {
+                            centerBadgeInView(badge.id);
                           }
-                          centerBadgeInView(badge.id);
                         }
                       }}
                       aria-pressed={isActive}
