@@ -275,6 +275,16 @@ export default function BadgeCollection() {
     }
   };
 
+  // Fades the scroller's own badges out at whichever edge still has more to
+  // scroll to, rather than painting an overlay rectangle over them.
+  const scrollerMaskImage = canScrollLeft
+    ? canScrollRight
+      ? 'linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)'
+      : 'linear-gradient(to right, transparent, black 24px)'
+    : canScrollRight
+      ? 'linear-gradient(to right, black calc(100% - 24px), transparent)'
+      : undefined;
+
 
 
   const centerBadgeInView = (badgeId, behavior = 'smooth', force = false) => {
@@ -875,19 +885,19 @@ export default function BadgeCollection() {
           </button>
 
           <div className="relative flex min-w-0 flex-1 items-center">
-            {canScrollLeft && unlockedBadges.length > 0 && (
-              <button
-                onClick={scrollLeftAmount}
-                className="absolute left-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-r from-white/85 via-white/60 to-transparent pr-4 pl-1 dark:from-slate-900/85 dark:via-slate-900/60 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                aria-label="Scroll left"
-              >
-                <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-            )}
-
-            <div ref={badgeScrollerRef} onScroll={checkScroll} className="scrollbar-hide -my-1 flex-1 overflow-x-auto py-1">
+            {/* Fading the scroller's own content (via mask) rather than painting a
+                translucent overlay on top of it avoids double-compounding opacity
+                against the pill's already-translucent backdrop-blur background,
+                which is what produced the hard-edged rectangle this replaces. */}
+            <div
+              ref={badgeScrollerRef}
+              onScroll={checkScroll}
+              className="scrollbar-hide -my-1 flex-1 overflow-x-auto py-1"
+              style={{
+                maskImage: scrollerMaskImage,
+                WebkitMaskImage: scrollerMaskImage,
+              }}
+            >
               <div className="flex w-max min-w-full items-center gap-2 px-1">
                 {unlockedBadges.length === 0 && (
                   <p className="truncate px-2 text-xs text-slate-500 dark:text-slate-400">
@@ -964,13 +974,28 @@ export default function BadgeCollection() {
               </div>
             </div>
 
+            {/* Small round chips (matching the Badges/Home/Theme buttons) instead
+                of full-height overlays, so the affordance reads as part of the
+                pill's own button language rather than a separate painted layer. */}
+            {canScrollLeft && unlockedBadges.length > 0 && (
+              <button
+                onClick={scrollLeftAmount}
+                className="absolute left-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200/90 bg-white/90 text-slate-500 shadow-sm backdrop-blur transition-colors hover:text-indigo-600 dark:border-slate-700/90 dark:bg-slate-900/90 dark:text-slate-400 dark:hover:text-indigo-400"
+                aria-label="Scroll left"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+
             {canScrollRight && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollRightAmount}
-                className="absolute right-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-l from-white/85 via-white/60 to-transparent pl-4 pr-1 dark:from-slate-900/85 dark:via-slate-900/60 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="absolute right-0.5 top-1/2 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200/90 bg-white/90 text-slate-500 shadow-sm backdrop-blur transition-colors hover:text-indigo-600 dark:border-slate-700/90 dark:bg-slate-900/90 dark:text-slate-400 dark:hover:text-indigo-400"
                 aria-label="Scroll right"
               >
-                <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
