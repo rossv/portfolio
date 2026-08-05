@@ -265,6 +265,7 @@ export default function BadgeCollection() {
   const lastScrollYRef = useRef(0);
   const badgeScrollerRef = useRef(null);
   const badgeItemRefs = useRef(new Map());
+  const centeringFrameRef = useRef(null);
 
   const checkScroll = () => {
     if (badgeScrollerRef.current) {
@@ -276,7 +277,7 @@ export default function BadgeCollection() {
 
 
 
-  const centerBadgeInView = (badgeId, behavior = 'smooth', expanded = false) => {
+  const centerBadgeInView = (badgeId, behavior = 'smooth', force = false) => {
     const scroller = badgeScrollerRef.current;
     const badgeElement = badgeItemRefs.current.get(badgeId);
     if (!scroller || !badgeElement) return;
@@ -290,24 +291,42 @@ export default function BadgeCollection() {
       badgeRect.right <= scrollerRect.right - safetyPadding;
 
     // A touch-opened badge should move to the centre even when its collapsed
-    // bubble happened to be visible already. Include the label and the icon's
-    // final growth in the target width so the scroll and reveal can animate
-    // together instead of waiting for the pill to finish expanding.
-    if (isFullyVisible && !expanded) return;
-
-    const label = badgeElement.querySelector('.badge-chip__label');
-    const expandedWidth = expanded && label
-      ? badgeElement.clientWidth + label.scrollWidth + 8 + 8 + 16
-      : badgeElement.clientWidth;
+    // bubble happened to be visible already. Forced calls use its current
+    // rendered geometry while the chip transition runs.
+    if (isFullyVisible && !force) return;
 
     const targetScrollLeft =
-      badgeElement.offsetLeft - (scroller.clientWidth / 2) + (expandedWidth / 2);
+      badgeElement.offsetLeft - (scroller.clientWidth / 2) + (badgeElement.clientWidth / 2);
 
     scroller.scrollTo({
       left: Math.max(0, targetScrollLeft),
       behavior,
     });
   };
+
+  // Opening one chip while another closes changes both the new chip's width
+  // and its offset for the full CSS transition. Follow the rendered geometry
+  // until that transition finishes instead of predicting it from the initial
+  // (possibly expanded) layout.
+  const centerBadgeThroughTransition = (badgeId) => {
+    if (centeringFrameRef.current) cancelAnimationFrame(centeringFrameRef.current);
+
+    const startedAt = performance.now();
+    const followBadge = (now) => {
+      centerBadgeInView(badgeId, 'auto', true);
+      if (now - startedAt < 450) {
+        centeringFrameRef.current = requestAnimationFrame(followBadge);
+      } else {
+        centeringFrameRef.current = null;
+      }
+    };
+
+    centeringFrameRef.current = requestAnimationFrame(followBadge);
+  };
+
+  useEffect(() => () => {
+    if (centeringFrameRef.current) cancelAnimationFrame(centeringFrameRef.current);
+  }, []);
 
   const unlockedIds = useMemo(() => new Set(unlocked), [unlocked]);
 
@@ -859,7 +878,7 @@ export default function BadgeCollection() {
             {canScrollLeft && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollLeftAmount}
-                className="absolute left-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-r from-white via-white/80 to-transparent pr-4 pl-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="absolute left-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-r from-white/85 via-white/60 to-transparent pr-4 pl-1 dark:from-slate-900/85 dark:via-slate-900/60 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 aria-label="Scroll left"
               >
                 <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -907,7 +926,7 @@ export default function BadgeCollection() {
                             const isOpening = selectedBadge !== badge.id;
                             setSelectedBadge(isOpening ? badge.id : null);
                             if (isOpening) {
-                              requestAnimationFrame(() => centerBadgeInView(badge.id, 'smooth', true));
+                              centerBadgeThroughTransition(badge.id);
                             }
                           } else {
                             centerBadgeInView(badge.id);
@@ -948,7 +967,7 @@ export default function BadgeCollection() {
             {canScrollRight && unlockedBadges.length > 0 && (
               <button
                 onClick={scrollRightAmount}
-                className="absolute right-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-l from-white via-white/80 to-transparent pl-4 pr-1 dark:from-slate-900 dark:via-slate-900/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="absolute right-0 z-10 flex h-full cursor-pointer items-center bg-gradient-to-l from-white/85 via-white/60 to-transparent pl-4 pr-1 dark:from-slate-900/85 dark:via-slate-900/60 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 aria-label="Scroll right"
               >
                 <svg className="h-4 w-4 animate-pulse text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
