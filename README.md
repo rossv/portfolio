@@ -1,6 +1,7 @@
 # Ross Volkwein Portfolio
 
 Personal engineering and geospatial portfolio built with Astro, React, and Tailwind CSS.
+deployed to rossvolkwein.com
 
 ## Stack
 
