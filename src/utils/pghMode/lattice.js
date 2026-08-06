@@ -13,14 +13,19 @@
 export const CELL = 38;        // px between neighbouring lattice nodes
 export const PARALLAX = 0.45;  // ground-plane travel per pixel of page scroll
 
-// The eight lattice directions, 45 degrees apart. Turning by one index is a 45
-// degree turn and by two a 90 — the entire routing vocabulary.
-export const DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+// Rivers run on the lattice axes only, which is the whole routing vocabulary:
+// every turn between them is 90 degrees, and because the axes project to the
+// screen's two 30-degree diagonals, a channel never runs straight up, down, or
+// across. The lattice diagonals — which would project to screen vertical and
+// horizontal — are deliberately not available.
+//
+//   AXES[0], AXES[1]  carry a river downstream (down the page)
+//   AXES[2], AXES[3]  are their opposites, used only to trace a tributary back
+//                     up to its headwater
+export const AXES = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 
-// How far each direction carries a river down the plane. Trunks are only
-// allowed the non-negative ones, so a river always makes progress downstream
-// instead of wandering sideways for ever.
-export const DOWNSTREAM = DIRS.map(([x, y]) => x + y);
+// The two downstream axes. Alternating between them is the 90-degree turn.
+export const DOWN = [0, 1];
 
 const W2 = CELL * 0.866;
 const H2 = CELL * 0.5;

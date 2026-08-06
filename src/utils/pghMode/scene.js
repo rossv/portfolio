@@ -10,21 +10,32 @@
 // hot channel reads as nearer, and bridges last so a deck is never buried by the
 // channel it crosses.
 
-import { paletteFor, rgba, smooth, clamp } from './palette';
+import { paletteFor, smooth, clamp } from './palette';
 import { createLattice } from './lattice';
 import { buildNetworks } from './network';
 import { createChannels } from './channels';
 import { createBridges } from './bridges';
+import { createClouds } from './clouds';
+import { createCableBand } from './cableBand';
 
 export { paletteFor };
 
 const ARRIVE_MS = 1700;
-const SEED = 20260806;
+
+// A different valley every visit, held for the life of the mount so the layout
+// never shifts under the reader — including across a theme flip, which rebuilds
+// the whole scene.
+const SEED = Math.floor(Math.random() * 0x7fffffff);
 
 export function createScene(ctx, palette, placed = [], { reduceMotion = false } = {}) {
     const lattice = createLattice();
     const channels = createChannels(ctx, palette, lattice, { reduceMotion });
     const bridges = createBridges(ctx, palette, lattice, placed, { reduceMotion });
+    // The hero keeps its cable band. It is a foreground element over the valley,
+    // in the same slot the water video and the waveform occupy, and it scrolls
+    // away with the hero instead of hanging over the whole page.
+    const clouds = createClouds(ctx, palette, { reduceMotion });
+    const cableBand = createCableBand(ctx, palette, lattice, { clouds });
     let network = [];
 
     // The page's own height decides how deep the lattice has to run, and it
@@ -71,6 +82,7 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
     function resize(width, height) {
         const changed = lattice.resize(width, height, documentScroll());
+        cableBand.resize(width, height);
         if (changed || !network.length) pendingRebuild = true;
         if (heightObserver || typeof ResizeObserver === 'undefined') return;
         heightObserver = new ResizeObserver(() => { pendingRebuild = true; });
@@ -97,27 +109,16 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         ctx.fillStyle = palette.ground;
         ctx.fillRect(0, 0, width, height);
 
-        // The lattice itself, faint, and only the lines that cross the viewport.
-        ctx.strokeStyle = rgba(palette.steel, palette.light ? 0.15 : 0.10);
-        ctx.lineWidth = 1;
-        const u = lattice.halfWidth();
-        const v = lattice.depth();
-        for (let i = -u; i <= v; i += 1) {
-            for (const [a, b] of [[[i, 0], [i, v]], [[0, i], [u + v, i]]]) {
-                const p0 = lattice.project(a[0], a[1], scrollY);
-                const p1 = lattice.project(b[0], b[1], scrollY);
-                if (Math.max(p0[1], p1[1]) < 0 || Math.min(p0[1], p1[1]) > height) continue;
-                ctx.beginPath();
-                ctx.moveTo(p0[0], p0[1]);
-                ctx.lineTo(p1[0], p1[1]);
-                ctx.stroke();
-            }
-        }
+        // No drawn lattice. The rivers already carry the geometry, and a grid on
+        // top of them read as a second grid over the first.
 
         // On arrival the networks fill in from their headwaters down.
         const reveal = smooth(arrival);
         channels.frame(network, scrollY, t, 1, reveal);
         if (reveal > 0.55) bridges.frame(scrollY, t, clamp((reveal - 0.55) / 0.45, 0, 1));
+
+        // The hero's cable last, so it reads as the nearest thing on the page.
+        cableBand.frame(scrollY, arrival, t);
     }
 
     // A click on any channel throws a bridge across it. Returns true only when

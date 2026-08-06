@@ -51,41 +51,21 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         }
     }
 
-    function molten(pts, wide, g, t) {
-        // Bloom, then the incandescent channel, then the skin over the top. The
-        // glow belongs in the cracks between plates, not in the plates.
-        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.13 : 0.17) * g);
-        ctx.lineWidth = wide * 2.1;
+    function molten(pts, wide, g) {
+        // A clean incandescent channel: bloom, body, hot centre. No crust — the
+        // drifting skin read as debris on the surface rather than as metal.
+        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.11 : 0.14) * g);
+        ctx.lineWidth = wide * 2.0;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.hot, 0.96 * g);
+        ctx.strokeStyle = rgba(palette.hot, 0.95 * g);
         ctx.lineWidth = wide;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.hotter, 0.9 * g);
-        ctx.lineWidth = wide * 0.66;
+        ctx.strokeStyle = rgba(palette.hotter, 0.85 * g);
+        ctx.lineWidth = wide * 0.60;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.molten, 0.9 * g);
-        ctx.lineWidth = wide * 0.26;
+        ctx.strokeStyle = rgba(palette.molten, 0.80 * g);
+        ctx.lineWidth = wide * 0.24;
         trace(pts);
-
-        ctx.fillStyle = rgba(palette.crust, 0.92 * g);
-        const count = Math.min(22, Math.floor(pts.length / 4));
-        for (let i = 0; i < count; i += 1) {
-            const k = (hash(i * 3 + 1) + (reduceMotion ? 0 : t * 0.00004)) % 1;
-            const a = Math.floor(k * (pts.length - 2));
-            const b = pts[Math.min(pts.length - 1, a + 1)];
-            ctx.save();
-            ctx.translate(pts[a][0], pts[a][1]);
-            ctx.rotate(Math.atan2(b[1] - pts[a][1], b[0] - pts[a][0]));
-            ctx.beginPath();
-            ctx.ellipse(
-                0, (hash(i + 5) - 0.5) * wide * 0.26,
-                wide * (0.30 + hash(i + 9) * 0.36),
-                wide * (0.17 + hash(i + 13) * 0.13),
-                0, 0, Math.PI * 2,
-            );
-            ctx.fill();
-            ctx.restore();
-        }
     }
 
     // Draws every channel and hands back the screen points, which the bridges
@@ -115,7 +95,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
                 const visible = pts.slice(0, to);
                 const wide = widthFor(cell, channel.order);
                 if (pass === 'water') water(visible, wide, g, t);
-                else molten(visible, wide, g, t);
+                else molten(visible, wide, g);
             }
         }
 

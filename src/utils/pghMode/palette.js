@@ -10,36 +10,48 @@ export const PALETTES = {
     dark: {
         light: false,
         ground: '#0A0E13',      // the ground plane
-        plate: '#131A22',       // channel banks and terraced massing
-        water: '#123243',
-        waterLit: '#2E6070',
-        surf: '#4E8494',        // tracers on the surface
-        crust: '#2A1509',       // the skin on the molten
-        hot: '#D2500F',
-        hotter: '#FF7A1A',
-        molten: '#FFE3B0',      // the incandescent core
-        glow: '#FFB05A',        // the bloom around a molten channel
+        plate: '#131A22',       // channel banks
+        // Rivers are held well back. This is a backdrop, and the earlier values
+        // read as neon against near-black.
+        water: '#11242D',
+        waterLit: '#244A56',
+        surf: '#3B6472',        // tracers on the surface
+        hot: '#8C3A10',
+        hotter: '#B95518',
+        molten: '#D9A469',      // the hot centre of the channel
+        glow: '#9C6A2E',        // the bloom around a molten channel
         steel: '#8FA1AE',       // truss members, piers
-        deck: '#B9C4CD',
+        structure: '#C9D4DC',
+        deck: '#9FADB7',
         accent: '#FFB612',      // Aztec gold: chains, arches, top chords
-        shadow: 'rgba(0, 0, 0, 0.34)',
+        // The hero cable: shaded underside, the collars at each hanger, the
+        // handrope, and the lit crown that makes it read as round.
+        cableLow: '#8A5F09',
+        bandCollar: '#6B4A07',
+        rope: '#B9C4CD',
+        crown: '#FFECB4',
+        shadow: 'rgba(0, 0, 0, 0.38)',
     },
     light: {
         light: true,
         ground: '#EAEEF1',
         plate: '#DCE3E8',
-        water: '#B6CBD6',
-        waterLit: '#7FA6B8',
-        surf: '#3F6D82',
-        crust: '#B9A493',
-        hot: '#A83A08',
-        hotter: '#D2500F',
-        molten: '#FFF0CC',
-        glow: '#E08A2E',
+        water: '#C2D2DA',
+        waterLit: '#9BB4BF',
+        surf: '#5C7B86',
+        hot: '#8A4A22',
+        hotter: '#A9612C',
+        molten: '#D8B98C',
+        glow: '#B3915F',
         steel: '#52646F',
-        deck: '#33424C',
+        structure: '#2C3A45',
+        deck: '#41525F',
         accent: '#9A6A00',      // bronze
-        shadow: 'rgba(20, 30, 40, 0.16)',
+        cableLow: '#6E4B00',
+        bandCollar: '#54390A',
+        rope: '#41525F',
+        crown: '#FFFFFF',
+        shadow: 'rgba(20, 30, 40, 0.18)',
     },
 };
 

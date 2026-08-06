@@ -1,4 +1,4 @@
-// The bridges you build, in four Pittsburgh silhouettes.
+// The bridges you build, as 2.5D models in four Pittsburgh silhouettes.
 //
 //   sisters     — self-anchored eyebar suspension, the Three Sisters
 //   lenticular  — the Smithfield Street lens
@@ -6,147 +6,207 @@
 //   hotmetal    — a through truss; the real Hot Metal Bridge carried crucibles
 //                 of iron across the Mon, so the molten river always gets it
 //
-// Each is drawn along its deck line in screen space. In isometric, vertical is
-// straight up the screen, so towers, arches and chords all rise on the screen's
-// own y axis.
+// These are volumes, not line drawings. Each bridge is built in its own local
+// frame and every piece is a shaded quad or a paired near/far member:
+//
+//   t  0 → 1   along the deck, abutment to abutment
+//   s -1 → 1   across the deck; -1 is the far kerb, +1 the near one
+//   z          height above the deck's own plane, straight up the screen
+//
+// Because rivers only run on the lattice axes, the deck always crosses on the
+// other axis — which projects to a 30-degree screen diagonal, never to vertical.
+// That is what makes the near and far sides of a truss separate on screen, and
+// it is why these read as objects rather than as flat symbols.
 
 import { rgba, clamp, smooth } from './palette';
-import { DIRS } from './lattice';
+import { AXES } from './lattice';
 
 const WATER_TYPES = ['sisters', 'lenticular', 'arch'];
 
-const SHAPES = {
-    sisters(c, ax, ay, bx, by, p, g, k) {
-        const len = Math.hypot(bx - ax, by - ay);
-        const rise = len * 0.26 * k;
-        const tA = [ax + (bx - ax) * 0.18, ay + (by - ay) * 0.18];
-        const tB = [ax + (bx - ax) * 0.82, ay + (by - ay) * 0.82];
-        c.strokeStyle = rgba(p.steel, 0.95 * g);
-        c.lineWidth = 2.4;
-        for (const t of [tA, tB]) {
-            c.beginPath(); c.moveTo(t[0], t[1]); c.lineTo(t[0], t[1] - rise); c.stroke();
-        }
-        // The chain: shallow and self-anchored, dipping between the towers.
-        c.strokeStyle = rgba(p.accent, 0.95 * g);
-        c.lineWidth = 2;
-        c.beginPath();
-        c.moveTo(ax, ay);
-        c.quadraticCurveTo(tA[0], tA[1] - rise * 0.94, tA[0], tA[1] - rise);
-        c.quadraticCurveTo((tA[0] + tB[0]) / 2, (tA[1] + tB[1]) / 2 - rise * 0.42, tB[0], tB[1] - rise);
-        c.quadraticCurveTo(tB[0], tB[1] - rise * 0.94, bx, by);
-        c.stroke();
-        c.strokeStyle = rgba(p.steel, 0.55 * g);
-        c.lineWidth = 1;
-        for (let i = 1; i < 9; i += 1) {
-            const f = i / 9;
-            const x = tA[0] + (tB[0] - tA[0]) * f;
-            const y = tA[1] + (tB[1] - tA[1]) * f;
-            c.beginPath();
-            c.moveTo(x, y - rise + Math.sin(f * Math.PI) * rise * 0.58);
-            c.lineTo(x, y);
-            c.stroke();
-        }
-    },
-
-    lenticular(c, ax, ay, bx, by, p, g, k) {
-        const len = Math.hypot(bx - ax, by - ay);
-        const rise = len * 0.17 * k;
-        c.strokeStyle = rgba(p.accent, 0.95 * g);
-        c.lineWidth = 2;
-        for (const s of [-1, 1]) {
-            c.beginPath();
-            c.moveTo(ax, ay);
-            c.quadraticCurveTo((ax + bx) / 2, (ay + by) / 2 - rise * 2 * s, bx, by);
-            c.stroke();
-        }
-        c.strokeStyle = rgba(p.steel, 0.55 * g);
-        c.lineWidth = 1;
-        for (let i = 1; i < 7; i += 1) {
-            const f = i / 7;
-            const x = ax + (bx - ax) * f;
-            const y = ay + (by - ay) * f;
-            const off = Math.sin(f * Math.PI) * rise;
-            c.beginPath(); c.moveTo(x, y - off); c.lineTo(x, y + off); c.stroke();
-        }
-    },
-
-    arch(c, ax, ay, bx, by, p, g, k) {
-        const len = Math.hypot(bx - ax, by - ay);
-        const rise = len * 0.30 * k;
-        c.strokeStyle = rgba(p.accent, 0.95 * g);
-        c.lineWidth = 2.4;
-        c.beginPath();
-        c.moveTo(ax, ay);
-        c.quadraticCurveTo((ax + bx) / 2, (ay + by) / 2 - rise * 2, bx, by);
-        c.stroke();
-        c.strokeStyle = rgba(p.steel, 0.55 * g);
-        c.lineWidth = 1;
-        for (let i = 1; i < 8; i += 1) {
-            const f = i / 8;
-            const x = ax + (bx - ax) * f;
-            const y = ay + (by - ay) * f;
-            c.beginPath();
-            c.moveTo(x, y - Math.sin(f * Math.PI) * rise * 1.5);
-            c.lineTo(x, y);
-            c.stroke();
-        }
-    },
-
-    hotmetal(c, ax, ay, bx, by, p, g, k) {
-        const len = Math.hypot(bx - ax, by - ay);
-        const h = len * 0.17 * k;
-        const N = 7;
-        c.strokeStyle = rgba(p.accent, 0.92 * g);
-        c.lineWidth = 2;
-        c.beginPath(); c.moveTo(ax, ay - h); c.lineTo(bx, by - h); c.stroke();
-        c.strokeStyle = rgba(p.steel, 0.62 * g);
-        c.lineWidth = 1.1;
-        for (let i = 0; i <= N; i += 1) {
-            const f = i / N;
-            const x = ax + (bx - ax) * f;
-            const y = ay + (by - ay) * f;
-            c.beginPath(); c.moveTo(x, y); c.lineTo(x, y - h); c.stroke();
-            if (i === N) continue;
-            const f2 = (i + 1) / N;
-            const x2 = ax + (bx - ax) * f2;
-            const y2 = ay + (by - ay) * f2;
-            c.beginPath();
-            c.moveTo(x, i % 2 ? y : y - h);
-            c.lineTo(x2, i % 2 ? y2 - h : y2);
-            c.stroke();
-        }
-    },
-};
-
 export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion = false } = {}) {
-    // Deck direction is chosen in SCREEN space, not lattice space. Isometric
-    // squashes the vertical, so the lattice-perpendicular is not the screen-
-    // perpendicular — and a deck that lands on the screen's vertical axis
-    // collapses into the towers rising along it. Perpendicular wins first, but a
-    // near-vertical deck is rejected: a slightly skew crossing is far more
-    // legible, and skew crossings are common in the real thing anyway.
-    function deckDir(channel, at, scrollY) {
+    // Builds the local frame for one bridge and returns a point mapper.
+    function frameFor(channel, at, scrollY, span) {
         const pts = channel.pts;
         const [cx, cy] = pts[at];
-        const [rx1, ry1] = lattice.project(...pts[at - 1], scrollY);
-        const [rx2, ry2] = lattice.project(...pts[at + 1], scrollY);
-        const rl = Math.hypot(rx2 - rx1, ry2 - ry1) || 1;
-        const rdx = (rx2 - rx1) / rl;
-        const rdy = (ry2 - ry1) / rl;
-        const [ox, oy] = lattice.project(cx, cy, scrollY);
-        let best = DIRS[0];
-        let bestScore = -Infinity;
-        for (const d of DIRS) {
-            const [sx, sy] = lattice.project(cx + d[0], cy + d[1], scrollY);
-            const vl = Math.hypot(sx - ox, sy - oy) || 1;
-            const vx = (sx - ox) / vl;
-            const vy = (sy - oy) / vl;
-            const steep = Math.abs(vx) < 0.35 ? 1.9 : 0;
-            const score = (1 - Math.abs(vx * rdx + vy * rdy)) * 2 + Math.abs(vx) * 0.7 - steep;
-            if (score > bestScore) { bestScore = score; best = d; }
-        }
-        return best;
+        const prev = pts[at - 1];
+        const next = pts[at + 1];
+        // The river runs on one axis here, so the deck takes the other one.
+        const along = [next[0] - prev[0], next[1] - prev[1]];
+        const river = Math.abs(along[0]) >= Math.abs(along[1]) ? 0 : 1;
+        const deckAxis = AXES[river === 0 ? 1 : 0];
+        const acrossAxis = AXES[river];
+
+        const A = lattice.project(cx - deckAxis[0] * span, cy - deckAxis[1] * span, scrollY);
+        const B = lattice.project(cx + deckAxis[0] * span, cy + deckAxis[1] * span, scrollY);
+        const O = lattice.project(cx, cy, scrollY);
+        const W = lattice.project(cx + acrossAxis[0], cy + acrossAxis[1], scrollY);
+        // Half the deck's width, as a screen vector along the river.
+        const half = 0.34;
+        const wx = (W[0] - O[0]) * half;
+        const wy = (W[1] - O[1]) * half;
+
+        return (t, s, z = 0) => [
+            A[0] + (B[0] - A[0]) * t + wx * s,
+            A[1] + (B[1] - A[1]) * t + wy * s - z,
+        ];
     }
+
+    const quad = (P, a, b, c, d, fill) => {
+        ctx.beginPath();
+        for (const [i, pt] of [a, b, c, d].entries()) {
+            const [x, y] = P(...pt);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+    };
+
+    const line = (P, from, to, stroke, w) => {
+        const [x1, y1] = P(...from);
+        const [x2, y2] = P(...to);
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = w;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+    };
+
+    // A curve in one of the two vertical planes (s fixed), used for cables,
+    // arches and lens chords.
+    const curve = (P, s, rise, bulge, stroke, w, from = 0, to = 1) => {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = w;
+        ctx.beginPath();
+        const steps = 26;
+        for (let i = 0; i <= steps; i += 1) {
+            const t = from + (to - from) * (i / steps);
+            const z = rise * bulge(t);
+            const [x, y] = P(t, s, z);
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+    };
+
+    // The deck itself: a slab with a lit top, a near face and two ends.
+    function deckSlab(P, p, g, thick, to) {
+        quad(P, [0, -1, thick], [to, -1, thick], [to, 1, thick], [0, 1, thick],
+            rgba(p.deck, 0.95 * g));                        // top
+        quad(P, [0, 1, thick], [to, 1, thick], [to, 1, 0], [0, 1, 0],
+            rgba(p.steel, 0.55 * g));                       // near face
+        quad(P, [to, -1, thick], [to, 1, thick], [to, 1, 0], [to, -1, 0],
+            rgba(p.steel, 0.34 * g));                       // far end
+        ctx.strokeStyle = rgba(p.structure, 0.35 * g);
+        ctx.lineWidth = 1;
+        for (const s of [-1, 1]) {
+            const [x1, y1] = P(0, s, thick);
+            const [x2, y2] = P(to, s, thick);
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        }
+    }
+
+    // A pier face under each abutment, so the deck stands on something rather
+    // than floating over the channel.
+    function pier(P, p, g, t, depth) {
+        quad(P, [t, -1, 0], [t, 1, 0], [t, 1, -depth], [t, -1, -depth],
+            rgba(p.steel, 0.42 * g));
+    }
+
+    const SHAPES = {
+        // Two towers, and the shallow self-anchored chain slung between them.
+        sisters(P, p, g, k, thick) {
+            const rise = 34 * k;
+            const towers = [0.2, 0.8];
+            for (const t of towers) {
+                for (const s of [-1, 1]) {
+                    line(P, [t, s, thick], [t, s, thick + rise], rgba(p.steel, 0.9 * g), 3);
+                }
+                // portal strut across the tower top, which is what makes the two
+                // legs read as one tower rather than two posts
+                line(P, [t, -1, thick + rise], [t, 1, thick + rise], rgba(p.steel, 0.8 * g), 2.4);
+            }
+            const sag = (t) => {
+                if (t < towers[0]) return thick + rise * (t / towers[0]) * 0.86;
+                if (t > towers[1]) return thick + rise * ((1 - t) / (1 - towers[1])) * 0.86;
+                const f = (t - towers[0]) / (towers[1] - towers[0]);
+                return thick + rise * (0.62 + 0.38 * Math.cos((f - 0.5) * Math.PI * 1.6));
+            };
+            for (const s of [-1, 1]) {
+                curve(P, s, 1, sag, rgba(p.accent, s < 0 ? 0.6 * g : 0.95 * g), s < 0 ? 1.6 : 2.2);
+            }
+            for (let i = 1; i < 8; i += 1) {
+                const t = towers[0] + ((towers[1] - towers[0]) * i) / 8;
+                for (const s of [-1, 1]) {
+                    line(P, [t, s, thick], [t, s, sag(t)], rgba(p.steel, 0.5 * g), 1);
+                }
+            }
+        },
+
+        // Smithfield: a lens either side, chords bulging above and below.
+        lenticular(P, p, g, k, thick) {
+            const rise = 24 * k;
+            const up = (t) => thick + Math.sin(t * Math.PI) * rise;
+            const dn = (t) => thick - Math.sin(t * Math.PI) * rise * 0.62;
+            for (const s of [-1, 1]) {
+                const a = s < 0 ? 0.6 : 1;
+                curve(P, s, 1, up, rgba(p.accent, 0.92 * a * g), s < 0 ? 1.6 : 2.2);
+                curve(P, s, 1, dn, rgba(p.accent, 0.7 * a * g), s < 0 ? 1.4 : 1.9);
+                for (let i = 1; i < 7; i += 1) {
+                    const t = i / 7;
+                    line(P, [t, s, up(t)], [t, s, dn(t)], rgba(p.steel, 0.45 * a * g), 1);
+                }
+            }
+            // top lateral bracing between the two lenses
+            for (let i = 1; i < 7; i += 1) {
+                const t = i / 7;
+                line(P, [t, -1, up(t)], [t, 1, up(t)], rgba(p.steel, 0.3 * g), 1);
+            }
+        },
+
+        // A tied arch: two ribs, hangers, and the tie along the deck.
+        arch(P, p, g, k, thick) {
+            const rise = 42 * k;
+            const rib = (t) => thick + Math.sin(t * Math.PI) * rise;
+            for (const s of [-1, 1]) {
+                const a = s < 0 ? 0.6 : 1;
+                curve(P, s, 1, rib, rgba(p.accent, 0.95 * a * g), s < 0 ? 2 : 2.8);
+                for (let i = 1; i < 8; i += 1) {
+                    const t = i / 8;
+                    line(P, [t, s, rib(t)], [t, s, thick], rgba(p.steel, 0.45 * a * g), 1);
+                }
+            }
+            for (const t of [0.32, 0.5, 0.68]) {
+                line(P, [t, -1, rib(t)], [t, 1, rib(t)], rgba(p.steel, 0.32 * g), 1.1);
+            }
+        },
+
+        // Hot Metal: a through truss, so the deck runs between the two trusses.
+        hotmetal(P, p, g, k, thick) {
+            const h = 26 * k;
+            const N = 6;
+            for (const s of [-1, 1]) {
+                const a = s < 0 ? 0.6 : 1;
+                line(P, [0, s, thick + h], [1, s, thick + h], rgba(p.accent, 0.9 * a * g), 2.2);
+                for (let i = 0; i <= N; i += 1) {
+                    const t = i / N;
+                    line(P, [t, s, thick], [t, s, thick + h], rgba(p.steel, 0.55 * a * g), 1.2);
+                    if (i === N) continue;
+                    const t2 = (i + 1) / N;
+                    line(P, [t, s, i % 2 ? thick : thick + h], [t2, s, i % 2 ? thick + h : thick],
+                        rgba(p.steel, 0.45 * a * g), 1);
+                }
+            }
+            // portal bracing at each end, and sway bracing overhead
+            for (const t of [0, 1]) {
+                line(P, [t, -1, thick + h], [t, 1, thick + h], rgba(p.steel, 0.6 * g), 1.6);
+            }
+            for (let i = 1; i < N; i += 1) {
+                const t = i / N;
+                line(P, [t, -1, thick + h], [t, 1, thick + h], rgba(p.steel, 0.26 * g), 1);
+            }
+        },
+    };
 
     // One bridge per stretch: repeated clicks in the same place do not stack.
     function add(channel, at, silent = false) {
@@ -165,38 +225,27 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
 
     function frame(scrollY, t, g) {
         const cell = lattice.cell();
+        const thick = cell * 0.16;
         for (const bridge of placed) {
             const pts = bridge.channel.pts;
             const at = clamp(bridge.at, 1, pts.length - 2);
-            const [cx, cy] = pts[at];
-            if (!lattice.onScreen(cx, cy, scrollY)) continue;
+            if (!lattice.onScreen(pts[at][0], pts[at][1], scrollY)) continue;
 
-            const perp = deckDir(bridge.channel, at, scrollY);
-            const reach = bridge.channel.order === 1 ? 1.5 : 1.15;
-            const A = lattice.project(cx - perp[0] * reach, cy - perp[1] * reach, scrollY);
-            const B = lattice.project(cx + perp[0] * reach, cy + perp[1] * reach, scrollY);
-            const grow = bridge.born < 0 ? 1 : smooth(clamp((t - bridge.born) / 520, 0, 1));
-            const ex = A[0] + (B[0] - A[0]) * grow;
-            const ey = A[1] + (B[1] - A[1]) * grow;
+            const span = bridge.channel.order === 1 ? 1.6 : 1.2;
+            const P = frameFor(bridge.channel, at, scrollY, span);
+            const grow = bridge.born < 0 ? 1 : smooth(clamp((t - bridge.born) / 560, 0, 1));
+            const to = Math.max(0.04, grow);
 
-            // A shadow on the water, offset the way an isometric sun would put it
-            ctx.strokeStyle = palette.shadow;
-            ctx.lineWidth = cell * 0.16;
-            ctx.beginPath(); ctx.moveTo(A[0] + 4, A[1] + 5); ctx.lineTo(ex + 4, ey + 5); ctx.stroke();
+            // Shadow on the water first, so the model sits in the channel.
+            quad(P, [0, -1.5, -thick * 1.4], [to, -1.5, -thick * 1.4],
+                [to, 1.5, -thick * 1.4], [0, 1.5, -thick * 1.4], palette.shadow);
 
-            ctx.strokeStyle = rgba(palette.steel, 0.75 * g);
-            ctx.lineWidth = 2.6;
-            for (const P of [A, B]) {
-                ctx.beginPath(); ctx.moveTo(P[0], P[1]); ctx.lineTo(P[0], P[1] + cell * 0.30); ctx.stroke();
-            }
+            pier(P, palette, g, 0, cell * 0.34);
+            if (grow > 0.9) pier(P, palette, g, 1, cell * 0.34);
+            deckSlab(P, palette, g, thick, to);
 
-            ctx.strokeStyle = rgba(palette.deck, 0.98 * g);
-            ctx.lineWidth = cell * 0.15;
-            ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(ex, ey); ctx.stroke();
-
-            if (grow > 0.35) {
-                SHAPES[bridge.type](ctx, A[0], A[1], ex, ey, palette, g,
-                    smooth(clamp((grow - 0.35) / 0.65, 0, 1)));
+            if (grow > 0.4) {
+                SHAPES[bridge.type](P, palette, g, smooth(clamp((grow - 0.4) / 0.6, 0, 1)), thick);
             }
         }
     }
@@ -213,7 +262,7 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
                 if (!best || d < best.d) best = { d, channel, at: i };
             }
         }
-        return best && best.d <= lattice.cell() * 1.1 ? best : null;
+        return best && best.d <= lattice.cell() * 1.2 ? best : null;
     }
 
     return { add, frame, pick, count: () => placed.length };
