@@ -18,6 +18,9 @@ export const PALETTES = {
         ground: '#0A0E13', ground2: '#05070A', mass: '#232E39',
         edge: '#8FA1AE', structure: '#C9D4DC',
         accent: '#FFB612', hot: '#D2500F', haze: '#2A3642',
+        // The hero cable: its shaded underside, the collars at each hanger, the
+        // handrope above it, and the lit crown that makes it read as round.
+        cableLow: '#8A5F09', bandCollar: '#6B4A07', rope: '#B9C4CD', crown: '#FFECB4',
     },
     // The light ground substitutes bronze for gold: #FFB612 on paper is a
     // highlighter, and the whole point of the accent is that it is the only
@@ -30,6 +33,7 @@ export const PALETTES = {
         ground: '#C3CED6', ground2: '#AEBDC9', mass: '#93A5B3',
         edge: '#41525F', structure: '#2C3A45',
         accent: '#9A6A00', hot: '#A83A08', haze: '#C6D0D8',
+        cableLow: '#6E4B00', bandCollar: '#54390A', rope: '#41525F', crown: '#FFFFFF',
     },
 };
 

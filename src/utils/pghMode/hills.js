@@ -12,6 +12,7 @@
 
 import { rgba, hash } from './palette';
 import { DEPTH } from './stations';
+import { createClouds } from './clouds';
 
 const ridgeY = (x, seed, amp, base) =>
     base
@@ -19,14 +20,23 @@ const ridgeY = (x, seed, amp, base) =>
     - Math.sin(x * 0.00071 + seed * 2.3) * amp * 0.8
     - Math.sin(x * 0.0034 + seed * 0.7) * amp * 0.22;
 
-export function createHills(ctx, palette, geom) {
-    function sky() {
+export function createHills(ctx, palette, geom, { reduceMotion = false } = {}) {
+    const clouds = createClouds(ctx, palette, { reduceMotion });
+
+    function sky(t) {
+        const width = geom.width();
         const height = geom.height();
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
         gradient.addColorStop(0, palette.skyTop);
         gradient.addColorStop(1, palette.skyBot);
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, geom.width(), height);
+        ctx.fillRect(0, 0, width, height);
+
+        // Overcast over the gradient, thinning out before the page content
+        // below the hero. Drawn upscaled from a coarse buffer, so it is soft.
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(clouds.frame(t, width), 0, 0, width, height);
     }
 
     function ridge(base, seed, amp, hex, slide, scrollY) {

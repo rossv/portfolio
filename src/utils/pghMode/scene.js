@@ -14,15 +14,17 @@ import { createHills } from './hills';
 import { createRivers } from './rivers';
 import { createSpans } from './spans';
 import { createLandmarks } from './landmarks';
+import { createCableBand } from './cableBand';
 
 export { paletteFor };
 
 export function createScene(ctx, palette, placed = [], { reduceMotion = false } = {}) {
     const geom = createGeometry();
-    const hills = createHills(ctx, palette, geom);
+    const hills = createHills(ctx, palette, geom, { reduceMotion });
     const rivers = createRivers(ctx, palette, geom, { reduceMotion });
     const spans = createSpans(ctx, palette, geom, placed, { reduceMotion });
     const landmarks = createLandmarks(ctx, palette, geom, spans, { reduceMotion });
+    const cableBand = createCableBand(ctx, palette, geom);
 
     // The page's own height changes as islands hydrate and images load, and the
     // station anchors are derived from it. Watching for that change is an
@@ -33,6 +35,7 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
     function resize(width, height) {
         geom.resize(width, height);
+        cableBand.resize(width, height);
         if (heightObserver || typeof ResizeObserver === 'undefined') return;
         heightObserver = new ResizeObserver(() => geom.relayout());
         heightObserver.observe(document.body);
@@ -45,7 +48,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
     function frame(t, scrollY) {
         const height = geom.height();
-        hills.sky();
+        hills.sky(t);
+        // The cable belongs to the hero, so it draws over the sky but under the
+        // stations: it scrolls away while their land is still coming forward.
+        cableBand.frame(scrollY);
 
         let nearest = -1;
         let nearestDistance = Infinity;
