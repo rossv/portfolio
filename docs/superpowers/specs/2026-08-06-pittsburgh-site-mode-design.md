@@ -219,8 +219,10 @@ special case is removed and none is added.
 
 - The control rail. The site ships one locked combination, not the tuning panel.
 - The `docs/prototypes/` files. They stay as reference material and are not deleted.
-- `BadgeCollection` bubble centering and the `SkillsRadar` title change already on
-  this branch. They are unrelated to this work and are not touched.
+- `BadgeCollection` bubble centering and the `SkillsRadar` title change. These looked
+  at first like unrelated work riding along on this branch; they had in fact already
+  merged to `main` as #236–#239, and a stale local `main` was what made them show up
+  in the comparison. Nothing here touches them.
 - Any test runner or lint config, per `CLAUDE.md`.
 
 ## Verification
@@ -242,9 +244,11 @@ say-so. The gate is therefore:
 ## Branch and PR
 
 Work continues on `claude/pittsburgh-hero-theme-qaop7e`, which already carries the
-prototypes. Never push to `main`; the PR targets `main` and is squash-merged. The PR
-description must call out that the branch also carries the unrelated badge-bubble and
-radar-title changes.
+prototypes. Never push to `main`; the PR targets `main` and is squash-merged.
+
+Measured against `origin/main`, the branch contains only this work: the two prototype
+files, these two documents, the seven `pghMode` modules, the two badge SVGs, and the
+five component and util files the mode touches.
 
 ## As built
 
