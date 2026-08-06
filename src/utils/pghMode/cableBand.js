@@ -13,22 +13,29 @@
 
 import { clamp, rgba } from './palette';
 
-// Matches WaterBanner: absolute top-20 (5rem), clamp(250px, 30vh, 450px) tall,
-// masked from 40% down. Keeping these in step means the five backdrops all
-// occupy the same slot.
+// Starts where WaterBanner starts — absolute top-20, 5rem — but runs deeper
+// than the water video's 30vh, because the cable enters low on the left and its
+// hangers want room to fall. The fade starts later than the video's 40% for the
+// same reason: at 40% the whole lower half of the sweep was being erased.
 const BAND_TOP = 80;
-const bandHeight = (viewportH) => clamp(viewportH * 0.30, 250, 450);
-const MASK_START = 0.40;
+const bandHeight = (viewportH) => clamp(viewportH * 0.42, 300, 620);
+const MASK_START = 0.55;
 
-// Catenary through the band. The vertex sits off to the left, so the cable
-// rises left to right the way it does in the photograph.
-const K = 1.55;
+// Catenary through the band, normalised so the two ends are stated outright
+// rather than falling out of the constants. Both are fractions of band height:
+// the cable enters low on the left and climbs to a tower beyond the right edge.
+const CABLE_LEFT = 0.70;
+const CABLE_RIGHT = 0.04;
+
+// Vertex off to the left, so the whole visible run is one rising limb.
+const K = 1.8;
 const VERTEX = -0.55;
-const DENOM = Math.cosh(K * (1 - VERTEX)) - 1;
+const RAW_0 = Math.cosh(K * -VERTEX) - 1;
+const RAW_1 = Math.cosh(K * (1 - VERTEX)) - 1;
 
 function cableY(t, h) {
-    const raw = (Math.cosh(K * (t - VERTEX)) - 1) / DENOM;
-    return h * (0.80 - raw * 0.66);
+    const raw = (Math.cosh(K * (t - VERTEX)) - 1 - RAW_0) / (RAW_1 - RAW_0);
+    return h * (CABLE_LEFT + (CABLE_RIGHT - CABLE_LEFT) * raw);
 }
 
 export function createCableBand(ctx, palette, geom) {
@@ -48,7 +55,9 @@ export function createCableBand(ctx, palette, geom) {
         const c = bufferCtx;
         c.clearRect(0, 0, w, h);
 
-        const tube = Math.max(11, h * 0.075);
+        // Held to a ceiling: tied straight to the taller band the cable came out
+        // chunky, and the tube should read the same weight at any viewport.
+        const tube = clamp(h * 0.055, 12, 40);
         const STEP = 0.02;
 
         // Cable bands, and therefore the hanger pairs, at even intervals.
