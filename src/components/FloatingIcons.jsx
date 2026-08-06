@@ -146,6 +146,41 @@ const ClusterFrame = () => (
     </svg>
 );
 
+// Pittsburgh: the carriers are the details you see on the bridges themselves.
+const KeystoneFrame = () => (
+    <svg viewBox="0 0 56 52" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14 3h28l10 46H4Z" strokeWidth="1.6"
+            className="fill-slate-800 stroke-amber-400 dark:fill-slate-900 dark:stroke-amber-300" />
+        {/* The two bed joints, which is what makes it read as cut stone. */}
+        <path d="M9.4 34h37.2M11.8 19h32.4" fill="none" strokeWidth="1"
+            className="stroke-amber-400/45 dark:stroke-amber-300/45" />
+    </svg>
+);
+
+const GussetFrame = () => (
+    <svg viewBox="0 0 56 56" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 6h26a18 18 0 0 1 18 18v26H24A18 18 0 0 1 6 32Z" strokeWidth="1.6"
+            className="fill-slate-800 stroke-amber-400 dark:fill-slate-900 dark:stroke-amber-300" />
+        {/* Rivets around the plate edge — the whole point of the frame. */}
+        <g className="fill-amber-400 dark:fill-amber-300">
+            {[[12, 12], [12, 24], [12, 36], [24, 12], [36, 12], [24, 44], [36, 44], [44, 24], [44, 36]].map(
+                ([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.7" />
+            )}
+        </g>
+    </svg>
+);
+
+const TrussFrame = () => (
+    <svg viewBox="0 0 64 44" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        {/* Top chord, bottom chord, and the alternating web between them. */}
+        <path d="M4 36h56M12 10h40" fill="none" strokeWidth="2.2"
+            className="stroke-slate-300 dark:stroke-slate-200" />
+        <path d="M4 36 12 10M60 36 52 10M12 10 22 36M22 36 32 10M32 10 42 36M42 36 52 10M22 36v-26M42 36v-26"
+            fill="none" strokeWidth="1.2"
+            className="stroke-amber-500/80 dark:stroke-amber-300/80" />
+    </svg>
+);
+
 /* ---------- carriers ----------------------------------------------------- */
 
 // `scale` is applied to the section's base size, so a pin does not come out as
@@ -158,6 +193,8 @@ const WATER_CARRIER = {
     icon: { left: '22%', top: '22%', width: '56%', height: '56%' },
 };
 
+// A mode may hold one carrier or a list of them. Space and Pittsburgh cycle a
+// list, so no two motes in view are the same object.
 const CARRIERS = {
     water: WATER_CARRIER,
     geo: {
@@ -170,30 +207,50 @@ const CARRIERS = {
         icon: { left: '33.7%', top: '33.7%', width: '32.7%', height: '32.7%' },
         tint: 'text-sky-400',
     },
+    stars: [
+        {
+            aspect: 1, scale: 0.9, drift: false, Frame: StarFrame,
+            shell: 'drop-shadow-[0_0_10px_rgba(167,139,250,0.45)]',
+            icon: { left: '35.8%', top: '35.8%', width: '28.3%', height: '28.3%' },
+            tint: 'text-violet-900 dark:text-violet-100',
+        },
+        {
+            aspect: 64 / 52, scale: 0.875, drift: false, Frame: PlanetFrame, shell: 'drop-shadow-lg',
+            icon: { left: '36.7%', top: '33.7%', width: '26.6%', height: '32.7%' },
+            tint: 'text-sky-900 dark:text-sky-100',
+        },
+        {
+            aspect: 62 / 56, scale: 0.83, drift: false, Frame: ClusterFrame, shell: 'drop-shadow-lg',
+            icon: { left: '22.6%', top: '25%', width: '25.8%', height: '28.6%' },
+            tint: 'text-violet-900 dark:text-violet-100',
+        },
+    ],
+    pgh: [
+        {
+            aspect: 56 / 52, scale: 0.72, drift: false, Frame: KeystoneFrame, shell: 'drop-shadow-lg',
+            icon: { left: '32%', top: '30%', width: '36%', height: '34%' },
+            tint: 'text-amber-300',
+        },
+        {
+            aspect: 1, scale: 0.78, drift: false, Frame: GussetFrame, shell: 'drop-shadow-lg',
+            icon: { left: '30%', top: '30%', width: '34%', height: '34%' },
+            tint: 'text-amber-300',
+        },
+        {
+            aspect: 64 / 44, scale: 0.85, drift: false, Frame: TrussFrame, shell: 'drop-shadow-lg',
+            // Sits above the bottom chord, in the bay the web leaves open.
+            icon: { left: '38%', top: '32%', width: '24%', height: '35%' },
+            tint: 'text-amber-200',
+        },
+    ],
 };
 
-// Space cycles the three families, so no two motes in view are the same object.
-const STAR_CARRIERS = [
-    {
-        aspect: 1, scale: 0.9, drift: false, Frame: StarFrame,
-        shell: 'drop-shadow-[0_0_10px_rgba(167,139,250,0.45)]',
-        icon: { left: '35.8%', top: '35.8%', width: '28.3%', height: '28.3%' },
-        tint: 'text-violet-900 dark:text-violet-100',
-    },
-    {
-        aspect: 64 / 52, scale: 0.875, drift: false, Frame: PlanetFrame, shell: 'drop-shadow-lg',
-        icon: { left: '36.7%', top: '33.7%', width: '26.6%', height: '32.7%' },
-        tint: 'text-sky-900 dark:text-sky-100',
-    },
-    {
-        aspect: 62 / 56, scale: 0.83, drift: false, Frame: ClusterFrame, shell: 'drop-shadow-lg',
-        icon: { left: '22.6%', top: '25%', width: '25.8%', height: '28.6%' },
-        tint: 'text-violet-900 dark:text-violet-100',
-    },
-];
-
-const carrierFor = (mode, i) =>
-    mode === 'stars' ? STAR_CARRIERS[i % STAR_CARRIERS.length] : (CARRIERS[mode] ?? WATER_CARRIER);
+// A list cycles by index; a single carrier is used as it is. Water is the
+// fallback, so a mode with no carrier of its own keeps the frosted bubble.
+const carrierFor = (mode, i) => {
+    const carrier = CARRIERS[mode] ?? WATER_CARRIER;
+    return Array.isArray(carrier) ? carrier[i % carrier.length] : carrier;
+};
 
 /* ---------- section sets ------------------------------------------------- */
 

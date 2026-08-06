@@ -626,6 +626,8 @@ export default function FluidBackground() {
                 window.removeEventListener('blur', cancelTap);
             }
             cancelAnimationFrame(animationFrameId);
+            // Pittsburgh watches the document height for its station anchors.
+            pgh?.dispose();
         };
         // Only the canvas modes read a palette, so a theme change in water
         // mode must not tear down and restart the bubbles.

@@ -18,6 +18,11 @@ const cat = (t) => (Math.cosh(K * t) - 1) / (COSH_K - 1);
 
 const SPARK_CAP = 180;
 
+// Every span redraws in full each frame — catenary, hangers, deck, piers — and
+// the list outlives a palette rebuild, so it needs a ceiling like the one space
+// mode puts on placed stars. The oldest crossing retires to make room.
+export const SPAN_CAP = 24;
+
 export function createSpans(ctx, palette, geom, placed = [], { reduceMotion = false } = {}) {
     const sparks = [];
 
@@ -197,6 +202,7 @@ export function createSpans(ctx, palette, geom, placed = [], { reduceMotion = fa
             if (Math.abs(span.x - xFraction) < 0.14) return false;
         }
         placed.push({ station: index, x: xFraction, t: reduceMotion ? 1 : 0 });
+        if (placed.length > SPAN_CAP) placed.splice(0, placed.length - SPAN_CAP);
         return true;
     }
 

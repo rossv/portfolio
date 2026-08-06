@@ -24,15 +24,27 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     const spans = createSpans(ctx, palette, geom, placed, { reduceMotion });
     const landmarks = createLandmarks(ctx, palette, geom, spans, { reduceMotion });
 
+    // The page's own height changes as islands hydrate and images load, and the
+    // station anchors are derived from it. Watching for that change is an
+    // observer's job, not the frame loop's: reading scrollHeight forces a
+    // synchronous reflow, which does not belong in a rAF callback that already
+    // runs on every frame.
+    let heightObserver = null;
+
     function resize(width, height) {
         geom.resize(width, height);
+        if (heightObserver || typeof ResizeObserver === 'undefined') return;
+        heightObserver = new ResizeObserver(() => geom.relayout());
+        heightObserver.observe(document.body);
+    }
+
+    function dispose() {
+        heightObserver?.disconnect();
+        heightObserver = null;
     }
 
     function frame(t, scrollY) {
         const height = geom.height();
-        // The page's own height changes as islands hydrate and images load, so
-        // the anchors are recomputed rather than fixed at mount.
-        geom.relayout();
         hills.sky();
 
         let nearest = -1;
@@ -83,5 +95,5 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         return false;
     }
 
-    return { resize, frame, tap, spanCount: () => spans.count() };
+    return { resize, frame, tap, dispose, spanCount: () => spans.count() };
 }

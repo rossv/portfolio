@@ -17,6 +17,8 @@ import badgeTime60 from '../assets/badges/badge-time-60.svg';
 import badgeSpaceNerd from '../assets/badges/badge-space-nerd.svg';
 import badgeCartographer from '../assets/badges/badge-cartographer.svg';
 import badgePipeline from '../assets/badges/badge-pipeline.svg';
+import badgeSteelCity from '../assets/badges/badge-steel-city.svg';
+import badgeBridgeBuilder from '../assets/badges/badge-bridge-builder.svg';
 import badgeModeCollector from '../assets/badges/badge-mode-collector.svg';
 import badgeStargazer from '../assets/badges/badge-stargazer.svg';
 import badgeToolsmith from '../assets/badges/badge-toolsmith.svg';
@@ -147,9 +149,16 @@ const BADGES = [
     iconAccent: 'bg-sky-100 text-sky-800 ring-sky-300/70 dark:bg-sky-500/20 dark:text-sky-200 dark:ring-sky-400/40',
   },
   {
+    id: 'steel-city',
+    name: 'Steel City',
+    description: 'Entered Pittsburgh mode.',
+    icon: badgeSteelCity,
+    iconAccent: 'bg-amber-100 text-amber-800 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
+  },
+  {
     id: 'mode-collector',
     name: 'Mode Collector',
-    description: 'Tried all four backdrops.',
+    description: 'Tried all five backdrops.',
     icon: badgeModeCollector,
     iconAccent: 'bg-orange-100 text-orange-800 ring-orange-300/70 dark:bg-orange-500/20 dark:text-orange-200 dark:ring-orange-400/40',
   },
@@ -159,6 +168,13 @@ const BADGES = [
     description: 'Placed 25 stars in the night sky.',
     icon: badgeStargazer,
     iconAccent: 'bg-violet-100 text-violet-700 ring-violet-300/70 dark:bg-violet-500/20 dark:text-violet-200 dark:ring-violet-400/40',
+  },
+  {
+    id: 'bridge-builder',
+    name: 'Bridge Builder',
+    description: 'Threw 10 spans across the rivers.',
+    icon: badgeBridgeBuilder,
+    iconAccent: 'bg-amber-100 text-amber-800 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
   },
   {
     id: 'toolsmith',
@@ -190,9 +206,16 @@ const TIME_BADGE_THRESHOLDS = [
 ];
 // One badge per backdrop that is an easter egg to find. Water is the default,
 // so arriving there earns nothing on its own — it only counts toward the set.
-const MODE_BADGES = { geo: 'cartographer', tech: 'pipeline-operator', stars: 'space-nerd' };
+const MODE_BADGES = {
+  geo: 'cartographer',
+  tech: 'pipeline-operator',
+  stars: 'space-nerd',
+  pgh: 'steel-city',
+};
 const TOOLKIT_GROUPS = ['hh', 'gis', 'coding', 'eng'];
 const STARS_TARGET = 25;
+// Ten, against 25 for stars: a span is a far heavier mark than a star.
+const SPANS_TARGET = 10;
 const DOCK_AUTOHIDE_MS = 8000;
 
 const parseStoredState = (rawValue) => {
@@ -219,6 +242,7 @@ const parseStoredState = (rawValue) => {
       modesSeen: Array.isArray(parsed.modesSeen) ? parsed.modesSeen : [],
       toolkitGroups: Array.isArray(parsed.toolkitGroups) ? parsed.toolkitGroups : [],
       starsPlaced: Number.isFinite(parsed.starsPlaced) ? parsed.starsPlaced : 0,
+      spansBuilt: Number.isFinite(parsed.spansBuilt) ? parsed.spansBuilt : 0,
     };
   } catch {
     return null;
@@ -248,6 +272,7 @@ export default function BadgeCollection() {
     modesSeen: 0,
     toolkitGroups: 0,
     starsPlaced: 0,
+    spansBuilt: 0,
   });
   const bubbleCountRef = useRef(0);
   const projectReadsRef = useRef(new Set());
@@ -260,6 +285,7 @@ export default function BadgeCollection() {
   const modesSeenRef = useRef(new Set());
   const toolkitGroupsRef = useRef(new Set());
   const starsPlacedRef = useRef(0);
+  const spansBuiltRef = useRef(0);
   const buddaTimerRef = useRef(null);
   const isInHeadZoneRef = useRef(false);
   const lastScrollYRef = useRef(0);
@@ -411,6 +437,7 @@ export default function BadgeCollection() {
         modesSeen: Array.from(modesSeenRef.current),
         toolkitGroups: Array.from(toolkitGroupsRef.current),
         starsPlaced: starsPlacedRef.current,
+        spansBuilt: spansBuiltRef.current,
       })
     );
   };
@@ -438,6 +465,7 @@ export default function BadgeCollection() {
     modesSeenRef.current = new Set(stored.modesSeen);
     toolkitGroupsRef.current = new Set(stored.toolkitGroups);
     starsPlacedRef.current = stored.starsPlaced;
+    spansBuiltRef.current = stored.spansBuilt;
     setProgressSnapshot({
       bubbleCount: stored.bubbleCount,
       projectReads: stored.projectReads.length,
@@ -449,6 +477,7 @@ export default function BadgeCollection() {
       modesSeen: stored.modesSeen.length,
       toolkitGroups: stored.toolkitGroups.length,
       starsPlaced: stored.starsPlaced,
+      spansBuilt: stored.spansBuilt,
     });
     projectTotalRef.current = TOTAL_PROJECT_CARDS;
     jobTotalRef.current = Number.isFinite(stored.jobTotal) ? stored.jobTotal : 0;
@@ -650,6 +679,17 @@ export default function BadgeCollection() {
       }
     };
 
+    // Counted here rather than read from the event, so the tally survives a
+    // reload the way the star count does — the scene's own span list does not.
+    const handleSpanPlace = () => {
+      spansBuiltRef.current += 1;
+      setProgressSnapshot((prev) => ({ ...prev, spansBuilt: spansBuiltRef.current }));
+      persistBadgeState();
+      if (spansBuiltRef.current >= SPANS_TARGET) {
+        unlockBadge('bridge-builder');
+      }
+    };
+
     const handleThemeToggle = () => unlockBadge('lights-out');
 
     // A mode restored from storage fires no event, so seed from what's stored.
@@ -661,6 +701,7 @@ export default function BadgeCollection() {
     window.addEventListener(MODE_EVENT, handleModeChange);
     window.addEventListener('toolkit-group', handleToolkitGroup);
     window.addEventListener('star-place', handleStarPlace);
+    window.addEventListener('span-place', handleSpanPlace);
     window.addEventListener('theme-toggle', handleThemeToggle);
 
     return () => {
@@ -670,6 +711,7 @@ export default function BadgeCollection() {
       window.removeEventListener(MODE_EVENT, handleModeChange);
       window.removeEventListener('toolkit-group', handleToolkitGroup);
       window.removeEventListener('star-place', handleStarPlace);
+      window.removeEventListener('span-place', handleSpanPlace);
       window.removeEventListener('theme-toggle', handleThemeToggle);
     };
   }, [unlockedIds]);
@@ -844,7 +886,8 @@ export default function BadgeCollection() {
     modesSeenRef.current = new Set();
     toolkitGroupsRef.current = new Set();
     starsPlacedRef.current = 0;
-    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0, timeSpentMs: 0, modesSeen: 0, toolkitGroups: 0, starsPlaced: 0 });
+    spansBuiltRef.current = 0;
+    setProgressSnapshot({ bubbleCount: 0, projectReads: 0, projectTotal: 0, jobReads: 0, jobTotal: 0, footerClicks: 0, timeSpentMs: 0, modesSeen: 0, toolkitGroups: 0, starsPlaced: 0, spansBuilt: 0 });
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem(BADGE_STORAGE_KEY);
       window.localStorage.removeItem('bubbleCollectCount');
@@ -1018,6 +1061,7 @@ export default function BadgeCollection() {
             <p className="text-slate-600 dark:text-slate-300">Backdrops tried: {progressSnapshot.modesSeen}/{MODES.length}</p>
             <p className="text-slate-600 dark:text-slate-300">Toolkit groups explored: {progressSnapshot.toolkitGroups}/{TOOLKIT_GROUPS.length}</p>
             <p className="text-slate-600 dark:text-slate-300">Stars placed: {Math.min(progressSnapshot.starsPlaced, STARS_TARGET)}/{STARS_TARGET}</p>
+            <p className="text-slate-600 dark:text-slate-300">Spans thrown: {Math.min(progressSnapshot.spansBuilt, SPANS_TARGET)}/{SPANS_TARGET}</p>
             <p className="text-slate-600 dark:text-slate-300">Time on page: {Math.floor(progressSnapshot.timeSpentMs / 60000)}m {Math.floor((progressSnapshot.timeSpentMs % 60000) / 1000)}s</p>
             {nextBubbleTier ? (
               <p className="mt-1 text-slate-600 dark:text-slate-300">
