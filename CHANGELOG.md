@@ -3,6 +3,10 @@
 ## Week of 2026-08-03
 
 ### Highlights
+- Added Pittsburgh as a fifth site backdrop, reachable from the `Pittsburgh` word in the hero, which was the one descriptor in that line that switched nothing. Seven stations carry a river each, with the Three Sisters over the hero and six landmarks revealing on scroll — Duquesne Incline, Mon Valley Works, Cathedral of Learning, PPG Place, Phipps, and the fountain at the Point — each with a name-and-year plate. Clicking any river throws a span across it, and the spans stay where you put them.
+- Ported that scene from `docs/prototypes/pittsburgh-parallax.html` into `src/utils/pghMode/`, following the `spaceMode`/`geoMode`/`techMode` pattern, and locked the look to the prototype's own tuned settings. The palette carries two grounds, so the light theme substitutes bronze for gold rather than breaking.
+- Added two badges — Steel City for finding the backdrop, Bridge Builder for ten spans — and Mode Collector now asks for all five backdrops.
+- Generalized `carrierFor` in `FloatingIcons` to read either a single carrier or a list, which retired the `stars` special case instead of adding a second one beside it.
 - Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws, with the basin falling downstream so contours cross the stream as V's aimed upstream; the ground now drifts at a tenth of scroll, and spot elevations were re-based for the deeper field ([#230](https://github.com/rossv/portfolio/pull/230)).
 - Fixed the mobile backdrop interaction: a touch scroll no longer plants stars, terrain peaks, or pipeline nodes, because the space, geospatial, and technologist modes now wait for a real tap (short, still, and with no scroll) before they spawn. Water and the mouse keep their immediate response ([#232](https://github.com/rossv/portfolio/pull/232)).
 - Held the star replay list to the starfield's placed cap, so it no longer grows past the field it rebuilds on a theme change ([#232](https://github.com/rossv/portfolio/pull/232)).

@@ -2,7 +2,9 @@
 
 Date: 2026-08-06
 Branch: `claude/pittsburgh-hero-theme-qaop7e`
-Status: approved, ready for an implementation plan
+Status: built. See `docs/superpowers/plans/2026-08-06-pittsburgh-site-mode.md` for the
+plan, and "As built" at the foot of this document for where the implementation
+departed from this design.
 
 ## Problem
 
@@ -111,23 +113,27 @@ viewport band the prototype uses at line 1417 (`top > H + 220 || top < -320` cul
 
 ### New — `src/utils/pghMode/`
 
-Each module is a factory in the shape `src/utils/geoMode/terrain.js:140` sets:
-it takes the context, a palette and any persisted marks, and returns `resize`,
-`frame` and its own actions. `frame` signatures differ per module across the
-existing folders, so each is stated here explicitly.
+Each module is a factory in the shape `src/utils/geoMode/terrain.js:140` sets: it
+takes the context, a palette and any persisted marks, and returns its own actions.
+The drawing modules each expose a per-station entry point rather than a whole-scene
+`frame`, because `scene.js` drives the loop. These are the signatures as built.
 
 | Module | Export | Returns |
 |---|---|---|
-| `palette.js` | `PALETTES`, `paletteFor(isDark)`, plus the `rgb`/`hexToRgb` helpers the folder needs | — |
-| `rivers.js` | `createRivers(ctx, palette, { reduceMotion })` | `{ resize, frame(t, scrollY), stationAt(x, y) }` |
-| `hills.js` | `createHills(ctx, palette)` | `{ resize, frame(scrollY) }` — also owns the sky gradient, since the palette's `skyTop`/`skyBot` belong to the same static field |
-| `landmarks.js` | `createLandmarks(ctx, palette, { reduceMotion })` | `{ resize, frame(t, scrollY) }` |
-| `spans.js` | `createSpans(ctx, palette, placed = [], { reduceMotion })` | `{ resize, frame(t, scrollY), addSpan(station, x) }` |
+| `palette.js` | `PALETTES`, `paletteFor(isDark)`, `rgb`, `rgba`, `lerp`, `clamp`, `smooth`, `hash` | — |
+| `stations.js` | `DEPTH`, `STATIONS`, `createGeometry()` | `{ resize, relayout, riverTopOf, riverH, visible, stationAt, width, height }` |
+| `hills.js` | `createHills(ctx, palette, geom)` | `{ sky(), station(index, scrollY) }` — `sky()` also owns the gradient, since `skyTop`/`skyBot` belong to the same static field |
+| `rivers.js` | `createRivers(ctx, palette, geom, { reduceMotion })` | `{ station(index, t, scrollY) }` |
+| `spans.js` | `createSpans(ctx, palette, geom, placed, { reduceMotion })` | `{ draw, station, add, sparkAt, frameSparks, count }` |
+| `landmarks.js` | `createLandmarks(ctx, palette, geom, spans, { reduceMotion })` | `{ station(index, kind, x, t, scrollY), plate(index, name, year, scrollY, alpha) }` |
+| `scene.js` | `createScene(ctx, palette, placed, { reduceMotion })` | `{ resize, frame(t, scrollY), tap(x, y, scrollY), dispose, spanCount }` |
 
-`stationAt(x, y)` is the hit test for a click: it returns the station whose river
-covers that point, or `null`. `spans.js` holds one span per stretch of water, so
-repeated clicks on the same river do not stack — the rule the prototype applies at
-line 1483.
+`geom.stationAt(x, y, scrollY)` is the hit test: it returns `{ station, index }` for
+the river covering that point, or `null`. `spans.add` holds one span per stretch of
+water, refusing anything within 0.14 of width of an existing span on the same station,
+so repeated clicks in one place do not stack — the rule the prototype applies at line
+1483. `scene.tap` returns `true` only when a span was really placed, which is what the
+Bridge Builder count is made of.
 
 Draw order per frame: `hills` (sky gradient, then far and near ridges), `rivers`,
 `spans`, `landmarks`. Landmarks draw last so a plate is never covered by a river band.
@@ -239,3 +245,40 @@ Work continues on `claude/pittsburgh-hero-theme-qaop7e`, which already carries t
 prototypes. Never push to `main`; the PR targets `main` and is squash-merged. The PR
 description must call out that the branch also carries the unrelated badge-bubble and
 radar-title changes.
+
+## As built
+
+Five departures from the design above, all found while building or verifying.
+
+**Seven modules, not five.** The design gave no owner for the geometry that all four
+drawing modules share, so `stations.js` holds the station list, the anchors,
+`riverTopOf`, `riverH`, the visibility cull and the hit test. And calling each
+module's own frame in turn would have drawn every ridge before every river, losing
+the front-to-back stacking the scene depends on — a nearer station's bank fill has to
+paint over the station receding above it. `scene.js` therefore owns the station loop
+and composes the other five. `FluidBackground` calls one frame.
+
+**The document height is watched, not polled.** The anchors derive from
+`document.documentElement.scrollHeight`, which changes as islands hydrate and images
+load. Reading it inside the frame loop forces a synchronous reflow on every frame, so
+a `ResizeObserver` on `document.body` recomputes the anchors instead, and the scene
+exposes `dispose()` for the effect's cleanup.
+
+**Reduced motion repaints on scroll.** `render()` draws a single frame and schedules
+no rAF when the visitor prefers reduced motion. Every part of this scene is positioned
+by scroll, so that one frame goes stale the moment the page moves — a problem the
+other four backdrops do not have. The scroll handler repaints for this mode only.
+Nothing moves on its own; the backdrop only answers the visitor's own scrolling.
+
+**Spans are capped at 24.** Each span redraws in full every frame, and the list
+outlives a palette rebuild, so it needs the ceiling space mode already puts on placed
+stars. The oldest crossing retires to make room.
+
+**The plate sits at the left margin.** The design said "under the landmark". At this
+page's widths that put it under the section copy, so it draws at a fixed left inset on
+the near bank instead, like a museum label, where it never competes with content.
+
+One characteristic worth knowing rather than fixing: because the anchors are a
+fraction of total document height, the rivers shift slightly while the page is still
+settling on first load. The observer corrects them as soon as the height stops
+changing.

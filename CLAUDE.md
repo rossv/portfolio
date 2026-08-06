@@ -68,7 +68,12 @@ portfolio/
 │   │   └── 404.astro         # Custom not-found page
 │   ├── styles/               # Global CSS
 │   ├── utils/
-│   │   └── companyColors.js  # Company name → color mapping
+│   │   ├── companyColors.js  # Company name → color mapping
+│   │   ├── siteMode.js       # MODES — the five backdrops, and the mode event
+│   │   ├── spaceMode/        # Starfield backdrop (stars)
+│   │   ├── geoMode/          # Contour/flood backdrop (geo)
+│   │   ├── techMode/         # Pipeline/waveform backdrop (tech)
+│   │   └── pghMode/          # Pittsburgh parallax backdrop (pgh)
 │   └── env.d.ts
 ├── public/                   # Static assets served as-is (favicons, manifest, og-image, assets/news/)
 ├── scripts/                  # Node maintenance scripts (not run in CI)
@@ -110,7 +115,7 @@ Components are React `.jsx` files (with one `.tsx` exception). Astro uses React 
 | `ThemeToggle.jsx` | React | Dark/light mode toggle |
 | `HomeButton.jsx` | React | Back-to-top button, styled to match `ThemeToggle` |
 | `Cursor.jsx` | React | Custom cursor |
-| `FluidBackground.jsx` | React | Animated fluid background |
+| `FluidBackground.jsx` | React | Animated canvas backdrop; one branch per site mode (water, stars, geo, tech, pgh) |
 | `WaterBanner.astro` | Astro | Static water-themed banner |
 | `Footer.jsx` | React | Site footer |
 | `LicenseBadge.jsx` | React | PE/GISP license badge |
