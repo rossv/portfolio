@@ -176,6 +176,12 @@ export default function FluidBackground() {
                 reduceMotion: prefersReduced,
             });
             pgh.resize(width, height);
+            // The cable builds on arrival, the way the fleet launches and the
+            // flood scan replays. On a reload it is already up.
+            if (arrivedRef.current && !prefersReduced) {
+                arrivedRef.current = false;
+                pgh.arrive();
+            }
         }
 
         if (isStarfield) {

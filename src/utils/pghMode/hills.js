@@ -23,7 +23,7 @@ const ridgeY = (x, seed, amp, base) =>
 export function createHills(ctx, palette, geom, { reduceMotion = false } = {}) {
     const clouds = createClouds(ctx, palette, { reduceMotion });
 
-    function sky(t) {
+    function sky(t, arrival = 1) {
         const width = geom.width();
         const height = geom.height();
         const gradient = ctx.createLinearGradient(0, 0, 0, height);
@@ -34,9 +34,15 @@ export function createHills(ctx, palette, geom, { reduceMotion = false } = {}) {
 
         // Overcast over the gradient, thinning out before the page content
         // below the hero. Drawn upscaled from a coarse buffer, so it is soft.
+        //
+        // On arrival the bank slides in from the right as it fades up, so the
+        // weather moves in rather than switching on.
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(clouds.frame(t, width), 0, 0, width, height);
+        ctx.globalAlpha = arrival;
+        const slide = (1 - arrival) * width * 0.06;
+        ctx.drawImage(clouds.frame(t, width), slide, 0, width, height);
+        ctx.globalAlpha = 1;
     }
 
     function ridge(base, seed, amp, hex, slide, scrollY) {

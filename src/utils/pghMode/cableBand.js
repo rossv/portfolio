@@ -1,12 +1,14 @@
 // The main cable across the top of the hero.
 //
 // This fills the same slot the water video, the aurora, the flood raster and
-// the waveform fill — pinned near the top of the page, a little over a quarter
-// of the viewport tall, faded out before it reaches the name. The geometry is
-// the reference photograph's: the cable enters low on the left and climbs
-// toward a tower beyond the right edge, cable bands at intervals, a pair of
-// hanger ropes dropping from each one, and a handrope above carried on short
-// struts.
+// the waveform fill — pinned near the top of the page, faded out before it
+// reaches the name. The geometry is the reference photograph's: the cable
+// enters low on the left and climbs toward a tower beyond the right edge, with
+// cable bands at intervals and a pair of hanger ropes dropping from each one.
+//
+// The photograph also carries a handrope above the main cable, on short struts.
+// It is not drawn here: at this scale it read as a stray second cable rather
+// than as rigging, and the struts were what made it look like a mistake.
 //
 // It scrolls with the page rather than sitting fixed, so it leaves with the
 // hero instead of hanging over every section below it.
@@ -33,6 +35,13 @@ const VERTEX = -0.55;
 const RAW_0 = Math.cosh(K * -VERTEX) - 1;
 const RAW_1 = Math.cosh(K * (1 - VERTEX)) - 1;
 
+// Cable bands, and therefore the hanger pairs, at even intervals.
+const BAND_FIRST = 0.06;
+const BAND_STEP = 0.108;
+// The lights run four to a bay, so they read as a necklace along the cable
+// rather than as one lamp per hanger.
+const LIGHT_STEP = BAND_STEP / 4;
+
 function cableY(t, h) {
     const raw = (Math.cosh(K * (t - VERTEX)) - 1 - RAW_0) / (RAW_1 - RAW_0);
     return h * (CABLE_LEFT + (CABLE_RIGHT - CABLE_LEFT) * raw);
@@ -40,18 +49,22 @@ function cableY(t, h) {
 
 export function createCableBand(ctx, palette, geom) {
     // Drawn to a buffer so the bottom fade can be a real mask rather than a
-    // rectangle painted over the top of it.
+    // rectangle painted over the top of it. The buffer is also a cache: the band
+    // does not change as the page scrolls, it only moves, so a scroll costs one
+    // drawImage rather than a full repaint.
     const buffer = document.createElement('canvas');
     const bufferCtx = buffer.getContext('2d');
+    let painted = -1;
 
     function resize(width, height) {
         const h = Math.ceil(bandHeight(height));
         if (buffer.width === width && buffer.height === h) return;
         buffer.width = Math.max(1, width);
         buffer.height = Math.max(1, h);
+        painted = -1;
     }
 
-    function paint(w, h) {
+    function paint(w, h, progress) {
         const c = bufferCtx;
         c.clearRect(0, 0, w, h);
 
@@ -60,42 +73,27 @@ export function createCableBand(ctx, palette, geom) {
         const tube = clamp(h * 0.055, 12, 40);
         const STEP = 0.02;
 
-        // Cable bands, and therefore the hanger pairs, at even intervals.
         const bands = [];
-        for (let t = 0.06; t < 1; t += 0.108) bands.push(t);
+        for (let t = BAND_FIRST; t < 1; t += BAND_STEP) bands.push(t);
 
-        const handropeY = (t) => cableY(t, h) - tube * 2.6 - (1 - t) * h * 0.03;
-
-        // --- handrope, straighter than the cable it runs above ---
-        c.strokeStyle = palette.rope;
-        c.globalAlpha = 0.55;
-        c.lineWidth = Math.max(1, tube * 0.09);
-        c.beginPath();
-        for (let t = 0; t <= 1.0001; t += STEP) {
-            const x = t * w;
-            const y = handropeY(t);
-            if (t === 0) c.moveTo(x, y); else c.lineTo(x, y);
-        }
-        c.stroke();
-
-        // --- hangers: a pair per band, plus the strut up to the handrope ---
+        // --- hangers: a pair per band, dropping as the cable reaches them ---
         c.strokeStyle = palette.structure;
-        c.globalAlpha = 0.92;
         c.lineWidth = Math.max(1.2, tube * 0.085);
         for (const t of bands) {
+            // Each hanger falls over its own short window, once the cable has
+            // arrived overhead.
+            const drop = clamp((progress - t) / 0.16, 0, 1);
+            if (drop <= 0) continue;
             const x = t * w;
             const y = cableY(t, h);
             const spread = tube * 0.42;
+            c.globalAlpha = 0.92;
             for (const dx of [-spread, spread]) {
                 c.beginPath();
                 c.moveTo(x + dx, y);
-                c.lineTo(x + dx, h);
+                c.lineTo(x + dx, y + (h - y) * drop);
                 c.stroke();
             }
-            c.beginPath();
-            c.moveTo(x, y - tube * 0.4);
-            c.lineTo(x, handropeY(t));
-            c.stroke();
         }
         c.globalAlpha = 1;
 
@@ -110,18 +108,19 @@ export function createCableBand(ctx, palette, geom) {
         c.lineWidth = tube;
         c.lineCap = 'round';
         c.beginPath();
-        for (let t = 0; t <= 1.0001; t += STEP) {
+        for (let t = 0; t <= progress; t += STEP) {
             const x = t * w;
             const y = cableY(t, h);
             if (t === 0) c.moveTo(x, y); else c.lineTo(x, y);
         }
+        if (progress > 0) c.lineTo(progress * w, cableY(progress, h));
         c.stroke();
 
         // A lit crown along the top edge. This is what sells the cylinder.
         c.strokeStyle = rgba(palette.crown, palette.light ? 0.5 : 0.42);
         c.lineWidth = Math.max(1, tube * 0.16);
         c.beginPath();
-        for (let t = 0; t <= 1.0001; t += STEP) {
+        for (let t = 0; t <= progress; t += STEP) {
             const x = t * w;
             const y = cableY(t, h) - tube * 0.3;
             if (t === 0) c.moveTo(x, y); else c.lineTo(x, y);
@@ -131,6 +130,7 @@ export function createCableBand(ctx, palette, geom) {
         // --- cable bands: a darker collar square to the cable ---
         c.fillStyle = palette.bandCollar;
         for (const t of bands) {
+            if (progress < t) continue;
             const x = t * w;
             const y = cableY(t, h);
             const ahead = cableY(Math.min(1, t + 0.01), h);
@@ -139,6 +139,33 @@ export function createCableBand(ctx, palette, geom) {
             c.rotate(Math.atan2(ahead - y, 0.01 * w));
             c.fillRect(-tube * 0.30, -tube * 0.60, tube * 0.60, tube * 1.20);
             c.restore();
+        }
+
+        // --- the necklace ---
+        // Only on the dark ground. Every other lit detail in this mode does the
+        // same: on paper a warm dot reads as dirt, not as a lamp.
+        if (!palette.light) {
+            const core = Math.max(1.1, tube * 0.075);
+            const halo = core * 4.6;
+            for (let t = BAND_FIRST; t < 1; t += LIGHT_STEP) {
+                // Lights come on behind the cable's leading edge, so the run
+                // lights up in sequence rather than all at once.
+                const on = clamp((progress - t - 0.06) / 0.22, 0, 1);
+                if (on <= 0) continue;
+                const x = t * w;
+                const y = cableY(t, h) - tube * 0.52;
+                const glow = c.createRadialGradient(x, y, 0, x, y, halo);
+                glow.addColorStop(0, rgba(palette.accent, 0.30 * on));
+                glow.addColorStop(1, rgba(palette.accent, 0));
+                c.fillStyle = glow;
+                c.beginPath();
+                c.arc(x, y, halo, 0, Math.PI * 2);
+                c.fill();
+                c.fillStyle = rgba(palette.crown, 0.82 * on);
+                c.beginPath();
+                c.arc(x, y, core, 0, Math.PI * 2);
+                c.fill();
+            }
         }
 
         // Fade the lower part out, so the band never reaches the wordmark.
@@ -151,17 +178,26 @@ export function createCableBand(ctx, palette, geom) {
         c.globalCompositeOperation = 'source-over';
     }
 
-    function frame(scrollY) {
+    function frame(scrollY, arrival = 1) {
         const width = geom.width();
         const height = geom.height();
         const h = Math.ceil(bandHeight(height));
         resize(width, height);
 
+        // Ease out: the run is extruded quickly and settles into its far end,
+        // rather than crawling across at one speed.
+        const progress = 1 - (1 - arrival) * (1 - arrival);
+
         // Scrolls with the page, like the DOM banner it stands in for.
         const top = BAND_TOP - scrollY;
         if (top + h <= 0 || top >= height) return;
 
-        paint(width, h);
+        // Repaint only while the run is still building. Once it is complete the
+        // buffer is final and a scroll is a single blit.
+        if (progress !== painted) {
+            paint(width, h, progress);
+            painted = progress;
+        }
         ctx.drawImage(buffer, 0, top);
     }
 

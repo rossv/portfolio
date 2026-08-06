@@ -33,6 +33,21 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     // runs on every frame.
     let heightObserver = null;
 
+    // Arrival. Space mode launches its fleet, geo replays its flood scan, tech
+    // runs its graph; here the cable is extruded left to right, its hangers drop
+    // as it passes overhead, the necklace lights up behind the leading edge, and
+    // the overcast slides in. Plays on switching into the mode, never on a
+    // reload, and never under reduced motion.
+    const ARRIVE_MS = 1600;
+    let arriveFrom = null;
+    let arrived = true;
+
+    function arrive() {
+        if (reduceMotion) return;
+        arriveFrom = null;
+        arrived = false;
+    }
+
     function resize(width, height) {
         geom.resize(width, height);
         cableBand.resize(width, height);
@@ -48,10 +63,18 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
     function frame(t, scrollY) {
         const height = geom.height();
-        hills.sky(t);
+
+        let arrival = 1;
+        if (!arrived) {
+            if (arriveFrom === null) arriveFrom = t;
+            arrival = Math.min(1, (t - arriveFrom) / ARRIVE_MS);
+            if (arrival >= 1) arrived = true;
+        }
+
+        hills.sky(t, arrival);
         // The cable belongs to the hero, so it draws over the sky but under the
         // stations: it scrolls away while their land is still coming forward.
-        cableBand.frame(scrollY);
+        cableBand.frame(scrollY, arrival);
 
         let nearest = -1;
         let nearestDistance = Infinity;
@@ -101,5 +124,5 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         return false;
     }
 
-    return { resize, frame, tap, dispose, spanCount: () => spans.count() };
+    return { resize, frame, tap, arrive, dispose, spanCount: () => spans.count() };
 }
