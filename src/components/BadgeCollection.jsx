@@ -172,7 +172,7 @@ const BADGES = [
   {
     id: 'bridge-builder',
     name: 'Bridge Builder',
-    description: 'Threw 10 spans across the rivers.',
+    description: 'Built 10 bridges across the rivers.',
     icon: badgeBridgeBuilder,
     iconAccent: 'bg-amber-100 text-amber-800 ring-amber-300/70 dark:bg-amber-500/20 dark:text-amber-200 dark:ring-amber-400/40',
   },
@@ -1061,7 +1061,7 @@ export default function BadgeCollection() {
             <p className="text-slate-600 dark:text-slate-300">Backdrops tried: {progressSnapshot.modesSeen}/{MODES.length}</p>
             <p className="text-slate-600 dark:text-slate-300">Toolkit groups explored: {progressSnapshot.toolkitGroups}/{TOOLKIT_GROUPS.length}</p>
             <p className="text-slate-600 dark:text-slate-300">Stars placed: {Math.min(progressSnapshot.starsPlaced, STARS_TARGET)}/{STARS_TARGET}</p>
-            <p className="text-slate-600 dark:text-slate-300">Spans thrown: {Math.min(progressSnapshot.spansBuilt, SPANS_TARGET)}/{SPANS_TARGET}</p>
+            <p className="text-slate-600 dark:text-slate-300">Bridges built: {Math.min(progressSnapshot.spansBuilt, SPANS_TARGET)}/{SPANS_TARGET}</p>
             <p className="text-slate-600 dark:text-slate-300">Time on page: {Math.floor(progressSnapshot.timeSpentMs / 60000)}m {Math.floor((progressSnapshot.timeSpentMs % 60000) / 1000)}s</p>
             {nextBubbleTier ? (
               <p className="mt-1 text-slate-600 dark:text-slate-300">

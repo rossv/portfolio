@@ -1,44 +1,39 @@
-// Composes Pittsburgh mode into one frame, and owns the station loop.
+// Pittsburgh mode: an isometric ground plane carrying two river networks, one
+// water and one molten iron, crossed by bridges the visitor puts up.
 //
-// The loop lives here rather than in FluidBackground because the order matters
-// in both directions. Stations draw far to near: the one lowest on screen is
-// nearest, and its bank fill paints over the land of the one receding above it.
-// Within a station, land goes down before water, and the landmark stands on the
-// far bank before any span crosses in front of it. Calling each module's own
-// frame in turn would draw every ridge before every river and lose the
-// stacking entirely.
+// The plane drifts with the page. Everything on it — lattice, channels, bridges
+// — moves at the one rate, because giving the two networks different rates would
+// slide them against each other and break the gap that holds channels apart.
+//
+// Composition lives here rather than in FluidBackground: the order matters in
+// both directions. Banks go down before any water, water before molten so the
+// hot channel reads as nearer, and bridges last so a deck is never buried by the
+// channel it crosses.
 
-import { paletteFor } from './palette';
-import { STATIONS, createGeometry } from './stations';
-import { createHills } from './hills';
-import { createRivers } from './rivers';
-import { createSpans } from './spans';
-import { createLandmarks } from './landmarks';
-import { createCableBand } from './cableBand';
+import { paletteFor, rgba, smooth, clamp } from './palette';
+import { createLattice } from './lattice';
+import { buildNetworks } from './network';
+import { createChannels } from './channels';
+import { createBridges } from './bridges';
 
 export { paletteFor };
 
+const ARRIVE_MS = 1700;
+const SEED = 20260806;
+
 export function createScene(ctx, palette, placed = [], { reduceMotion = false } = {}) {
-    const geom = createGeometry();
-    const hills = createHills(ctx, palette, geom, { reduceMotion });
-    const rivers = createRivers(ctx, palette, geom, { reduceMotion });
-    const spans = createSpans(ctx, palette, geom, placed, { reduceMotion });
-    const landmarks = createLandmarks(ctx, palette, geom, spans, { reduceMotion });
-    const cableBand = createCableBand(ctx, palette, geom);
+    const lattice = createLattice();
+    const channels = createChannels(ctx, palette, lattice, { reduceMotion });
+    const bridges = createBridges(ctx, palette, lattice, placed, { reduceMotion });
+    let network = [];
 
-    // The page's own height changes as islands hydrate and images load, and the
-    // station anchors are derived from it. Watching for that change is an
-    // observer's job, not the frame loop's: reading scrollHeight forces a
-    // synchronous reflow, which does not belong in a rAF callback that already
-    // runs on every frame.
+    // The page's own height decides how deep the lattice has to run, and it
+    // changes as islands hydrate and images load. That is an observer's job:
+    // reading scrollHeight forces a synchronous reflow, which does not belong in
+    // a callback that already runs every frame.
     let heightObserver = null;
+    let pendingRebuild = true;
 
-    // Arrival. Space mode launches its fleet, geo replays its flood scan, tech
-    // runs its graph; here the cable is extruded left to right, its hangers drop
-    // as it passes overhead, the necklace lights up behind the leading edge, and
-    // the overcast slides in. Plays on switching into the mode, never on a
-    // reload, and never under reduced motion.
-    const ARRIVE_MS = 1600;
     let arriveFrom = null;
     let arrived = true;
 
@@ -48,11 +43,37 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         arrived = false;
     }
 
+    const documentScroll = () => Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+    );
+
+    // Re-routes only when the field's dimensions actually moved. The observer
+    // fires for any body-height nudge, and re-routing on each one rebuilt the
+    // whole valley under the reader — and re-pointed their bridges onto whichever
+    // new channel happened to match, which moved them.
+    function rebuildIfNeeded(force) {
+        const changed = lattice.resize(lattice.width(), lattice.height(), documentScroll());
+        pendingRebuild = false;
+        if (!force && !changed && network.length) return;
+
+        network = buildNetworks(lattice, SEED);
+        // Anything already placed points at a channel object that no longer
+        // exists, and there is no honest way to map it onto the new layout, so
+        // the list is reseeded from scratch.
+        placed.length = 0;
+        const trunks = network.filter((c) => c.order === 1);
+        trunks.forEach((channel, i) => {
+            if (i % 2) return;   // every other trunk, so the valley is not overbuilt
+            bridges.add(channel, Math.floor(channel.pts.length * 0.34), true);
+        });
+    }
+
     function resize(width, height) {
-        geom.resize(width, height);
-        cableBand.resize(width, height);
+        const changed = lattice.resize(width, height, documentScroll());
+        if (changed || !network.length) pendingRebuild = true;
         if (heightObserver || typeof ResizeObserver === 'undefined') return;
-        heightObserver = new ResizeObserver(() => geom.relayout());
+        heightObserver = new ResizeObserver(() => { pendingRebuild = true; });
         heightObserver.observe(document.body);
     }
 
@@ -62,7 +83,9 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     }
 
     function frame(t, scrollY) {
-        const height = geom.height();
+        if (pendingRebuild) rebuildIfNeeded(false);
+        const width = lattice.width();
+        const height = lattice.height();
 
         let arrival = 1;
         if (!arrived) {
@@ -71,58 +94,40 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
             if (arrival >= 1) arrived = true;
         }
 
-        hills.sky(t, arrival);
-        // The cable belongs to the hero, so it draws over the sky but under the
-        // stations: it scrolls away while their land is still coming forward.
-        cableBand.frame(scrollY, arrival);
+        ctx.fillStyle = palette.ground;
+        ctx.fillRect(0, 0, width, height);
 
-        let nearest = -1;
-        let nearestDistance = Infinity;
-
-        for (let i = 0; i < STATIONS.length; i += 1) {
-            if (!geom.visible(i, scrollY)) continue;
-
-            hills.station(i, scrollY);
-            rivers.station(i, t, scrollY);
-            landmarks.station(i, STATIONS[i].kind, STATIONS[i].x, t, scrollY);
-            spans.station(i, scrollY);
-
-            const distance = Math.abs(geom.riverTopOf(i, scrollY) - height * 0.80);
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearest = i;
+        // The lattice itself, faint, and only the lines that cross the viewport.
+        ctx.strokeStyle = rgba(palette.steel, palette.light ? 0.15 : 0.10);
+        ctx.lineWidth = 1;
+        const u = lattice.halfWidth();
+        const v = lattice.depth();
+        for (let i = -u; i <= v; i += 1) {
+            for (const [a, b] of [[[i, 0], [i, v]], [[0, i], [u + v, i]]]) {
+                const p0 = lattice.project(a[0], a[1], scrollY);
+                const p1 = lattice.project(b[0], b[1], scrollY);
+                if (Math.max(p0[1], p1[1]) < 0 || Math.min(p0[1], p1[1]) > height) continue;
+                ctx.beginPath();
+                ctx.moveTo(p0[0], p0[1]);
+                ctx.lineTo(p1[0], p1[1]);
+                ctx.stroke();
             }
         }
 
-        // The plate fades in over the last third of the approach, so it arrives
-        // with the landmark rather than snapping on at a threshold.
-        if (nearest >= 0 && STATIONS[nearest].kind !== 'sisters') {
-            const reveal = height * 0.3;
-            const alpha = Math.max(0, Math.min(1, (reveal - nearestDistance) / (reveal * 0.35)));
-            landmarks.plate(
-                nearest,
-                STATIONS[nearest].name,
-                STATIONS[nearest].year,
-                scrollY,
-                alpha
-            );
-        }
-
-        spans.frameSparks();
+        // On arrival the networks fill in from their headwaters down.
+        const reveal = smooth(arrival);
+        channels.frame(network, scrollY, t, 1, reveal);
+        if (reveal > 0.55) bridges.frame(scrollY, t, clamp((reveal - 0.55) / 0.45, 0, 1));
     }
 
-    // A tap on any river throws a span; anywhere else strikes sparks off the
-    // structure. Returns true only when a span was actually placed, which is
-    // what the Bridge Builder count is made of.
+    // A click on any channel throws a bridge across it. Returns true only when
+    // one was really placed, which is what the badge count is made of.
     function tap(x, y, scrollY) {
-        // No geometry, no crossing. Spans are stored as a fraction of width, so
-        // placing one against a zero width would store an unmatchable span.
-        if (geom.width() <= 0) return false;
-        const hit = geom.stationAt(x, y, scrollY);
-        if (hit && spans.add(hit.index, x / geom.width())) return true;
-        spans.sparkAt(x, y);
-        return false;
+        if (lattice.width() <= 0) return false;
+        const hit = bridges.pick(x, y, scrollY, network);
+        if (!hit) return false;
+        return bridges.add(hit.channel, hit.at, false);
     }
 
-    return { resize, frame, tap, arrive, dispose, spanCount: () => spans.count() };
+    return { resize, frame, tap, arrive, dispose, bridgeCount: () => bridges.count() };
 }

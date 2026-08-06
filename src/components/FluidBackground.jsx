@@ -32,8 +32,8 @@ export default function FluidBackground() {
     // the geospatial one.
     const techNodesRef = useRef([]);
     const geoPeaksRef = useRef([]);
-    // And spans thrown across the Pittsburgh rivers.
-    const pghSpansRef = useRef([]);
+    // And bridges the visitor puts up across the Pittsburgh rivers.
+    const pghBridgesRef = useRef([]);
 
     useEffect(() => {
         const stored = readMode();
@@ -169,15 +169,14 @@ export default function FluidBackground() {
         let pgh = null;
 
         if (isPgh) {
-            // Spans are held as { station, x } — a station index and a fraction
-            // of width — so a theme rebuild or a resize brings back every
-            // crossing the visitor put up, in the same place.
-            pgh = createScene(ctx, pghPaletteFor(isDark), pghSpansRef.current, {
+            // Bridges are held by channel and node index, so a theme rebuild or
+            // a resize brings back every crossing the visitor put up.
+            pgh = createScene(ctx, pghPaletteFor(isDark), pghBridgesRef.current, {
                 reduceMotion: prefersReduced,
             });
             pgh.resize(width, height);
-            // The cable builds on arrival, the way the fleet launches and the
-            // flood scan replays. On a reload it is already up.
+            // The networks fill in on arrival, the way the fleet launches and
+            // the flood scan replays. On a reload the valley is already there.
             if (arrivedRef.current && !prefersReduced) {
                 arrivedRef.current = false;
                 pgh.arrive();
@@ -333,13 +332,13 @@ export default function FluidBackground() {
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
             } else if (isPgh) {
-                // Pittsburgh: a click on the water throws a span across it,
-                // and a click anywhere else strikes sparks off the structure.
+                // Pittsburgh: a click on any river throws a bridge across it.
                 // Fires before the reduced-motion bail below, so Bridge Builder
-                // stays earnable without the build animation.
+                // stays earnable without the build animation. The event keeps its
+                // original name so the tally already in visitors' storage counts.
                 if (pgh?.tap(x, y, scrollRef.current)) {
                     window.dispatchEvent(
-                        new CustomEvent('span-place', { detail: { count: pgh.spanCount() } })
+                        new CustomEvent('span-place', { detail: { count: pgh.bridgeCount() } })
                     );
                 }
                 if (prefersReduced) return;
