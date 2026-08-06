@@ -28,8 +28,11 @@ export const STATIONS = [
 ];
 
 export function createGeometry() {
-    let width = 0;
-    let height = 0;
+    // Seeded from the window rather than left at zero. A hit test that runs
+    // before the first resize would otherwise divide by a zero width, and the
+    // resulting Infinity stores a span no later click can ever match.
+    let width = typeof window === 'undefined' ? 0 : window.innerWidth;
+    let height = typeof window === 'undefined' ? 0 : window.innerHeight;
     // Document scroll offset at which each station's river sits on its mark.
     const anchors = new Array(STATIONS.length).fill(0);
 

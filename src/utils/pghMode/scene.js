@@ -74,6 +74,9 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     // structure. Returns true only when a span was actually placed, which is
     // what the Bridge Builder count is made of.
     function tap(x, y, scrollY) {
+        // No geometry, no crossing. Spans are stored as a fraction of width, so
+        // placing one against a zero width would store an unmatchable span.
+        if (geom.width() <= 0) return false;
         const hit = geom.stationAt(x, y, scrollY);
         if (hit && spans.add(hit.index, x / geom.width())) return true;
         spans.sparkAt(x, y);
