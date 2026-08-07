@@ -19,7 +19,13 @@ export function createCrucible(ctx, palette, lattice) {
         ctx.ellipse(cx, cy, r, r * squash, 0, 0, Math.PI * 2);
     };
 
-    const MAX_ANGLE = 2.05;
+    // Under 90 degrees, deliberately. Tip a vessel past vertical and its near
+    // lip swings round below and past the pivot, so the mouth ends up facing
+    // away from where the iron is supposed to land and the stream appears to
+    // start beside the ladle rather than out of it. At about 75 degrees the
+    // mouth faces up-and-over and the low lip sits down-right, which is where
+    // the ground is.
+    const MAX_ANGLE = 1.32;
 
     function frame(anchor, t, tip, reduceMotion) {
         const [ax, ay] = anchor;
@@ -227,8 +233,15 @@ export function createCrucible(ctx, palette, lattice) {
         /* ---------- the stream ---------- */
         if (tip > 0.07) {
             const strength = clamp((tip - 0.07) / 0.25, 0, 1);
-            const lipX = px + Math.cos(angle) * R;
-            const lipY = py + Math.sin(angle) * R;
+            // The low lip: the rim's leading edge, carried round by the tip. The
+            // ribbon starts just inside it rather than exactly on it, so the
+            // column emerges from behind the rim instead of butting against its
+            // outline and leaving a seam.
+            const lipX = px + Math.cos(angle) * R * 0.84;
+            const lipY = py + Math.sin(angle) * R * 0.84;
+            // Where the iron actually crests the edge, for the roll below.
+            const edgeX = px + Math.cos(angle) * R;
+            const edgeY = py + Math.sin(angle) * R;
 
             // the flare around the whole pour
             const flare = ctx.createRadialGradient(
@@ -306,6 +319,22 @@ export function createCrucible(ctx, palette, lattice) {
             ctx.fillStyle = body;
             ribbon(1);
             ctx.fill();
+
+            // The roll over the edge. Drawn after the column and across the rim
+            // line, so the iron reads as coming out of the ladle rather than
+            // starting under it: it laps over the lip and thickens into the fall.
+            ctx.save();
+            ctx.translate(edgeX, edgeY);
+            ctx.rotate(angle);
+            const roll = ctx.createLinearGradient(-R * 0.2, 0, R * 0.22, 0);
+            roll.addColorStop(0, rgba(palette.hotter, 0.5));
+            roll.addColorStop(0.45, rgba(palette.molten, 0.98));
+            roll.addColorStop(1, rgba(palette.hotter, 0.92));
+            ctx.fillStyle = roll;
+            ctx.beginPath();
+            ctx.ellipse(-R * 0.06, 0, R * 0.2, w0 * 0.92, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
 
             // striations running down the inside, which is what reads as flow
             if (!reduceMotion) {
