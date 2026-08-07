@@ -48,6 +48,17 @@ const HERO_FADE = 260;
 // up there: you can build where you can see water, and not where you cannot. The
 // hero section's own height is the honest boundary, with the end of the wash as
 // the fallback if that section is not on the page.
+// Landmarks stand below the timeline, so the upper half of the page stays clear
+// of them. The section's own foot is the boundary, with a fallback if it is not
+// on the page.
+const TIMELINE_FOOT_FALLBACK = 6000;
+
+function timelineFootDocumentY() {
+    const timeline = document.getElementById('timeline');
+    if (!timeline) return TIMELINE_FOOT_FALLBACK;
+    return timeline.offsetTop + timeline.offsetHeight;
+}
+
 function heroFootDocumentY() {
     const hero = document.querySelector('.hero-shell');
     if (!hero) return HERO_FOOT + HERO_FADE;
@@ -74,9 +85,6 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     const crucible = createCrucible(ctx, palette, lattice);
     const millHall = createMillHall(ctx, palette, lattice);
     const landmarks = createLandmarks(ctx, palette, lattice);
-    // A tile's height is unknown until its art decodes, and the height decides
-    // whether a spot is clear, so the positions are solved again once it lands.
-    landmarks.decoded().then(() => placeLandmarks());
     const fountain = createFountain(ctx, palette, lattice);
     const splash = createSplash(ctx, palette, { reduceMotion });
 
@@ -121,24 +129,22 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         // viewport when the reader has that part of the page in front of them.
         const docY = sourceDocumentY();
         const half = lattice.height() / 2;
-        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half));
-        placed.length = 0;
-        placeLandmarks();
-    }
+        // Landmarks are placed first and the rivers are routed around them. Their
+        // positions are fixed — margins only, and all below the timeline — so they
+        // are the constraint, not the thing being fitted.
+        landmarks.place(
+            lattice.depthAtScreenY(half, timelineFootDocumentY() - half),
+            lattice.depthPerDocPx(),
+        );
+        const boxes = landmarks.footprints();
+        const blocked = boxes.length === 0 ? null : (gx, gy) => {
+            const a = gx - gy;
+            const d = gx + gy;
+            return boxes.some((b) => a >= b.a0 && a <= b.a1 && d >= b.d0 && d <= b.d1);
+        };
 
-    // The landmarks keep clear of the rivers, and of the two fixtures already
-    // standing on the plane: the fountain at the Point and the mill bay around
-    // the ladle. Solved at zero scroll, which holds for every scroll position
-    // because the whole plane drifts at one rate.
-    function placeLandmarks() {
-        if (!network) return;
-        const cell = lattice.cell();
-        const conf = lattice.project(network.confluence[0], network.confluence[1], 0);
-        const src = lattice.project(network.source[0], network.source[1], 0);
-        landmarks.place(network, [
-            { x: conf[0], y: conf[1], r: cell * 4 },
-            { x: src[0], y: src[1], r: cell * 13 },
-        ]);
+        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half), blocked);
+        placed.length = 0;
     }
 
     function resize(width, height) {

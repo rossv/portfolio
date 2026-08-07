@@ -107,6 +107,9 @@ export function createLattice() {
         onScreen,
         cellAt,
         depthAtScreenY,
+        // Depth gained per pixel of document, for anything pinned to the page
+        // rather than to the field.
+        depthPerDocPx: () => PARALLAX / H2,
         cell: () => CELL,
         halfWidth: () => u,
         depth: () => v,
