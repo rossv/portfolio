@@ -53,10 +53,11 @@ function staircase(rnd, from, to, blocked, corridor = null) {
         const canY = dy > 0;
 
         // On a narrow screen a long, unconstrained random walk can spend most
-        // of the page several viewport-widths away from its endpoints. Keep
-        // mobile reaches in a loose corridor around the straight line joining
-        // their endpoints. The reach still meanders inside that corridor, but
-        // the river cannot disappear off one side for the rest of the page.
+        // of the page several viewport-widths away from its endpoints. Give
+        // mobile reaches a broad corridor around the line joining their
+        // endpoints. It is intentionally wider than the visible half-width, so
+        // a river may leave the composition for a while; the boundary only
+        // turns it back before it can stay away for the rest of the page.
         if (corridor && canX && canY) {
             const progress = (total - dx - dy) / total;
             const guide = fromAcross + (toAcross - fromAcross) * progress;
@@ -153,10 +154,11 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
     const rnd = mulberry(seed);
     const u = lattice.halfWidth();
     const v = lattice.depth();
-    // Desktop has room for the broad, naturally wandering routes. On phones,
-    // bound that wandering to a few cells so both the water and molten-iron
-    // streams remain part of the on-screen composition throughout the page.
-    const mobileCorridor = u <= 12 ? Math.max(2, Math.floor(u * 0.3)) : null;
+    // Desktop has room for the fully unconstrained routes. On phones, use a
+    // corridor wider than the viewport's usable half-width (u includes three
+    // cells of field padding). This restores occasional off-screen wandering
+    // without allowing a stream to disappear for the whole page.
+    const mobileCorridor = u <= 12 ? Math.max(5, u - 2) : null;
 
     // The Point: right of centre, about a third of the way down.
     const confA = Math.round(u * 0.34);
