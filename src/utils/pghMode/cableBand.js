@@ -22,6 +22,7 @@ import { clamp, rgba } from './palette';
 const BAND_TOP = 80;
 const bandHeight = (viewportH) => clamp(viewportH * 0.42, 300, 620);
 const MASK_START = 0.55;
+const MOBILE_MASK_START = 0.38;
 
 // Catenary through the band, normalised so the two ends are stated outright
 // rather than falling out of the constants. Both are fractions of band height:
@@ -32,8 +33,8 @@ const CABLE_RIGHT = 0.04;
 // the desktop two-column layout. Lift the cable's low end into the open space
 // above the wordmark so the gold tube never runs through the name. The desktop
 // composition keeps the deeper sweep from the reference image.
-const MOBILE_CABLE_LEFT = 0.40;
-const MOBILE_CABLE_RIGHT = 0.02;
+const MOBILE_CABLE_LEFT = 0.27;
+const MOBILE_CABLE_RIGHT = 0.01;
 const MOBILE_WIDTH = 640;
 const DESKTOP_WIDTH = 1024;
 
@@ -56,6 +57,10 @@ function cableY(t, h, w) {
     const left = MOBILE_CABLE_LEFT + (CABLE_LEFT - MOBILE_CABLE_LEFT) * desktopMix;
     const right = MOBILE_CABLE_RIGHT + (CABLE_RIGHT - MOBILE_CABLE_RIGHT) * desktopMix;
     return h * (left + (right - left) * raw);
+}
+
+function mobileMix(w) {
+    return 1 - clamp((w - MOBILE_WIDTH) / (DESKTOP_WIDTH - MOBILE_WIDTH), 0, 1);
 }
 
 export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
@@ -111,6 +116,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         // --- hangers: a pair per band, dropping as the cable reaches them ---
         c.strokeStyle = palette.structure;
         c.lineWidth = Math.max(1.2, tube * 0.085);
+        const narrow = mobileMix(w);
         for (const t of bands) {
             // Each hanger falls over its own short window, once the cable has
             // arrived overhead.
@@ -119,11 +125,20 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
             const x = t * w;
             const y = cableY(t, h, w);
             const spread = tube * 0.42;
-            c.globalAlpha = 0.92;
+            // On phones, let the verticals recede quickly below the cable. They
+            // retain the suspension-bridge silhouette without fencing in the
+            // stacked hero copy.
+            const hangerLength = (h - y) * drop * (1 - narrow * 0.42);
+            const hangerFade = c.createLinearGradient(0, y, 0, y + hangerLength);
+            hangerFade.addColorStop(0, rgba(palette.structure, 0.92));
+            hangerFade.addColorStop(1 - narrow * 0.34, rgba(palette.structure, 0.72));
+            hangerFade.addColorStop(1, rgba(palette.structure, narrow ? 0 : 0.5));
+            c.strokeStyle = hangerFade;
+            c.globalAlpha = 1;
             for (const dx of [-spread, spread]) {
                 c.beginPath();
                 c.moveTo(x + dx, y);
-                c.lineTo(x + dx, y + (h - y) * drop);
+                c.lineTo(x + dx, y + hangerLength);
                 c.stroke();
             }
         }
@@ -174,11 +189,12 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         }
 
         // --- the necklace ---
-        // Only on the dark ground. Every other lit detail in this mode does the
-        // same: on paper a warm dot reads as dirt, not as a lamp.
-        if (!palette.light) {
-            const core = Math.max(1.1, tube * 0.075);
-            const halo = core * 4.6;
+        // A close-spaced string of warm bridge bulbs follows the crown. Keep a
+        // smaller, edged version on the light ground instead of removing it:
+        // the bulbs are an identifying detail of the Pittsburgh bridge motif.
+        {
+            const core = Math.max(1.5 + narrow * 0.8, tube * (0.085 + narrow * 0.035));
+            const halo = core * (4.8 + narrow * 1.4);
             for (let t = BAND_FIRST; t < 1; t += LIGHT_STEP) {
                 // Lights come on behind the cable's leading edge, so the run
                 // lights up in sequence rather than all at once.
@@ -187,13 +203,13 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
                 const x = t * w;
                 const y = cableY(t, h, w) - tube * 0.52;
                 const glow = c.createRadialGradient(x, y, 0, x, y, halo);
-                glow.addColorStop(0, rgba(palette.accent, 0.30 * on));
+                glow.addColorStop(0, rgba(palette.accent, (palette.light ? 0.18 : 0.44) * on));
                 glow.addColorStop(1, rgba(palette.accent, 0));
                 c.fillStyle = glow;
                 c.beginPath();
                 c.arc(x, y, halo, 0, Math.PI * 2);
                 c.fill();
-                c.fillStyle = rgba(palette.crown, 0.82 * on);
+                c.fillStyle = rgba(palette.light ? palette.accent : palette.crown, (palette.light ? 0.9 : 1) * on);
                 c.beginPath();
                 c.arc(x, y, core, 0, Math.PI * 2);
                 c.fill();
@@ -204,7 +220,8 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
 
         // Fade the lower part out, so the band never reaches the wordmark. In
         // buffer coordinates, which is BAND_TOP below the band's own.
-        const fadeFrom = BAND_TOP + h * MASK_START;
+        const maskStart = MASK_START + (MOBILE_MASK_START - MASK_START) * mobileMix(w);
+        const fadeFrom = BAND_TOP + h * maskStart;
         c.globalCompositeOperation = 'destination-out';
         const mask = c.createLinearGradient(0, fadeFrom, 0, full);
         mask.addColorStop(0, 'rgba(0,0,0,0)');

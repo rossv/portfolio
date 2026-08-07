@@ -30,8 +30,8 @@ export const PALETTES = {
         bridge: '#9C7A3A',
         // The hero cable: shaded underside, the collars at each hanger, the
         // handrope, and the lit crown that makes it read as round.
-        cableLow: '#8A5F09',
-        bandCollar: '#6B4A07',
+        cableLow: '#A06D00',
+        bandCollar: '#765000',
         rope: '#B9C4CD',
         crown: '#FFECB4',
         shadow: 'rgba(0, 0, 0, 0.38)',
@@ -50,10 +50,10 @@ export const PALETTES = {
         steel: '#52646F',
         structure: '#2C3A45',
         deck: '#41525F',
-        accent: '#9A6A00',      // bronze
+        accent: '#C58A00',      // Pittsburgh gold, deepened for contrast on paper
         bridge: '#8A7449',
-        cableLow: '#6E4B00',
-        bandCollar: '#54390A',
+        cableLow: '#8A5F00',
+        bandCollar: '#684700',
         rope: '#41525F',
         crown: '#FFFFFF',
         shadow: 'rgba(20, 30, 40, 0.18)',
