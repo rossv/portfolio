@@ -14,7 +14,12 @@
 import { rgba, clamp, hash } from './palette';
 
 export function createCrucible(ctx, palette, lattice) {
-    const disc = (cx, cy, r, squash = 0.42) => {
+    // The mouth's isometric squash. The pour geometry has to key off the same
+    // number the mouth is drawn with, because the moment the lip is computed
+    // on a circle instead it lands beside the painted rim.
+    const MOUTH = 0.42;
+
+    const disc = (cx, cy, r, squash = MOUTH) => {
         ctx.beginPath();
         ctx.ellipse(cx, cy, r, r * squash, 0, 0, Math.PI * 2);
     };
@@ -39,6 +44,38 @@ export function createCrucible(ctx, palette, lattice) {
         const px = ax - S * 2.6;
         const py = ay - H * 1.5;
         const beamY = py - H * 1.5;
+
+        // Everything the pour draws, in three layers that must agree with one
+        // another: the spill sheet inside the mouth, the falling column, and
+        // the crest at the lip. They all key off one shared fact: where the
+        // DRAWN rim is lowest in world space. The rim is a squashed ellipse,
+        // so its downhill point is not simply R along the tip angle, and iron
+        // spills over whichever point of the edge hangs lowest as the vessel
+        // turns.
+        let pourGeom = null;
+        if (tip > 0.07) {
+            const strength = clamp((tip - 0.07) / 0.25, 0, 1);
+            const theta = Math.atan2(MOUTH * Math.cos(angle), Math.sin(angle));
+            const cosA = Math.cos(angle);
+            const sinA = Math.sin(angle);
+            const lx = Math.cos(theta) * R;
+            const ly = Math.sin(theta) * R * MOUTH;
+            const ox = lx * cosA - ly * sinA;
+            const oy = lx * sinA + ly * cosA;
+            const olen = Math.hypot(ox, oy) || 1;
+            const w0 = S * 0.44 * strength;
+            pourGeom = {
+                strength,
+                theta,
+                w0,
+                // The sheet and the column meet at the painted edge; if they
+                // disagree about their width there, the join shows as a step.
+                wLip: Math.max(w0 * 0.95, S * 0.05),
+                ox,
+                oy,
+                dir: [ox / olen, oy / olen],
+            };
+        }
 
         /* ---------- the crane above ---------- */
         // main girder, with a lit top flange and a dark web beneath
@@ -209,7 +246,7 @@ export function createCrucible(ctx, palette, lattice) {
         if (left > 0.02) {
             ctx.save();
             ctx.beginPath();
-            ctx.ellipse(0, 0, R * 0.85, R * 0.85 * 0.42, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, R * 0.85, R * 0.85 * MOUTH, 0, 0, Math.PI * 2);
             ctx.clip();
             ctx.rotate(-angle);
             const bath = ctx.createLinearGradient(0, -R * 0.4, 0, R * 0.4);
@@ -217,6 +254,45 @@ export function createCrucible(ctx, palette, lattice) {
             bath.addColorStop(1, rgba(palette.hotter, 0.92));
             ctx.fillStyle = bath;
             ctx.fillRect(-R * 1.6, R * 0.32 - R * 0.86 * left, R * 3.2, R * 2.4);
+            ctx.restore();
+        }
+
+        // The spill sheet: iron leaving the bath, converging on the rim's low
+        // point and running out across the lip. Clipped to the mouth so it
+        // stops at the painted edge, exactly where the falling column picks up
+        // outside. Without this there is nothing tying the bath to the fall,
+        // and the stream reads as starting in mid air beside the vessel.
+        if (pourGeom) {
+            const lx = Math.cos(pourGeom.theta) * R;
+            const ly = Math.sin(pourGeom.theta) * R * MOUTH;
+            // the rim's local tangent at the lip, for the sheet's width
+            let tx = -Math.sin(pourGeom.theta) * R;
+            let ty = Math.cos(pourGeom.theta) * R * MOUTH;
+            const tl = Math.hypot(tx, ty) || 1;
+            tx /= tl;
+            ty /= tl;
+            const wBase = R * (0.2 + 0.42 * pourGeom.strength);
+            const wLip = pourGeom.wLip;
+            ctx.save();
+            disc(0, 0, R);
+            ctx.clip();
+            const sheet = ctx.createLinearGradient(lx * 0.12, ly * 0.12, lx, ly);
+            sheet.addColorStop(0, rgba(palette.molten, 0.9));
+            sheet.addColorStop(1, rgba(palette.hotter, 0.96));
+            ctx.fillStyle = sheet;
+            ctx.beginPath();
+            ctx.moveTo(lx * 0.12 + tx * wBase, ly * 0.12 + ty * wBase);
+            ctx.quadraticCurveTo(
+                lx * 0.55 + tx * wBase * 0.5, ly * 0.55 + ty * wBase * 0.5,
+                lx * 1.08 + tx * wLip, ly * 1.08 + ty * wLip,
+            );
+            ctx.lineTo(lx * 1.08 - tx * wLip, ly * 1.08 - ty * wLip);
+            ctx.quadraticCurveTo(
+                lx * 0.55 - tx * wBase * 0.5, ly * 0.55 - ty * wBase * 0.5,
+                lx * 0.12 - tx * wBase, ly * 0.12 - ty * wBase,
+            );
+            ctx.closePath();
+            ctx.fill();
             ctx.restore();
         }
 
@@ -231,28 +307,22 @@ export function createCrucible(ctx, palette, lattice) {
         ctx.restore();
 
         /* ---------- the stream ---------- */
-        if (tip > 0.07) {
-            const strength = clamp((tip - 0.07) / 0.25, 0, 1);
-            // The low lip: the rim's leading edge, carried round by the tip. The
-            // ribbon starts just inside it rather than exactly on it, so the
-            // column emerges from behind the rim instead of butting against its
-            // outline and leaving a seam.
-            const lipX = px + Math.cos(angle) * R * 0.84;
-            const lipY = py + Math.sin(angle) * R * 0.84;
-            // Where the iron actually crests the edge, for the roll below.
-            const edgeX = px + Math.cos(angle) * R;
-            const edgeY = py + Math.sin(angle) * R;
+        if (pourGeom) {
+            const { strength, w0, wLip, dir, ox, oy } = pourGeom;
+            // the lip in world space: the painted rim's lowest point
+            const ex = px + ox;
+            const ey = py + oy;
 
             // the flare around the whole pour
             const flare = ctx.createRadialGradient(
-                (lipX + ax) / 2, (lipY + ay) / 2, 0,
-                (lipX + ax) / 2, (lipY + ay) / 2, S * 4.5,
+                (ex + ax) / 2, (ey + ay) / 2, 0,
+                (ex + ax) / 2, (ey + ay) / 2, S * 4.5,
             );
             flare.addColorStop(0, rgba(palette.glow, 0.26 * strength));
             flare.addColorStop(1, rgba(palette.glow, 0));
             ctx.fillStyle = flare;
             ctx.beginPath();
-            ctx.arc((lipX + ax) / 2, (lipY + ay) / 2, S * 4.5, 0, Math.PI * 2);
+            ctx.arc((ex + ax) / 2, (ey + ay) / 2, S * 4.5, 0, Math.PI * 2);
             ctx.fill();
 
             // The stream is a ribbon with a width profile, not a stroked arc.
@@ -260,9 +330,16 @@ export function createCrucible(ctx, palette, lattice) {
             // it speeds up to carry the same iron — so it necks through the fall
             // and swells again where it piles into the ground. Three stacked
             // strokes of even width could not say any of that.
-            const c0 = [lipX, lipY];
-            const c1 = [lipX + (ax - lipX) * 0.3, lipY + (ay - lipY) * 0.06];
-            const c2 = [ax - (ax - lipX) * 0.1, lipY + (ay - lipY) * 0.6];
+            //
+            // The spine starts a shade inside the painted edge, under the spill
+            // sheet, and leaves along the rim's outward downhill direction
+            // rather than aiming at the landing. Gravity gets to bend it toward
+            // the anchor on the way down, which is the difference between a
+            // pour and a hose.
+            const c0 = [px + ox * 0.94, py + oy * 0.94];
+            const reach = Math.hypot(ax - c0[0], ay - c0[1]);
+            const c1 = [c0[0] + dir[0] * reach * 0.32, c0[1] + dir[1] * reach * 0.32];
+            const c2 = [ax - (ax - c0[0]) * 0.12, c0[1] + (ay - c0[1]) * 0.62];
             const c3 = [ax, ay];
             const at = (s) => {
                 const m = 1 - s;
@@ -271,7 +348,6 @@ export function createCrucible(ctx, palette, lattice) {
                     m * m * m * c0[1] + 3 * m * m * s * c1[1] + 3 * m * s * s * c2[1] + s * s * s * c3[1],
                 ];
             };
-            const w0 = S * 0.44 * strength;
             const widthAt = (s) => {
                 const neck = w0 / Math.sqrt(1 + 2.8 * s);
                 const swell = w0 * 0.6 * clamp((s - 0.76) / 0.24, 0, 1) ** 2;
@@ -311,8 +387,10 @@ export function createCrucible(ctx, palette, lattice) {
             ribbon(1.75);
             ctx.fill();
 
-            // the body, hottest where it is thinnest and fastest
-            const body = ctx.createLinearGradient(lipX, lipY, ax, ay);
+            // The body, hottest where it is thinnest and fastest. Its first
+            // stop matches the spill sheet's last, so the hand-off at the rim
+            // does not show as a colour step.
+            const body = ctx.createLinearGradient(ex, ey, ax, ay);
             body.addColorStop(0, rgba(palette.hotter, 0.96));
             body.addColorStop(0.45, rgba(palette.molten, 0.98));
             body.addColorStop(1, rgba(palette.hot, 0.94));
@@ -320,21 +398,19 @@ export function createCrucible(ctx, palette, lattice) {
             ribbon(1);
             ctx.fill();
 
-            // The roll over the edge. Drawn after the column and across the rim
-            // line, so the iron reads as coming out of the ladle rather than
-            // starting under it: it laps over the lip and thickens into the fall.
-            ctx.save();
-            ctx.translate(edgeX, edgeY);
-            ctx.rotate(angle);
-            const roll = ctx.createLinearGradient(-R * 0.2, 0, R * 0.22, 0);
-            roll.addColorStop(0, rgba(palette.hotter, 0.5));
-            roll.addColorStop(0.45, rgba(palette.molten, 0.98));
-            roll.addColorStop(1, rgba(palette.hotter, 0.92));
-            ctx.fillStyle = roll;
+            // The crest: the fold where the sheet turns over the edge, laid on
+            // the seam between the sheet (which the mouth clips at the painted
+            // rim) and the column that picks up outside it. It needs no
+            // rotation: the lip is by construction the rim's lowest point, so
+            // the rim runs horizontally through it.
+            ctx.fillStyle = rgba(palette.molten, 0.9);
             ctx.beginPath();
-            ctx.ellipse(-R * 0.06, 0, R * 0.2, w0 * 0.92, 0, 0, Math.PI * 2);
+            ctx.ellipse(ex, ey, wLip * 1.9, Math.max(S * 0.13, w0 * 0.5), 0, 0, Math.PI * 2);
             ctx.fill();
-            ctx.restore();
+            ctx.fillStyle = rgba(palette.crown, 0.5 * strength);
+            ctx.beginPath();
+            ctx.ellipse(ex, ey, wLip * 1.2, Math.max(S * 0.06, w0 * 0.24), 0, 0, Math.PI * 2);
+            ctx.fill();
 
             // striations running down the inside, which is what reads as flow
             if (!reduceMotion) {
@@ -386,9 +462,10 @@ export function createCrucible(ctx, palette, lattice) {
             if (!reduceMotion) {
                 for (let i = 0; i < 22; i += 1) {
                     const age = ((t * 0.0016 + hash(i * 5)) % 1);
-                    const dir = hash(i) < 0.5 ? -1 : 1;
-                    const reach = S * (1 + hash(i + 3) * 2.6);
-                    const sx = ax + dir * age * reach;
+                    // named to stay clear of the stream's dir and reach above
+                    const fling = hash(i) < 0.5 ? -1 : 1;
+                    const span = S * (1 + hash(i + 3) * 2.6);
+                    const sx = ax + fling * age * span;
                     const sy = ay - Math.sin(age * Math.PI) * S * (0.9 + hash(i + 9) * 1.7);
                     ctx.fillStyle = rgba(
                         age > 0.62 ? palette.hot : age > 0.3 ? palette.hotter : palette.molten,
