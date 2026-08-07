@@ -20,7 +20,7 @@ import { createChannels } from './channels';
 import { createBridges } from './bridges';
 import { createClouds } from './clouds';
 import { createCableBand } from './cableBand';
-import { createCrucible, tipFor } from './crucible';
+import { createCrucible } from './crucible';
 import { createFountain } from './fountain';
 import { createSplash } from './splash';
 
@@ -68,6 +68,16 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     let pendingRebuild = true;
     let arriveFrom = null;
     let arrived = true;
+
+    // The pour is its own event, not a scroll position. It starts the first time
+    // the ladle comes into view and then runs on its own clock: the vessel goes
+    // over, iron lands, and the river flows down the page whatever the reader
+    // does next. Scrubbing it with scroll meant the river drained backwards when
+    // they scrolled up, which is not what a poured river does.
+    const TIP_MS = 900;
+    const FLOW_MS = 2600;
+    let pourFrom = null;
+    let splashed = false;
 
     function arrive() {
         if (reduceMotion) return;
@@ -137,12 +147,23 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         ctx.fillStyle = palette.ground;
         ctx.fillRect(0, 0, width, height);
 
-        // The pour is scrubbed by scroll: the ladle tips as the reader carries it
-        // up the viewport, and the iron only runs as far as it has been poured.
+        // Start the pour the first time the ladle is on screen, then let it run.
         const src = lattice.project(network.source[0], network.source[1], scrollY);
-        const pour = tipFor(src[1], height);
+        if (pourFrom === null && src[1] < height * 0.92 && src[1] > -lattice.cell() * 6) {
+            pourFrom = reduceMotion ? t - TIP_MS - FLOW_MS : t;
+        }
+        const since = pourFrom === null ? 0 : t - pourFrom;
+        const pour = smooth(clamp(since / TIP_MS, 0, 1));
+        const flow = smooth(clamp((since - TIP_MS * 0.55) / FLOW_MS, 0, 1));
+
+        // One heavy splash the moment the stream lands.
+        if (!splashed && pour > 0.34) {
+            splashed = true;
+            splash.burst(src[0], src[1], 4.5);
+        }
+
         const reveal = {
-            molten: pour,
+            molten: flow,
             water: smooth(arrival),
         };
         channels.frame(network, scrollY, t, 1, reveal);

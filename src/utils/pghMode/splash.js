@@ -9,37 +9,40 @@
 
 import { rgba, hash } from './palette';
 
-const CAP = 220;
+const CAP = 460;
 
 export function createSplash(ctx, palette, { reduceMotion = false } = {}) {
     const bits = [];
 
-    function burst(x, y) {
+    // `scale` multiplies both the count and the throw. A click is 1; the ladle
+    // hitting the ground is several times that, because a hundred tonnes of iron
+    // landing should not look like a mouse click.
+    function burst(x, y, scale = 1) {
         if (reduceMotion) return;
-        // droplets
-        for (let i = 0; i < 16; i += 1) {
-            const a = -Math.PI / 2 + (hash(i * 3) - 0.5) * 2.3;
-            const speed = 1.4 + hash(i + 7) * 3.4;
+        const drops = Math.round(16 * scale);
+        for (let i = 0; i < drops; i += 1) {
+            const a = -Math.PI / 2 + (hash(i * 3) - 0.5) * 2.5;
+            const speed = (1.4 + hash(i + 7) * 3.4) * (0.8 + scale * 0.35);
             bits.push({
                 x, y,
                 vx: Math.cos(a) * speed,
                 vy: Math.sin(a) * speed,
                 life: 0,
-                max: 46 + hash(i + 11) * 34,
-                size: 1.5 + hash(i + 19) * 2.2,
+                max: (46 + hash(i + 11) * 34) * (0.9 + scale * 0.14),
+                size: (1.5 + hash(i + 19) * 2.2) * (0.9 + scale * 0.2),
                 drop: true,
             });
         }
-        // sparks
-        for (let i = 0; i < 22; i += 1) {
+        const sparks = Math.round(22 * scale);
+        for (let i = 0; i < sparks; i += 1) {
             const a = Math.random() * Math.PI * 2;
-            const speed = 2.6 + Math.random() * 5.2;
+            const speed = (2.6 + Math.random() * 5.2) * (0.8 + scale * 0.4);
             bits.push({
                 x, y,
                 vx: Math.cos(a) * speed,
-                vy: Math.sin(a) * speed - 1.1,
+                vy: Math.sin(a) * speed - 1.1 * scale,
                 life: 0,
-                max: 20 + Math.random() * 22,
+                max: (20 + Math.random() * 22) * (0.9 + scale * 0.2),
                 size: 0.8 + Math.random() * 0.9,
                 drop: false,
             });
