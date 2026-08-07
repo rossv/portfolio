@@ -27,9 +27,11 @@ export function createAurora(ctx, palette) {
 
     // One ribbon of the curtain. Two sine terms keep the crease from looking
     // like a single clean wave.
-    const ribbonY = (x, baseY, phase) => baseY
+    const ribbonY = (x, baseY, phase, drift) => baseY
         + Math.sin(phase + (x / width) * 5.2) * bandH * 0.16
-        + Math.sin(phase * 1.7 + (x / width) * 9.4) * bandH * 0.06;
+        // Let the smaller fold travel at its own rate. Tying it to `phase`
+        // made the whole curtain move as one very slow, nearly rigid shape.
+        + Math.sin(drift - (x / width) * 9.4) * bandH * 0.06;
 
     function frame(t, scrollY) {
         if (!bandCtx) return;
@@ -44,13 +46,20 @@ export function createAurora(ctx, palette) {
         // simply saturate to white and vanish.
         g.globalCompositeOperation = blend;
         for (let ribbon = 0; ribbon < 3; ribbon++) {
-            const phase = t * 0.00022 + ribbon * 2.1;
-            const baseY = bandH * (0.3 + ribbon * 0.12);
+            // `t` is in milliseconds. Give each leading wave a slightly
+            // different, legible cycle, then add a counter-travelling fold and
+            // a gentle vertical breath so the ribbons visibly undulate without
+            // turning the hero into a distraction.
+            const speed = 0.0003 + ribbon * 0.000045;
+            const phase = t * speed + ribbon * 2.1;
+            const drift = t * (speed * 1.65) + ribbon * 1.35;
+            const breath = Math.sin(t * 0.00042 + ribbon * 1.8) * bandH * 0.025;
+            const baseY = bandH * (0.3 + ribbon * 0.12) + breath;
             const hue = hues[ribbon % hues.length];
 
             g.beginPath();
             g.moveTo(-40, bandH);
-            for (let x = -40; x <= width + 40; x += 14) g.lineTo(x, ribbonY(x, baseY, phase));
+            for (let x = -40; x <= width + 40; x += 14) g.lineTo(x, ribbonY(x, baseY, phase, drift));
             g.lineTo(width + 40, bandH);
             g.closePath();
 
@@ -66,7 +75,7 @@ export function createAurora(ctx, palette) {
             g.lineWidth = 1.4;
             g.beginPath();
             for (let x = -40; x <= width + 40; x += 14) {
-                const y = ribbonY(x, baseY, phase);
+                const y = ribbonY(x, baseY, phase, drift);
                 if (x === -40) g.moveTo(x, y); else g.lineTo(x, y);
             }
             g.stroke();
