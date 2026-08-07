@@ -4,7 +4,7 @@
 // the waveform fill — pinned near the top of the page, faded out before it
 // reaches the name. The geometry is the reference photograph's: the cable
 // enters low on the left and climbs toward a tower beyond the right edge, with
-// cable bands at intervals and a heavy chain hanger dropping from each one.
+// cable bands at intervals and a pair of hanger ropes dropping from each one.
 //
 // The photograph also carries a handrope above the main cable, on short struts.
 // It is not drawn here: at this scale it read as a stray second cable rather
@@ -97,63 +97,26 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         const bands = [];
         for (let t = BAND_FIRST; t < 1; t += BAND_STEP) bands.push(t);
 
-        // --- hangers: one heavy chain per band, dropping as the cable arrives ---
-        // The Three Sisters hang from eyebar chains, not wire ropes, and a
-        // hairline read as string against a cable this thick. Links alternate
-        // face-on and edge-on, because that alternation is what makes a chain
-        // read as a chain rather than as a dotted line.
-        const rod = Math.max(2, tube * 0.16);   // link bar thickness
-        const linkW = tube * 0.62;              // face-on link outer width
-        const linkL = tube * 0.95;              // link outer length
-        // Interlocked links share a bar's worth of overlap at each end.
-        const pitch = linkL - rod * 2;
-        c.lineCap = 'round';
+        // --- hangers: a pair per band, dropping as the cable reaches them ---
+        c.strokeStyle = palette.structure;
+        c.lineWidth = Math.max(1.2, tube * 0.085);
         for (const t of bands) {
-            // Each chain drops over its own short window, once the cable has
-            // arrived overhead. Links appear one at a time down the run, so
-            // the chain reads as being lowered rather than wiped in.
+            // Each hanger falls over its own short window, once the cable has
+            // arrived overhead.
             const drop = clamp((progress - t) / 0.16, 0, 1);
             if (drop <= 0) continue;
             const x = t * w;
             const y = cableY(t, h);
-            const count = Math.ceil((h - y) / pitch);
-            const shown = Math.round(count * drop);
-            for (let i = 0; i < shown; i += 1) {
-                const yc = y + linkL * 0.5 + i * pitch;
-                if (i % 2 === 0) {
-                    // face-on: an oval ring, lit on the crown and shaded on the
-                    // foot so it reads as forged steel rather than an outline
-                    c.lineWidth = rod;
-                    c.strokeStyle = rgba(palette.steel, 0.95);
-                    c.beginPath();
-                    c.ellipse(x, yc, linkW * 0.5, linkL * 0.5, 0, 0, Math.PI * 2);
-                    c.stroke();
-                    c.strokeStyle = rgba(palette.structure, 0.9);
-                    c.beginPath();
-                    c.ellipse(x, yc, linkW * 0.5, linkL * 0.5, 0, Math.PI * 1.15, Math.PI * 1.85);
-                    c.stroke();
-                    c.strokeStyle = rgba(palette.ground, 0.35);
-                    c.beginPath();
-                    c.ellipse(x, yc, linkW * 0.5, linkL * 0.5, 0, Math.PI * 0.15, Math.PI * 0.85);
-                    c.stroke();
-                } else {
-                    // edge-on: the interleaved link shows only its bar, and the
-                    // step down from ring to bar is what sells the interlock
-                    c.lineWidth = rod * 1.6;
-                    c.strokeStyle = rgba(palette.steel, 0.95);
-                    c.beginPath();
-                    c.moveTo(x, yc - linkL * 0.5 + rod);
-                    c.lineTo(x, yc + linkL * 0.5 - rod);
-                    c.stroke();
-                    c.lineWidth = rod * 0.55;
-                    c.strokeStyle = rgba(palette.structure, 0.65);
-                    c.beginPath();
-                    c.moveTo(x, yc - linkL * 0.5 + rod * 1.1);
-                    c.lineTo(x, yc + linkL * 0.5 - rod * 1.1);
-                    c.stroke();
-                }
+            const spread = tube * 0.42;
+            c.globalAlpha = 0.92;
+            for (const dx of [-spread, spread]) {
+                c.beginPath();
+                c.moveTo(x + dx, y);
+                c.lineTo(x + dx, y + (h - y) * drop);
+                c.stroke();
             }
         }
+        c.globalAlpha = 1;
 
         // --- the cable, shaded across its thickness so it reads as round ---
         const mid = cableY(0.5, h);

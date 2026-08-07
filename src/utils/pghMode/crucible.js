@@ -24,6 +24,61 @@ export function createCrucible(ctx, palette, lattice) {
         ctx.ellipse(cx, cy, r, r * squash, 0, 0, Math.PI * 2);
     };
 
+    // A lifting chain, drawn along any segment. Links alternate face-on ring and
+    // edge-on bar, and that alternation is the whole trick: a run of identical
+    // ovals reads as a dotted line, while ring-bar-ring reads as steel links
+    // passing through one another. Interlocked links overlap by a bar's width at
+    // each end, so the pitch is shorter than a link.
+    function chain(x0, y0, x1, y1, unit) {
+        const dx = x1 - x0;
+        const dy = y1 - y0;
+        const len = Math.hypot(dx, dy) || 1;
+        const rod = Math.max(1.6, unit * 0.24);
+        const linkL = unit * 1.3;
+        const linkW = unit * 0.82;
+        const pitch = linkL - rod * 2;
+        const count = Math.max(1, Math.round(len / pitch));
+
+        ctx.save();
+        ctx.translate(x0, y0);
+        ctx.rotate(Math.atan2(dy, dx) - Math.PI / 2);   // chain runs down local +y
+        ctx.lineCap = 'round';
+        for (let i = 0; i < count; i += 1) {
+            const yc = linkL * 0.5 + i * pitch;
+            if (i % 2 === 0) {
+                ctx.lineWidth = rod;
+                ctx.strokeStyle = rgba(palette.steel, 0.95);
+                ctx.beginPath();
+                ctx.ellipse(0, yc, linkW * 0.5, linkL * 0.5, 0, 0, Math.PI * 2);
+                ctx.stroke();
+                // lit crown, shaded foot, so a link is forged and not outlined
+                ctx.lineWidth = rod * 0.62;
+                ctx.strokeStyle = rgba(palette.structure, 0.85);
+                ctx.beginPath();
+                ctx.ellipse(0, yc, linkW * 0.5, linkL * 0.5, 0, Math.PI * 1.12, Math.PI * 1.88);
+                ctx.stroke();
+                ctx.strokeStyle = rgba(palette.ground, 0.4);
+                ctx.beginPath();
+                ctx.ellipse(0, yc, linkW * 0.5, linkL * 0.5, 0, Math.PI * 0.12, Math.PI * 0.88);
+                ctx.stroke();
+            } else {
+                ctx.lineWidth = rod * 1.55;
+                ctx.strokeStyle = rgba(palette.steel, 0.95);
+                ctx.beginPath();
+                ctx.moveTo(0, yc - linkL * 0.5 + rod);
+                ctx.lineTo(0, yc + linkL * 0.5 - rod);
+                ctx.stroke();
+                ctx.lineWidth = rod * 0.5;
+                ctx.strokeStyle = rgba(palette.structure, 0.62);
+                ctx.beginPath();
+                ctx.moveTo(0, yc - linkL * 0.5 + rod * 1.2);
+                ctx.lineTo(0, yc + linkL * 0.5 - rod * 1.2);
+                ctx.stroke();
+            }
+        }
+        ctx.restore();
+    }
+
     // Under 90 degrees, deliberately. Tip a vessel past vertical and its near
     // lip swings round below and past the pivot, so the mouth ends up facing
     // away from where the iron is supposed to land and the stream appears to
@@ -102,16 +157,17 @@ export function createCrucible(ctx, palette, lattice) {
             ctx.fillRect(px + s * halfBeam - (s < 0 ? 0 : S * 0.5), beamY - S * 0.3, S * 0.5, S * 1.15);
         }
 
-        /* ---------- hoist ropes and sheave block ---------- */
+        /* ---------- hoist chains and sheave block ---------- */
+        // Chains rather than wire rope. A ladle full of iron hangs on chain, and
+        // two heavy runs carry the load where six hairlines just read as fuzz at
+        // this size.
         const blockY = py - H * 0.62;
-        ctx.strokeStyle = rgba(palette.steel, 0.62);
-        ctx.lineWidth = Math.max(1, S * 0.035);
-        for (let i = -3; i <= 3; i += 1) {
-            if (!i) continue;
-            ctx.beginPath();
-            ctx.moveTo(px + i * S * 0.24, beamY + S * 0.62);
-            ctx.lineTo(px + i * S * 0.1, blockY - S * 0.3);
-            ctx.stroke();
+        for (const s of [-1, 1]) {
+            chain(
+                px + s * S * 0.34, beamY + S * 0.6,
+                px + s * S * 0.16, blockY - S * 0.26,
+                S * 0.34,
+            );
         }
         // the block: a shackle plate carrying two sheaves
         ctx.fillStyle = rgba(palette.steel, 0.78);
@@ -133,13 +189,9 @@ export function createCrucible(ctx, palette, lattice) {
         }
 
         /* ---------- the hook, into the bail ---------- */
-        ctx.strokeStyle = rgba(palette.steel, 0.9);
-        ctx.lineWidth = Math.max(3, S * 0.2);
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(px, blockY + S * 0.62);
-        ctx.lineTo(px, py - R * 0.72);
-        ctx.stroke();
+        // The run from the block down to the hook is chain too, so the whole
+        // lift reads as one rigged system rather than a hook on a stick.
+        chain(px, blockY + S * 0.58, px, py - R * 0.78, S * 0.3);
         // the hook's throat, curling back on itself
         ctx.lineWidth = Math.max(3.4, S * 0.24);
         ctx.beginPath();
