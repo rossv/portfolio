@@ -81,7 +81,7 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     const channels = createChannels(ctx, palette, lattice, { reduceMotion });
     const bridges = createBridges(ctx, palette, lattice, placed, { reduceMotion });
     const clouds = createClouds(ctx, palette, { reduceMotion });
-    const cableBand = createCableBand(ctx, palette, lattice, { clouds });
+    const cableBand = createCableBand(ctx, palette, lattice, { clouds, reduceMotion });
     const crucible = createCrucible(ctx, palette, lattice);
     const millHall = createMillHall(ctx, palette, lattice);
     const landmarks = createLandmarks(ctx, palette, lattice);

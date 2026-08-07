@@ -53,6 +53,37 @@ const DROP_SPAN = 0.16;
 // rather than as one lamp per hanger.
 const LIGHT_STEP = BAND_STEP / 4;
 
+// Every so often a crest of light runs the length of the necklace, brightening
+// each bulb as it passes and leaving it guttering for a moment behind. It is a
+// long wait between runs on purpose: the point is to catch someone who has
+// stopped to read, not to give the hero a permanent shimmer.
+const WAVE_PERIOD = 9200;
+const WAVE_TRAVEL = 1500;
+// How much of the run the crest covers. Wide enough that the bulbs light in a
+// swell rather than one at a time.
+const WAVE_WIDTH = 0.18;
+// The flicker holds each value for this long. Kept well clear of a strobe: the
+// bulbs gutter like a filament settling, they do not blink.
+const FLICKER_MS = 130;
+
+// Where the crest is, in the same 0..1 the bulbs are spaced along, or null
+// between runs. It starts one crest-width off each end so the bulbs there get
+// the whole swell rather than half of it.
+function waveCrest(time) {
+    const into = time % WAVE_PERIOD;
+    if (into > WAVE_TRAVEL) return null;
+    const head = -WAVE_WIDTH + (into / WAVE_TRAVEL) * (1 + 2 * WAVE_WIDTH);
+    // Alternate the direction, so the run does not always sweep the same way.
+    return Math.floor(time / WAVE_PERIOD) % 2 ? 1 - head : head;
+}
+
+// Per-bulb stutter. Deterministic in the bulb and the time step, so a repaint
+// inside one step draws the same thing rather than re-rolling every frame.
+function stutter(index, time) {
+    const s = Math.sin((index * 7.31 + Math.floor(time / FLICKER_MS)) * 127.1) * 43758.5453;
+    return s - Math.floor(s);
+}
+
 function cableY(t, h, w) {
     const raw = (Math.cosh(K * (t - VERTEX)) - 1 - RAW_0) / (RAW_1 - RAW_0);
     const desktopMix = clamp((w - MOBILE_WIDTH) / (DESKTOP_WIDTH - MOBILE_WIDTH), 0, 1);
@@ -65,7 +96,7 @@ function mobileMix(w) {
     return 1 - clamp((w - MOBILE_WIDTH) / (DESKTOP_WIDTH - MOBILE_WIDTH), 0, 1);
 }
 
-export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
+export function createCableBand(ctx, palette, geom, { clouds = null, reduceMotion = false } = {}) {
     // Drawn to a buffer so the bottom fade can be a real mask rather than a
     // rectangle painted over the top of it. The buffer is also a cache: the band
     // does not change as the page scrolls, it only moves, so a scroll costs one
@@ -74,6 +105,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
     const bufferCtx = buffer.getContext('2d');
     let painted = -1;
     let tick = 0;
+    let waved = false;
 
     // The buffer runs from the very top of the page, not from BAND_TOP. Starting
     // it at the band left a strip of bare ground above the weather — a black bar
@@ -89,7 +121,9 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         painted = -1;
     }
 
-    function paint(w, h, progress, t) {
+    // Named rather than left as `t`, because the bulb and band loops below use
+    // `t` for a position along the run and would otherwise shadow it.
+    function paint(w, h, progress, time) {
         const c = bufferCtx;
         const full = h + BAND_TOP;
         c.clearRect(0, 0, w, full);
@@ -100,7 +134,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         if (clouds) {
             c.imageSmoothingEnabled = true;
             c.imageSmoothingQuality = 'high';
-            c.drawImage(clouds.frame(t, w), 0, 0, w, full);
+            c.drawImage(clouds.frame(time, w), 0, 0, w, full);
         }
 
         // Everything below is the cable's own band, which begins BAND_TOP down.
@@ -202,23 +236,54 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         {
             const core = Math.max(1.5 + narrow * 0.8, tube * (0.085 + narrow * 0.035));
             const halo = core * (4.8 + narrow * 1.4);
+            // Only once the run has settled. During the entrance the bulbs are
+            // already lighting in sequence, and a second travelling effect on
+            // top of that read as a fault rather than as a flourish.
+            const crest = reduceMotion || progress < 1 ? null : waveCrest(time);
+            let index = 0;
             for (let t = BAND_FIRST; t < 1; t += LIGHT_STEP) {
                 // Lights come on behind the cable's leading edge, so the run
                 // lights up in sequence rather than all at once.
                 const on = clamp((progress - t - 0.06) / 0.22, 0, 1);
+                index += 1;
                 if (on <= 0) continue;
+
+                // The swell this bulb is under, guttering as it goes. Squared
+                // so the crest stays tight and the shoulders stay quiet.
+                let surge = 0;
+                if (crest !== null) {
+                    const reach = 1 - Math.abs(t - crest) / WAVE_WIDTH;
+                    if (reach > 0) surge = reach * reach * (0.45 + 0.55 * stutter(index, time));
+                }
+
                 const x = t * w;
                 const y = cableY(t, h, w) - tube * 0.52;
-                const glow = c.createRadialGradient(x, y, 0, x, y, halo);
-                glow.addColorStop(0, rgba(palette.accent, (palette.light ? 0.18 : 0.44) * on));
+                const glowR = halo * (1 + surge * 0.8);
+                const glow = c.createRadialGradient(x, y, 0, x, y, glowR);
+                const glowA = (palette.light ? 0.18 : 0.44) * on;
+                // On the dark ground this is held just under the cap: boosted
+                // harder it saturates at the crest, which flattens off the very
+                // part of the flicker that is meant to be seen. The light
+                // ground starts at a quarter of the alpha, so it has the room
+                // to spare and needs it — the same boost there is invisible.
+                const boost = palette.light ? 2.4 : 1.2;
+                glow.addColorStop(0, rgba(palette.accent, clamp(glowA * (1 + surge * boost), 0, 1)));
                 glow.addColorStop(1, rgba(palette.accent, 0));
                 c.fillStyle = glow;
                 c.beginPath();
-                c.arc(x, y, halo, 0, Math.PI * 2);
+                c.arc(x, y, glowR, 0, Math.PI * 2);
                 c.fill();
-                c.fillStyle = rgba(palette.light ? palette.accent : palette.crown, (palette.light ? 0.9 : 1) * on);
+                // The filament swells and burns hotter, which is what makes the
+                // crest read as brighter rather than merely bigger. The colour
+                // has to carry that on the dark ground, where the bulb already
+                // sits at full alpha and cannot be boosted any further.
+                const lit = palette.light ? palette.accent : palette.crown;
+                c.fillStyle = rgba(
+                    surge > 0.55 ? palette.filament : lit,
+                    clamp((palette.light ? 0.9 : 1) * on * (1 + surge * 0.4), 0, 1),
+                );
                 c.beginPath();
-                c.arc(x, y, core, 0, Math.PI * 2);
+                c.arc(x, y, core * (1 + surge * 0.42), 0, Math.PI * 2);
                 c.fill();
             }
         }
@@ -257,10 +322,21 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         // drifts — every fourth frame after that. The cable itself is static, so
         // a quarter-rate cloud is invisible, and it keeps the necklace's three
         // dozen gradients off the hot path.
+        // A crest travelling the run needs a smoother cadence than the drifting
+        // overcast does — at a quarter rate it steps along in visible jumps. It
+        // only gets one while a wave is actually running, which is a second and
+        // a half in every nine, so the steady cost is unchanged.
+        const waving = !reduceMotion && progress >= 1 && waveCrest(t) !== null;
         tick += 1;
-        if (progress !== painted || (clouds && tick % 4 === 0)) {
+        // The edges are repainted outright rather than waited for. Without that
+        // the buffer can be left holding a lit crest until whatever repaints
+        // next comes round, which today is the overcast and tomorrow might be
+        // nothing at all.
+        if (progress !== painted || waving !== waved || (waving && tick % 2 === 0)
+            || (clouds && tick % 4 === 0)) {
             paint(width, h, progress, t);
             painted = progress;
+            waved = waving;
         }
         ctx.drawImage(buffer, 0, top);
     }

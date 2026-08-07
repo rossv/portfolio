@@ -34,6 +34,9 @@ export const PALETTES = {
         bandCollar: '#765000',
         rope: '#B9C4CD',
         crown: '#FFECB4',
+        // A bulb at the top of the wave, hotter than the warm cream it sits at
+        // the rest of the time.
+        filament: '#FFFFFF',
         shadow: 'rgba(0, 0, 0, 0.38)',
     },
     light: {
@@ -56,6 +59,9 @@ export const PALETTES = {
         bandCollar: '#684700',
         rope: '#41525F',
         crown: '#FFFFFF',
+        // Toward white would disappear on paper, so a bulb at the top of the
+        // wave goes to a brighter amber rather than a paler one.
+        filament: '#E8A200',
         shadow: 'rgba(20, 30, 40, 0.18)',
     },
 };
