@@ -151,7 +151,7 @@ export default function Hero() {
                     <span className="text-xs md:text-sm opacity-75 mt-2 block">
                         <ModeWord mode="tech">Technologist</ModeWord> • <ModeWord mode="geo">Geospatial</ModeWord> &{' '}
                         <ModeWord mode="stars">Space Nerd</ModeWord>{' '}
-                        • Pittsburgh
+                        • <ModeWord mode="pgh">Pittsburgh</ModeWord>
                     </span>
                 </motion.p>
 

@@ -1,0 +1,1876 @@
+<title>Pittsburgh Mode — Hero Theme Prototypes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+  /* ============================================================
+     TOKENS
+     Dark  = steel night: near-black with a blue bias, Pittsburgh gold.
+     Light = drawing sheet: cool paper, bronze standing in for gold
+             (the same substitution techMode makes for Python yellow).
+     ============================================================ */
+  :root {
+    --ground:      #0B0E12;
+    --ground-2:    #12171D;
+    --ground-3:    #1A2129;
+    --rule:        #26313B;
+    --ink:         #E6EBF0;
+    --ink-2:       #9BAAB8;
+    --ink-3:       #6B7C8B;
+
+    --gold:        #FFB612;
+    --gold-2:      #C98A0E;
+    --rust:        #D2500F;
+    --steel:       #7E93A3;
+
+    --allegheny:   #4E9F92;
+    --mon:         #A98A45;
+    --ohio:        #5B8794;
+
+    --water:       #0E151C;
+    --land:        #0B0E12;
+    --structure:   #AFBDC7;
+
+    --card:        #0F141A;
+    --card-edge:   #232D37;
+
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 12px 32px -12px rgba(0,0,0,.7);
+
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --maxw: 1120px;
+    color-scheme: dark;
+  }
+
+  /* The light palette, applied both by the media query and by the
+     explicit toggle below. */
+  @media (prefers-color-scheme: light) {
+    :root {
+      --ground:      #ECEEF0;
+      --ground-2:    #E2E6E9;
+      --ground-3:    #D6DBDF;
+      --rule:        #C0C8CE;
+      --ink:         #161D24;
+      --ink-2:       #495866;
+      --ink-3:       #6E7E8B;
+
+      --gold:        #9A6A00;
+      --gold-2:      #7A5300;
+      --rust:        #A83A08;
+      --steel:       #55697A;
+
+      --allegheny:   #2C6E63;
+      --mon:         #745C1E;
+      --ohio:        #35646F;
+
+      --water:       #DCE4E8;
+      --land:        #ECEEF0;
+      --structure:   #2E3A44;
+
+      --card:        #F5F6F7;
+      --card-edge:   #CDD5DA;
+
+      --shadow: 0 1px 2px rgba(20,30,40,.08), 0 12px 30px -14px rgba(20,30,40,.28);
+      color-scheme: light;
+    }
+  }
+
+  :root[data-theme="light"] {
+    --ground:      #ECEEF0;
+    --ground-2:    #E2E6E9;
+    --ground-3:    #D6DBDF;
+    --rule:        #C0C8CE;
+    --ink:         #161D24;
+    --ink-2:       #495866;
+    --ink-3:       #6E7E8B;
+    --gold:        #9A6A00;
+    --gold-2:      #7A5300;
+    --rust:        #A83A08;
+    --steel:       #55697A;
+    --allegheny:   #2C6E63;
+    --mon:         #745C1E;
+    --ohio:        #35646F;
+    --water:       #DCE4E8;
+    --land:        #ECEEF0;
+    --structure:   #2E3A44;
+    --card:        #F5F6F7;
+    --card-edge:   #CDD5DA;
+    --shadow: 0 1px 2px rgba(20,30,40,.08), 0 12px 30px -14px rgba(20,30,40,.28);
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0B0E12;
+    --ground-2:    #12171D;
+    --ground-3:    #1A2129;
+    --rule:        #26313B;
+    --ink:         #E6EBF0;
+    --ink-2:       #9BAAB8;
+    --ink-3:       #6B7C8B;
+    --gold:        #FFB612;
+    --gold-2:      #C98A0E;
+    --rust:        #D2500F;
+    --steel:       #7E93A3;
+    --allegheny:   #4E9F92;
+    --mon:         #A98A45;
+    --ohio:        #5B8794;
+    --water:       #0E151C;
+    --land:        #0B0E12;
+    --structure:   #AFBDC7;
+    --card:        #0F141A;
+    --card-edge:   #232D37;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 12px 32px -12px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+
+  /* ============================================================ BASE */
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--gold); color: #0B0E12; }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---- type scale ---- */
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+  h2 {
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -.025em;
+    line-height: 1.1;
+  }
+
+  h3 {
+    font-size: 1.06rem;
+    font-weight: 700;
+    letter-spacing: -.008em;
+  }
+
+  p { margin: 0; max-width: 68ch; }
+
+  .lede { color: var(--ink-2); font-size: 1.03rem; }
+
+  /* Mono utility label — the drawing-sheet voice used for every
+     eyebrow, spec key, and plate number on the page. */
+  .tag {
+    font-family: var(--mono);
+    font-size: .672rem;
+    letter-spacing: .19em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+
+  .tag-gold { color: var(--gold); }
+
+  code, .mono { font-family: var(--mono); font-size: .84em; }
+
+  code {
+    background: var(--ground-3);
+    padding: .12em .42em;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* ============================================================ HERO
+     The hero *is* Plate 02: the band prototype runs full-bleed behind
+     the title, so the first thing on the page is the thing being
+     proposed for the first thing on his page. */
+  .hero {
+    position: relative;
+    min-height: min(86vh, 700px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--ground) 10%, transparent) 0%,
+      color-mix(in srgb, var(--ground) 55%, transparent) 52%,
+      var(--ground) 100%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative;
+    padding: 0 24px 56px;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.7rem, 9vw, 6.2rem);
+    font-weight: 800;
+    letter-spacing: -.045em;
+    line-height: .92;
+    margin: 14px 0 0;
+  }
+
+  .hero h1 .gold {
+    background-image: linear-gradient(100deg, var(--gold), var(--rust));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero-sub {
+    margin-top: 20px;
+    max-width: 54ch;
+    color: var(--ink-2);
+    font-size: clamp(.95rem, 1.6vw, 1.09rem);
+  }
+
+  .titleblock {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--card) 82%, transparent);
+    backdrop-filter: blur(6px);
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .titleblock div {
+    padding: 9px 16px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .titleblock div:last-child { border-right: 0; }
+
+  .titleblock dt { font-family: var(--mono); font-size: .6rem; letter-spacing: .17em; text-transform: uppercase; color: var(--ink-3); }
+  .titleblock dd { margin: 2px 0 0; font-family: var(--mono); font-size: .8rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* ============================================================ SECTIONS */
+  section.band { padding: 72px 0; border-bottom: 1px solid var(--rule); }
+  section.band:last-of-type { border-bottom: 0; }
+
+  .sec-head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .sec-head .rule-row { display: flex; align-items: center; gap: 14px; }
+  .sec-head .hair { flex: 1; height: 1px; background: var(--rule); }
+
+  /* ---- the diagnosis: three system cards ---- */
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .grid-3 > div { background: var(--card); padding: 20px; display: flex; flex-direction: column; gap: 7px; }
+  .grid-3 h3 { font-size: .95rem; }
+  .grid-3 p { font-size: .88rem; color: var(--ink-2); }
+
+  .verdict {
+    margin-top: 28px;
+    border-left: 3px solid var(--gold);
+    padding: 4px 0 4px 20px;
+  }
+  .verdict p { font-size: 1.06rem; }
+  .verdict strong { color: var(--ink); font-weight: 700; }
+
+  /* ---- plate: a prototype card ---- */
+  .plate {
+    border: 1px solid var(--card-edge);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+  }
+
+  .plate-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--card-edge);
+  }
+
+  .plate-head h3 { display: flex; align-items: baseline; gap: 12px; }
+  .plate-head .no {
+    font-family: var(--mono);
+    color: var(--gold);
+    font-size: .78rem;
+    letter-spacing: .1em;
+  }
+
+  .slot {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    padding: 4px 9px;
+  }
+
+  .stage { position: relative; background: var(--ground); }
+
+  /* Canvases need an explicit CSS height. With only a height *attribute*
+     and width:100%, the box is laid out from the 300px default intrinsic
+     width and the element balloons to several times its intended size. */
+  .stage canvas { display: block; width: 100%; }
+  #confCanvas { height: clamp(300px, 40vw, 460px); }
+  #bandCanvas { height: clamp(220px, 26vw, 330px); }
+  #inclCanvas { height: clamp(210px, 24vw, 300px); }
+
+  .stage-note {
+    position: absolute;
+    left: 14px; bottom: 12px;
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    pointer-events: none;
+    background: color-mix(in srgb, var(--ground) 70%, transparent);
+    padding: 3px 8px;
+  }
+
+  .plate-foot {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: 1px solid var(--card-edge);
+  }
+
+  .plate-foot p { font-size: .87rem; color: var(--ink-2); max-width: 62ch; }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: border-color .16s, color .16s, background .16s;
+    white-space: nowrap;
+  }
+
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn:active { background: var(--ground-3); }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ---- palette ---- */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .sw { background: var(--card); padding: 0; }
+  .sw .chip { height: 74px; border-bottom: 1px solid var(--rule); }
+  .sw .meta { padding: 11px 13px; display: flex; flex-direction: column; gap: 3px; }
+  .sw .nm { font-size: .82rem; font-weight: 650; }
+  .sw .hx { font-family: var(--mono); font-size: .68rem; color: var(--ink-3); text-transform: uppercase; }
+  .sw .use { font-size: .74rem; color: var(--ink-2); line-height: 1.35; }
+
+  .accent-demo {
+    margin-top: 24px;
+    border: 1px solid var(--card-edge);
+    background: var(--card);
+    padding: 26px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .accent-name {
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: -.04em;
+    line-height: .92;
+  }
+  .accent-name span {
+    display: block;
+    background-image: linear-gradient(to right, var(--gold), var(--steel));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .pillrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill {
+    border-radius: 999px;
+    border: 1px solid var(--card-edge);
+    padding: 7px 15px;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+    background: var(--ground-2);
+    color: var(--ink);
+  }
+  .pill.fill { background-image: linear-gradient(to right, var(--gold), var(--rust)); color: #14100A; border-color: transparent; }
+
+  /* ---- carriers ---- */
+  .carriers { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .carrier { background: var(--card); padding: 22px 18px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+  .carrier .art { height: 96px; display: flex; align-items: center; justify-content: center; }
+  .carrier .art svg { height: 100%; width: auto; }
+  .carrier .nm { font-size: .88rem; font-weight: 650; }
+  .carrier .ds { font-size: .78rem; color: var(--ink-2); line-height: 1.45; }
+
+  /* ---- spec table ---- */
+  .tablewrap { overflow-x: auto; border: 1px solid var(--rule); }
+  table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: .86rem; }
+  th, td { text-align: left; padding: 11px 15px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th {
+    font-family: var(--mono);
+    font-size: .63rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    background: var(--ground-2);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td:first-child { font-family: var(--mono); font-size: .78rem; color: var(--gold); white-space: nowrap; }
+  td .m { font-family: var(--mono); font-size: .77rem; color: var(--ink-2); }
+
+  /* ---- set-aside list ---- */
+  .aside-list { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+  .aside-list > div { background: var(--card); padding: 15px 18px; display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; }
+  .aside-list .k { font-family: var(--mono); font-size: .72rem; letter-spacing: .13em; text-transform: uppercase; color: var(--ink); min-width: 152px; }
+  .aside-list .v { font-size: .87rem; color: var(--ink-2); flex: 1; min-width: 240px; }
+  .aside-list .v em { color: var(--gold); font-style: normal; }
+
+  /* ---- footer ---- */
+  footer { border-top: 1px solid var(--rule); padding: 30px 0 46px; }
+  .foot-row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+
+  /* ---- theme toggle ---- */
+  .toggle {
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 40;
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--card) 88%, transparent);
+    backdrop-filter: blur(8px);
+    color: var(--ink-2);
+    border: 1px solid var(--rule);
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  .toggle:hover { color: var(--gold); border-color: var(--gold); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+
+  @media (max-width: 640px) {
+    section.band { padding: 52px 0; }
+    .hero-inner { padding-bottom: 40px; }
+    .titleblock div { padding: 8px 12px; }
+  }
+</style>
+
+<button class="toggle" id="themeBtn" type="button">Theme</button>
+
+<!-- ============================================================ HERO -->
+<header class="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-veil"></div>
+  <div class="hero-inner">
+    <span class="tag tag-gold">Hero theme proposal — fifth mode</span>
+    <h1>PITTSBURGH<br /><span class="gold">MODE</span></h1>
+    <p class="hero-sub">
+      Four backdrops already ship: water, stars, geospatial, technologist. Each one is a
+      system with a rule, not a picture. This is the fifth — three rivers you can bridge,
+      in black and gold.
+    </p>
+    <div class="titleblock">
+      <div><dt>Mode key</dt><dd>burgh</dd></div>
+      <div><dt>Plates</dt><dd>05</dd></div>
+      <div><dt>New files</dt><dd>4</dd></div>
+      <div><dt>Touched</dt><dd>4</dd></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================ DIAGNOSIS -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rule-row"><span class="tag">Why the first attempt felt flat</span><span class="hair"></span></div>
+      <h2>The other four modes aren't drawings. They're systems.</h2>
+      <p class="lede">
+        That's the whole reason they hold up. Nothing in them was authored shape by shape —
+        each one runs a rule, and the visuals fall out of it. A bridge drawn as geometry is an
+        object, and objects sit there. Here is what the existing three canvas modes actually do:
+      </p>
+    </div>
+
+    <div class="grid-3">
+      <div>
+        <span class="tag">geospatial</span>
+        <h3>A surface that deforms</h3>
+        <p>Contours re-cut themselves as the ground heaves under the cursor. Click raises a peak and the whole topo sheet responds.</p>
+      </div>
+      <div>
+        <span class="tag">technologist</span>
+        <h3>A graph that propagates</h3>
+        <p>Nodes wired into lanes, packets travelling the edges. Click drops a node, and the run sends data through it.</p>
+      </div>
+      <div>
+        <span class="tag">space nerd</span>
+        <h3>A sky that accumulates</h3>
+        <p>Placed stars persist across reloads and theme flips. The mode remembers what you did to it.</p>
+      </div>
+    </div>
+
+    <div class="verdict">
+      <p>
+        So the question was never <em>which Pittsburgh shapes</em>. It was <strong>what system is
+        Pittsburgh</strong> — and the answer is sitting in the one place your bio already names:
+        a confluence. Two rivers in, one out, and a city that solved the problem by building
+        four hundred and forty six bridges over it. It's a flow network you cross. Which is
+        also, conveniently, the thing you do for a living.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ PLATES -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rule-row"><span class="tag">Live prototypes — all interactive</span><span class="hair"></span></div>
+      <h2>Five plates</h2>
+      <p class="lede">
+        Everything below runs the real logic, not a mockup. The two canvas plates take the
+        same shape as the existing modules — a palette, a resize, a frame loop, a click that
+        leaves something behind.
+      </p>
+    </div>
+
+    <!-- PLATE 01 — background -->
+    <article class="plate">
+      <div class="plate-head">
+        <h3><span class="no">PLATE 01</span> Three Rivers</h3>
+        <span class="slot">Slot — background field</span>
+      </div>
+      <div class="stage">
+        <canvas id="confCanvas" height="460" role="img" aria-label="Plan view of the Allegheny and Monongahela meeting to form the Ohio, with tracers showing flow and click-built bridge crossings."></canvas>
+        <span class="stage-note">Click the water to bridge it · move the cursor to disturb the flow</span>
+      </div>
+      <div class="plate-foot">
+        <p>
+          Plan view. The Allegheny runs in cool and green, the Monongahela warm and silted,
+          and they stay visibly separate for a stretch below the Point before the Ohio blends
+          them — which is what actually happens down there. Velocity is parabolic across each
+          channel, so midstream tracers outrun the banks. The Ohio carries the combined width.
+        </p>
+        <div class="btn-row">
+          <button class="btn" id="confClear" type="button">Clear bridges</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- PLATE 02 — band -->
+    <article class="plate">
+      <div class="plate-head">
+        <h3><span class="no">PLATE 02</span> The Sisters</h3>
+        <span class="slot">Slot — hero top band</span>
+      </div>
+      <div class="stage">
+        <canvas id="bandCanvas" height="330" aria-hidden="true"></canvas>
+        <span class="stage-note">Same band the water video and the waveform occupy</span>
+      </div>
+      <div class="plate-foot">
+        <p>
+          Three identical self-anchored suspension spans — the real 6th, 7th and 9th Street
+          bridges are the only trio of their kind anywhere. The chain is a true catenary, the
+          eyebars anchor into the deck rather than into rock, and the build sequence plays on
+          arrival the way the fleet launches in space mode.
+        </p>
+        <div class="btn-row">
+          <button class="btn" id="bandReplay" type="button">Replay build</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- PLATE 03 — incline -->
+    <article class="plate">
+      <div class="plate-head">
+        <h3><span class="no">PLATE 03</span> Counterbalance</h3>
+        <span class="slot">Slot — band alternate / corner mechanism</span>
+      </div>
+      <div class="stage">
+        <canvas id="inclCanvas" height="300" aria-hidden="true"></canvas>
+        <span class="stage-note">One rope, two cars — the load lifts itself</span>
+      </div>
+      <div class="plate-foot">
+        <p>
+          The incline is the one Pittsburgh landmark that's a mechanism rather than a monument:
+          two cars on a single rope over a drum, each one the other's counterweight. Cars keep
+          level floors on a 30° grade, which is why they're stepped. Good as an alternate band,
+          better as a small permanent thing running in a corner.
+        </p>
+      </div>
+    </article>
+
+    <!-- PLATE 04 — carriers -->
+    <article class="plate">
+      <div class="plate-head">
+        <h3><span class="no">PLATE 04</span> Margin carriers</h3>
+        <span class="slot">Slot — floating icon frame</span>
+      </div>
+      <div class="carriers" id="carriers">
+        <div class="carrier">
+          <div class="art">
+            <svg viewBox="0 0 52 60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Keystone carrier">
+              <path d="M4 4h44l-10 52H14Z" fill="var(--gold)" />
+              <path d="M40 4h8l-10 52h-5Z" fill="rgba(0,0,0,.22)" />
+              <path d="M9.8 9.5h32.4l-7.6 41.2H17.4Z" fill="var(--ground)" opacity=".92" />
+              <circle cx="26" cy="30" r="12.4" fill="var(--card)" stroke="var(--gold-2)" stroke-width="1.1" />
+              <path d="M19.6 30h12.8M26 23.6v12.8" stroke="var(--steel)" stroke-width="1.7" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="nm">Keystone</div>
+          <div class="ds">Pennsylvania's own silhouette, and structurally the piece that closes an arch. Reads at 40px, which the pin and the chip both had to.</div>
+        </div>
+
+        <div class="carrier">
+          <div class="art">
+            <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Gusset plate carrier">
+              <path d="M28 3 50 14v28L28 53 6 42V14Z" fill="var(--ground-2)" stroke="var(--steel)" stroke-width="1.6" />
+              <g fill="var(--gold)">
+                <circle cx="28" cy="8.6" r="1.7" /><circle cx="45" cy="17.4" r="1.7" />
+                <circle cx="45" cy="38.6" r="1.7" /><circle cx="28" cy="47.4" r="1.7" />
+                <circle cx="11" cy="38.6" r="1.7" /><circle cx="11" cy="17.4" r="1.7" />
+              </g>
+              <circle cx="28" cy="28" r="12.6" fill="var(--card)" stroke="var(--gold-2)" stroke-width="1.1" />
+              <path d="M21.6 31.4 28 24.6l6.4 6.8" fill="none" stroke="var(--steel)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <div class="nm">Riveted gusset</div>
+          <div class="ds">The plate that joins truss members, rivet heads and all. Heaviest of the three — best where the motes sit over quiet background.</div>
+        </div>
+
+        <div class="carrier">
+          <div class="art">
+            <svg viewBox="0 0 64 54" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Truss span carrier">
+              <path d="M4 41h56" stroke="var(--steel)" stroke-width="2.6" stroke-linecap="round" />
+              <path d="M6 41Q32 9 58 41" fill="none" stroke="var(--gold)" stroke-width="2.2" />
+              <path d="M14 41V28M22 41V21M32 41V17M42 41V21M50 41V28" stroke="var(--steel)" stroke-width="1.1" opacity=".5" />
+              <circle cx="32" cy="26" r="11.6" fill="var(--card)" stroke="var(--gold-2)" stroke-width="1.1" />
+              <path d="M26.8 29.4c2.1-2.9 3.6-2.9 5.2 0s3.1 2.9 5.2 0" fill="none" stroke="var(--steel)" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="nm">Truss span</div>
+          <div class="ds">Lightest of the three and the widest — it fills the same horizontal room the ringed planet does in space mode.</div>
+        </div>
+      </div>
+      <div class="plate-foot">
+        <p>
+          Same contract as <code>PinFrame</code> and <code>ChipFrame</code>: an SVG frame plus an
+          <code>icon</code> box in percentages, so the frame and the glyph scale together. My
+          pick is the keystone — the gusset is gorgeous at 96px and mud at 40px.
+        </p>
+      </div>
+    </article>
+
+    <!-- PLATE 05 — click -->
+    <article class="plate">
+      <div class="plate-head">
+        <h3><span class="no">PLATE 05</span> The click</h3>
+        <span class="slot">Slot — interaction + badge</span>
+      </div>
+      <div class="plate-foot" style="border-top:0">
+        <p>
+          Click the water on Plate 01 and you get a crossing: piers drop, the deck runs out from
+          the near bank, then the cables or the arch ribs draw in. Type is picked from the
+          river — tied arch, through truss, suspension, all three of which are out there. Click
+          the land and you get a spark burst off a torch instead.
+          <br /><br />
+          It accumulates like the starfield: crossings persist through reloads and theme flips,
+          and they're what the badge counts. <strong style="color:var(--gold)">Bridge ten of
+          them and you've earned the city's title</strong> — the same shape as Stargazer, hung
+          off a <code>bridge-build</code> event.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============================================================ PALETTE -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rule-row"><span class="tag">Colour</span><span class="hair"></span></div>
+      <h2>Black and gold, kept off the scoreboard</h2>
+      <p class="lede">
+        Pittsburgh is one of very few cities where every team shares the civic colours, so gold
+        is unarguable — but straight gold on black reads as a jersey. The fix is to let the
+        rivers carry the hue work and keep gold for structure and light only. On paper the gold
+        drops to bronze, the same substitution tech mode makes for Python yellow.
+      </p>
+    </div>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:var(--gold)"></div><div class="meta"><span class="nm">Gold</span><span class="hx" data-hex="gold">#FFB612</span><span class="use">Structure, deck lamps, accent lead. Bronze <code>#9A6A00</code> on paper.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--steel)"></div><div class="meta"><span class="nm">Steel</span><span class="hx" data-hex="steel">#7E93A3</span><span class="use">Truss members, secondary accent. Cool enough to sit under gold.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--allegheny)"></div><div class="meta"><span class="nm">Allegheny</span><span class="hx" data-hex="allegheny">#4E9F92</span><span class="use">North river. The clearer, greener water.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--mon)"></div><div class="meta"><span class="nm">Monongahela</span><span class="hx" data-hex="mon">#A98A45</span><span class="use">South river. Silt-warm, and it flows north.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ohio)"></div><div class="meta"><span class="nm">Ohio</span><span class="hx" data-hex="ohio">#5B8794</span><span class="use">The blend. Both tributaries resolve toward it.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--rust)"></div><div class="meta"><span class="nm">Molten</span><span class="hx" data-hex="rust">#D2500F</span><span class="use">Sparks only. Never a fill — it beats gold if you let it.</span></div></div>
+      <div class="sw"><div class="chip" style="background:var(--ground)"></div><div class="meta"><span class="nm">Ground</span><span class="hx" data-hex="ground">#0B0E12</span><span class="use">Near-black with a blue bias. Not a neutral off the shelf.</span></div></div>
+    </div>
+
+    <div class="accent-demo">
+      <span class="tag">Accent hooks — <code>.space-accent-text</code> / <code>-fill</code> / <code>-pill</code></span>
+      <div class="accent-name">ROSS <span>VOLKWEIN</span></div>
+      <div class="pillrow">
+        <span class="pill fill">Projects</span>
+        <span class="pill">Timeline</span>
+        <span class="pill">Leadership</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ WIRING -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rule-row"><span class="tag">If you want it built</span><span class="hair"></span></div>
+      <h2>Where each plate lands</h2>
+      <p class="lede">
+        The mode system already takes a fifth entry without argument —
+        <code>MODES</code>, a palette module, a background module, a band module, a carrier, and
+        three CSS hooks. One nice accident: the trigger word is already sitting in the hero.
+      </p>
+    </div>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Change</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>utils/siteMode.js</td><td>Add <span class="m">'burgh'</span> to <code>MODES</code> and <code>MODE_LABELS</code>. Cycle order puts it last, after tech.</td></tr>
+          <tr><td>utils/burghMode/palette.js</td><td><span class="m">new</span> — <code>PALETTES.dark/light</code> + <code>paletteFor(isDark)</code>, matching geo and tech exactly.</td></tr>
+          <tr><td>utils/burghMode/rivers.js</td><td><span class="m">new</span> — Plate 01. <code>createRivers(ctx, palette, spansRef)</code> → <code>resize / frame / addCrossing / replay</code>.</td></tr>
+          <tr><td>utils/burghMode/sisters.js</td><td><span class="m">new</span> — Plate 02. Band module, same <code>resize / frame / dim</code> shape as <code>waveform.js</code>, same <code>BAND_TOP</code> of 80.</td></tr>
+          <tr><td>components/FluidBackground.jsx</td><td>An <code>isBurgh</code> branch beside the other three, a <code>crossingsRef</code> beside <code>techNodesRef</code>, and a <code>'span'</code> ripple kind.</td></tr>
+          <tr><td>components/FloatingIcons.jsx</td><td><code>KeystoneFrame</code> in the carrier set, plus a <code>burgh</code> speck tint.</td></tr>
+          <tr><td>styles/global.css</td><td>Three <code>[data-site-mode="burgh"]</code> accent rules, plus the light-theme bronze override.</td></tr>
+          <tr><td>components/Hero.jsx</td><td>Wrap the existing plain-text <code>• Pittsburgh</code> in a <code>&lt;ModeWord mode="burgh"&gt;</code>. It's the only word in that line that isn't wired up yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SET ASIDE -->
+<section class="band">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rule-row"><span class="tag">From your list</span><span class="hair"></span></div>
+      <h2>What I took, and what I left</h2>
+    </div>
+
+    <div class="aside-list">
+      <div><span class="k">Three rivers</span><span class="v"><em>Took it — it's the spine.</em> The only idea on the list that's a system rather than a silhouette, and it's the one that connects to the H&amp;H work.</span></div>
+      <div><span class="k">Bridges</span><span class="v"><em>Took it — twice.</em> The band as elevation, the click as plan-view crossings. Doing both is what makes the click feel like it belongs to the same world.</span></div>
+      <div><span class="k">Incline</span><span class="v"><em>Took it — Plate 03.</em> A real mechanism, so it earns continuous motion instead of just drifting.</span></div>
+      <div><span class="k">Fountain at the Point</span><span class="v"><em>Took it — small.</em> It's the pulse at the apex of Plate 01. In plan view a fountain is expanding rings, which rhymes with the water-mode ripple.</span></div>
+      <div><span class="k">Keystone</span><span class="v"><em>Took it — Plate 04.</em> Distinct silhouette at small size, which is the whole job of a carrier frame.</span></div>
+      <div><span class="k">Hills</span><span class="v"><em>Took the idea, changed the form.</em> As contours it collides with geospatial mode, so the terrain shows up as the two street grids meeting at an angle over the Golden Triangle instead.</span></div>
+      <div><span class="k">Steel</span><span class="v"><em>Kept as light, not as object.</em> Mills date the city and read as a museum. It survives as the spark burst on a land click and as molten in the palette.</span></div>
+      <div><span class="k">Black and gold</span><span class="v"><em>Took it, with a guard.</em> Gold is restricted to structure and light so it doesn't tip into team kit.</span></div>
+      <div><span class="k">Pirates / Penguins</span><span class="v"><em>Left it.</em> Both marks are trademarked, and a licensed logo on a PE's portfolio reads as merchandise. The shared civic gold already carries the reference legally.</span></div>
+      <div><span class="k">Robotics / medicine</span><span class="v"><em>Left it.</em> True about the city, but it's your least-owned claim of the five modes — and technologist mode already has the circuitry covered.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <span class="tag">Pittsburgh mode · five plates · prototypes run live in this page</span>
+    <span class="tag">rossvolkwein.com</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============================================================ THEME */
+  var root = document.documentElement;
+  var mqDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return mqDark.matches;
+  }
+
+  var themeSubs = [];
+  function onTheme(fn) { themeSubs.push(fn); }
+  function fireTheme() { for (var i = 0; i < themeSubs.length; i++) themeSubs[i](); }
+
+  document.getElementById('themeBtn').addEventListener('click', function () {
+    root.setAttribute('data-theme', isDark() ? 'light' : 'dark');
+    fireTheme();
+  });
+  mqDark.addEventListener('change', fireTheme);
+  new MutationObserver(fireTheme).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* Read the live token values so canvas and CSS never drift apart. */
+  function tok(name) {
+    return getComputedStyle(root).getPropertyValue('--' + name).trim();
+  }
+
+  function pal() {
+    return {
+      dark: isDark(),
+      ground: tok('ground'),
+      water: tok('water'),
+      land: tok('land'),
+      gold: tok('gold'),
+      gold2: tok('gold-2'),
+      rust: tok('rust'),
+      steel: tok('steel'),
+      structure: tok('structure'),
+      allegheny: tok('allegheny'),
+      mon: tok('mon'),
+      ohio: tok('ohio'),
+      rule: tok('rule'),
+      ink3: tok('ink-3')
+    };
+  }
+
+  /* hex -> "r, g, b" so alpha can be varied per mark. */
+  var rgbCache = {};
+  function rgb(hex) {
+    if (rgbCache[hex]) return rgbCache[hex];
+    var h = hex.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var v = parseInt(h, 16);
+    var out = ((v >> 16) & 255) + ', ' + ((v >> 8) & 255) + ', ' + (v & 255);
+    rgbCache[hex] = out;
+    return out;
+  }
+
+  function mix(a, b, t) {
+    var A = rgb(a).split(',').map(Number), B = rgb(b).split(',').map(Number);
+    return Math.round(A[0] + (B[0] - A[0]) * t) + ', ' +
+           Math.round(A[1] + (B[1] - A[1]) * t) + ', ' +
+           Math.round(A[2] + (B[2] - A[2]) * t);
+  }
+
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  var smooth = function (v) { return v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v); };
+
+  /* ============================================================ STAGE
+     DPR-correct canvas + a rAF loop that only runs while on screen. */
+  function makeStage(canvas, opts) {
+    var ctx = canvas.getContext('2d');
+    var w = 0, h = 0, raf = 0, visible = false, t0 = performance.now();
+
+    function resize() {
+      var dpr = Math.min(2, window.devicePixelRatio || 1);
+      var r = canvas.getBoundingClientRect();
+      w = Math.max(1, r.width);
+      h = Math.max(1, r.height);
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      opts.resize(w, h);
+      if (reduced) opts.frame(ctx, w, h, performance.now() - t0, 16);
+    }
+
+    var last = 0;
+    function loop(now) {
+      var dt = Math.min(48, last ? now - last : 16);
+      last = now;
+      opts.frame(ctx, w, h, now - t0, dt);
+      raf = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      if (raf || reduced) return;
+      last = 0;
+      raf = requestAnimationFrame(loop);
+    }
+    function stop() { cancelAnimationFrame(raf); raf = 0; }
+
+    new ResizeObserver(resize).observe(canvas);
+    new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting;
+      if (visible) start(); else stop();
+    }, { threshold: 0.01 }).observe(canvas);
+
+    onTheme(function () {
+      if (opts.theme) opts.theme();
+      if (reduced) opts.frame(ctx, w, h, performance.now() - t0, 16);
+    });
+
+    resize();
+    return { ctx: ctx, get w() { return w; }, get h() { return h; } };
+  }
+
+  /* ============================================================
+     PLATE 01 — THREE RIVERS
+     Plan view. Each river is a sampled centreline with a half-width;
+     tracers ride it on a parabolic velocity profile, so midstream
+     outruns the banks. Tributary tracers keep their own tint into the
+     Ohio and only blend downstream — the mixing zone is real.
+     ============================================================ */
+  function Confluence(canvas) {
+    var P = pal();
+    var N = 90;                 // centreline samples per river
+    var rivers = {};
+    var tracers = [];
+    var spans = [];             // click-built crossings, persistent
+    var sparks = [];
+    var mouse = { x: -9999, y: -9999 };
+    var W = 0, H = 0;
+    var point = { x: 0, y: 0 };
+
+    function build(w, h) {
+      W = w; H = h;
+      point.x = w * 0.315;
+      point.y = h * 0.52;
+
+      function make(from, to, hwFn, bow) {
+        var pts = [];
+        for (var i = 0; i < N; i++) {
+          var s = i / (N - 1);
+          var e = smooth(s);
+          var x = lerp(from.x, to.x, s);
+          var y = lerp(from.y, to.y, e) + Math.sin(s * Math.PI) * bow;
+          pts.push({ x: x, y: y, hw: hwFn(s) });
+        }
+        // tangents + normals, central difference
+        for (var j = 0; j < N; j++) {
+          var a = pts[Math.max(0, j - 1)], b = pts[Math.min(N - 1, j + 1)];
+          var dx = b.x - a.x, dy = b.y - a.y;
+          var L = Math.hypot(dx, dy) || 1;
+          pts[j].tx = dx / L; pts[j].ty = dy / L;
+          pts[j].nx = -pts[j].ty; pts[j].ny = pts[j].tx;
+        }
+        return pts;
+      }
+
+      rivers.allegheny = make({ x: w * 1.04, y: h * 0.10 }, point,
+        function (s) { return lerp(h * 0.082, h * 0.075, s); }, -h * 0.05);
+      rivers.mon = make({ x: w * 1.04, y: h * 0.93 }, point,
+        function (s) { return lerp(h * 0.078, h * 0.072, s); }, h * 0.055);
+      // The Ohio begins well upstream of the Point, pinched narrow, so its
+      // leading cross-section sits buried inside the two tributaries rather
+      // than cutting a notch across them. By the time it reaches the Point it
+      // has opened to match their combined width — continuity, and no waist.
+      rivers.ohio = make({ x: point.x + w * 0.05, y: point.y },
+        { x: -w * 0.04, y: h * 0.44 },
+        function (s) { return lerp(h * 0.045, h * 0.122, smooth(Math.min(1, s * 3.3))); },
+        -h * 0.02);
+
+      if (!tracers.length) seed();
+      for (var k = 0; k < spans.length; k++) spans[k].t = 1;
+    }
+
+    function seed() {
+      tracers = [];
+      for (var i = 0; i < 310; i++) {
+        var north = i % 2 === 0;
+        tracers.push({
+          r: north ? 'allegheny' : 'mon',
+          origin: north ? 'allegheny' : 'mon',
+          s: Math.random(),
+          u: (Math.random() * 2 - 1) * 0.86,
+          len: 5 + Math.random() * 13,
+          a: 0.25 + Math.random() * 0.6,
+          push: 0
+        });
+      }
+    }
+
+    function at(river, s, u) {
+      var pts = rivers[river];
+      var f = clamp(s, 0, 1) * (N - 1);
+      var i = Math.min(N - 2, Math.floor(f));
+      var k = f - i;
+      var a = pts[i], b = pts[i + 1];
+      var x = lerp(a.x, b.x, k), y = lerp(a.y, b.y, k);
+      var hw = lerp(a.hw, b.hw, k);
+      var nx = lerp(a.nx, b.nx, k), ny = lerp(a.ny, b.ny, k);
+      var tx = lerp(a.tx, b.tx, k), ty = lerp(a.ty, b.ty, k);
+      return { x: x + nx * u * hw, y: y + ny * u * hw, tx: tx, ty: ty, nx: nx, ny: ny, hw: hw, cx: x, cy: y };
+    }
+
+    /* ---- static scenery, redrawn each frame under the water ----
+       The three landmasses are bounded by the rivers themselves, so the
+       street grids are clipped to real banks rather than to rectangles.
+       Each one runs off its own bearing: the Golden Triangle, the North
+       Side and the South Side genuinely don't agree on north, and that
+       disagreement is the most Pittsburgh geometry there is. */
+
+    // Walk one bank of a river into the current path. side=+1 is the
+    // north/left bank, -1 the south/right.
+    function bank(ctx, river, side, from, to) {
+      var pts = rivers[river];
+      var i0 = Math.round(from * (N - 1));
+      var i1 = Math.round(to * (N - 1));
+      var st = i0 <= i1 ? 1 : -1;
+      for (var i = i0; st > 0 ? i <= i1 : i >= i1; i += st) {
+        var p = pts[i];
+        ctx.lineTo(p.x + p.nx * p.hw * side, p.y + p.ny * p.hw * side);
+      }
+    }
+
+    function region(ctx, which) {
+      ctx.beginPath();
+      if (which === 'north') {
+        ctx.moveTo(W * 1.15, -H * 0.15);
+        bank(ctx, 'allegheny', 1, 0, 1);
+        bank(ctx, 'ohio', 1, 0, 1);
+        ctx.lineTo(-W * 0.15, -H * 0.15);
+      } else if (which === 'triangle') {
+        ctx.moveTo(W * 1.15, H * 0.5);
+        bank(ctx, 'allegheny', -1, 0, 1);
+        bank(ctx, 'mon', 1, 1, 0);
+      } else {
+        ctx.moveTo(W * 1.15, H * 1.15);
+        bank(ctx, 'mon', -1, 0, 1);
+        bank(ctx, 'ohio', -1, 0, 1);
+        ctx.lineTo(-W * 0.15, H * 1.15);
+      }
+      ctx.closePath();
+    }
+
+    var GRIDS = [
+      { r: 'triangle', ang: -0.34 },
+      { r: 'north', ang: 0.16 },
+      { r: 'south', ang: -0.66 }
+    ];
+
+    function drawLand(ctx) {
+      for (var g = 0; g < GRIDS.length; g++) {
+        ctx.save();
+        region(ctx, GRIDS[g].r);
+        // A touch of tone so the landmasses read even under the grid.
+        ctx.fillStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.045 : 0.055) + ')';
+        ctx.fill();
+        ctx.clip();
+        ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.13 : 0.17) + ')';
+        ctx.lineWidth = 1;
+        ctx.translate(W * 0.6, H * 0.5);
+        ctx.rotate(GRIDS[g].ang);
+        var span = Math.max(W, H) * 1.6;
+        var n = Math.ceil(span / 34);
+        for (var i = -n; i <= n; i++) {
+          ctx.beginPath();
+          ctx.moveTo(i * 34, -span); ctx.lineTo(i * 34, span);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(-span, i * 34); ctx.lineTo(span, i * 34);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    // Appends a river's closed outline to the current path — it does not
+    // start one, so all three can go into a single path and fill as a union.
+    function riverOutline(ctx, river) {
+      var pts = rivers[river];
+      for (var i = 0; i < N; i++) {
+        var p = pts[i];
+        var x = p.x + p.nx * p.hw, y = p.y + p.ny * p.hw;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      for (var j = N - 1; j >= 0; j--) {
+        var q = pts[j];
+        ctx.lineTo(q.x - q.nx * q.hw, q.y - q.ny * q.hw);
+      }
+      ctx.closePath();
+    }
+
+    // One long bank as an open line, so the junction cross-sections never
+    // get stroked and the three rivers read as one body of water.
+    function bankLine(ctx, river, side, inset) {
+      var pts = rivers[river];
+      // Stop the banks short of the confluence — a bank drawn into the
+      // junction runs straight through the other river's water.
+      var i0 = river === 'ohio' ? Math.round(0.15 * (N - 1)) : 0;
+      var i1 = river === 'ohio' ? N - 1 : Math.round(0.93 * (N - 1));
+      ctx.beginPath();
+      for (var i = i0; i <= i1; i++) {
+        var p = pts[i];
+        var x = p.x + p.nx * p.hw * inset * side;
+        var y = p.y + p.ny * p.hw * inset * side;
+        if (i === i0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    var NAMES = ['allegheny', 'mon', 'ohio'];
+
+    function drawWater(ctx) {
+      // Base fills as a single union path — three separate fills leave a
+      // seam across the confluence where the polygons butt together.
+      ctx.beginPath();
+      for (var n = 0; n < NAMES.length; n++) riverOutline(ctx, NAMES[n]);
+      ctx.fillStyle = P.water;
+      ctx.fill();
+
+      // Then each river's own tint, faded out where it reaches the Point.
+      // Without the fade the tint polygons cross-section against each other
+      // and leave a hard-edged patch at the junction; with it, the three
+      // colours dissolve into plain water exactly where they mix.
+      var a = P.dark ? 0.10 : 0.17;
+      for (var m = 0; m < NAMES.length; m++) {
+        var nm = NAMES[m];
+        var pts = rivers[nm];
+        var g;
+        if (nm === 'ohio') {
+          var e0 = pts[0], e1 = pts[Math.round(0.24 * (N - 1))];
+          g = ctx.createLinearGradient(e0.x, e0.y, e1.x, e1.y);
+          g.addColorStop(0, 'rgba(' + rgb(P[nm]) + ', 0)');
+          g.addColorStop(1, 'rgba(' + rgb(P[nm]) + ', ' + a + ')');
+        } else {
+          var f0 = pts[Math.round(0.78 * (N - 1))], f1 = pts[N - 1];
+          g = ctx.createLinearGradient(f0.x, f0.y, f1.x, f1.y);
+          g.addColorStop(0, 'rgba(' + rgb(P[nm]) + ', ' + a + ')');
+          g.addColorStop(1, 'rgba(' + rgb(P[nm]) + ', 0)');
+        }
+        ctx.beginPath();
+        riverOutline(ctx, nm);
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+
+      for (var k = 0; k < NAMES.length; k++) {
+        ctx.lineWidth = 1.1;
+        ctx.strokeStyle = 'rgba(' + rgb(P[NAMES[k]]) + ', ' + (P.dark ? 0.30 : 0.5) + ')';
+        bankLine(ctx, NAMES[k], 1, 1);
+        bankLine(ctx, NAMES[k], -1, 1);
+        // Bathymetry: one inset contour per bank, the way a chart shows depth.
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(' + rgb(P[NAMES[k]]) + ', ' + (P.dark ? 0.16 : 0.22) + ')';
+        bankLine(ctx, NAMES[k], 1, 0.55);
+        bankLine(ctx, NAMES[k], -1, 0.55);
+      }
+    }
+
+    /* ---- the fountain at the Point: expanding rings in plan ---- */
+    function drawFountain(ctx, t) {
+      var fx = point.x - W * 0.028, fy = point.y;
+      var g = ctx.createRadialGradient(fx, fy, 0, fx, fy, 26);
+      g.addColorStop(0, 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.5 : 0.34) + ')');
+      g.addColorStop(1, 'rgba(' + rgb(P.gold) + ', 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(fx, fy, 26, 0, Math.PI * 2); ctx.fill();
+
+      for (var i = 0; i < 3; i++) {
+        var k = ((t * 0.00042) + i / 3) % 1;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 4 + k * 20, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', ' + (1 - k) * 0.55 + ')';
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(fx, fy, 2.6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + rgb(P.gold) + ', .95)';
+      ctx.fill();
+    }
+
+    /* ---- crossings ---- */
+    var TYPES = ['truss', 'arch', 'susp'];
+
+    function addCrossing(x, y) {
+      // Which river, and where along it? Sample the centreline and take
+      // the nearest station inside the channel.
+      var best = null;
+      var names = ['allegheny', 'mon', 'ohio'];
+      for (var n = 0; n < names.length; n++) {
+        var pts = rivers[names[n]];
+        for (var i = 0; i < N; i++) {
+          var d = Math.hypot(pts[i].x - x, pts[i].y - y);
+          if (d < pts[i].hw * 1.5 && (!best || d < best.d)) {
+            best = { d: d, r: names[n], s: i / (N - 1) };
+          }
+        }
+      }
+      if (!best) { spark(x, y); return false; }
+      // Don't stack crossings on top of each other.
+      for (var k = 0; k < spans.length; k++) {
+        if (spans[k].r === best.r && Math.abs(spans[k].s - best.s) < 0.055) { spark(x, y); return false; }
+      }
+      spans.push({ r: best.r, s: best.s, t: 0, type: TYPES[spans.length % 3] });
+      if (spans.length > 26) spans.shift();
+      return true;
+    }
+
+    function spark(x, y) {
+      for (var i = 0; i < 14; i++) {
+        var a = Math.random() * Math.PI * 2;
+        var sp = 1 + Math.random() * 3.4;
+        sparks.push({
+          x: x, y: y,
+          vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 0.6,
+          life: 0, max: 26 + Math.random() * 24,
+          c: Math.random() < 0.5 ? P.gold : P.rust
+        });
+      }
+      if (sparks.length > 180) sparks.splice(0, sparks.length - 180);
+    }
+
+    function drawSpan(ctx, sp) {
+      var c = at(sp.r, sp.s, 0);
+      var ext = 1.42;                       // run the deck onto both banks
+      var half = c.hw * ext;
+      var nx = c.nx, ny = c.ny;
+      var t = smooth(clamp(sp.t, 0, 1));
+      var ax = c.cx - nx * half, ay = c.cy - ny * half;
+      var bx = c.cx + nx * half * t * 2 - nx * half, by = c.cy + ny * half * t * 2 - ny * half;
+
+      var tx = c.tx, ty = c.ty;             // along-flow = across the deck
+
+      // deck
+      ctx.lineCap = 'butt';
+      ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', ' + (P.dark ? 0.85 : 0.9) + ')';
+      ctx.lineWidth = 5.2;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+
+      if (sp.t < 0.45) return;
+      var g = smooth(clamp((sp.t - 0.45) / 0.55, 0, 1));
+      var off = 5.4;
+
+      function edge(sign, w, alpha, color) {
+        ctx.strokeStyle = 'rgba(' + rgb(color) + ', ' + alpha + ')';
+        ctx.lineWidth = w;
+        ctx.beginPath();
+        ctx.moveTo(ax + tx * off * sign, ay + ty * off * sign);
+        ctx.lineTo(ax + (bx - ax) * g + tx * off * sign, ay + (by - ay) * g + ty * off * sign);
+        ctx.stroke();
+      }
+
+      if (sp.type === 'susp') {
+        // Main cables outside the deck, suspenders as ticks.
+        edge(1, 1.5, 0.9, P.gold); edge(-1, 1.5, 0.9, P.gold);
+        ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', .55)';
+        ctx.lineWidth = 0.9;
+        for (var i = 0; i <= 12; i++) {
+          var k = i / 12;
+          if (k > g) break;
+          var px = ax + (bx - ax) * k, py = ay + (by - ay) * k;
+          ctx.beginPath();
+          ctx.moveTo(px - tx * off, py - ty * off);
+          ctx.lineTo(px + tx * off, py + ty * off);
+          ctx.stroke();
+        }
+      } else if (sp.type === 'arch') {
+        // Ribs splay outside the deck and close at the ends — a tied arch
+        // seen from above.
+        ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', .9)';
+        ctx.lineWidth = 1.6;
+        for (var side = -1; side <= 1; side += 2) {
+          ctx.beginPath();
+          for (var j = 0; j <= 20; j++) {
+            var kk = j / 20;
+            if (kk > g) break;
+            var sx = ax + (bx - ax) * kk, sy = ay + (by - ay) * kk;
+            var bulge = Math.sin(kk * Math.PI) * 7.5 * side;
+            if (j === 0) ctx.moveTo(sx + tx * bulge, sy + ty * bulge);
+            else ctx.lineTo(sx + tx * bulge, sy + ty * bulge);
+          }
+          ctx.stroke();
+        }
+      } else {
+        // Through truss: two chords with X bracing between them.
+        edge(1, 1.4, 0.85, P.steel); edge(-1, 1.4, 0.85, P.steel);
+        ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', .5)';
+        ctx.lineWidth = 0.85;
+        for (var m = 0; m < 10; m++) {
+          var k0 = m / 10, k1 = (m + 1) / 10;
+          if (k1 > g) break;
+          var x0 = ax + (bx - ax) * k0, y0 = ay + (by - ay) * k0;
+          var x1 = ax + (bx - ax) * k1, y1 = ay + (by - ay) * k1;
+          ctx.beginPath();
+          ctx.moveTo(x0 + tx * off, y0 + ty * off); ctx.lineTo(x1 - tx * off, y1 - ty * off);
+          ctx.moveTo(x0 - tx * off, y0 - ty * off); ctx.lineTo(x1 + tx * off, y1 + ty * off);
+          ctx.stroke();
+        }
+      }
+
+      // Piers, and gold deck lamps once the span closes.
+      ctx.fillStyle = 'rgba(' + rgb(P.structure) + ', .95)';
+      for (var pI = 0; pI < 2; pI++) {
+        var pk = pI === 0 ? 0.3 : 0.7;
+        if (pk > g) continue;
+        var qx = ax + (bx - ax) * pk, qy = ay + (by - ay) * pk;
+        ctx.save();
+        ctx.translate(qx, qy);
+        ctx.rotate(Math.atan2(ny, nx));
+        ctx.fillRect(-2.2, -4.6, 4.4, 9.2);
+        ctx.restore();
+      }
+      if (g > 0.98) {
+        ctx.fillStyle = 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.95 : 0.8) + ')';
+        for (var L = 1; L < 6; L++) {
+          var lk = L / 6;
+          var lx = ax + (bx - ax) * lk, ly = ay + (by - ay) * lk;
+          ctx.beginPath(); ctx.arc(lx, ly, 1.15, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    }
+
+    var stage = makeStage(canvas, {
+      resize: build,
+      theme: function () { P = pal(); },
+      frame: function (ctx, w, h, t, dt) {
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = P.land;
+        ctx.fillRect(0, 0, w, h);
+
+        drawLand(ctx);
+        drawWater(ctx);
+
+        // --- tracers ---
+        var step = dt / 16;
+        for (var i = 0; i < tracers.length; i++) {
+          var p = tracers[i];
+          // Parabolic velocity profile: fast midstream, slow at the banks.
+          var prof = 0.34 + 0.66 * (1 - p.u * p.u);
+          var base = p.r === 'ohio' ? 0.0043 : 0.0052;
+          p.s += base * prof * step * 1.6;
+
+          if (p.s >= 1) {
+            if (p.r === 'ohio') {
+              // Recycle back to a tributary head.
+              p.r = p.origin; p.s = 0;
+              p.u = (Math.random() * 2 - 1) * 0.86;
+            } else {
+              // Enter the Ohio on your own side of the channel, at the
+              // station where it actually passes the Point — not at s=0,
+              // which now sits upstream of the junction.
+              p.s = 0.13;
+              p.u = p.r === 'allegheny' ? -0.5 + p.u * 0.46 : 0.5 + p.u * 0.46;
+              p.r = 'ohio';
+            }
+          }
+
+          var q = at(p.r, p.s, p.u);
+
+          // Cursor acts as an obstruction: tracers slide around it.
+          var dx = q.x - mouse.x, dy = q.y - mouse.y;
+          var d = Math.hypot(dx, dy);
+          if (d < 90) {
+            var push = (90 - d) / 90;
+            var side = (dx * q.nx + dy * q.ny) >= 0 ? 1 : -1;
+            p.push = lerp(p.push, push * side * 0.55, 0.12);
+          } else {
+            p.push = lerp(p.push, 0, 0.06);
+          }
+          var u = clamp(p.u + p.push, -0.97, 0.97);
+          q = at(p.r, p.s, u);
+
+          // Mixing: only in the Ohio, and deliberately slow to start.
+          var tint = p.origin === 'allegheny' ? P.allegheny : P.mon;
+          if (p.r === 'ohio') {
+            var bl = smooth(clamp((p.s - 0.12) / 0.8, 0, 1));
+            tint = 'rgb-' + mix(tint, P.ohio, bl);
+          }
+          var col = tint.indexOf('rgb-') === 0 ? tint.slice(4) : rgb(tint);
+
+          var len = p.len * prof;
+          ctx.strokeStyle = 'rgba(' + col + ', ' + p.a * (P.dark ? 0.95 : 1) + ')';
+          ctx.lineWidth = 1.35;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(q.x, q.y);
+          ctx.lineTo(q.x - q.tx * len, q.y - q.ty * len);
+          ctx.stroke();
+        }
+
+        drawFountain(ctx, t);
+
+        // --- crossings ---
+        for (var sI = 0; sI < spans.length; sI++) {
+          if (spans[sI].t < 1) spans[sI].t = Math.min(1, spans[sI].t + 0.018 * step);
+          drawSpan(ctx, spans[sI]);
+        }
+
+        // --- sparks ---
+        for (var k = sparks.length - 1; k >= 0; k--) {
+          var s = sparks[k];
+          s.life += step;
+          if (s.life >= s.max) { sparks.splice(k, 1); continue; }
+          s.x += s.vx * step; s.y += s.vy * step;
+          s.vx *= 0.94; s.vy = s.vy * 0.94 + 0.06 * step;
+          var a = 1 - s.life / s.max;
+          ctx.fillStyle = 'rgba(' + rgb(s.c) + ', ' + a + ')';
+          ctx.beginPath(); ctx.arc(s.x, s.y, 1.5 * a + 0.4, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    });
+
+    canvas.addEventListener('pointermove', function (e) {
+      var r = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    });
+    canvas.addEventListener('pointerleave', function () { mouse.x = -9999; mouse.y = -9999; });
+    canvas.addEventListener('pointerdown', function (e) {
+      var r = canvas.getBoundingClientRect();
+      addCrossing(e.clientX - r.left, e.clientY - r.top);
+    });
+    canvas.style.cursor = 'crosshair';
+
+    document.getElementById('confClear').addEventListener('click', function () { spans.length = 0; });
+    return stage;
+  }
+
+  /* ============================================================
+     PLATE 02 — THE SISTERS
+     Elevation. Three identical self-anchored suspension spans: the
+     chain anchors into the deck at each end rather than into rock,
+     which is what makes the real trio unusual.
+     ============================================================ */
+  function Sisters(canvas, opts) {
+    opts = opts || {};
+    var P = pal();
+    var W = 0, H = 0;
+    var build = 0;               // 0..1 arrival sequence
+
+    function reset() { build = 0; }
+
+    // Catenary normalised to c(0)=0 at midspan, c(±1)=1 at the towers.
+    var K = 2.1;
+    var COSH_K = Math.cosh(K);
+    function cat(t) { return (Math.cosh(K * t) - 1) / (COSH_K - 1); }
+
+    var stage = makeStage(canvas, {
+      resize: function (w, h) { W = w; H = h; },
+      theme: function () { P = pal(); },
+      frame: function (ctx, w, h, t, dt) {
+        ctx.clearRect(0, 0, w, h);
+
+        if (!reduced) build = Math.min(1, build + (dt / 16) * 0.013);
+        else build = 1;
+
+        // Proportions come off the span, not off the canvas: a tower as tall
+        // as its span is wide reads as a tent pole. Real suspension towers
+        // rise a fraction of the clear span, and on the Sisters the eyebar
+        // chain dips almost onto the deck at midspan — that's the signature.
+        // Three sisters is the point, but at phone width three spans are just
+        // clutter — the band drops to two, the way the waveform guards narrow.
+        var SPANS = w < 720 ? 2 : 3;
+        var spanW = w / SPANS;
+        var clear = spanW * 0.66;
+        var deckY = h * 0.58;
+        var rise = Math.min(h * 0.32, clear * 0.30);
+        var towerY = deckY - rise;
+        var sagY = deckY - rise * 0.15;
+
+        // --- water below, plus its reflection ticks ---
+        var waterY = deckY + h * 0.115;
+        ctx.fillStyle = 'rgba(' + rgb(P.ohio) + ', ' + (P.dark ? 0.10 : 0.14) + ')';
+        ctx.fillRect(0, waterY, w, h - waterY);
+        ctx.strokeStyle = 'rgba(' + rgb(P.ohio) + ', ' + (P.dark ? 0.34 : 0.4) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, waterY); ctx.lineTo(w, waterY); ctx.stroke();
+        ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.20 : 0.16) + ')';
+        for (var rI = 0; rI < 40; rI++) {
+          var rx = (rI * 97.3) % w;
+          var ry = waterY + 8 + ((rI * 41) % Math.max(1, (h - waterY - 8)));
+          var rw = 10 + ((rI * 13) % 26);
+          var wob = Math.sin(t * 0.0012 + rI) * 4;
+          ctx.beginPath(); ctx.moveTo(rx + wob, ry); ctx.lineTo(rx + rw + wob, ry); ctx.stroke();
+        }
+
+        for (var s = 0; s < SPANS; s++) {
+          // Each sister completes a beat after the one before it.
+          var local = clamp((build - s * 0.12) / 0.6, 0, 1);
+          if (local <= 0) continue;
+
+          var x0 = s * spanW + spanW * 0.08;
+          var x1 = (s + 1) * spanW - spanW * 0.08;
+          var tA = x0 + (x1 - x0) * 0.17;   // tower positions
+          var tB = x0 + (x1 - x0) * 0.83;
+
+          var pTower = smooth(clamp(local / 0.3, 0, 1));
+          var pChain = smooth(clamp((local - 0.22) / 0.4, 0, 1));
+          var pHang  = smooth(clamp((local - 0.5) / 0.35, 0, 1));
+          var pDeck  = smooth(clamp((local - 0.62) / 0.38, 0, 1));
+
+          // --- towers rise ---
+          ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .9)';
+          ctx.lineWidth = 3.4;
+          var headY = towerY - rise * 0.10;   // tower stands just proud of the chain
+          [tA, tB].forEach(function (tx) {
+            var top = lerp(deckY, headY, pTower);
+            ctx.beginPath(); ctx.moveTo(tx, deckY + 10); ctx.lineTo(tx, top); ctx.stroke();
+            // portal strut across the tower head
+            if (pTower > 0.7) {
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(tx - 6.5, top + rise * 0.09); ctx.lineTo(tx + 6.5, top + rise * 0.09);
+              ctx.stroke();
+              ctx.lineWidth = 3.4;
+            }
+          });
+
+          // --- the chain: deck anchor -> tower -> catenary -> tower -> anchor
+          ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.95 : 0.85) + ')';
+          ctx.lineWidth = 2.4;
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x0, deckY);
+          // The anchor leg carries its own weight, so it curves. Drawn dead
+          // straight it reads as a guy-line and the span looks like a tent.
+          var lx = lerp(x0, tA, pChain), ly = lerp(deckY, towerY, pChain);
+          ctx.quadraticCurveTo((x0 + lx) / 2, (deckY + ly) / 2 + rise * 0.11, lx, ly);
+          if (pChain > 0.55) {
+            var seg = clamp((pChain - 0.55) / 0.45, 0, 1);
+            for (var i = 0; i <= 40; i++) {
+              var k = i / 40;
+              if (k > seg) break;
+              var tt = -1 + k * 2;
+              var cx = lerp(tA, tB, k);
+              var cy = sagY + (towerY - sagY) * cat(tt);
+              ctx.lineTo(cx, cy);
+            }
+          }
+          if (pChain > 0.99) {
+            ctx.lineTo(tB, towerY);
+            ctx.quadraticCurveTo((tB + x1) / 2, (towerY + deckY) / 2 + rise * 0.11, x1, deckY);
+          }
+          ctx.stroke();
+
+          // --- suspenders drop in sequence ---
+          if (pHang > 0) {
+            ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', .6)';
+            ctx.lineWidth = 1;
+            for (var j = 1; j < 16; j++) {
+              var kk = j / 16;
+              if (kk > pHang) break;
+              var hx = lerp(tA, tB, kk);
+              var hy = sagY + (towerY - sagY) * cat(-1 + kk * 2);
+              ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx, deckY); ctx.stroke();
+            }
+          }
+
+          // --- deck + stiffening girder ---
+          if (pDeck > 0) {
+            var dx1 = lerp(x0, x1, pDeck);
+            ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .95)';
+            ctx.lineWidth = 3.2;
+            ctx.beginPath(); ctx.moveTo(x0, deckY); ctx.lineTo(dx1, deckY); ctx.stroke();
+            ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', .45)';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(x0, deckY + 7); ctx.lineTo(dx1, deckY + 7); ctx.stroke();
+            for (var m = 0; m < 26; m++) {
+              var mk = m / 26;
+              if (x0 + (x1 - x0) * mk > dx1) break;
+              var mx = x0 + (x1 - x0) * mk;
+              ctx.beginPath();
+              ctx.moveTo(mx, deckY); ctx.lineTo(mx + (x1 - x0) / 26, deckY + 7);
+              ctx.stroke();
+            }
+          }
+
+          // --- deck lamps, once the span is closed ---
+          if (local > 0.98) {
+            for (var L = 0; L < 9; L++) {
+              var lx = lerp(x0, x1, (L + 0.5) / 9);
+              var flick = 0.6 + 0.4 * Math.sin(t * 0.002 + L * 1.7 + s);
+              // Only the dark theme gets a halo. On paper the gold is a
+              // bronze, and a bronze glow on light grey is just a smudge.
+              if (P.dark) {
+                var gg = ctx.createRadialGradient(lx, deckY - 5, 0, lx, deckY - 5, 12);
+                gg.addColorStop(0, 'rgba(' + rgb(P.gold) + ', ' + 0.5 * flick + ')');
+                gg.addColorStop(1, 'rgba(' + rgb(P.gold) + ', 0)');
+                ctx.fillStyle = gg;
+                ctx.beginPath(); ctx.arc(lx, deckY - 5, 12, 0, Math.PI * 2); ctx.fill();
+              }
+              ctx.fillStyle = 'rgba(' + rgb(P.gold) + ', ' + (0.85 * flick) + ')';
+              ctx.beginPath(); ctx.arc(lx, deckY - 5, 1.5, 0, Math.PI * 2); ctx.fill();
+            }
+          }
+        }
+
+        // --- an inspection light travelling the deck ---
+        if (build > 0.99 && !reduced) {
+          var vx = ((t * 0.00006) % 1) * w;
+          var vg = ctx.createRadialGradient(vx, deckY - 4, 0, vx, deckY - 4, 22);
+          vg.addColorStop(0, 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.4 : 0.22) + ')');
+          vg.addColorStop(1, 'rgba(' + rgb(P.gold) + ', 0)');
+          ctx.fillStyle = vg;
+          ctx.beginPath(); ctx.arc(vx, deckY - 4, 22, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // The same downward fade WaterBanner masks with in CSS.
+        if (opts.mask) {
+          ctx.globalCompositeOperation = 'destination-out';
+          var mk = ctx.createLinearGradient(0, h * 0.68, 0, h);
+          mk.addColorStop(0, 'rgba(0,0,0,0)');
+          mk.addColorStop(1, 'rgba(0,0,0,1)');
+          ctx.fillStyle = mk;
+          ctx.fillRect(0, 0, w, h);
+          ctx.globalCompositeOperation = 'source-over';
+        }
+      }
+    });
+
+    stage.reset = reset;
+    return stage;
+  }
+
+  /* ============================================================
+     PLATE 03 — COUNTERBALANCE
+     Two cars, one rope, one drum. Car B sits at 1 - p wherever car A
+     sits at p, which is the entire mechanism.
+     ============================================================ */
+  function Incline(canvas) {
+    var P = pal();
+    var pos = 0, dir = 1, dwell = 0;
+
+    // Hillside profile, as fractions of the canvas. Flat river terrace on the
+    // left, then the bluff goes up hard — Mt. Washington rises about 400 feet
+    // in a quarter mile, which is the whole reason the inclines exist.
+    var RIDGE = [
+      [-0.02, 0.88], [0.16, 0.86], [0.30, 0.74],
+      [0.44, 0.44], [0.56, 0.22], [0.70, 0.11], [0.86, 0.07], [1.02, 0.05]
+    ];
+
+    var stage = makeStage(canvas, {
+      resize: function () {},
+      theme: function () { P = pal(); },
+      frame: function (ctx, w, h, t, dt) {
+        ctx.clearRect(0, 0, w, h);
+
+        var riverY = h * 0.93;
+
+        // --- the Monongahela along the foot of the bluff ---
+        ctx.fillStyle = 'rgba(' + rgb(P.mon) + ', ' + (P.dark ? 0.13 : 0.17) + ')';
+        ctx.fillRect(0, riverY, w, h - riverY);
+        ctx.strokeStyle = 'rgba(' + rgb(P.mon) + ', ' + (P.dark ? 0.35 : 0.45) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(0, riverY); ctx.lineTo(w, riverY); ctx.stroke();
+
+        // --- the bluff ---
+        ctx.beginPath();
+        ctx.moveTo(RIDGE[0][0] * w, RIDGE[0][1] * h);
+        for (var i = 1; i < RIDGE.length; i++) ctx.lineTo(RIDGE[i][0] * w, RIDGE[i][1] * h);
+        ctx.lineTo(w * 1.02, riverY);
+        ctx.lineTo(-w * 0.02, riverY);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.10 : 0.13) + ')';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.45 : 0.55) + ')';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(RIDGE[0][0] * w, RIDGE[0][1] * h);
+        for (var j = 1; j < RIDGE.length; j++) ctx.lineTo(RIDGE[j][0] * w, RIDGE[j][1] * h);
+        ctx.stroke();
+
+        // --- downtown on the terrace, across the water ---
+        for (var b = 0; b < 7; b++) {
+          var bw = 13 + ((b * 29) % 17);
+          var bh = 18 + ((b * 47) % 48);
+          var bx = w * 0.012 + b * (w * 0.026);
+          if (bx + bw > w * 0.20) break;
+          ctx.fillStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.30 : 0.34) + ')';
+          ctx.fillRect(bx, h * 0.865 - bh, bw, bh);
+          if (P.dark) {
+            ctx.fillStyle = 'rgba(' + rgb(P.gold) + ', .40)';
+            for (var wI = 0; wI < 6; wI++) {
+              if ((b + wI) % 3 === 0) continue;
+              var wy = h * 0.865 - bh + 5 + Math.floor(wI / 2) * 8;
+              if (wy > h * 0.865 - 4) break;
+              ctx.fillRect(bx + 3 + (wI % 2) * 6, wy, 3, 4);
+            }
+          }
+        }
+
+        // --- the incline itself ---
+        var botX = w * 0.335, botY = h * 0.795;
+        var topX = w * 0.605, topY = h * 0.195;
+        var dx = topX - botX, dy = topY - botY;
+        var L = Math.hypot(dx, dy);
+        var ux = dx / L, uy = dy / L;
+        var nx = -uy, ny = ux;
+        var GAUGE = 15;              // half the distance between the two tracks
+
+        function on(k, off) {
+          return { x: botX + dx * k + nx * off, y: botY + dy * k + ny * off };
+        }
+
+        // ties
+        ctx.strokeStyle = 'rgba(' + rgb(P.steel) + ', .45)';
+        ctx.lineWidth = 1;
+        for (var tI = 0; tI <= 30; tI++) {
+          var a = on(tI / 30, GAUGE + 7), bpt = on(tI / 30, -GAUGE - 7);
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(bpt.x, bpt.y); ctx.stroke();
+        }
+
+        // rails — two tracks, four rails
+        ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .8)';
+        ctx.lineWidth = 1.6;
+        [GAUGE - 5, GAUGE + 5, -GAUGE - 5, -GAUGE + 5].forEach(function (o) {
+          var s0 = on(0, o), s1 = on(1, o);
+          ctx.beginPath(); ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); ctx.stroke();
+        });
+
+        // --- motion: ease at both ends, dwell at the stations ---
+        if (!reduced) {
+          if (dwell > 0) dwell -= dt;
+          else {
+            var ease = 0.35 + 0.65 * Math.sin(Math.PI * clamp(pos, 0, 1));
+            pos += dir * 0.00020 * dt * (0.4 + ease);
+            if (pos >= 1) { pos = 1; dir = -1; dwell = 1000; }
+            if (pos <= 0) { pos = 0; dir = 1; dwell = 1000; }
+          }
+        } else { pos = 0.30; }
+
+        // --- the haul rope: up one track, over the drum, down the other ---
+        ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', .7)';
+        ctx.lineWidth = 1.2;
+        [GAUGE, -GAUGE].forEach(function (o) {
+          var s0 = on(0, o), s1 = on(1, o);
+          ctx.beginPath(); ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); ctx.stroke();
+        });
+
+        // --- the two cars ---
+        // Level floors on a 31 degree grade is why a real incline car looks
+        // like a staircase in profile.
+        function car(k, off) {
+          var c = on(k, off);
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate(Math.atan2(uy, ux));
+          ctx.fillStyle = P.dark ? 'rgba(' + rgb(P.structure) + ', .13)' : 'rgba(255,255,255,.85)';
+          ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .95)';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(-21, 5);
+          ctx.lineTo(21, 5);
+          ctx.lineTo(21, -6);
+          ctx.lineTo(7, -6);
+          ctx.lineTo(7, -12);
+          ctx.lineTo(-7, -12);
+          ctx.lineTo(-7, -18);
+          ctx.lineTo(-21, -18);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(' + rgb(P.gold) + ', ' + (P.dark ? 0.9 : 0.62) + ')';
+          ctx.fillRect(-18, -15, 8, 5);
+          ctx.fillRect(-4, -9, 8, 5);
+          ctx.fillRect(10, -3, 8, 5);
+          ctx.restore();
+        }
+        car(pos, GAUGE);
+        car(1 - pos, -GAUGE);
+
+        // --- upper station and drum house ---
+        var top = on(1, 0);
+        ctx.save();
+        ctx.translate(top.x + ux * 20, top.y + uy * 20);
+        ctx.rotate(Math.atan2(uy, ux));
+        ctx.fillStyle = 'rgba(' + rgb(P.structure) + ', ' + (P.dark ? 0.22 : 0.9) + ')';
+        ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .95)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.rect(-8, -30, 34, 60); ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // the drum, turning only while the cars move
+        var drumA = t * 0.0018 * (dwell > 0 ? 0 : dir);
+        var dcx = top.x + ux * 20, dcy = top.y + uy * 20;
+        ctx.strokeStyle = 'rgba(' + rgb(P.gold) + ', .9)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(dcx, dcy, 8.5, 0, Math.PI * 2); ctx.stroke();
+        for (var sp = 0; sp < 4; sp++) {
+          var a2 = drumA + sp * Math.PI / 2;
+          ctx.beginPath();
+          ctx.moveTo(dcx, dcy);
+          ctx.lineTo(dcx + Math.cos(a2) * 8.5, dcy + Math.sin(a2) * 8.5);
+          ctx.stroke();
+        }
+
+        // --- lower station ---
+        var bot = on(0, 0);
+        ctx.save();
+        ctx.translate(bot.x - ux * 16, bot.y - uy * 16);
+        ctx.rotate(Math.atan2(uy, ux));
+        ctx.fillStyle = 'rgba(' + rgb(P.structure) + ', ' + (P.dark ? 0.22 : 0.9) + ')';
+        ctx.strokeStyle = 'rgba(' + rgb(P.structure) + ', .95)';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.rect(-14, -26, 20, 52); ctx.fill(); ctx.stroke();
+        ctx.restore();
+
+        // --- the overlook at the top of the bluff ---
+        ctx.fillStyle = 'rgba(' + rgb(P.steel) + ', ' + (P.dark ? 0.3 : 0.35) + ')';
+        for (var o = 0; o < 4; o++) {
+          var ox = w * (0.71 + o * 0.052);
+          var oh = 8 + ((o * 37) % 11);
+          var oy = h * (0.108 - o * 0.007);
+          ctx.fillRect(ox, oy - oh, 14, oh);
+        }
+      }
+    });
+    return stage;
+  }
+
+  /* ============================================================ BOOT */
+  Confluence(document.getElementById('confCanvas'));
+
+  var band = Sisters(document.getElementById('bandCanvas'), { mask: true });
+  document.getElementById('bandReplay').addEventListener('click', band.reset);
+
+  Incline(document.getElementById('inclCanvas'));
+
+  var hero = Sisters(document.getElementById('heroCanvas'), { mask: false });
+
+  /* Swatch hexes follow the live theme, so the light values are honest. */
+  var hexEls = document.querySelectorAll('.hx[data-hex]');
+  function syncHex() {
+    for (var i = 0; i < hexEls.length; i++) {
+      hexEls[i].textContent = tok(hexEls[i].getAttribute('data-hex'));
+    }
+  }
+  onTheme(syncHex);
+  syncHex();
+})();
+</script>

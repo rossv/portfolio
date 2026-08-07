@@ -3,11 +3,20 @@
 ## Week of 2026-08-03
 
 ### Highlights
+- Added Pittsburgh as a fifth site backdrop, reachable from the `Pittsburgh` word in the hero, which was the one descriptor in that line that switched nothing. It is an isometric valley behind the whole page: the Allegheny runs out from behind the hero, the Monongahela enters from the right, they meet at a fountain about a third of the way down, and the Ohio carries on down the right. Rivers turn only 90°, on the lattice axes, so none of them ever runs straight up, down or across ([#240](https://github.com/rossv/portfolio/pull/240)).
+- A ladle hangs in a mill bay in the expertise section — crane girder, hoist chains, sheave block, lattice columns, walkway, refractory trough. The crane traverses it into position and tips it, and the iron it pours runs down the left of the page on its own clock rather than being scrubbed by scroll.
+- Clicking a river throws a bridge across it, in one of four Pittsburgh silhouettes: the Three Sisters suspension, the Smithfield lenticular truss, a tied arch, and the Hot Metal through-truss, which the molten always gets. Clicking anywhere else throws molten iron at the ground. Bridges are refused in the hero, where the rivers are washed out.
+- Three isometric landmark tiles stand in the margins below the timeline — a Mon Valley works, the Cathedral of Learning, Phipps Conservatory. Their positions are fixed and the rivers are routed around them.
+- The hero keeps its own band: a gold main cable on a catenary with hanger ropes, cable bands and a lit necklace, over a drifting overcast.
+- Added two badges — Steel City for finding the backdrop, Bridge Builder for ten bridges — and Mode Collector now asks for all five backdrops. Pittsburgh also takes the site's three accent hooks, so the `VOLKWEIN` wordmark and the licence pills carry the gold.
+- Generalized `carrierFor` in `FloatingIcons` to read either a single carrier or a list, which retired the `stars` special case instead of adding a second one beside it, and gave Pittsburgh three carriers of its own: a keystone, a riveted gusset plate and a Pratt through-truss.
+- The palette carries two grounds throughout, so the light theme substitutes bronze for gold rather than breaking.
 - Carved a valley into the geospatial mode's contour backdrop along the same reach the hero flood raster draws, with the basin falling downstream so contours cross the stream as V's aimed upstream; the ground now drifts at a tenth of scroll, and spot elevations were re-based for the deeper field ([#230](https://github.com/rossv/portfolio/pull/230)).
 - Fixed the mobile backdrop interaction: a touch scroll no longer plants stars, terrain peaks, or pipeline nodes, because the space, geospatial, and technologist modes now wait for a real tap (short, still, and with no scroll) before they spawn. Water and the mouse keep their immediate response ([#232](https://github.com/rossv/portfolio/pull/232)).
 - Held the star replay list to the starfield's placed cap, so it no longer grows past the field it rebuilds on a theme change ([#232](https://github.com/rossv/portfolio/pull/232)).
 
 ### Key PR Links
+- [#240](https://github.com/rossv/portfolio/pull/240): Add Pittsburgh as a fifth site backdrop.
 - [#230](https://github.com/rossv/portfolio/pull/230): Carve a stream valley into the geospatial contour field.
 - [#232](https://github.com/rossv/portfolio/pull/232): Wait for a real tap before the canvas backdrops spawn on touch.
 

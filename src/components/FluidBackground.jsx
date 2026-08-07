@@ -9,6 +9,8 @@ import { createFlood } from '../utils/geoMode/flood';
 import { paletteFor as techPaletteFor } from '../utils/techMode/palette';
 import { createPipeline } from '../utils/techMode/pipeline';
 import { createWaveform } from '../utils/techMode/waveform';
+import { paletteFor as pghPaletteFor } from '../utils/pghMode/palette';
+import { createScene } from '../utils/pghMode/scene';
 import { readMode, reflectMode, MODE_EVENT } from '../utils/siteMode';
 
 export default function FluidBackground() {
@@ -30,6 +32,8 @@ export default function FluidBackground() {
     // the geospatial one.
     const techNodesRef = useRef([]);
     const geoPeaksRef = useRef([]);
+    // And bridges the visitor puts up across the Pittsburgh rivers.
+    const pghBridgesRef = useRef([]);
 
     useEffect(() => {
         const stored = readMode();
@@ -88,6 +92,7 @@ export default function FluidBackground() {
         const isStarfield = mode === 'stars';
         const isGeo = mode === 'geo';
         const isTech = mode === 'tech';
+        const isPgh = mode === 'pgh';
 
         // On a touch screen a scroll *is* a finger drag, and it also begins with
         // a pointerdown. Water wears both well — the bubbles just part around
@@ -157,6 +162,24 @@ export default function FluidBackground() {
             if (arrivedRef.current && !prefersReduced) {
                 arrivedRef.current = false;
                 pipeline.run();
+            }
+        }
+
+        /* ---------- Pittsburgh mode -------------------------------- */
+        let pgh = null;
+
+        if (isPgh) {
+            // Bridges are held by channel and node index, so a theme rebuild or
+            // a resize brings back every crossing the visitor put up.
+            pgh = createScene(ctx, pghPaletteFor(isDark), pghBridgesRef.current, {
+                reduceMotion: prefersReduced,
+            });
+            pgh.resize(width, height);
+            // The networks fill in on arrival, the way the fleet launches and
+            // the flood scan replays. On a reload the valley is already there.
+            if (arrivedRef.current && !prefersReduced) {
+                arrivedRef.current = false;
+                pgh.arrive();
             }
         }
 
@@ -308,6 +331,17 @@ export default function FluidBackground() {
                 // A survey ping over the top, echoing the placement pulse but
                 // in the topo palette rather than the star tints.
                 ripples.push({ x, y, age: 0, maxAge: 40, kind: 'ping' });
+            } else if (isPgh) {
+                // Pittsburgh: a click on any river throws a bridge across it.
+                // Fires before the reduced-motion bail below, so Bridge Builder
+                // stays earnable without the build animation. The event keeps its
+                // original name so the tally already in visitors' storage counts.
+                if (pgh?.tap(x, y, scrollRef.current)) {
+                    window.dispatchEvent(
+                        new CustomEvent('span-place', { detail: { count: pgh.bridgeCount() } })
+                    );
+                }
+                if (prefersReduced) return;
             } else if (isTech) {
                 // Technologist: drop a node into the nearest lane and wire it
                 // in. pulse() then finds it as the node nearest the pointer and
@@ -389,6 +423,12 @@ export default function FluidBackground() {
             // Inertia scrolls send few pointermove events, so the scroll event
             // itself has to disqualify the gesture.
             cancelTap();
+            // Under reduced motion there is no rAF loop, and every part of the
+            // Pittsburgh scene is positioned by scroll, so the single static
+            // frame would go stale the moment the page moved. Repainting here
+            // still honours the preference: nothing moves on its own, the
+            // backdrop only answers the visitor's own scrolling.
+            if (isPgh && prefersReduced) render();
         };
         window.addEventListener('scroll', updateScroll);
 
@@ -429,6 +469,8 @@ export default function FluidBackground() {
                 // trace is not competing with the graph for the same lines.
                 waveform.dim(currentScroll);
                 waveform.frame(now, currentScroll);
+            } else if (isPgh) {
+                pgh.frame(now, currentScroll);
             } else {
                 particles.forEach(p => {
                     p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);
@@ -534,6 +576,7 @@ export default function FluidBackground() {
             flood?.resize(width, height);
             pipeline?.resize(width, height);
             waveform?.resize(width, height);
+            pgh?.resize(width, height);
         };
 
         const handleMouseMove = (e) => {
@@ -588,6 +631,8 @@ export default function FluidBackground() {
                 window.removeEventListener('blur', cancelTap);
             }
             cancelAnimationFrame(animationFrameId);
+            // Pittsburgh watches the document height for its station anchors.
+            pgh?.dispose();
         };
         // Only the canvas modes read a palette, so a theme change in water
         // mode must not tear down and restart the bubbles.

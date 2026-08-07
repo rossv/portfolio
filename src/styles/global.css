@@ -63,6 +63,28 @@ html:not(.dark):root[data-site-mode="tech"] .space-accent-text {
   background-image: linear-gradient(to right, #b45309, #1e64aa);
 }
 
+/* Pittsburgh mode is the city's black and gold. The other four modes run a
+   two-hue gradient, but a second hue is the wrong move here — the black is the
+   ground the page already sits on, so the wordmark carries the gold alone and
+   the sweep is pale gold into Aztec gold. On paper both become bronze:
+   #ffb612 on white is a highlighter, which is why the mode's own palette
+   substitutes bronze throughout. */
+:root[data-site-mode="pgh"] .space-accent-text {
+  background-image: linear-gradient(to right, #ffd87a, #ffb612);
+}
+
+:root[data-site-mode="pgh"] .space-accent-fill {
+  background-image: linear-gradient(to right, rgba(255, 216, 122, 0.9), rgba(255, 182, 18, 0.9));
+}
+
+:root[data-site-mode="pgh"] .space-accent-pill {
+  background-color: #8a5f09;
+}
+
+html:not(.dark):root[data-site-mode="pgh"] .space-accent-text {
+  background-image: linear-gradient(to right, #9a6a00, #6e4b00);
+}
+
 .vignette-layer {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 1) 100%);
 }

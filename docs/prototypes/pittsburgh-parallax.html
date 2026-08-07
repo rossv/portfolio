@@ -1,0 +1,1563 @@
+<title>Pittsburgh Mode — Parallax City Mockup</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<style>
+  /* ============================================================
+     Full-page mockup of the portfolio running a Pittsburgh backdrop.
+     The palette tokens below are only the PAGE chrome; the canvas
+     carries its own palettes (see PALETTES in the script) so the
+     backdrop can be swapped without touching the document.
+     ============================================================ */
+  :root {
+    --ink:        #E8EDF2;
+    --ink-2:      #9EAEBC;
+    --ink-3:      #6C7D8C;
+    --panel:      rgba(12, 17, 23, .72);
+    --panel-solid:#0E141A;
+    --edge:       rgba(255, 255, 255, .13);
+    --accent:     #FFB612;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+
+  /* The mockup commits to the night city on purpose — it is the state
+     the backdrop has to survive. The Paper palette in the control rail
+     is the daylight check, and it re-tokens the chrome with it. */
+  :root[data-ground="light"] {
+    --ink:        #16202A;
+    --ink-2:      #4A5B69;
+    --ink-3:      #6E8092;
+    --panel:      rgba(255, 255, 255, .74);
+    --panel-solid:#F4F6F7;
+    --edge:       rgba(10, 25, 40, .16);
+    --accent:     #9A6A00;
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: #0A0D11;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root[data-ground="light"] body { background: #EDEFF1; }
+
+  #bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    display: block;
+  }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 26px; width: 100%; }
+
+  /* ---------- sections ---------- */
+  section {
+    min-height: 108vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  #hero { min-height: 100vh; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: clamp(3rem, 11vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -.05em;
+    line-height: .88;
+    margin: 10px 0 0;
+  }
+
+  h1 .b {
+    display: block;
+    background-image: linear-gradient(100deg, var(--accent), #D2500F);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  h2 {
+    font-size: clamp(1.7rem, 4vw, 2.7rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    margin: 8px 0 0;
+    text-wrap: balance;
+  }
+
+  p { margin: 0; }
+
+  .mono-p {
+    font-family: var(--mono);
+    font-size: .84rem;
+    line-height: 1.85;
+    color: var(--ink-2);
+    margin-top: 22px;
+    max-width: 46ch;
+  }
+
+  .mono-p b { color: var(--ink); font-weight: 700; }
+
+  .modeword {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+  }
+
+  .badges { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--panel);
+    backdrop-filter: blur(9px);
+    border: 1px solid var(--edge);
+    padding: 8px 14px;
+    border-radius: 3px;
+  }
+  .badge .k { font-weight: 800; font-size: .95rem; letter-spacing: -.01em; }
+  .badge .v { font-family: var(--mono); font-size: .62rem; color: var(--ink-3); letter-spacing: .1em; }
+
+  .navpills { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 30px; }
+
+  .pill {
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+    background: var(--panel);
+    backdrop-filter: blur(9px);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 9px 17px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .18s, border-color .18s, color .18s;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--accent); }
+
+  .stats { display: flex; gap: 34px; margin-top: 36px; flex-wrap: wrap; }
+  .stat .n { font-size: 1.9rem; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .stat .l { font-family: var(--mono); font-size: .6rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+
+  /* ---------- content cards, to test legibility over the backdrop ---------- */
+  .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 12px; margin-top: 28px; }
+
+  .card {
+    background: var(--panel);
+    backdrop-filter: blur(11px);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 17px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .card .t { font-weight: 700; font-size: .93rem; }
+  .card .d { font-size: .81rem; color: var(--ink-2); line-height: 1.5; }
+  .card .m { font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+  .sec-head { max-width: 60ch; }
+  .sec-head p { color: var(--ink-2); margin-top: 12px; font-size: .95rem; line-height: 1.6; }
+
+  /* ---------- landmark nameplate ---------- */
+  #plate {
+    position: fixed;
+    left: 50%;
+    bottom: 46px;
+    transform: translateX(-50%);
+    z-index: 5;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--edge);
+    padding: 9px 18px;
+    opacity: 0;
+    transition: opacity .4s ease;
+  }
+  #plate.on { opacity: 1; }
+  #plate .nm { font-family: var(--mono); font-size: .68rem; letter-spacing: .21em; text-transform: uppercase; }
+  #plate .yr { font-family: var(--mono); font-size: .62rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  /* ---------- hint ---------- */
+  .hint {
+    position: absolute;
+    left: 26px;
+    bottom: 34px;
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .hint b { color: var(--accent); font-weight: 500; }
+
+  /* ---------- control rail ---------- */
+  #rail {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100vh;
+    width: 268px;
+    z-index: 20;
+    background: var(--panel-solid);
+    border-left: 1px solid var(--edge);
+    padding: 18px 18px 22px;
+    overflow-y: auto;
+    transform: translateX(0);
+    transition: transform .3s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #rail.closed { transform: translateX(100%); }
+
+  #railToggle {
+    position: fixed;
+    top: 14px; right: 14px;
+    z-index: 21;
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    background: var(--panel-solid);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    padding: 9px 13px;
+    cursor: pointer;
+    transition: right .3s cubic-bezier(.4,0,.2,1), color .18s, border-color .18s;
+  }
+  #railToggle.shift { right: 282px; }
+  #railToggle:hover { color: var(--accent); border-color: var(--accent); }
+
+  .rail-h {
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--edge);
+  }
+
+  .grp { display: flex; flex-direction: column; gap: 7px; }
+  .grp .lbl { font-family: var(--mono); font-size: .58rem; letter-spacing: .17em; text-transform: uppercase; color: var(--ink-3); }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--edge);
+    color: var(--ink-2);
+    padding: 6px 9px;
+    cursor: pointer;
+    transition: all .16s;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--ink-3); }
+  .chip[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #14100A;
+    font-weight: 700;
+  }
+
+  .rail-btns { display: flex; gap: 6px; margin-top: 2px; }
+  .rail-btns .chip { flex: 1; text-align: center; }
+
+  .rail-note {
+    font-size: .72rem;
+    line-height: 1.55;
+    color: var(--ink-3);
+    border-top: 1px solid var(--edge);
+    padding-top: 13px;
+  }
+
+  .combo {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .08em;
+    color: var(--ink-2);
+    word-break: break-all;
+  }
+
+  footer {
+    padding: 46px 0 60px;
+    border-top: 1px solid var(--edge);
+  }
+  footer .r { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+  footer span { font-family: var(--mono); font-size: .62rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition-duration: .001ms !important; }
+  }
+
+  @media (max-width: 900px) {
+    #rail { width: 84vw; max-width: 320px; }
+    #railToggle.shift { right: calc(84vw + 14px); }
+    section { min-height: 100vh; }
+
+    /* A phone gives the backdrop no room to stay clear of the type — the
+       hero river landed straight through the heading. Pulling the whole
+       canvas back keeps the city legible as atmosphere without it
+       competing with the words. */
+    #bg { opacity: .46; }
+    h1 { font-size: clamp(2.6rem, 13vw, 4rem); }
+  }
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<button id="railToggle" type="button" class="shift">Concepts</button>
+
+<aside id="rail" aria-label="Backdrop concept controls">
+  <div class="rail-h">Pittsburgh mode — combos</div>
+
+  <div class="grp">
+    <span class="lbl">Palette</span>
+    <div class="chips" data-key="palette">
+      <button class="chip" type="button" data-v="gold">Black &amp; gold</button>
+      <button class="chip" type="button" data-v="dusk">Steel dusk</button>
+      <button class="chip" type="button" data-v="blueprint">Blueprint</button>
+      <button class="chip" type="button" data-v="paper">Paper</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="lbl">Rivers</span>
+    <div class="chips" data-key="river">
+      <button class="chip" type="button" data-v="ribbon">Flat ribbon</button>
+      <button class="chip" type="button" data-v="flow">Slow drift</button>
+      <button class="chip" type="button" data-v="bathy">Depth bands</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="lbl">Landmarks</span>
+    <div class="chips" data-key="land">
+      <button class="chip" type="button" data-v="solid">Silhouette</button>
+      <button class="chip" type="button" data-v="line">Line drawing</button>
+      <button class="chip" type="button" data-v="duo">Two-tone</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="lbl">Depth</span>
+    <div class="chips" data-key="depth">
+      <button class="chip" type="button" data-v="deep">Deep</button>
+      <button class="chip" type="button" data-v="soft">Soft</button>
+      <button class="chip" type="button" data-v="flat">Flat</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="lbl">Bridges you build</span>
+    <div class="chips" data-key="bridge">
+      <button class="chip" type="button" data-v="sisters">Sisters</button>
+      <button class="chip" type="button" data-v="mixed">Mixed types</button>
+      <button class="chip" type="button" data-v="truss">Truss</button>
+    </div>
+  </div>
+
+  <div class="grp">
+    <span class="lbl">Sky</span>
+    <div class="chips" data-key="sky">
+      <button class="chip" type="button" data-v="grad">Gradient</button>
+      <button class="chip" type="button" data-v="flat">Flat</button>
+      <button class="chip" type="button" data-v="stars">Hazed</button>
+    </div>
+  </div>
+
+  <div class="rail-btns">
+    <button class="chip" type="button" id="surprise">Surprise me</button>
+    <button class="chip" type="button" id="clearB">Clear bridges</button>
+  </div>
+
+  <div class="rail-note">
+    Scroll the page — each section brings its own river and its own landmark.
+    Click any river to throw a span across it. Spans stay where you put them.
+    <div class="combo" id="comboOut" style="margin-top:9px"></div>
+  </div>
+</aside>
+
+<div id="plate"><span class="nm"></span><span class="yr"></span></div>
+
+<!-- ============================================================ PAGE -->
+<main>
+  <section id="hero">
+    <div class="wrap">
+      <span class="eyebrow">Backdrop mockup — scroll to discover</span>
+      <h1>ROSS<span class="b">VOLKWEIN</span></h1>
+      <div class="badges">
+        <div class="badge"><span class="k">PE</span><span class="v">PE087020 · PA · 2017</span></div>
+        <div class="badge"><span class="k">GISP</span><span class="v">161338 · 2022</span></div>
+      </div>
+      <p class="mono-p">
+        Delivering technical solutions driven by emerging technologies.<br />
+        Expertise in <b>H&amp;H Modeling</b>, <b>GIS</b>, and <b>Python</b>.<br />
+        <span style="font-size:.78rem;opacity:.8">
+          Technologist · Geospatial &amp; Space Nerd · <span class="modeword">Pittsburgh</span>
+        </span>
+      </p>
+      <nav class="navpills">
+        <a class="pill" href="#skills">Skills</a>
+        <a class="pill" href="#timeline">Timeline</a>
+        <a class="pill" href="#leadership">Leadership</a>
+        <a class="pill" href="#achievements">Achievements</a>
+        <a class="pill" href="#news">News</a>
+        <a class="pill" href="#projects">Projects</a>
+      </nav>
+      <div class="stats">
+        <div class="stat"><div class="n">14</div><div class="l">Years</div></div>
+        <div class="stat"><div class="n">180+</div><div class="l">Projects</div></div>
+        <div class="stat"><div class="n">6</div><div class="l">States</div></div>
+      </div>
+    </div>
+    <div class="hint">Click a river to bridge it · <b>the spans stay</b></div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">01 — Skills</span>
+        <h2>Modeling, mapping, and the code that ties them together</h2>
+        <p>The backdrop here is the Duquesne Incline. Content sits on translucent cards so you can judge whether the city behind stays readable.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">H&amp;H</span><span class="t">PCSWMM · HEC-RAS</span><span class="d">Collection system and floodplain modeling from screening to design.</span></div>
+        <div class="card"><span class="m">GIS</span><span class="t">ArcGIS Pro · Field Maps</span><span class="d">Field collection through to published operational dashboards.</span></div>
+        <div class="card"><span class="m">Code</span><span class="t">Python · SQL</span><span class="d">Automation over the parts of delivery nobody should do by hand.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">02 — Timeline</span>
+        <h2>Fourteen years along the Mon Valley</h2>
+        <p>The mill sits behind this one. Steel reads as heritage rather than nostalgia when it's a silhouette on the far bank instead of the whole theme.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">2011 — 2016</span><span class="t">Design engineer</span><span class="d">Sewer separation and CSO control across Allegheny County.</span></div>
+        <div class="card"><span class="m">2016 — 2021</span><span class="t">Project manager</span><span class="d">Wet weather planning and regional conveyance studies.</span></div>
+        <div class="card"><span class="m">2021 — now</span><span class="t">Technology lead</span><span class="d">Geospatial delivery, automation, and data platforms.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="leadership">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 — Leadership</span>
+        <h2>Teaching the tools, not just running them</h2>
+        <p>The Cathedral of Learning. Forty-two storeys of gothic classroom is about as on-the-nose as a leadership section gets, and it earns it.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">Mentoring</span><span class="t">Early-career program</span><span class="d">Structured GIS and modeling onboarding for new engineers.</span></div>
+        <div class="card"><span class="m">Speaking</span><span class="t">Conference sessions</span><span class="d">Regular presenter on automation in water resources.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="achievements">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">04 — Achievements</span>
+        <h2>Recognition, and the work behind it</h2>
+        <p>PPG Place — six acres of mirrored neo-gothic. Its spires give the skyline layer something to do other than rectangles.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">Award</span><span class="t">Engineering excellence</span><span class="d">Regional honor for a wet weather control program.</span></div>
+        <div class="card"><span class="m">Award</span><span class="t">Young engineer of the year</span><span class="d">State society recognition.</span></div>
+        <div class="card"><span class="m">Publication</span><span class="t">Journal contribution</span><span class="d">Applied modeling methods for collection systems.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="news">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">05 — News</span>
+        <h2>Recent writing and appearances</h2>
+        <p>Phipps Conservatory. A Victorian glass house is the one Pittsburgh landmark that's mostly curve, which keeps the set from being all verticals.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">Talk</span><span class="t">Automating model builds</span><span class="d">Walkthrough of a Python pipeline for scenario generation.</span></div>
+        <div class="card"><span class="m">Article</span><span class="t">Field data that survives</span><span class="d">On collection schemas that outlive the project.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">06 — Projects</span>
+        <h2>Where the three rivers meet</h2>
+        <p>The fountain at the Point closes the scroll. It's the only landmark in the set that moves on its own, so it makes a natural end of the page.</p>
+      </div>
+      <div class="card-row">
+        <div class="card"><span class="m">Municipal</span><span class="t">Wet weather plan</span><span class="d">Regional conveyance and storage alternatives analysis.</span></div>
+        <div class="card"><span class="m">Utility</span><span class="t">Asset inventory</span><span class="d">Field collection and condition scoring for 40,000 assets.</span></div>
+        <div class="card"><span class="m">Internal</span><span class="t">Model automation</span><span class="d">Scenario builder cutting setup from days to minutes.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap r">
+      <span>Pittsburgh mode · parallax mockup</span>
+      <span id="bridgeCount">0 spans built</span>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+
+  /* ============================================================ CONFIG */
+  var CFG = {
+    palette: 'gold',
+    river: 'flow',
+    land: 'duo',
+    depth: 'deep',
+    bridge: 'mixed',
+    sky: 'grad'
+  };
+
+  /* ============================================================ PALETTES
+     Each is a complete world: sky, two ridge tones, water, structure and
+     one accent. The accent is the only saturated thing in any of them —
+     that restraint is what keeps black-and-gold off the scoreboard. */
+  var PALETTES = {
+    gold: {
+      light: false,
+      skyTop: '#080B0F', skyBot: '#151C25',
+      ridgeFar: '#141A22', ridgeNear: '#1C242E',
+      water: '#0D1A23', waterTint: '#2E6070', surf: '#4E8494',
+      ground: '#0A0E13', ground2: '#05070A', mass: '#232E39', edge: '#8FA1AE', structure: '#C9D4DC',
+      accent: '#FFB612', hot: '#D2500F', haze: '#2A3642'
+    },
+    dusk: {
+      light: false,
+      skyTop: '#0A1220', skyBot: '#24384F',
+      ridgeFar: '#162232', ridgeNear: '#223347',
+      water: '#12283A', waterTint: '#3C7A9C', surf: '#5E93B0',
+      ground: '#0D1723', ground2: '#070D16', mass: '#22344B', edge: '#8AA3B8', structure: '#C2D2E0',
+      accent: '#F2A03C', hot: '#E2632A', haze: '#2E4560'
+    },
+    blueprint: {
+      light: false,
+      skyTop: '#04121F', skyBot: '#0A2438',
+      ridgeFar: '#0A2135', ridgeNear: '#0E2C46',
+      water: '#08243B', waterTint: '#2A6E9E', surf: '#4FA3D0',
+      ground: '#04121E', ground2: '#020911', mass: '#10344F', edge: '#6FB4D8', structure: '#BFE3F7',
+      accent: '#7DD3FC', hot: '#38BDF8', haze: '#123A56'
+    },
+    paper: {
+      light: true,
+      skyTop: '#F2F4F6', skyBot: '#DFE5EA',
+      ridgeFar: '#CDD6DD', ridgeNear: '#B8C4CE',
+      water: '#C9D9E2', waterTint: '#7FA6B8', surf: '#4E7A8E',
+      ground: '#C3CED6', ground2: '#AEBDC9', mass: '#93A5B3', edge: '#41525F', structure: '#2C3A45',
+      accent: '#9A6A00', hot: '#A83A08', haze: '#C6D0D8'
+    }
+  };
+
+  var DEPTHS = {
+    deep: { scene: 0.55, hillFar: 0.05, hillNear: 0.13, city: 0.22 },
+    soft: { scene: 0.78, hillFar: 0.22, hillNear: 0.36, city: 0.52 },
+    flat: { scene: 1, hillFar: 1, hillNear: 1, city: 1 }
+  };
+
+  function P() { return PALETTES[CFG.palette]; }
+  function D() { return DEPTHS[CFG.depth]; }
+
+  var rgbCache = {};
+  function rgb(hex) {
+    if (rgbCache[hex]) return rgbCache[hex];
+    var h = hex.replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var v = parseInt(h, 16);
+    var o = ((v >> 16) & 255) + ', ' + ((v >> 8) & 255) + ', ' + (v & 255);
+    rgbCache[hex] = o;
+    return o;
+  }
+  function rgba(hex, a) { return 'rgba(' + rgb(hex) + ', ' + a + ')'; }
+
+  var lerp = function (a, b, t) { return a + (b - a) * t; };
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  var smooth = function (v) { return v <= 0 ? 0 : v >= 1 ? 1 : v * v * (3 - 2 * v); };
+  // Deterministic pseudo-random, so ridges and windows don't shimmer.
+  function hash(i) { var n = Math.sin(i * 127.1) * 43758.5453; return n - Math.floor(n); }
+
+  /* ============================================================ SCENES
+     One per section. Each owns a river band and a landmark standing on
+     its far bank, and both share a depth so they never drift apart. */
+  var SCENES = [
+    { sel: '#hero',         kind: 'sisters',   name: 'The Three Sisters',      yr: '1926' },
+    { sel: '#skills',       kind: 'incline',   name: 'Duquesne Incline',       yr: '1877', x: 0.66 },
+    { sel: '#timeline',     kind: 'mill',      name: 'Mon Valley Works',       yr: '1881', x: 0.57 },
+    { sel: '#leadership',   kind: 'cathedral', name: 'Cathedral of Learning',  yr: '1937', x: 0.70 },
+    { sel: '#achievements', kind: 'ppg',       name: 'PPG Place',              yr: '1984', x: 0.55 },
+    { sel: '#news',         kind: 'phipps',    name: 'Phipps Conservatory',    yr: '1893', x: 0.71 },
+    { sel: '#projects',     kind: 'fountain',  name: 'Point State Park',       yr: '1974', x: 0.62 }
+  ];
+
+  var canvas = document.getElementById('bg');
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0, scrollY = 0;
+
+  function layout() {
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    for (var i = 0; i < SCENES.length; i++) {
+      var el = document.querySelector(SCENES[i].sel);
+      // Anchored to the top of the section: when that section is pinned to
+      // the top of the viewport, its river sits on the mark.
+      SCENES[i].at = el ? el.offsetTop : i * H;
+    }
+  }
+
+  // Screen y of a scene's waterline. At scrollY === scene.at the river
+  // sits at 0.74H; past that it drifts up at the layer's own rate, so the
+  // scene recedes toward the horizon instead of just scrolling off.
+  function riverTopOf(sc) {
+    return H * 0.80 + (sc.at - scrollY) * D().scene;
+  }
+  // Narrower viewports get a shallower channel — a 150px band on a phone is
+  // a third of the screen.
+  function riverH() { return W < 720 ? clamp(H * 0.10, 54, 92) : clamp(H * 0.15, 74, 150); }
+
+  /* ============================================================ RIDGES
+     Two repeating hill layers. Pittsburgh is a plateau cut by rivers, so
+     the far profile is a flat-topped ridge with valleys notched into it,
+     not the row of triangles a generic mountain layer would give. */
+  function ridgeY(x, seed, amp, base) {
+    return base
+      - Math.sin(x * 0.0016 + seed) * amp
+      - Math.sin(x * 0.00071 + seed * 2.3) * amp * 0.8
+      - Math.sin(x * 0.0034 + seed * 0.7) * amp * 0.22;
+  }
+
+  // Hills and city belong to a scene, not to a global horizon layer.
+  // A global layer got painted over by the first scene's bank fill, which
+  // is what left those dead flat expanses between rivers. Drawing them per
+  // scene means every stretch of land has something standing on it, and
+  // each one still slides at its own rate against the water.
+  function sceneRidge(sc, seed, amp, hex, slide, alpha) {
+    var base = riverTopOf(sc);
+    if (base < -40 || base > H + 60) return;
+    var off = scrollY * slide;
+    ctx.beginPath();
+    ctx.moveTo(-6, base + 2);
+    for (var x = -6; x <= W + 10; x += 8) ctx.lineTo(x, ridgeY(x + off, seed, amp, base));
+    ctx.lineTo(W + 6, base + 2);
+    ctx.closePath();
+    ctx.fillStyle = rgba(hex, alpha);
+    ctx.fill();
+  }
+
+  /* ---- background skyline standing on the far bank ---- */
+  function drawSkyline(sc, seed) {
+    var p = P();
+    var base = riverTopOf(sc);
+    if (base < -20 || base > H + 40) return;
+    var off = scrollY * D().city;
+    var span = W + 300;
+    ctx.fillStyle = rgba(p.ridgeNear, 1);
+    for (var i = 0; i < 26; i++) {
+      var bx = ((((i * 129.4 + seed * 57) - off) % span) + span) % span - 150;
+      var bw = 20 + hash(i + seed) * 32;
+      var bh = 24 + hash(i + seed + 90) * 96;
+      ctx.fillRect(bx, base - bh, bw, bh + 6);
+      if (!p.light && hash(i + seed + 7) > 0.45) {
+        ctx.fillStyle = rgba(p.accent, 0.14);
+        for (var k = 0; k < 5; k++) {
+          if (hash(i * 9 + k + seed) < 0.45) continue;
+          ctx.fillRect(bx + 4 + (k % 2) * 9, base - bh + 8 + Math.floor(k / 2) * 13, 3.5, 5);
+        }
+        ctx.fillStyle = rgba(p.ridgeNear, 1);
+      }
+    }
+  }
+
+  /* ============================================================ RIVER */
+  function drawRiver(sc, t) {
+    var p = P();
+    var top = riverTopOf(sc);
+    var rh = riverH();
+    if (top > H + 40 || top + rh < -40) return;
+
+    // body
+    var g = ctx.createLinearGradient(0, top, 0, top + rh);
+    g.addColorStop(0, rgba(p.waterTint, p.light ? 0.55 : 0.42));
+    g.addColorStop(1, rgba(p.water, 1));
+    ctx.fillStyle = g;
+    ctx.fillRect(0, top, W, rh);
+
+    // waterline
+    ctx.strokeStyle = rgba(p.surf, p.light ? 0.75 : 0.6);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (var x = 0; x <= W; x += 6) {
+      var y = top + Math.sin(x * 0.011 + sc.at * 0.01) * 1.4;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    if (CFG.river === 'bathy') {
+      ctx.lineWidth = 1;
+      for (var b = 1; b <= 3; b++) {
+        ctx.strokeStyle = rgba(p.surf, 0.22 - b * 0.045);
+        ctx.beginPath();
+        for (var bx = 0; bx <= W; bx += 8) {
+          var by = top + rh * (b / 4) + Math.sin(bx * 0.006 + b * 1.7) * 3;
+          if (bx === 0) ctx.moveTo(bx, by); else ctx.lineTo(bx, by);
+        }
+        ctx.stroke();
+      }
+    } else if (CFG.river === 'flow') {
+      // Deliberately slow: a river seen from the bank barely moves, and
+      // the earlier version read as a conveyor belt.
+      ctx.strokeStyle = rgba(p.surf, p.light ? 0.5 : 0.42);
+      ctx.lineWidth = 1.1;
+      ctx.lineCap = 'round';
+      for (var i = 0; i < 26; i++) {
+        var lane = (i % 5) / 5;
+        var speed = 0.006 + lane * 0.004;
+        var fx = ((hash(i) * 1.6 + t * speed) % 1.6) * (W + 200) - 100;
+        var fy = top + rh * (0.16 + lane * 0.66) + Math.sin(i) * 3;
+        var len = 12 + hash(i + 31) * 26;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(fx + len, fy);
+        ctx.stroke();
+      }
+    }
+
+    // Near bank. Fills all the way down; the next scene along is nearer and
+    // paints over it, which is what stacks the valley front to back.
+    var ng = ctx.createLinearGradient(0, top + rh, 0, Math.min(H, top + rh + H * 0.5));
+    ng.addColorStop(0, rgba(p.ground, 1));
+    ng.addColorStop(1, rgba(p.ground2, 1));
+    ctx.fillStyle = ng;
+    ctx.fillRect(0, top + rh, W, Math.max(0, H - top - rh) + 4);
+  }
+
+  /* ============================================================ BRIDGES
+     Elevation, the same drawing the Sisters band uses. Stored per scene
+     with x as a fraction of width so a resize keeps them in place. */
+  var TYPES = ['susp', 'arch', 'truss'];
+
+  function bridgeTypeFor(sc, i) {
+    if (CFG.bridge === 'sisters') return 'susp';
+    if (CFG.bridge === 'truss') return 'truss';
+    return TYPES[i % 3];
+  }
+
+  var K = 2.1, COSH_K = Math.cosh(K);
+  function cat(t) { return (Math.cosh(K * t) - 1) / (COSH_K - 1); }
+
+  function drawBridge(sc, br, idx) {
+    var p = P();
+    var top = riverTopOf(sc);
+    if (top > H + 60 || top < -160) return;
+
+    var span = clamp(W * 0.22, 150, 300);
+    var cx = br.x * W;
+    var x0 = cx - span / 2, x1 = cx + span / 2;
+    var deckY = top - 12;
+    var rise = span * 0.19;
+    var type = bridgeTypeFor(sc, idx);
+    var t = smooth(clamp(br.t, 0, 1));
+
+    var tA = x0 + span * 0.17, tB = x1 - span * 0.17;
+    var towerY = deckY - rise;
+
+    // piers into the water
+    ctx.fillStyle = rgba(p.structure, 0.55);
+    [tA, tB].forEach(function (px) {
+      ctx.fillRect(px - 3, deckY, 6, riverH() * 0.62);
+    });
+
+    if (type === 'susp') {
+      var pT = smooth(clamp(t / 0.34, 0, 1));
+      var pC = smooth(clamp((t - 0.24) / 0.42, 0, 1));
+      var pH = smooth(clamp((t - 0.52) / 0.34, 0, 1));
+      var sagY = deckY - rise * 0.15;
+
+      ctx.strokeStyle = rgba(p.structure, 0.9);
+      ctx.lineWidth = 3;
+      [tA, tB].forEach(function (px) {
+        ctx.beginPath();
+        ctx.moveTo(px, deckY + 6);
+        ctx.lineTo(px, lerp(deckY, towerY - rise * 0.1, pT));
+        ctx.stroke();
+      });
+
+      ctx.strokeStyle = rgba(p.accent, 0.95);
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(x0, deckY);
+      var lx = lerp(x0, tA, pC), ly = lerp(deckY, towerY, pC);
+      ctx.quadraticCurveTo((x0 + lx) / 2, (deckY + ly) / 2 + rise * 0.11, lx, ly);
+      if (pC > 0.55) {
+        var seg = clamp((pC - 0.55) / 0.45, 0, 1);
+        for (var i = 0; i <= 34; i++) {
+          var k = i / 34;
+          if (k > seg) break;
+          ctx.lineTo(lerp(tA, tB, k), sagY + (towerY - sagY) * cat(-1 + k * 2));
+        }
+      }
+      if (pC > 0.99) {
+        ctx.lineTo(tB, towerY);
+        ctx.quadraticCurveTo((tB + x1) / 2, (towerY + deckY) / 2 + rise * 0.11, x1, deckY);
+      }
+      ctx.stroke();
+
+      if (pH > 0) {
+        ctx.strokeStyle = rgba(p.edge, 0.55);
+        ctx.lineWidth = 1;
+        for (var j = 1; j < 14; j++) {
+          var kk = j / 14;
+          if (kk > pH) break;
+          var hx = lerp(tA, tB, kk);
+          ctx.beginPath();
+          ctx.moveTo(hx, sagY + (towerY - sagY) * cat(-1 + kk * 2));
+          ctx.lineTo(hx, deckY);
+          ctx.stroke();
+        }
+      }
+    } else if (type === 'arch') {
+      ctx.strokeStyle = rgba(p.accent, 0.95);
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      for (var a = 0; a <= 40; a++) {
+        var ka = a / 40;
+        if (ka > t) break;
+        var ax = lerp(x0, x1, ka);
+        var ay = deckY - Math.sin(ka * Math.PI) * rise * 1.05;
+        if (a === 0) ctx.moveTo(ax, ay); else ctx.lineTo(ax, ay);
+      }
+      ctx.stroke();
+      ctx.strokeStyle = rgba(p.edge, 0.5);
+      ctx.lineWidth = 1;
+      for (var hI = 1; hI < 11; hI++) {
+        var kh = hI / 11;
+        if (kh > t) break;
+        var hxx = lerp(x0, x1, kh);
+        ctx.beginPath();
+        ctx.moveTo(hxx, deckY - Math.sin(kh * Math.PI) * rise * 1.05);
+        ctx.lineTo(hxx, deckY);
+        ctx.stroke();
+      }
+    } else {
+      // through truss: top chord, verticals, alternating diagonals
+      var tx1 = lerp(x0, x1, t);
+      var chordY = deckY - rise * 0.72;
+      ctx.strokeStyle = rgba(p.accent, 0.9);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x0, deckY);
+      ctx.lineTo(Math.min(tx1, x0 + span * 0.12), chordY);
+      if (t > 0.12) {
+        ctx.lineTo(Math.min(tx1, x1 - span * 0.12), chordY);
+        if (t > 0.88) ctx.lineTo(x1, deckY);
+      }
+      ctx.stroke();
+      ctx.strokeStyle = rgba(p.edge, 0.5);
+      ctx.lineWidth = 1;
+      for (var m = 0; m <= 8; m++) {
+        var km = 0.12 + (m / 8) * 0.76;
+        if (lerp(x0, x1, km) > tx1) break;
+        var mx = lerp(x0, x1, km);
+        ctx.beginPath(); ctx.moveTo(mx, chordY); ctx.lineTo(mx, deckY); ctx.stroke();
+        if (m < 8) {
+          var nx2 = lerp(x0, x1, 0.12 + ((m + 1) / 8) * 0.76);
+          if (nx2 > tx1) break;
+          ctx.beginPath();
+          ctx.moveTo(mx, m % 2 ? chordY : deckY);
+          ctx.lineTo(nx2, m % 2 ? deckY : chordY);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // deck last, so it reads in front of the web
+    ctx.strokeStyle = rgba(p.structure, 0.95);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x0, deckY);
+    ctx.lineTo(lerp(x0, x1, Math.max(t, 0.06)), deckY);
+    ctx.stroke();
+
+    if (t > 0.98 && !p.light) {
+      for (var L = 1; L < 7; L++) {
+        var lxx = lerp(x0, x1, L / 7);
+        ctx.fillStyle = rgba(p.accent, 0.85);
+        ctx.beginPath(); ctx.arc(lxx, deckY - 4, 1.3, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+  }
+
+  /* ============================================================ LANDMARKS
+     Each draws from a baseline, in one of three renderings. `paint`
+     hides the style branch so the shapes stay readable. */
+  function paint() {
+    var p = P();
+    var st = CFG.land;
+    return {
+      p: p,
+      body: function (path, accentFill) {
+        ctx.beginPath();
+        path();
+        if (st === 'line') {
+          ctx.strokeStyle = rgba(p.edge, 0.95);
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
+        } else if (st === 'duo') {
+          ctx.fillStyle = accentFill ? rgba(p.accent, 0.16) : rgba(p.mass, 1);
+          ctx.fill();
+          ctx.strokeStyle = rgba(p.edge, 0.8);
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = rgba(p.mass, 1);
+          ctx.fill();
+        }
+      },
+      det: function (path, w) {
+        if (st === 'solid') return;
+        ctx.beginPath();
+        path();
+        ctx.strokeStyle = rgba(p.edge, st === 'line' ? 0.7 : 0.45);
+        ctx.lineWidth = w || 1;
+        ctx.stroke();
+      },
+      lit: function (path) {
+        if (p.light) return;
+        ctx.beginPath();
+        path();
+        ctx.fillStyle = rgba(p.accent, st === 'solid' ? 0.5 : 0.75);
+        ctx.fill();
+      }
+    };
+  }
+
+  function rectPath(x, y, w, h) { return function () { ctx.rect(x, y, w, h); }; }
+
+  /* ---- Duquesne Incline ---- */
+  function lmIncline(cx, baseY, S, t) {
+    var q = paint(), p = q.p;
+    var w = 300 * S, h = 205 * S;
+    var x = cx - w / 2, yb = baseY;
+
+    // Mount Washington: rises out of the water and runs off the right of
+    // the frame at full height, rather than closing into a plateau with a
+    // visible cliff edge. Filled in mass so it separates from the hills.
+    ctx.beginPath();
+    ctx.moveTo(x - 70 * S, yb + 2);
+    ctx.lineTo(x - 34 * S, yb - h * 0.08);
+    ctx.lineTo(x + w * 0.30, yb - h * 0.48);
+    ctx.lineTo(x + w * 0.58, yb - h * 0.86);
+    ctx.lineTo(x + w * 0.82, yb - h * 1.00);
+    ctx.lineTo(W + 20, yb - h * 1.05);
+    ctx.lineTo(W + 20, yb + 2);
+    ctx.closePath();
+    ctx.fillStyle = rgba(p.mass, 1);
+    ctx.fill();
+    ctx.strokeStyle = rgba(p.edge, CFG.land === 'solid' ? 0 : 0.55);
+    ctx.lineWidth = 1.3;
+    ctx.stroke();
+
+    var bx = x + w * 0.16, by = yb - h * 0.10;
+    var tx = x + w * 0.72, ty = yb - h * 0.92;
+    var dx = tx - bx, dy = ty - by, L = Math.hypot(dx, dy);
+    var ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
+    var G = 8 * S;
+
+    q.det(function () {
+      for (var i = 0; i <= 12; i++) {
+        var k = i / 12;
+        ctx.moveTo(bx + dx * k + nx * (G + 4 * S), by + dy * k + ny * (G + 4 * S));
+        ctx.lineTo(bx + dx * k - nx * (G + 4 * S), by + dy * k - ny * (G + 4 * S));
+      }
+    }, 1);
+
+    ctx.strokeStyle = rgba(p.structure, 0.9);
+    ctx.lineWidth = 2.2;
+    [G, -G].forEach(function (o) {
+      ctx.beginPath();
+      ctx.moveTo(bx + nx * o, by + ny * o);
+      ctx.lineTo(tx + nx * o, ty + ny * o);
+      ctx.stroke();
+    });
+
+    // Houses along the crest — the lit hillside is most of what the
+    // Duquesne Incline actually looks like from across the water.
+    // Only along the flat crest, where the bluff profile is known — spread
+    // down the slope they hung in mid-air.
+    var crestL = x + w * 0.84, crestR = W + 10;
+    for (var hI = 0; hI < 8; hI++) {
+      var hk = 0.04 + hI * 0.132;
+      var hxp = crestL + (crestR - crestL) * hk;
+      var hyp = yb - h * lerp(1.00, 1.05, hk) + 3;
+      var hw2 = (11 + hash(hI * 3) * 9) * S;
+      var hh2 = (10 + hash(hI * 7) * 9) * S;
+      ctx.fillStyle = rgba(p.ridgeNear, 1);
+      ctx.fillRect(hxp, hyp - hh2, hw2, hh2 + 4);
+      if (!p.light && hash(hI + 5) > 0.3) {
+        ctx.fillStyle = rgba(p.accent, 0.7);
+        ctx.fillRect(hxp + 3 * S, hyp - hh2 + 4 * S, 3.4 * S, 4 * S);
+      }
+    }
+
+    // counterbalanced cars — one up as the other comes down
+    var pos = reduced ? 0.32 : (Math.sin(t * 0.00028) * 0.5 + 0.5);
+    [[pos, G], [1 - pos, -G]].forEach(function (c) {
+      var k = c[0], o = c[1];
+      var px = bx + dx * k + nx * o, py = by + dy * k + ny * o;
+      ctx.save();
+      ctx.translate(px, py);
+      ctx.rotate(Math.atan2(uy, ux));
+      var s = S * 1.6;
+      ctx.beginPath();
+      ctx.moveTo(-13 * s, 3 * s); ctx.lineTo(13 * s, 3 * s); ctx.lineTo(13 * s, -4 * s);
+      ctx.lineTo(4 * s, -4 * s); ctx.lineTo(4 * s, -8 * s); ctx.lineTo(-5 * s, -8 * s);
+      ctx.lineTo(-5 * s, -12 * s); ctx.lineTo(-13 * s, -12 * s); ctx.closePath();
+      ctx.fillStyle = rgba(p.mass, 1); ctx.fill();
+      ctx.strokeStyle = rgba(p.structure, 0.95); ctx.lineWidth = 1.6; ctx.stroke();
+      if (!p.light) {
+        ctx.fillStyle = rgba(p.accent, 0.8);
+        ctx.fillRect(-11 * s, -10 * s, 5 * s, 3 * s);
+        ctx.fillRect(-2 * s, -6.5 * s, 5 * s, 3 * s);
+      }
+      ctx.restore();
+    });
+
+    q.body(rectPath(tx - 4 * S, ty - 34 * S, 42 * S, 40 * S));
+    q.body(rectPath(bx - 30 * S, by - 26 * S, 30 * S, 30 * S));
+  }
+
+  /* ---- Mon Valley works ---- */
+  function lmMill(cx, baseY, S, t) {
+    var q = paint(), p = q.p;
+    var w = 380 * S;
+    var x = cx - w / 2;
+
+    // sawtooth shed
+    q.body(function () {
+      ctx.moveTo(x, baseY);
+      ctx.lineTo(x, baseY - 40 * S);
+      for (var i = 0; i < 7; i++) {
+        var sx = x + i * (w * 0.5 / 7);
+        ctx.lineTo(sx + (w * 0.5 / 7) * 0.45, baseY - 56 * S);
+        ctx.lineTo(sx + (w * 0.5 / 7) * 0.5, baseY - 40 * S);
+      }
+      ctx.lineTo(x + w * 0.5, baseY - 40 * S);
+      ctx.lineTo(x + w * 0.5, baseY);
+      ctx.closePath();
+    });
+
+    // blast furnace stoves
+    var fx = x + w * 0.58;
+    for (var f = 0; f < 3; f++) {
+      q.body(rectPath(fx + f * 26 * S, baseY - (86 + f * 7) * S, 18 * S, (86 + f * 7) * S));
+    }
+    q.body(function () {
+      ctx.moveTo(x + w * 0.86, baseY);
+      ctx.lineTo(x + w * 0.86, baseY - 72 * S);
+      ctx.lineTo(x + w * 0.93, baseY - 104 * S);
+      ctx.lineTo(x + w * 0.99, baseY - 72 * S);
+      ctx.lineTo(x + w * 0.99, baseY);
+      ctx.closePath();
+    });
+
+    // stacks
+    var stacks = [0.06, 0.16, 0.30, 0.42];
+    for (var s2 = 0; s2 < stacks.length; s2++) {
+      var sh = (100 + hash(s2 + 3) * 62) * S;
+      var sxx = x + w * stacks[s2];
+      q.body(rectPath(sxx, baseY - sh, 9 * S, sh));
+      // plume
+      if (!reduced) {
+        for (var k2 = 0; k2 < 7; k2++) {
+          var age = ((t * 0.00006 + k2 / 7 + hash(s2 * 5)) % 1);
+          var py = baseY - sh - age * 90 * S;
+          var pr = (4 + age * 22) * S;
+          ctx.fillStyle = rgba(p.haze, (1 - age) * (p.light ? 0.30 : 0.20));
+          ctx.beginPath();
+          ctx.arc(sxx + 4 * S + Math.sin(age * 5 + s2) * 12 * S, py, pr, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    // hot metal at the base — the one place molten is allowed
+    if (!p.light) {
+      var gg = ctx.createRadialGradient(fx + 26 * S, baseY - 6 * S, 0, fx + 26 * S, baseY - 6 * S, 70 * S);
+      gg.addColorStop(0, rgba(p.hot, 0.5));
+      gg.addColorStop(1, rgba(p.hot, 0));
+      ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.arc(fx + 26 * S, baseY - 6 * S, 70 * S, 0, Math.PI * 2); ctx.fill();
+    }
+    q.lit(function () { ctx.rect(fx - 4 * S, baseY - 12 * S, 66 * S, 8 * S); });
+  }
+
+  /* ---- Cathedral of Learning ---- */
+  function lmCathedral(cx, baseY, S) {
+    var q = paint(), p = q.p;
+    var bw = 130 * S, th = 300 * S;
+
+    q.body(rectPath(cx - bw / 2, baseY - 56 * S, bw, 56 * S));           // commons block
+    q.body(rectPath(cx - 46 * S, baseY - th * 0.62, 92 * S, th * 0.62)); // lower shaft
+    q.body(rectPath(cx - 34 * S, baseY - th * 0.86, 68 * S, th * 0.86)); // setback
+    q.body(rectPath(cx - 24 * S, baseY - th, 48 * S, th));               // crown
+
+    // the vertical mullions are the whole reason it reads gothic
+    q.det(function () {
+      for (var i = -3; i <= 3; i++) {
+        ctx.moveTo(cx + i * 7 * S, baseY - th + 10 * S);
+        ctx.lineTo(cx + i * 7 * S, baseY - th * 0.86);
+      }
+      for (var j = -4; j <= 4; j++) {
+        ctx.moveTo(cx + j * 7.5 * S, baseY - th * 0.86 + 6 * S);
+        ctx.lineTo(cx + j * 7.5 * S, baseY - th * 0.62);
+      }
+      for (var k = -6; k <= 6; k++) {
+        ctx.moveTo(cx + k * 7 * S, baseY - th * 0.62 + 6 * S);
+        ctx.lineTo(cx + k * 7 * S, baseY - 56 * S);
+      }
+    }, 1);
+
+    // pinnacles
+    q.body(function () {
+      [-24, -12, 0, 12, 24].forEach(function (o) {
+        ctx.moveTo(cx + o * S - 3 * S, baseY - th);
+        ctx.lineTo(cx + o * S, baseY - th - 13 * S);
+        ctx.lineTo(cx + o * S + 3 * S, baseY - th);
+      });
+    });
+
+    if (!p.light) {
+      q.lit(function () {
+        for (var r = 0; r < 9; r++) {
+          for (var c = 0; c < 4; c++) {
+            if (hash(r * 11 + c) < 0.55) continue;
+            ctx.rect(cx - 18 * S + c * 10 * S, baseY - th + 22 * S + r * 24 * S, 4 * S, 7 * S);
+          }
+        }
+      });
+    }
+  }
+
+  /* ---- PPG Place ---- */
+  function lmPPG(cx, baseY, S) {
+    var q = paint(), p = q.p;
+    function tower(ox, wdt, hgt, spire) {
+      q.body(function () {
+        var x = cx + ox * S, w = wdt * S, h = hgt * S;
+        ctx.moveTo(x - w / 2, baseY);
+        ctx.lineTo(x - w / 2, baseY - h);
+        // crown of spires
+        var n = Math.max(2, Math.round(w / (9 * S)));
+        for (var i = 0; i < n; i++) {
+          var sx = x - w / 2 + (w / n) * i;
+          ctx.lineTo(sx + (w / n) * 0.5, baseY - h - spire * S);
+          ctx.lineTo(sx + (w / n), baseY - h);
+        }
+        ctx.lineTo(x + w / 2, baseY);
+        ctx.closePath();
+      }, true);
+      q.det(function () {
+        var x = cx + ox * S, w = wdt * S, h = hgt * S;
+        for (var i = 1; i < Math.round(wdt / 9); i++) {
+          ctx.moveTo(x - w / 2 + (w / Math.round(wdt / 9)) * i, baseY - h + 4 * S);
+          ctx.lineTo(x - w / 2 + (w / Math.round(wdt / 9)) * i, baseY - 3 * S);
+        }
+      }, 0.9);
+    }
+    tower(-92, 46, 108, 13);
+    tower(-46, 40, 132, 12);
+    tower(0, 66, 218, 22);
+    tower(52, 40, 140, 12);
+    tower(96, 46, 100, 13);
+    if (!p.light) {
+      q.lit(function () {
+        for (var r = 0; r < 10; r++) {
+          for (var c = -2; c <= 2; c++) {
+            if (hash(r * 13 + c + 40) < 0.6) continue;
+            ctx.rect(cx + c * 12 * S - 2 * S, baseY - 200 * S + r * 20 * S, 4 * S, 6 * S);
+          }
+        }
+      });
+    }
+  }
+
+  /* ---- Phipps Conservatory ---- */
+  function lmPhipps(cx, baseY, S) {
+    var q = paint(), p = q.p;
+    function house(ox, rx, ry) {
+      q.body(function () {
+        ctx.moveTo(cx + (ox - rx) * S, baseY);
+        ctx.lineTo(cx + (ox - rx) * S, baseY - 14 * S);
+        ctx.ellipse(cx + ox * S, baseY - 14 * S, rx * S, ry * S, 0, Math.PI, 0);
+        ctx.lineTo(cx + (ox + rx) * S, baseY);
+        ctx.closePath();
+      }, true);
+      // glazing ribs — the thing that makes it read as a glass house
+      q.det(function () {
+        for (var i = 1; i < 7; i++) {
+          var a = Math.PI + (Math.PI / 7) * i;
+          ctx.moveTo(cx + ox * S, baseY - 14 * S);
+          ctx.lineTo(cx + ox * S + Math.cos(a) * rx * S, baseY - 14 * S + Math.sin(a) * ry * S);
+        }
+      }, 0.9);
+    }
+    house(-74, 34, 44);
+    house(0, 54, 82);
+    house(76, 32, 40);
+    q.body(function () {
+      ctx.moveTo(cx - 3 * S, baseY - 96 * S);
+      ctx.lineTo(cx, baseY - 112 * S);
+      ctx.lineTo(cx + 3 * S, baseY - 96 * S);
+      ctx.closePath();
+    });
+    // Lit from inside, but softly — filling the whole dome with accent
+    // turned it into a gold blob rather than a glass house.
+    if (!p.light) {
+      var lg = ctx.createRadialGradient(cx, baseY - 14 * S, 0, cx, baseY - 14 * S, 62 * S);
+      lg.addColorStop(0, rgba(p.accent, 0.42));
+      lg.addColorStop(0.7, rgba(p.accent, 0.16));
+      lg.addColorStop(1, rgba(p.accent, 0));
+      ctx.fillStyle = lg;
+      ctx.beginPath();
+      ctx.ellipse(cx, baseY - 14 * S, 52 * S, 78 * S, 0, Math.PI, 0);
+      ctx.fill();
+    }
+  }
+
+  /* ---- the fountain at the Point ---- */
+  function lmFountain(cx, baseY, S, t) {
+    var q = paint(), p = q.p;
+    q.body(function () {
+      ctx.moveTo(cx - 96 * S, baseY);
+      ctx.lineTo(cx - 76 * S, baseY - 15 * S);
+      ctx.lineTo(cx + 76 * S, baseY - 15 * S);
+      ctx.lineTo(cx + 96 * S, baseY);
+      ctx.closePath();
+    });
+
+    var pulse = reduced ? 1 : 0.84 + 0.16 * Math.sin(t * 0.0009);
+    var jh = 215 * S * pulse;
+    var col = p.light ? p.surf : '#FFFFFF';
+    var lip = baseY - 15 * S;
+
+    // Main plume. The real one throws water 150 feet, so a thin sliver
+    // undersells it — this is the widest, brightest thing on the page.
+    var g = ctx.createLinearGradient(0, lip - jh, 0, lip);
+    g.addColorStop(0, rgba(col, 0));
+    g.addColorStop(0.35, rgba(col, p.light ? 0.34 : 0.30));
+    g.addColorStop(1, rgba(col, p.light ? 0.8 : 0.78));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(cx - 13 * S, lip);
+    ctx.quadraticCurveTo(cx - 20 * S, lip - jh * 0.55, cx - 3 * S, lip - jh);
+    ctx.quadraticCurveTo(cx + 3 * S, lip - jh * 1.02, cx + 5 * S, lip - jh);
+    ctx.quadraticCurveTo(cx + 21 * S, lip - jh * 0.55, cx + 13 * S, lip);
+    ctx.closePath();
+    ctx.fill();
+
+    // spray breaking off the top of the column
+    if (!reduced) {
+      for (var d = 0; d < 16; d++) {
+        var age = ((t * 0.00022 + hash(d) ) % 1);
+        var spread = age * 46 * S * (hash(d + 40) - 0.5) * 2;
+        var sy = lip - jh * (0.62 + age * 0.5);
+        ctx.fillStyle = rgba(col, (1 - age) * 0.4);
+        ctx.beginPath();
+        ctx.arc(cx + spread, sy, (1.6 + hash(d + 9) * 1.8) * S, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // ring of side jets, arcing outward
+    ctx.strokeStyle = rgba(p.light ? p.surf : '#FFFFFF', p.light ? 0.45 : 0.34);
+    ctx.lineWidth = 1.4;
+    for (var i = -3; i <= 3; i++) {
+      if (!i) continue;
+      var reach = 22 * S * Math.abs(i);
+      ctx.beginPath();
+      ctx.moveTo(cx, baseY - 18 * S);
+      ctx.quadraticCurveTo(cx + reach * 0.6 * Math.sign(i), baseY - (58 + 14 * Math.abs(i)) * S * pulse,
+        cx + reach * Math.sign(i), baseY - 15 * S);
+      ctx.stroke();
+    }
+    if (!p.light) {
+      var gg = ctx.createRadialGradient(cx, baseY - 40 * S, 0, cx, baseY - 40 * S, 110 * S);
+      gg.addColorStop(0, rgba(p.accent, 0.16));
+      gg.addColorStop(1, rgba(p.accent, 0));
+      ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.arc(cx, baseY - 40 * S, 110 * S, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  /* ---- the Sisters, pre-built over the hero river ---- */
+  function lmSisters(sc) {
+    for (var i = 0; i < 3; i++) {
+      drawBridge(sc, { x: 0.15 + i * 0.26, t: 1 }, CFG.bridge === 'mixed' ? 0 : i);
+    }
+  }
+
+  var LANDMARKS = {
+    incline: lmIncline, mill: lmMill, cathedral: lmCathedral,
+    ppg: lmPPG, phipps: lmPhipps, fountain: lmFountain
+  };
+
+  /* ============================================================ SPARKS */
+  var sparks = [];
+  function spark(x, y) {
+    var p = P();
+    for (var i = 0; i < 16; i++) {
+      var a = Math.random() * Math.PI * 2, sp = 1 + Math.random() * 3.6;
+      sparks.push({
+        x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1,
+        life: 0, max: 28 + Math.random() * 26,
+        c: Math.random() < 0.5 ? p.accent : p.hot
+      });
+    }
+    if (sparks.length > 180) sparks.splice(0, sparks.length - 180);
+  }
+
+  /* ============================================================ FRAME */
+  var built = 0;
+  var plateEl = document.getElementById('plate');
+  var plateNm = plateEl.querySelector('.nm');
+  var plateYr = plateEl.querySelector('.yr');
+  var shownPlate = null;
+
+  function frame(now) {
+    var p = P(), d = D();
+
+    // sky
+    if (CFG.sky === 'flat') {
+      ctx.fillStyle = p.skyBot;
+      ctx.fillRect(0, 0, W, H);
+    } else {
+      var g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, p.skyTop);
+      g.addColorStop(1, p.skyBot);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+    if (CFG.sky === 'stars' && !p.light) {
+      for (var s = 0; s < 70; s++) {
+        var sx = hash(s) * W, sy = hash(s + 500) * H * 0.55;
+        ctx.fillStyle = rgba(p.structure, 0.10 + hash(s + 90) * 0.16);
+        ctx.fillRect(sx, sy - scrollY * 0.02 % H, 1.4, 1.4);
+      }
+    }
+    if (CFG.palette === 'blueprint') {
+      ctx.strokeStyle = rgba(p.accent, 0.055);
+      ctx.lineWidth = 1;
+      var gsz = 42, goff = (scrollY * 0.25) % gsz;
+      for (var gx = 0; gx <= W; gx += gsz) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+      }
+      for (var gy = -gsz; gy <= H; gy += gsz) {
+        ctx.beginPath(); ctx.moveTo(0, gy + goff); ctx.lineTo(W, gy + goff); ctx.stroke();
+      }
+    }
+
+    // Scenes are drawn far to near — the one lowest on screen is nearest,
+    // and paints over the land of the one receding above it.
+    var nearest = null, nearestD = 1e9;
+    for (var i = 0; i < SCENES.length; i++) {
+      var sc = SCENES[i];
+      var top = riverTopOf(sc);
+      if (top > H + 220 || top < -320) continue;
+
+      sceneRidge(sc, 1.7 + i * 2.3, H * 0.115, p.ridgeFar, d.hillFar, 1);
+      sceneRidge(sc, 4.1 + i * 3.7, H * 0.070, p.ridgeNear, d.hillNear, 1);
+      drawSkyline(sc, i * 13 + 3);
+      drawRiver(sc, now);
+
+      var S = clamp(H / 640, 0.72, 1.75);
+      if (sc.kind === 'sisters') {
+        lmSisters(sc);
+      } else {
+        LANDMARKS[sc.kind](W * (sc.x || 0.62), top, S, now);
+      }
+
+      for (var b = 0; b < sc.bridges.length; b++) {
+        if (sc.bridges[b].t < 1) sc.bridges[b].t = Math.min(1, sc.bridges[b].t + 0.022);
+        drawBridge(sc, sc.bridges[b], b);
+      }
+
+      var dist = Math.abs(top - H * 0.80);
+      if (dist < nearestD) { nearestD = dist; nearest = sc; }
+    }
+
+    // nameplate for whichever landmark is closest to its mark
+    if (nearest && nearestD < H * 0.3) {
+      if (shownPlate !== nearest.kind) {
+        shownPlate = nearest.kind;
+        plateNm.textContent = nearest.name;
+        plateYr.textContent = nearest.yr;
+      }
+      plateEl.classList.add('on');
+    } else {
+      plateEl.classList.remove('on');
+      shownPlate = null;
+    }
+
+    for (var k = sparks.length - 1; k >= 0; k--) {
+      var sp2 = sparks[k];
+      sp2.life += 1;
+      if (sp2.life >= sp2.max) { sparks.splice(k, 1); continue; }
+      sp2.x += sp2.vx; sp2.y += sp2.vy;
+      sp2.vx *= 0.94; sp2.vy = sp2.vy * 0.94 + 0.07;
+      var a2 = 1 - sp2.life / sp2.max;
+      ctx.fillStyle = rgba(sp2.c, a2);
+      ctx.beginPath(); ctx.arc(sp2.x, sp2.y, 1.6 * a2 + 0.4, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  var raf = 0;
+  function loop(now) { frame(now); raf = requestAnimationFrame(loop); }
+
+  /* ============================================================ INPUT */
+  for (var i = 0; i < SCENES.length; i++) SCENES[i].bridges = [];
+
+  function isUi(el) {
+    return el instanceof Element && !!el.closest('a, button, input, #rail, .card, .badge');
+  }
+
+  window.addEventListener('pointerdown', function (e) {
+    if (isUi(e.target)) return;
+    var y = e.clientY, x = e.clientX;
+    var rh = riverH();
+    for (var i = 0; i < SCENES.length; i++) {
+      var sc = SCENES[i];
+      var top = riverTopOf(sc);
+      if (y >= top - 6 && y <= top + rh + 6) {
+        // one span per stretch of water, so clicks don't stack
+        for (var b = 0; b < sc.bridges.length; b++) {
+          if (Math.abs(sc.bridges[b].x - x / W) < 0.14) { spark(x, y); return; }
+        }
+        sc.bridges.push({ x: x / W, t: 0 });
+        built++;
+        document.getElementById('bridgeCount').textContent =
+          built + (built === 1 ? ' span built' : ' spans built');
+        return;
+      }
+    }
+    spark(x, y);
+  }, { passive: true });
+
+  window.addEventListener('scroll', function () { scrollY = window.scrollY; }, { passive: true });
+  window.addEventListener('resize', layout);
+
+  /* ============================================================ RAIL */
+  function syncChips() {
+    var groups = document.querySelectorAll('.chips');
+    for (var i = 0; i < groups.length; i++) {
+      var key = groups[i].getAttribute('data-key');
+      var btns = groups[i].querySelectorAll('.chip');
+      for (var j = 0; j < btns.length; j++) {
+        btns[j].setAttribute('aria-pressed', String(btns[j].getAttribute('data-v') === CFG[key]));
+      }
+    }
+    root.setAttribute('data-ground', P().light ? 'light' : 'dark');
+    document.getElementById('comboOut').textContent =
+      CFG.palette + ' / ' + CFG.river + ' / ' + CFG.land + ' / ' + CFG.depth + ' / ' + CFG.bridge + ' / ' + CFG.sky;
+  }
+
+  document.getElementById('rail').addEventListener('click', function (e) {
+    var btn = e.target.closest('.chip');
+    if (!btn || !btn.hasAttribute('data-v')) return;
+    var key = btn.parentElement.getAttribute('data-key');
+    CFG[key] = btn.getAttribute('data-v');
+    syncChips();
+  });
+
+  document.getElementById('surprise').addEventListener('click', function () {
+    var opts = {
+      palette: ['gold', 'dusk', 'blueprint', 'paper'],
+      river: ['ribbon', 'flow', 'bathy'],
+      land: ['solid', 'line', 'duo'],
+      depth: ['deep', 'soft', 'flat'],
+      bridge: ['sisters', 'mixed', 'truss'],
+      sky: ['grad', 'flat', 'stars']
+    };
+    for (var k in opts) CFG[k] = opts[k][Math.floor(Math.random() * opts[k].length)];
+    syncChips();
+  });
+
+  document.getElementById('clearB').addEventListener('click', function () {
+    for (var i = 0; i < SCENES.length; i++) SCENES[i].bridges.length = 0;
+    built = 0;
+    document.getElementById('bridgeCount').textContent = '0 spans built';
+  });
+
+  var rail = document.getElementById('rail');
+  var toggle = document.getElementById('railToggle');
+  toggle.addEventListener('click', function () {
+    rail.classList.toggle('closed');
+    toggle.classList.toggle('shift');
+    toggle.textContent = rail.classList.contains('closed') ? 'Concepts' : 'Hide';
+  });
+  if (window.innerWidth < 900) {
+    rail.classList.add('closed');
+    toggle.classList.remove('shift');
+  } else {
+    toggle.textContent = 'Hide';
+  }
+
+  /* ============================================================ BOOT */
+  layout();
+  scrollY = window.scrollY;
+  syncChips();
+  loop(performance.now());
+  window.addEventListener('load', layout);
+})();
+</script>

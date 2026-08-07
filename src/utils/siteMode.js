@@ -1,16 +1,18 @@
-// Background mode for the site: water, space nerd, geospatial, technologist.
+// Background mode for the site: water, space nerd, geospatial, technologist,
+// Pittsburgh.
 //
 // Triple-clicking the portrait cycles through them. The legacy `spaceNerdMode`
 // key and the `data-space-nerd` attribute are still written, so the badge
 // unlock and WaterBanner's hide rule keep working unchanged.
 
-export const MODES = ['water', 'stars', 'geo', 'tech'];
+export const MODES = ['water', 'stars', 'geo', 'tech', 'pgh'];
 
 export const MODE_LABELS = {
     water: 'water',
     stars: 'space nerd',
     geo: 'geospatial',
     tech: 'technologist',
+    pgh: 'Pittsburgh',
 };
 
 export const MODE_EVENT = 'site-mode-change';

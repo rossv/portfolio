@@ -146,6 +146,92 @@ const ClusterFrame = () => (
     </svg>
 );
 
+// Pittsburgh: the carriers are the details you see on the bridges themselves.
+const KeystoneFrame = () => (
+    <svg viewBox="0 0 56 52" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        {/* Wider at the top: the arch is what pinches a keystone in place, so
+            drawn the other way up it stops being one. */}
+        <path d="M5 2h46l-11 48H16Z" className="fill-slate-800 dark:fill-slate-900" />
+        {/* Chamfered edge, lit from the upper left — the two bands are what
+            lift the face off the page so it reads as dressed stone. */}
+        <path d="M5 2h46l-4 3.2H9l9.6 41.6L16 50Z" className="fill-amber-500/25 dark:fill-amber-300/20" />
+        <path d="M51 2 40 50H16l2.6-3.2h18.8l9.6-41.6Z" className="fill-slate-950/45 dark:fill-black/45" />
+        <path d="M9 5.2h38l-9.6 41.6H18.6Z" fill="none" strokeWidth="0.8"
+            className="stroke-amber-500/35 dark:stroke-amber-300/30" />
+        {/* The two bed joints, which is what makes it read as cut stone; the
+            pale line under each is the lit lower arris of the groove. */}
+        <path d="M12.2 19h31.6M15.6 34h24.8" fill="none" strokeWidth="1.1"
+            className="stroke-slate-950/70 dark:stroke-black/70" />
+        <path d="M12.4 20.1h31.2M15.8 35.1h24.4" fill="none" strokeWidth="0.7"
+            className="stroke-amber-500/30 dark:stroke-amber-300/25" />
+        {/* The rim goes on last so the bands cannot dull the gold. */}
+        <path d="M5 2h46l-11 48H16Z" fill="none" strokeWidth="1.5"
+            className="stroke-amber-600 dark:stroke-amber-300" />
+    </svg>
+);
+
+const GussetFrame = () => (
+    <svg viewBox="0 0 56 56" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        {/* Stubs of the members the plate splices — chord across the bottom,
+            diagonals into the clipped corners — so it reads as a joint in a
+            structure rather than a badge. */}
+        <g fill="none" strokeWidth="7" className="stroke-slate-400/70 dark:stroke-slate-600/80">
+            <path d="M0 44h56" />
+            <path d="M2 0l16 16M54 0 38 16" />
+        </g>
+        <path d="M7 50V33L21 9h14l14 24v17Z" className="fill-slate-800 dark:fill-slate-900" />
+        {/* Lit edge up the left and over the top, shadowed edge down the
+            right and along the bottom — a flat plate, but steel, not paper. */}
+        <path d="M9.2 47.8V33.6L22.3 11.2h11.4" fill="none" strokeWidth="1.2"
+            className="stroke-slate-400/70 dark:stroke-slate-400/50" />
+        <path d="M33.7 11.2 46.8 33.6v14.2H9.2" fill="none" strokeWidth="1.2"
+            className="stroke-slate-950/60 dark:stroke-black/60" />
+        <path d="M7 50V33L21 9h14l14 24v17Z" fill="none" strokeWidth="1.5"
+            className="stroke-amber-600 dark:stroke-amber-300" />
+        {/* Rivets follow the work: a staggered double row where the plate
+            splices the chord, single rows pacing the free edges. The dark rim
+            on each head is what makes it a dome instead of a dot. */}
+        <g strokeWidth="0.6" className="fill-amber-500 stroke-amber-900/60 dark:fill-amber-300 dark:stroke-amber-950/60">
+            {[
+                [11.5, 43.2], [17, 43.2], [22.5, 43.2], [28, 43.2], [33.5, 43.2], [39, 43.2], [44.5, 43.2],
+                [14.2, 47.4], [19.7, 47.4], [25.2, 47.4], [30.7, 47.4], [36.2, 47.4], [41.7, 47.4],
+                [10.8, 36.8], [45.2, 36.8],
+                [14.7, 27.8], [18.2, 21.8], [21.7, 15.8], [28, 12.6], [34.3, 15.8], [37.8, 21.8], [41.3, 27.8],
+            ].map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.5" />)}
+        </g>
+    </svg>
+);
+
+const TrussFrame = () => (
+    <svg viewBox="0 0 72 48" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        {/* Bearing pads go down first: a span that rests on something reads
+            as a bridge, one that floats reads as a logo. */}
+        <path d="M3.5 40.6h5v3h-5ZM63.5 40.6h5v3h-5Z" className="fill-slate-500 dark:fill-slate-600" />
+        {/* Chords and inclined end posts, the heavy members that frame a
+            through truss; the hairline above each chord is its lit top flange. */}
+        <path d="M6 40h60M18 10h36M6 40 18 10M66 40 54 10" fill="none" strokeWidth="2.4" strokeLinecap="round"
+            className="stroke-slate-500 dark:stroke-slate-300" />
+        <path d="M6 38.9h60M18 8.9h36" fill="none" strokeWidth="0.6"
+            className="stroke-slate-300/80 dark:stroke-slate-100/50" />
+        {/* Pratt web: posts heavier than the eyebar diagonals, because they
+            carry compression and the diagonals only tension. The centre bay
+            keeps no diagonal, so the icon has a clear place to sit. */}
+        <path d="M18 10v30M30 10v30M42 10v30M54 10v30" fill="none" strokeWidth="1.5"
+            className="stroke-slate-400" />
+        <path d="M18 10 30 40M54 10 42 40" fill="none" strokeWidth="1.1"
+            className="stroke-amber-500/80 dark:stroke-amber-300/80" />
+        {/* Portal knee braces tucked into the entrance corners. */}
+        <path d="M12 25Q17.5 13.5 26 11.5M60 25Q54.5 13.5 46 11.5" fill="none" strokeWidth="1"
+            className="stroke-amber-500/60 dark:stroke-amber-300/60" />
+        {/* Gusseted panel points, echoing the rivet heads on the plate. */}
+        <g className="fill-amber-500 dark:fill-amber-300">
+            {[[6, 40], [18, 40], [30, 40], [42, 40], [54, 40], [66, 40], [18, 10], [30, 10], [42, 10], [54, 10]].map(
+                ([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="1.3" />
+            )}
+        </g>
+    </svg>
+);
+
 /* ---------- carriers ----------------------------------------------------- */
 
 // `scale` is applied to the section's base size, so a pin does not come out as
@@ -158,6 +244,8 @@ const WATER_CARRIER = {
     icon: { left: '22%', top: '22%', width: '56%', height: '56%' },
 };
 
+// A mode may hold one carrier or a list of them. Space and Pittsburgh cycle a
+// list, so no two motes in view are the same object.
 const CARRIERS = {
     water: WATER_CARRIER,
     geo: {
@@ -170,30 +258,52 @@ const CARRIERS = {
         icon: { left: '33.7%', top: '33.7%', width: '32.7%', height: '32.7%' },
         tint: 'text-sky-400',
     },
+    stars: [
+        {
+            aspect: 1, scale: 0.9, drift: false, Frame: StarFrame,
+            shell: 'drop-shadow-[0_0_10px_rgba(167,139,250,0.45)]',
+            icon: { left: '35.8%', top: '35.8%', width: '28.3%', height: '28.3%' },
+            tint: 'text-violet-900 dark:text-violet-100',
+        },
+        {
+            aspect: 64 / 52, scale: 0.875, drift: false, Frame: PlanetFrame, shell: 'drop-shadow-lg',
+            icon: { left: '36.7%', top: '33.7%', width: '26.6%', height: '32.7%' },
+            tint: 'text-sky-900 dark:text-sky-100',
+        },
+        {
+            aspect: 62 / 56, scale: 0.83, drift: false, Frame: ClusterFrame, shell: 'drop-shadow-lg',
+            icon: { left: '22.6%', top: '25%', width: '25.8%', height: '28.6%' },
+            tint: 'text-violet-900 dark:text-violet-100',
+        },
+    ],
+    pgh: [
+        {
+            aspect: 56 / 52, scale: 0.88, drift: false, Frame: KeystoneFrame, shell: 'drop-shadow-lg',
+            // Rides high, where the tapering face leaves the most room.
+            icon: { left: '33%', top: '26%', width: '34%', height: '36%' },
+            tint: 'text-amber-300',
+        },
+        {
+            aspect: 1, scale: 0.9, drift: false, Frame: GussetFrame, shell: 'drop-shadow-lg',
+            // Centred in the clear field the rivet rows leave open.
+            icon: { left: '33%', top: '35%', width: '34%', height: '34%' },
+            tint: 'text-amber-300',
+        },
+        {
+            aspect: 72 / 48, scale: 1, drift: false, Frame: TrussFrame, shell: 'drop-shadow-lg',
+            // Sits above the bottom chord, in the bay the web leaves open.
+            icon: { left: '39%', top: '38.5%', width: '22%', height: '33%' },
+            tint: 'text-amber-200',
+        },
+    ],
 };
 
-// Space cycles the three families, so no two motes in view are the same object.
-const STAR_CARRIERS = [
-    {
-        aspect: 1, scale: 0.9, drift: false, Frame: StarFrame,
-        shell: 'drop-shadow-[0_0_10px_rgba(167,139,250,0.45)]',
-        icon: { left: '35.8%', top: '35.8%', width: '28.3%', height: '28.3%' },
-        tint: 'text-violet-900 dark:text-violet-100',
-    },
-    {
-        aspect: 64 / 52, scale: 0.875, drift: false, Frame: PlanetFrame, shell: 'drop-shadow-lg',
-        icon: { left: '36.7%', top: '33.7%', width: '26.6%', height: '32.7%' },
-        tint: 'text-sky-900 dark:text-sky-100',
-    },
-    {
-        aspect: 62 / 56, scale: 0.83, drift: false, Frame: ClusterFrame, shell: 'drop-shadow-lg',
-        icon: { left: '22.6%', top: '25%', width: '25.8%', height: '28.6%' },
-        tint: 'text-violet-900 dark:text-violet-100',
-    },
-];
-
-const carrierFor = (mode, i) =>
-    mode === 'stars' ? STAR_CARRIERS[i % STAR_CARRIERS.length] : (CARRIERS[mode] ?? WATER_CARRIER);
+// A list cycles by index; a single carrier is used as it is. Water is the
+// fallback, so a mode with no carrier of its own keeps the frosted bubble.
+const carrierFor = (mode, i) => {
+    const carrier = CARRIERS[mode] ?? WATER_CARRIER;
+    return Array.isArray(carrier) ? carrier[i % carrier.length] : carrier;
+};
 
 /* ---------- section sets ------------------------------------------------- */
 
