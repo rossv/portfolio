@@ -47,6 +47,8 @@ const RAW_1 = Math.cosh(K * (1 - VERTEX)) - 1;
 // Cable bands, and therefore the hanger pairs, at even intervals.
 const BAND_FIRST = 0.06;
 const BAND_STEP = 0.108;
+// How much of the run's progress a single hanger takes to fall.
+const DROP_SPAN = 0.16;
 // The lights run four to a bay, so they read as a necklace along the cable
 // rather than as one lamp per hanger.
 const LIGHT_STEP = BAND_STEP / 4;
@@ -119,8 +121,13 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         const narrow = mobileMix(w);
         for (const t of bands) {
             // Each hanger falls over its own short window, once the cable has
-            // arrived overhead.
-            const drop = clamp((progress - t) / 0.16, 0, 1);
+            // arrived overhead. The window is whatever is left of the run when
+            // the cable gets there, because the last band is reached with less
+            // than DROP_SPAN to go: on a fixed span it stopped at just under
+            // half length and stayed there, ending on a hard edge exactly where
+            // the mask begins while every other hanger faded out through it.
+            const span = Math.min(DROP_SPAN, 1 - t);
+            const drop = span > 0 ? clamp((progress - t) / span, 0, 1) : 1;
             if (drop <= 0) continue;
             const x = t * w;
             const y = cableY(t, h, w);
