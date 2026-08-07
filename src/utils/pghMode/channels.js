@@ -56,20 +56,19 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
     }
 
     function molten(pts, wide, g, t) {
-        // Held back hard. At this width the bright core is a big area, and the
-        // earlier weighting made the iron the loudest thing on the page — which
-        // is wrong for something sitting behind text.
-        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.08 : 0.10) * g);
-        ctx.lineWidth = wide * 1.6;
+        // A broad red bloom separates the iron from the dark valley while the
+        // narrow, hotter centre keeps it from becoming a flat neon stripe.
+        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.13 : 0.22) * g);
+        ctx.lineWidth = wide * 1.9;
         trace(pts);
         ctx.strokeStyle = rgba(palette.hot, 0.9 * g);
         ctx.lineWidth = wide;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.hotter, 0.5 * g);
-        ctx.lineWidth = wide * 0.40;
+        ctx.strokeStyle = rgba(palette.hotter, 0.72 * g);
+        ctx.lineWidth = wide * 0.46;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.molten, 0.42 * g);
-        ctx.lineWidth = wide * 0.11;
+        ctx.strokeStyle = rgba(palette.molten, 0.72 * g);
+        ctx.lineWidth = wide * 0.14;
         trace(pts);
 
         if (reduceMotion || pts.length < 6) return;

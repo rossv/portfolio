@@ -384,7 +384,8 @@ export function createCrucible(ctx, palette, lattice) {
                 (ex + ax) / 2, (ey + ay) / 2, 0,
                 (ex + ax) / 2, (ey + ay) / 2, S * 4.5,
             );
-            flare.addColorStop(0, rgba(palette.glow, 0.26 * strength));
+            flare.addColorStop(0, rgba(palette.molten, 0.18 * strength));
+            flare.addColorStop(0.35, rgba(palette.glow, 0.34 * strength));
             flare.addColorStop(1, rgba(palette.glow, 0));
             ctx.fillStyle = flare;
             ctx.beginPath();
@@ -449,7 +450,7 @@ export function createCrucible(ctx, palette, lattice) {
             };
 
             // heat haze around the column
-            ctx.fillStyle = rgba(palette.hot, 0.22);
+            ctx.fillStyle = rgba(palette.glow, 0.32 * strength);
             ribbon(1.75);
             ctx.fill();
 
