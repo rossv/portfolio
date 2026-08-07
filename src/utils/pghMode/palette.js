@@ -23,7 +23,11 @@ export const PALETTES = {
         steel: '#8FA1AE',       // truss members, piers
         structure: '#C9D4DC',
         deck: '#9FADB7',
-        accent: '#FFB612',      // Aztec gold: chains, arches, top chords
+        accent: '#FFB612',      // Aztec gold, for the hero cable
+        // The bridges you place are structure, not signage. Gold on every one of
+        // them pulled the eye away from the page, so they carry a weathered
+        // bronze instead and let the hero keep the only true gold.
+        bridge: '#9C7A3A',
         // The hero cable: shaded underside, the collars at each hanger, the
         // handrope, and the lit crown that makes it read as round.
         cableLow: '#8A5F09',
@@ -47,6 +51,7 @@ export const PALETTES = {
         structure: '#2C3A45',
         deck: '#41525F',
         accent: '#9A6A00',      // bronze
+        bridge: '#8A7449',
         cableLow: '#6E4B00',
         bandCollar: '#54390A',
         rope: '#41525F',

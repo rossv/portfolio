@@ -1,16 +1,14 @@
-// Drawing the channels: water, and molten iron.
-//
-// Tributaries run narrower than the trunk they join, which is the one cue that
-// makes a branching network read as a drainage system rather than as a tangle of
-// unrelated lines.
+// Drawing the channels: water, molten iron, and the combined river below the
+// confluence, which cools from one into the other as it runs to the foot of the
+// page.
 
-import { rgba, hash } from './palette';
+import { rgba, hash, clamp } from './palette';
 
-const widthFor = (cell, order) => cell * (order === 1 ? 0.62 : 0.42);
+// Three times the earlier width. These are the subject of the backdrop now that
+// nothing branches, so they carry it.
+const WIDTH = 1.86;
 
 export function createChannels(ctx, palette, lattice, { reduceMotion = false } = {}) {
-    // Screen-space points for one channel, culled to the visible band. Cheaper
-    // than projecting a whole page-deep network every frame.
     function screenPoints(channel, scrollY) {
         const pts = [];
         let anyVisible = false;
@@ -34,13 +32,12 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         ctx.strokeStyle = rgba(palette.water, 0.98 * g);
         ctx.lineWidth = wide;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.waterLit, 0.48 * g);
-        ctx.lineWidth = wide * 0.5;
+        ctx.strokeStyle = rgba(palette.waterLit, 0.42 * g);
+        ctx.lineWidth = wide * 0.52;
         trace(pts);
-        // Tracers, so the water is moving without anything obviously looping.
-        ctx.strokeStyle = rgba(palette.surf, 0.5 * g);
-        ctx.lineWidth = 1.4;
-        const count = Math.min(14, Math.floor(pts.length / 6));
+        ctx.strokeStyle = rgba(palette.surf, 0.42 * g);
+        ctx.lineWidth = 1.6;
+        const count = Math.min(16, Math.floor(pts.length / 6));
         for (let i = 0; i < count; i += 1) {
             const k = (hash(i + pts.length) + (reduceMotion ? 0 : t * 0.00009)) % 1;
             const a = Math.floor(k * (pts.length - 3));
@@ -52,50 +49,92 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
     }
 
     function molten(pts, wide, g) {
-        // A clean incandescent channel: bloom, body, hot centre. No crust — the
-        // drifting skin read as debris on the surface rather than as metal.
-        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.11 : 0.14) * g);
-        ctx.lineWidth = wide * 2.0;
+        // Held back hard. At this width the bright core is a big area, and the
+        // earlier weighting made the iron the loudest thing on the page — which
+        // is wrong for something sitting behind text.
+        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.08 : 0.10) * g);
+        ctx.lineWidth = wide * 1.6;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.hot, 0.95 * g);
+        ctx.strokeStyle = rgba(palette.hot, 0.9 * g);
         ctx.lineWidth = wide;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.hotter, 0.85 * g);
-        ctx.lineWidth = wide * 0.60;
+        ctx.strokeStyle = rgba(palette.hotter, 0.5 * g);
+        ctx.lineWidth = wide * 0.40;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.molten, 0.80 * g);
-        ctx.lineWidth = wide * 0.24;
+        ctx.strokeStyle = rgba(palette.molten, 0.42 * g);
+        ctx.lineWidth = wide * 0.11;
         trace(pts);
     }
 
-    // Draws every channel and hands back the screen points, which the bridges
-    // need too — projecting the network twice per frame would be wasteful.
-    function frame(channels, scrollY, t, g, reveal = 1) {
-        const cell = lattice.cell();
+    // The combined river: iron at the confluence, water by the time it leaves.
+    function combined(pts, wide, g, t) {
+        const [x0, y0] = pts[0];
+        const [x1, y1] = pts[pts.length - 1];
+        const cool = ctx.createLinearGradient(x0, y0, x1, y1);
+        cool.addColorStop(0, rgba(palette.hot, 0.95 * g));
+        cool.addColorStop(0.22, rgba(palette.hot, 0.8 * g));
+        cool.addColorStop(0.55, rgba(palette.water, 0.96 * g));
+        cool.addColorStop(1, rgba(palette.water, 0.98 * g));
+        ctx.strokeStyle = cool;
+        ctx.lineWidth = wide;
+        trace(pts);
+
+        const core = ctx.createLinearGradient(x0, y0, x1, y1);
+        core.addColorStop(0, rgba(palette.hotter, 0.8 * g));
+        core.addColorStop(0.3, rgba(palette.hot, 0.35 * g));
+        core.addColorStop(0.55, rgba(palette.waterLit, 0.4 * g));
+        core.addColorStop(1, rgba(palette.waterLit, 0.42 * g));
+        ctx.strokeStyle = core;
+        ctx.lineWidth = wide * 0.5;
+        trace(pts);
+
+        ctx.strokeStyle = rgba(palette.surf, 0.34 * g);
+        ctx.lineWidth = 1.5;
+        const count = Math.min(12, Math.floor(pts.length / 7));
+        for (let i = 0; i < count; i += 1) {
+            const k = 0.4 + 0.6 * ((hash(i * 5 + 2) + (reduceMotion ? 0 : t * 0.00008)) % 1);
+            const a = Math.floor(k * (pts.length - 3));
+            ctx.beginPath();
+            ctx.moveTo(pts[a][0], pts[a][1]);
+            ctx.lineTo(pts[a + 2][0], pts[a + 2][1]);
+            ctx.stroke();
+        }
+    }
+
+    // `reveal` per kind: the molten is scrubbed by the crucible's pour, the rest
+    // simply arrives.
+    function frame(network, scrollY, t, g, reveal) {
+        const wide = lattice.cell() * WIDTH;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         const projected = new Map();
 
-        // Banks first, for every channel, so a bank never cuts across the
-        // channel that crosses behind it.
-        for (const channel of channels) {
+        for (const channel of network.channels) {
             const pts = screenPoints(channel, scrollY);
             if (!pts) continue;
-            projected.set(channel, pts);
-            ctx.strokeStyle = rgba(palette.plate, 0.95 * g);
-            ctx.lineWidth = widthFor(cell, channel.order) * 1.5;
-            trace(pts, 0, Math.max(2, Math.ceil(pts.length * reveal)));
+            const cut = clamp(reveal[channel.kind] ?? 1, 0, 1);
+            if (cut <= 0.001) continue;
+            const to = Math.max(2, Math.ceil(pts.length * cut));
+            projected.set(channel, pts.slice(0, to));
         }
 
-        // Water, then molten, so the hot channel reads as the nearer thing.
-        for (const pass of ['water', 'molten']) {
+        // Banks under everything, so a bank never cuts across a channel crossing
+        // behind it.
+        for (const [, pts] of projected) {
+            ctx.strokeStyle = rgba(palette.plate, 0.95 * g);
+            ctx.lineWidth = wide * 1.28;
+            trace(pts);
+        }
+
+        // Water, then the combined river, then molten on top: the hot channel
+        // reads as the nearest thing, and it crosses the water rather than
+        // being interrupted by it.
+        for (const pass of ['water', 'combined', 'molten']) {
             for (const [channel, pts] of projected) {
                 if (channel.kind !== pass) continue;
-                const to = Math.max(2, Math.ceil(pts.length * reveal));
-                const visible = pts.slice(0, to);
-                const wide = widthFor(cell, channel.order);
-                if (pass === 'water') water(visible, wide, g, t);
-                else molten(visible, wide, g);
+                if (pass === 'water') water(pts, wide, g, t);
+                else if (pass === 'combined') combined(pts, wide, g, t);
+                else molten(pts, wide, g);
             }
         }
 

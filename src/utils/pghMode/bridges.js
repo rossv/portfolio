@@ -133,7 +133,7 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
                 return thick + rise * (0.62 + 0.38 * Math.cos((f - 0.5) * Math.PI * 1.6));
             };
             for (const s of [-1, 1]) {
-                curve(P, s, 1, sag, rgba(p.accent, s < 0 ? 0.6 * g : 0.95 * g), s < 0 ? 1.6 : 2.2);
+                curve(P, s, 1, sag, rgba(p.bridge, s < 0 ? 0.6 * g : 0.95 * g), s < 0 ? 1.6 : 2.2);
             }
             for (let i = 1; i < 8; i += 1) {
                 const t = towers[0] + ((towers[1] - towers[0]) * i) / 8;
@@ -150,8 +150,8 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
             const dn = (t) => thick - Math.sin(t * Math.PI) * rise * 0.62;
             for (const s of [-1, 1]) {
                 const a = s < 0 ? 0.6 : 1;
-                curve(P, s, 1, up, rgba(p.accent, 0.92 * a * g), s < 0 ? 1.6 : 2.2);
-                curve(P, s, 1, dn, rgba(p.accent, 0.7 * a * g), s < 0 ? 1.4 : 1.9);
+                curve(P, s, 1, up, rgba(p.bridge, 0.92 * a * g), s < 0 ? 1.6 : 2.2);
+                curve(P, s, 1, dn, rgba(p.bridge, 0.7 * a * g), s < 0 ? 1.4 : 1.9);
                 for (let i = 1; i < 7; i += 1) {
                     const t = i / 7;
                     line(P, [t, s, up(t)], [t, s, dn(t)], rgba(p.steel, 0.45 * a * g), 1);
@@ -170,7 +170,7 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
             const rib = (t) => thick + Math.sin(t * Math.PI) * rise;
             for (const s of [-1, 1]) {
                 const a = s < 0 ? 0.6 : 1;
-                curve(P, s, 1, rib, rgba(p.accent, 0.95 * a * g), s < 0 ? 2 : 2.8);
+                curve(P, s, 1, rib, rgba(p.bridge, 0.95 * a * g), s < 0 ? 2 : 2.8);
                 for (let i = 1; i < 8; i += 1) {
                     const t = i / 8;
                     line(P, [t, s, rib(t)], [t, s, thick], rgba(p.steel, 0.45 * a * g), 1);
@@ -187,7 +187,7 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
             const N = 6;
             for (const s of [-1, 1]) {
                 const a = s < 0 ? 0.6 : 1;
-                line(P, [0, s, thick + h], [1, s, thick + h], rgba(p.accent, 0.9 * a * g), 2.2);
+                line(P, [0, s, thick + h], [1, s, thick + h], rgba(p.bridge, 0.9 * a * g), 2.2);
                 for (let i = 0; i <= N; i += 1) {
                     const t = i / N;
                     line(P, [t, s, thick], [t, s, thick + h], rgba(p.steel, 0.55 * a * g), 1.2);

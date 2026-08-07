@@ -83,11 +83,25 @@ export function createLattice() {
         return y > -CELL * 4 && y < height + CELL * 4;
     };
 
+    // The field is easier to reason about in (across, down) than in (gx, gy):
+    // `a` is how far a cell sits across the screen from centre, `d` how far down.
+    const cellAt = (a, d) => {
+        const gx = Math.round((d + a) / 2);
+        return [gx, d - gx];
+    };
+
+    // Which depth a screen height corresponds to at a given scroll — used to put
+    // the crucible just below the hero, and the confluence a third down.
+    const depthAtScreenY = (y, scrollY) =>
+        Math.round((y - originY + scrollY * PARALLAX) / H2);
+
     return {
         resize,
         inField,
         project,
         onScreen,
+        cellAt,
+        depthAtScreenY,
         cell: () => CELL,
         halfWidth: () => u,
         depth: () => v,

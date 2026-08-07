@@ -1,50 +1,54 @@
-// Pittsburgh mode: an isometric ground plane carrying two river networks, one
-// water and one molten iron, crossed by bridges the visitor puts up.
+// Pittsburgh mode: an isometric valley behind the whole page.
 //
-// The plane drifts with the page. Everything on it — lattice, channels, bridges
-// — moves at the one rate, because giving the two networks different rates would
-// slide them against each other and break the gap that holds channels apart.
+// A crucible stands just below the hero and tips as you scroll away from the
+// top, pouring a river of molten iron down the page. A water river enters from
+// the far side about a third of the way down; where they meet there is a
+// fountain, and below it one combined river runs to the foot of the field,
+// cooling from iron into water as it goes.
 //
-// Composition lives here rather than in FluidBackground: the order matters in
-// both directions. Banks go down before any water, water before molten so the
-// hot channel reads as nearer, and bridges last so a deck is never buried by the
-// channel it crosses.
+// Nothing branches. Clicking a river throws a bridge across it; clicking
+// anywhere else throws molten iron at the ground.
+//
+// Composition lives here because the order matters in both directions: banks
+// before water, water before iron so the hot channel crosses on top, the
+// fountain over the confluence it stands in, and the hero's cable last of all.
 
-import { paletteFor, smooth, clamp } from './palette';
+import { paletteFor, rgba, smooth, clamp } from './palette';
 import { createLattice } from './lattice';
-import { buildNetworks } from './network';
+import { buildNetwork } from './network';
 import { createChannels } from './channels';
 import { createBridges } from './bridges';
 import { createClouds } from './clouds';
 import { createCableBand } from './cableBand';
+import { createCrucible, POUR_SCROLL } from './crucible';
+import { createFountain } from './fountain';
+import { createSplash } from './splash';
 
 export { paletteFor };
 
 const ARRIVE_MS = 1700;
 
+// Where the crucible stands, as a screen height at the top of the page. Below
+// the hero band, which ends at 700.
+const SOURCE_Y = 880;
+
 // A different valley every visit, held for the life of the mount so the layout
-// never shifts under the reader — including across a theme flip, which rebuilds
-// the whole scene.
+// never shifts under the reader — including across a theme flip.
 const SEED = Math.floor(Math.random() * 0x7fffffff);
 
 export function createScene(ctx, palette, placed = [], { reduceMotion = false } = {}) {
     const lattice = createLattice();
     const channels = createChannels(ctx, palette, lattice, { reduceMotion });
     const bridges = createBridges(ctx, palette, lattice, placed, { reduceMotion });
-    // The hero keeps its cable band. It is a foreground element over the valley,
-    // in the same slot the water video and the waveform occupy, and it scrolls
-    // away with the hero instead of hanging over the whole page.
     const clouds = createClouds(ctx, palette, { reduceMotion });
     const cableBand = createCableBand(ctx, palette, lattice, { clouds });
-    let network = [];
+    const crucible = createCrucible(ctx, palette, lattice);
+    const fountain = createFountain(ctx, palette, lattice);
+    const splash = createSplash(ctx, palette, { reduceMotion });
 
-    // The page's own height decides how deep the lattice has to run, and it
-    // changes as islands hydrate and images load. That is an observer's job:
-    // reading scrollHeight forces a synchronous reflow, which does not belong in
-    // a callback that already runs every frame.
+    let network = null;
     let heightObserver = null;
     let pendingRebuild = true;
-
     let arriveFrom = null;
     let arrived = true;
 
@@ -59,31 +63,18 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         document.documentElement.scrollHeight - window.innerHeight,
     );
 
-    // Re-routes only when the field's dimensions actually moved. The observer
-    // fires for any body-height nudge, and re-routing on each one rebuilt the
-    // whole valley under the reader — and re-pointed their bridges onto whichever
-    // new channel happened to match, which moved them.
-    function rebuildIfNeeded(force) {
+    function rebuildIfNeeded() {
         const changed = lattice.resize(lattice.width(), lattice.height(), documentScroll());
         pendingRebuild = false;
-        if (!force && !changed && network.length) return;
-
-        network = buildNetworks(lattice, SEED);
-        // Anything already placed points at a channel object that no longer
-        // exists, and there is no honest way to map it onto the new layout, so
-        // the list is reseeded from scratch.
+        if (!changed && network) return;
+        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(SOURCE_Y, 0));
         placed.length = 0;
-        const trunks = network.filter((c) => c.order === 1);
-        trunks.forEach((channel, i) => {
-            if (i % 2) return;   // every other trunk, so the valley is not overbuilt
-            bridges.add(channel, Math.floor(channel.pts.length * 0.34), true);
-        });
     }
 
     function resize(width, height) {
         const changed = lattice.resize(width, height, documentScroll());
         cableBand.resize(width, height);
-        if (changed || !network.length) pendingRebuild = true;
+        if (changed || !network) pendingRebuild = true;
         if (heightObserver || typeof ResizeObserver === 'undefined') return;
         heightObserver = new ResizeObserver(() => { pendingRebuild = true; });
         heightObserver.observe(document.body);
@@ -94,8 +85,22 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         heightObserver = null;
     }
 
+    // The rivers should look as though they run out from under the hero rather
+    // than starting at a hard edge. This lays the ground colour back over them,
+    // opaque under the band and clearing by the time the crucible appears.
+    function heroFade(scrollY, width) {
+        const bandFoot = 700 - scrollY;
+        const clearBy = SOURCE_Y - 120 - scrollY;
+        if (clearBy <= 0) return;
+        const wash = ctx.createLinearGradient(0, bandFoot - 220, 0, clearBy);
+        wash.addColorStop(0, rgba(palette.ground, 1));
+        wash.addColorStop(1, rgba(palette.ground, 0));
+        ctx.fillStyle = wash;
+        ctx.fillRect(0, Math.min(0, bandFoot - 220), width, Math.max(0, clearBy) + 4);
+    }
+
     function frame(t, scrollY) {
-        if (pendingRebuild) rebuildIfNeeded(false);
+        if (pendingRebuild) rebuildIfNeeded();
         const width = lattice.width();
         const height = lattice.height();
 
@@ -109,25 +114,45 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         ctx.fillStyle = palette.ground;
         ctx.fillRect(0, 0, width, height);
 
-        // No drawn lattice. The rivers already carry the geometry, and a grid on
-        // top of them read as a second grid over the first.
-
-        // On arrival the networks fill in from their headwaters down.
-        const reveal = smooth(arrival);
+        // The pour is scrubbed by scroll: it is the reader who tips the ladle.
+        const pour = smooth(clamp(scrollY / POUR_SCROLL, 0, 1));
+        const reveal = {
+            molten: pour,
+            water: smooth(arrival),
+            combined: pour * smooth(arrival),
+        };
         channels.frame(network, scrollY, t, 1, reveal);
-        if (reveal > 0.55) bridges.frame(scrollY, t, clamp((reveal - 0.55) / 0.45, 0, 1));
+
+        // Ground back over the top, so the rivers emerge from behind the hero.
+        heroFade(scrollY, width);
+
+        // The fountain stands in the confluence, once there is iron reaching it.
+        const conf = lattice.project(network.confluence[0], network.confluence[1], scrollY);
+        if (conf[1] > -lattice.cell() * 6 && conf[1] < height + lattice.cell() * 6) {
+            fountain.frame(conf, t, clamp(pour * 1.4, 0, 1) * smooth(arrival), reduceMotion);
+        }
+
+        if (arrival > 0.55) bridges.frame(scrollY, t, clamp((arrival - 0.55) / 0.45, 0, 1));
+
+        // The crucible sits at the head of the molten, above the fade.
+        const src = lattice.project(network.source[0], network.source[1], scrollY);
+        if (src[1] > -lattice.cell() * 8 && src[1] < height + lattice.cell() * 8) {
+            crucible.frame(src, scrollY, t, reduceMotion);
+        }
+
+        splash.frame();
 
         // The hero's cable last, so it reads as the nearest thing on the page.
         cableBand.frame(scrollY, arrival, t);
     }
 
-    // A click on any channel throws a bridge across it. Returns true only when
-    // one was really placed, which is what the badge count is made of.
+    // A click on a river throws a bridge across it. A miss throws iron.
     function tap(x, y, scrollY) {
-        if (lattice.width() <= 0) return false;
-        const hit = bridges.pick(x, y, scrollY, network);
-        if (!hit) return false;
-        return bridges.add(hit.channel, hit.at, false);
+        if (lattice.width() <= 0 || !network) return false;
+        const hit = bridges.pick(x, y, scrollY, network.channels);
+        if (hit && bridges.add(hit.channel, hit.at, false)) return true;
+        splash.burst(x, y);
+        return false;
     }
 
     return { resize, frame, tap, arrive, dispose, bridgeCount: () => bridges.count() };
