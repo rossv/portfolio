@@ -4,7 +4,7 @@
 //   lenticular  — the Smithfield Street lens
 //   arch        — a tied arch, Fort Pitt and the West End
 //   hotmetal    — a through truss; the real Hot Metal Bridge carried crucibles
-//                 of iron across the Mon, so the molten river always gets it
+//                 of iron across the Mon
 //
 // These are volumes, not line drawings. Each bridge is built in its own local
 // frame and every piece is a shaded quad or a paired near/far member:
@@ -21,7 +21,9 @@
 import { rgba, clamp, smooth } from './palette';
 import { AXES, CHANNEL_WIDTH } from './lattice';
 
-const WATER_TYPES = ['sisters', 'lenticular', 'arch'];
+// Every silhouette can span either water or molten iron. Cycle each channel
+// independently so repeated placements on any one river expose the full set.
+const BRIDGE_TYPES = ['sisters', 'lenticular', 'arch', 'hotmetal'];
 
 // Nodes a new bridge must keep clear of an existing one, so two do not overlap.
 const MIN_GAP = 3;
@@ -227,12 +229,11 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
     function add(channel, at, silent = false) {
         const index = clamp(at, 1, channel.pts.length - 2);
         if (blocked(channel, index)) return false;
+        const channelBridgeCount = placed.filter((bridge) => bridge.channel === channel).length;
         placed.push({
             channel,
             at: index,
-            type: channel.kind === 'molten'
-                ? 'hotmetal'
-                : WATER_TYPES[placed.length % WATER_TYPES.length],
+            type: BRIDGE_TYPES[channelBridgeCount % BRIDGE_TYPES.length],
             born: silent || reduceMotion ? -1 : performance.now(),
         });
         return true;
