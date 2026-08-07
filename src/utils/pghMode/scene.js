@@ -74,8 +74,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     // over, iron lands, and the river flows down the page whatever the reader
     // does next. Scrubbing it with scroll meant the river drained backwards when
     // they scrolled up, which is not what a poured river does.
-    const TIP_MS = 900;
-    const FLOW_MS = 2600;
+    // Slow. A hundred tonnes of iron going over is not a quick movement, and the
+    // river it feeds should take its time reaching the foot of the page.
+    const TIP_MS = 2600;
+    const FLOW_MS = 5200;
     let pourFrom = null;
     let splashed = false;
 

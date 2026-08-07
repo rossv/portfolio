@@ -242,22 +242,107 @@ export function createCrucible(ctx, palette, lattice) {
             ctx.arc((lipX + ax) / 2, (lipY + ay) / 2, S * 4.5, 0, Math.PI * 2);
             ctx.fill();
 
-            const path = (w, colour) => {
-                ctx.strokeStyle = colour;
-                ctx.lineWidth = w;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(lipX, lipY);
-                ctx.bezierCurveTo(
-                    lipX + (ax - lipX) * 0.3, lipY + (ay - lipY) * 0.06,
-                    ax - (ax - lipX) * 0.1, lipY + (ay - lipY) * 0.6,
-                    ax, ay,
-                );
-                ctx.stroke();
+            // The stream is a ribbon with a width profile, not a stroked arc.
+            // Iron leaving a lip accelerates, and a falling stream has to thin as
+            // it speeds up to carry the same iron — so it necks through the fall
+            // and swells again where it piles into the ground. Three stacked
+            // strokes of even width could not say any of that.
+            const c0 = [lipX, lipY];
+            const c1 = [lipX + (ax - lipX) * 0.3, lipY + (ay - lipY) * 0.06];
+            const c2 = [ax - (ax - lipX) * 0.1, lipY + (ay - lipY) * 0.6];
+            const c3 = [ax, ay];
+            const at = (s) => {
+                const m = 1 - s;
+                return [
+                    m * m * m * c0[0] + 3 * m * m * s * c1[0] + 3 * m * s * s * c2[0] + s * s * s * c3[0],
+                    m * m * m * c0[1] + 3 * m * m * s * c1[1] + 3 * m * s * s * c2[1] + s * s * s * c3[1],
+                ];
             };
-            path(S * 0.42 * strength, rgba(palette.hot, 0.55));
-            path(S * 0.26 * strength, rgba(palette.hotter, 0.9));
-            path(S * 0.12 * strength, rgba(palette.molten, 0.98));
+            const w0 = S * 0.44 * strength;
+            const widthAt = (s) => {
+                const neck = w0 / Math.sqrt(1 + 2.8 * s);
+                const swell = w0 * 0.6 * clamp((s - 0.76) / 0.24, 0, 1) ** 2;
+                // A slow travelling undulation, so the column is never a static
+                // arc: real iron ropes and wobbles on the way down.
+                const flow = reduceMotion ? 1 : 1 + 0.14 * Math.sin(s * 8.5 - t * 0.005);
+                return (neck + swell) * flow;
+            };
+
+            const STEPS = 34;
+            const spine = [];
+            for (let i = 0; i <= STEPS; i += 1) {
+                const s = i / STEPS;
+                const p = at(s);
+                const q = at(Math.min(1, s + 0.01));
+                const len = Math.hypot(q[0] - p[0], q[1] - p[1]) || 1;
+                spine.push({ s, p, n: [-(q[1] - p[1]) / len, (q[0] - p[0]) / len] });
+            }
+            const ribbon = (k) => {
+                ctx.beginPath();
+                spine.forEach(({ p, n, s }, i) => {
+                    const w = widthAt(s) * k;
+                    const x = p[0] + n[0] * w;
+                    const y = p[1] + n[1] * w;
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                for (let i = spine.length - 1; i >= 0; i -= 1) {
+                    const { p, n, s } = spine[i];
+                    const w = widthAt(s) * k;
+                    ctx.lineTo(p[0] - n[0] * w, p[1] - n[1] * w);
+                }
+                ctx.closePath();
+            };
+
+            // heat haze around the column
+            ctx.fillStyle = rgba(palette.hot, 0.22);
+            ribbon(1.75);
+            ctx.fill();
+
+            // the body, hottest where it is thinnest and fastest
+            const body = ctx.createLinearGradient(lipX, lipY, ax, ay);
+            body.addColorStop(0, rgba(palette.hotter, 0.96));
+            body.addColorStop(0.45, rgba(palette.molten, 0.98));
+            body.addColorStop(1, rgba(palette.hot, 0.94));
+            ctx.fillStyle = body;
+            ribbon(1);
+            ctx.fill();
+
+            // striations running down the inside, which is what reads as flow
+            if (!reduceMotion) {
+                ctx.lineWidth = Math.max(1, S * 0.035);
+                for (let k = -1; k <= 1; k += 1) {
+                    ctx.strokeStyle = rgba(palette.crown, 0.3 + Math.abs(k) * -0.12);
+                    ctx.beginPath();
+                    let started = false;
+                    for (const { s, p, n } of spine) {
+                        // each streak is a moving window down the column
+                        const phase = (s * 2.4 - t * 0.0016 + k * 0.31) % 1;
+                        if (phase < 0.08 || phase > 0.46) { started = false; continue; }
+                        const off = widthAt(s) * k * 0.44;
+                        const x = p[0] + n[0] * off;
+                        const y = p[1] + n[1] * off;
+                        if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                // iron shedding off the edges on the way down
+                for (let i = 0; i < 9; i += 1) {
+                    const s = (hash(i * 13) + t * 0.0004) % 1;
+                    const { p, n } = spine[Math.floor(s * STEPS)];
+                    const side = hash(i) < 0.5 ? -1 : 1;
+                    const drift = ((t * 0.0007 + hash(i + 2)) % 1);
+                    const w = widthAt(s);
+                    ctx.fillStyle = rgba(palette.hotter, (1 - drift) * 0.8);
+                    ctx.beginPath();
+                    ctx.arc(
+                        p[0] + n[0] * side * (w + drift * S * 0.7),
+                        p[1] + n[1] * side * (w * 0.4) + drift * S * 1.1,
+                        S * 0.045 * (1 - drift) + 0.6, 0, Math.PI * 2,
+                    );
+                    ctx.fill();
+                }
+            }
 
             // the pool of light where it lands
             const pool = ctx.createRadialGradient(ax, ay, 0, ax, ay, S * 3.4);

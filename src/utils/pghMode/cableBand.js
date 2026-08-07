@@ -57,8 +57,14 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
     let painted = -1;
     let tick = 0;
 
+    // The buffer runs from the very top of the page, not from BAND_TOP. Starting
+    // it at the band left a strip of bare ground above the weather — a black bar
+    // across the top of the hero. The cable still sits where it did: it is drawn
+    // BAND_TOP further down inside a taller buffer.
+    const bufferHeight = (viewportH) => Math.ceil(bandHeight(viewportH)) + BAND_TOP;
+
     function resize(width, height) {
-        const h = Math.ceil(bandHeight(height));
+        const h = bufferHeight(height);
         if (buffer.width === width && buffer.height === h) return;
         buffer.width = Math.max(1, width);
         buffer.height = Math.max(1, h);
@@ -67,15 +73,21 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
 
     function paint(w, h, progress, t) {
         const c = bufferCtx;
-        c.clearRect(0, 0, w, h);
+        const full = h + BAND_TOP;
+        c.clearRect(0, 0, w, full);
 
-        // Overcast behind the cable, inside the band's own buffer so the mask at
-        // the foot of the band fades the weather out along with the structure.
+        // Overcast behind the cable, over the whole buffer so it reaches the top
+        // of the page, and inside the band so the mask at its foot fades the
+        // weather out along with the structure.
         if (clouds) {
             c.imageSmoothingEnabled = true;
             c.imageSmoothingQuality = 'high';
-            c.drawImage(clouds.frame(t, w), 0, 0, w, h);
+            c.drawImage(clouds.frame(t, w), 0, 0, w, full);
         }
+
+        // Everything below is the cable's own band, which begins BAND_TOP down.
+        c.save();
+        c.translate(0, BAND_TOP);
 
         // Held to a ceiling: tied straight to the taller band the cable came out
         // chunky, and the tube should read the same weight at any viewport.
@@ -177,13 +189,17 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
             }
         }
 
-        // Fade the lower part out, so the band never reaches the wordmark.
+        c.restore();
+
+        // Fade the lower part out, so the band never reaches the wordmark. In
+        // buffer coordinates, which is BAND_TOP below the band's own.
+        const fadeFrom = BAND_TOP + h * MASK_START;
         c.globalCompositeOperation = 'destination-out';
-        const mask = c.createLinearGradient(0, h * MASK_START, 0, h);
+        const mask = c.createLinearGradient(0, fadeFrom, 0, full);
         mask.addColorStop(0, 'rgba(0,0,0,0)');
         mask.addColorStop(1, 'rgba(0,0,0,1)');
         c.fillStyle = mask;
-        c.fillRect(0, h * MASK_START, w, h - h * MASK_START);
+        c.fillRect(0, fadeFrom, w, full - fadeFrom);
         c.globalCompositeOperation = 'source-over';
     }
 
@@ -197,9 +213,10 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         // rather than crawling across at one speed.
         const progress = 1 - (1 - arrival) * (1 - arrival);
 
-        // Scrolls with the page, like the DOM banner it stands in for.
-        const top = BAND_TOP - scrollY;
-        if (top + h <= 0 || top >= height) return;
+        // Scrolls with the page, like the DOM banner it stands in for. The buffer
+        // starts at the page top, so it lands at -scrollY.
+        const top = -scrollY;
+        if (top + bufferHeight(height) <= 0 || top >= height) return;
 
         // Repaint while the run is still building, and — because the overcast
         // drifts — every fourth frame after that. The cable itself is static, so

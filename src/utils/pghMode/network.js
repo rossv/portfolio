@@ -51,7 +51,55 @@ function staircase(rnd, from, to) {
     return pts;
 }
 
+// A straight run along one axis.
+function straight(from, axis, n) {
+    const pts = [];
+    let [x, y] = from;
+    for (let i = 0; i < n; i += 1) {
+        x += axis[0];
+        y += axis[1];
+        pts.push([x, y]);
+    }
+    return pts;
+}
+
+// How far back from the Point each river runs dead straight. The two use
+// different axes over this stretch, so they arrive at a right angle instead of
+// converging along the same line.
+const APPROACH = 9;
+
+// Chebyshev distance between two lattice cells.
+const gap = (a, b) => Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]));
+
+// The closest the two water rivers come to each other, ignoring the stretch
+// where they are meant to be converging.
+function closestApproach(a, b) {
+    const endA = a.length - APPROACH - 2;
+    const endB = b.length - APPROACH - 2;
+    let min = Infinity;
+    for (let i = 0; i < endA; i += 1) {
+        for (let j = 0; j < endB; j += 1) {
+            const d = gap(a[i], b[j]);
+            if (d < min) min = d;
+            if (min <= 1) return min;
+        }
+    }
+    return min;
+}
+
 export function buildNetwork(lattice, seed, sourceDepth) {
+    // Rivers that run within two cells of each other read as one doubled channel
+    // rather than as two rivers, so a layout that does that is thrown away and
+    // re-rolled. Ten attempts is plenty; past that, take what we have.
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+        const built = attemptNetwork(lattice, seed + attempt * 7919, sourceDepth);
+        if (!built) continue;
+        if (built.separation >= 3 || attempt === 9) return built;
+    }
+    return attemptNetwork(lattice, seed, sourceDepth);
+}
+
+function attemptNetwork(lattice, seed, sourceDepth) {
     const rnd = mulberry(seed);
     const u = lattice.halfWidth();
     const v = lattice.depth();
@@ -61,17 +109,21 @@ export function buildNetwork(lattice, seed, sourceDepth) {
     const confD = Math.round(v * 0.30 + rnd() * v * 0.04);
     const confluence = lattice.cellAt(confA, confD);
 
+    // Each river runs straight into the Point over its last stretch, on its own
+    // axis: the Allegheny down-right, the Monongahela down-left. That is what
+    // makes the junction a V rather than two channels sliding together.
+    const alleghenyGate = [confluence[0] - APPROACH * AXES[0][0], confluence[1] - APPROACH * AXES[0][1]];
+    const monGate = [confluence[0] - APPROACH * AXES[1][0], confluence[1] - APPROACH * AXES[1][1]];
+
     // Allegheny: in at the very top, so it runs out from behind the hero.
     const alleghenyStart = lattice.cellAt(Math.round(u * (0.05 + rnd() * 0.3)), 0);
 
-    // Monongahela: in from the right edge. Its start has to be upstream of the
-    // Point on both axes, which — the edge being far across — puts it above as
+    // Monongahela: in from the right edge. Its start has to be upstream of its
+    // own gate on both axes, which — the edge being far across — puts it above as
     // well as beside. A river entering from the side still runs downhill.
     const monA = u;
-    const monD = Math.min(
-        confD + confA - monA,
-        confD - confA + monA,
-    ) - 2 - Math.floor(rnd() * 5);
+    const monD = confD - Math.round(u * 0.66) - 2 - Math.floor(rnd() * 5);
+    if (monD < 1) return null;
     const monStart = lattice.cellAt(monA, monD);
 
     // Ohio: away from the Point and down the right.
@@ -81,14 +133,24 @@ export function buildNetwork(lattice, seed, sourceDepth) {
     const source = lattice.cellAt(Math.round(-u * 0.46), sourceDepth);
     const ironOut = lattice.cellAt(Math.round(-u * (0.6 + rnd() * 0.25)), v);
 
+    const alleghenyPts = staircase(rnd, alleghenyStart, alleghenyGate)
+        .concat(straight(alleghenyGate, AXES[0], APPROACH));
+    const monPts = staircase(rnd, monStart, monGate)
+        .concat(straight(monGate, AXES[1], APPROACH));
+
     const channels = [
-        { kind: 'water', name: 'allegheny', pts: staircase(rnd, alleghenyStart, confluence) },
-        { kind: 'water', name: 'monongahela', pts: staircase(rnd, monStart, confluence) },
+        { kind: 'water', name: 'allegheny', pts: alleghenyPts },
+        { kind: 'water', name: 'monongahela', pts: monPts },
         // The Ohio is water. It leaves the Point as a river, not as iron: the
         // iron never reaches the confluence, it runs its own course down the left.
         { kind: 'water', name: 'ohio', pts: staircase(rnd, confluence, ohio) },
         { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut) },
     ];
 
-    return { channels, source, confluence };
+    return {
+        channels,
+        source,
+        confluence,
+        separation: closestApproach(alleghenyPts, monPts),
+    };
 }
