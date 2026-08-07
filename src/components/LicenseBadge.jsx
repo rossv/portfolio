@@ -11,7 +11,7 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
             tabIndex={0}
             aria-expanded={isHovered}
             aria-label={`${label} license — ${isHovered ? 'hide' : 'show'} details`}
-            className={`relative cursor-pointer overflow-hidden rounded bg-transparent ${isHovered ? 'z-50' : 'z-10'}`}
+            className={`relative h-11 cursor-pointer overflow-hidden rounded bg-transparent ${isHovered ? 'z-50' : 'z-10'}`}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             onClick={() => setIsHovered(!isHovered)}
@@ -25,7 +25,7 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
         >
             <motion.div
                 layout
-                className={`space-accent-pill flex items-center ${bgColor} text-white shadow-lg`}
+                className={`space-accent-pill flex h-full items-center ${bgColor} text-white shadow-lg`}
                 style={{ borderRadius: '0.25rem' }} // standard rounded
             >
                 <motion.div
