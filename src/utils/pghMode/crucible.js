@@ -87,18 +87,21 @@ export function createCrucible(ctx, palette, lattice) {
     // the ground is.
     const MAX_ANGLE = 1.32;
 
-    function frame(anchor, t, tip, reduceMotion) {
+    function frame(anchor, t, tip, travel, reduceMotion) {
         const [ax, ay] = anchor;
         const S = lattice.cell();
         const R = S * 2.25;          // rim radius
         const H = S * 2.85;          // barrel height
         const angle = tip * MAX_ANGLE;
 
-        // Pivot: the trunnion line. The ladle hangs above and left of where the
-        // iron lands, and tips toward it.
-        const px = ax - S * 2.6;
+        // Pivot: the trunnion line. The ladle travels along the girder before it
+        // tips, from a parking spot at the far end of the bay to the pour, so the
+        // crane reads as having fetched it rather than as having always been here.
         const py = ay - H * 1.5;
         const beamY = py - H * 1.5;
+        const parkX = ax - S * 14;
+        const pourX = ax - S * 2.6;
+        const px = parkX + (pourX - parkX) * travel;
 
         // Everything the pour draws, in three layers that must agree with one
         // another: the spill sheet inside the mouth, the falling column, and
@@ -133,28 +136,39 @@ export function createCrucible(ctx, palette, lattice) {
         }
 
         /* ---------- the crane above ---------- */
-        // main girder, with a lit top flange and a dark web beneath
-        const halfBeam = R * 3.1;
+        // The girder is fixed to the bay, not to the ladle: a crane rail does not
+        // follow its load. It spans the whole hall so the ladle has somewhere to
+        // have come from.
+        const beamL = ax - S * 17.5;
+        const beamR = ax + S * 5.5;
         ctx.fillStyle = rgba(palette.steel, 0.5);
-        ctx.fillRect(px - halfBeam, beamY, halfBeam * 2, S * 0.62);
+        ctx.fillRect(beamL, beamY, beamR - beamL, S * 0.62);
         ctx.fillStyle = rgba(palette.structure, 0.34);
-        ctx.fillRect(px - halfBeam, beamY, halfBeam * 2, S * 0.16);
+        ctx.fillRect(beamL, beamY, beamR - beamL, S * 0.16);
         ctx.fillStyle = rgba(palette.ground, 0.34);
-        ctx.fillRect(px - halfBeam, beamY + S * 0.46, halfBeam * 2, S * 0.16);
+        ctx.fillRect(beamL, beamY + S * 0.46, beamR - beamL, S * 0.16);
         // web stiffeners
         ctx.strokeStyle = rgba(palette.ground, 0.4);
         ctx.lineWidth = 1.4;
-        for (let i = -5; i <= 5; i += 1) {
-            const x = px + (halfBeam * i) / 5.5;
+        for (let x = beamL + S; x < beamR; x += S * 1.4) {
             ctx.beginPath();
             ctx.moveTo(x, beamY + S * 0.1);
             ctx.lineTo(x, beamY + S * 0.56);
             ctx.stroke();
         }
-        // end trucks
+        // end trucks, on the rails at either end of the bay
         ctx.fillStyle = rgba(palette.steel, 0.42);
+        ctx.fillRect(beamL, beamY - S * 0.3, S * 0.5, S * 1.15);
+        ctx.fillRect(beamR - S * 0.5, beamY - S * 0.3, S * 0.5, S * 1.15);
+
+        // The trolley, which does travel: it is what carries the hoist along.
+        ctx.fillStyle = rgba(palette.steel, 0.72);
+        ctx.fillRect(px - S * 0.95, beamY - S * 0.34, S * 1.9, S * 0.4);
+        ctx.fillStyle = rgba(palette.structure, 0.4);
         for (const s of [-1, 1]) {
-            ctx.fillRect(px + s * halfBeam - (s < 0 ? 0 : S * 0.5), beamY - S * 0.3, S * 0.5, S * 1.15);
+            ctx.beginPath();
+            ctx.arc(px + s * S * 0.6, beamY - S * 0.34, S * 0.14, 0, Math.PI * 2);
+            ctx.fill();
         }
 
         /* ---------- hoist chains and sheave block ---------- */

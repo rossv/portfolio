@@ -21,6 +21,7 @@ import { createBridges } from './bridges';
 import { createClouds } from './clouds';
 import { createCableBand } from './cableBand';
 import { createCrucible } from './crucible';
+import { createMillHall } from './millHall';
 import { createFountain } from './fountain';
 import { createSplash } from './splash';
 
@@ -60,6 +61,7 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     const clouds = createClouds(ctx, palette, { reduceMotion });
     const cableBand = createCableBand(ctx, palette, lattice, { clouds });
     const crucible = createCrucible(ctx, palette, lattice);
+    const millHall = createMillHall(ctx, palette, lattice);
     const fountain = createFountain(ctx, palette, lattice);
     const splash = createSplash(ctx, palette, { reduceMotion });
 
@@ -76,6 +78,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     // they scrolled up, which is not what a poured river does.
     // Slow. A hundred tonnes of iron going over is not a quick movement, and the
     // river it feeds should take its time reaching the foot of the page.
+    // The crane fetches the ladle along the girder first, then tips it. Slow: a
+    // hundred tonnes of iron is not a quick movement, and the river it feeds
+    // should take its time reaching the foot of the page.
+    const TRAVEL_MS = 2600;
     const TIP_MS = 2600;
     const FLOW_MS = 5200;
     let pourFrom = null;
@@ -152,11 +158,14 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         // Start the pour the first time the ladle is on screen, then let it run.
         const src = lattice.project(network.source[0], network.source[1], scrollY);
         if (pourFrom === null && src[1] < height * 0.92 && src[1] > -lattice.cell() * 6) {
-            pourFrom = reduceMotion ? t - TIP_MS - FLOW_MS : t;
+            // Under reduced motion the whole sequence is already behind us: the
+            // ladle is over the pour, tipped, and the river is run.
+            pourFrom = reduceMotion ? t - TRAVEL_MS - TIP_MS - FLOW_MS : t;
         }
         const since = pourFrom === null ? 0 : t - pourFrom;
-        const pour = smooth(clamp(since / TIP_MS, 0, 1));
-        const flow = smooth(clamp((since - TIP_MS * 0.55) / FLOW_MS, 0, 1));
+        const travel = smooth(clamp(since / TRAVEL_MS, 0, 1));
+        const pour = smooth(clamp((since - TRAVEL_MS) / TIP_MS, 0, 1));
+        const flow = smooth(clamp((since - TRAVEL_MS - TIP_MS * 0.55) / FLOW_MS, 0, 1));
 
         // One heavy splash the moment the stream lands.
         if (!splashed && pour > 0.34) {
@@ -181,9 +190,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
         if (arrival > 0.55) bridges.frame(scrollY, t, clamp((arrival - 0.55) / 0.45, 0, 1));
 
-        // The ladle, at the head of the iron.
-        if (src[1] > -lattice.cell() * 10 && src[1] < height + lattice.cell() * 10) {
-            crucible.frame(src, t, pour, reduceMotion);
+        // The mill bay, then the crane and the ladle standing inside it.
+        if (src[1] > -lattice.cell() * 16 && src[1] < height + lattice.cell() * 12) {
+            millHall.frame(src, t, pour, reduceMotion);
+            crucible.frame(src, t, pour, travel, reduceMotion);
         }
 
         splash.frame();
