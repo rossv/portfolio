@@ -28,6 +28,14 @@ const MASK_START = 0.55;
 // the cable enters low on the left and climbs to a tower beyond the right edge.
 const CABLE_LEFT = 0.70;
 const CABLE_RIGHT = 0.04;
+// On narrow screens the stacked hero copy starts much higher than it does in
+// the desktop two-column layout. Lift the cable's low end into the open space
+// above the wordmark so the gold tube never runs through the name. The desktop
+// composition keeps the deeper sweep from the reference image.
+const MOBILE_CABLE_LEFT = 0.40;
+const MOBILE_CABLE_RIGHT = 0.02;
+const MOBILE_WIDTH = 640;
+const DESKTOP_WIDTH = 1024;
 
 // Vertex off to the left, so the whole visible run is one rising limb.
 const K = 1.8;
@@ -42,9 +50,12 @@ const BAND_STEP = 0.108;
 // rather than as one lamp per hanger.
 const LIGHT_STEP = BAND_STEP / 4;
 
-function cableY(t, h) {
+function cableY(t, h, w) {
     const raw = (Math.cosh(K * (t - VERTEX)) - 1 - RAW_0) / (RAW_1 - RAW_0);
-    return h * (CABLE_LEFT + (CABLE_RIGHT - CABLE_LEFT) * raw);
+    const desktopMix = clamp((w - MOBILE_WIDTH) / (DESKTOP_WIDTH - MOBILE_WIDTH), 0, 1);
+    const left = MOBILE_CABLE_LEFT + (CABLE_LEFT - MOBILE_CABLE_LEFT) * desktopMix;
+    const right = MOBILE_CABLE_RIGHT + (CABLE_RIGHT - MOBILE_CABLE_RIGHT) * desktopMix;
+    return h * (left + (right - left) * raw);
 }
 
 export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
@@ -106,7 +117,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
             const drop = clamp((progress - t) / 0.16, 0, 1);
             if (drop <= 0) continue;
             const x = t * w;
-            const y = cableY(t, h);
+            const y = cableY(t, h, w);
             const spread = tube * 0.42;
             c.globalAlpha = 0.92;
             for (const dx of [-spread, spread]) {
@@ -119,7 +130,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         c.globalAlpha = 1;
 
         // --- the cable, shaded across its thickness so it reads as round ---
-        const mid = cableY(0.5, h);
+        const mid = cableY(0.5, h, w);
         const shade = c.createLinearGradient(0, mid - tube, 0, mid + tube);
         shade.addColorStop(0, palette.cableLow);
         shade.addColorStop(0.32, palette.accent);
@@ -131,10 +142,10 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         c.beginPath();
         for (let t = 0; t <= progress; t += STEP) {
             const x = t * w;
-            const y = cableY(t, h);
+            const y = cableY(t, h, w);
             if (t === 0) c.moveTo(x, y); else c.lineTo(x, y);
         }
-        if (progress > 0) c.lineTo(progress * w, cableY(progress, h));
+        if (progress > 0) c.lineTo(progress * w, cableY(progress, h, w));
         c.stroke();
 
         // A lit crown along the top edge. This is what sells the cylinder.
@@ -143,7 +154,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         c.beginPath();
         for (let t = 0; t <= progress; t += STEP) {
             const x = t * w;
-            const y = cableY(t, h) - tube * 0.3;
+            const y = cableY(t, h, w) - tube * 0.3;
             if (t === 0) c.moveTo(x, y); else c.lineTo(x, y);
         }
         c.stroke();
@@ -153,8 +164,8 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
         for (const t of bands) {
             if (progress < t) continue;
             const x = t * w;
-            const y = cableY(t, h);
-            const ahead = cableY(Math.min(1, t + 0.01), h);
+            const y = cableY(t, h, w);
+            const ahead = cableY(Math.min(1, t + 0.01), h, w);
             c.save();
             c.translate(x, y);
             c.rotate(Math.atan2(ahead - y, 0.01 * w));
@@ -174,7 +185,7 @@ export function createCableBand(ctx, palette, geom, { clouds = null } = {}) {
                 const on = clamp((progress - t - 0.06) / 0.22, 0, 1);
                 if (on <= 0) continue;
                 const x = t * w;
-                const y = cableY(t, h) - tube * 0.52;
+                const y = cableY(t, h, w) - tube * 0.52;
                 const glow = c.createRadialGradient(x, y, 0, x, y, halo);
                 glow.addColorStop(0, rgba(palette.accent, 0.30 * on));
                 glow.addColorStop(1, rgba(palette.accent, 0));
