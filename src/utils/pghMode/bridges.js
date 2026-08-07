@@ -19,9 +19,21 @@
 // it is why these read as objects rather than as flat symbols.
 
 import { rgba, clamp, smooth } from './palette';
-import { AXES } from './lattice';
+import { AXES, CHANNEL_WIDTH } from './lattice';
 
 const WATER_TYPES = ['sisters', 'lenticular', 'arch'];
+
+// Nodes a new bridge must keep clear of an existing one, so two do not overlap.
+const MIN_GAP = 3;
+
+// Distance from a point to a segment, and how far along it the foot fell.
+function toSegment(px, py, ax, ay, bx, by) {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len2 = dx * dx + dy * dy || 1;
+    const s = clamp(((px - ax) * dx + (py - ay) * dy) / len2, 0, 1);
+    return { d: Math.hypot(px - (ax + dx * s), py - (ay + dy * s)), s };
+}
 
 export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion = false } = {}) {
     // Builds the local frame for one bridge and returns a point mapper.
@@ -208,10 +220,13 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
         },
     };
 
+    const blocked = (channel, at) =>
+        placed.some((b) => b.channel === channel && Math.abs(b.at - at) < MIN_GAP);
+
     // One bridge per stretch: repeated clicks in the same place do not stack.
     function add(channel, at, silent = false) {
         const index = clamp(at, 1, channel.pts.length - 2);
-        if (placed.some((b) => b.channel === channel && Math.abs(b.at - index) < 4)) return false;
+        if (blocked(channel, index)) return false;
         placed.push({
             channel,
             at: index,
@@ -250,19 +265,52 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
         }
     }
 
-    // Nearest channel node to a click, within reach.
+    // Where a click lands on a channel.
+    //
+    // Measured to the channel's segments rather than to its nodes. Nodes are a
+    // cell apart, so a node test makes the target a string of circles with thin
+    // spots between them — which is what made this feel fussy. Against segments
+    // the target is the drawn ribbon itself, and the reach is the ribbon's own
+    // half-width plus a margin, so anywhere on the water counts.
     function pick(px, py, scrollY, channels) {
+        const cell = lattice.cell();
+        const reach = cell * CHANNEL_WIDTH * 0.5 + cell * 0.7;
         let best = null;
+
         for (const channel of channels) {
-            for (let i = 1; i < channel.pts.length - 1; i += 1) {
-                const [gx, gy] = channel.pts[i];
-                if (!lattice.onScreen(gx, gy, scrollY)) continue;
-                const [sx, sy] = lattice.project(gx, gy, scrollY);
-                const d = Math.hypot(sx - px, sy - py);
-                if (!best || d < best.d) best = { d, channel, at: i };
+            const pts = channel.pts;
+            for (let i = 1; i < pts.length - 2; i += 1) {
+                const a = pts[i];
+                const b = pts[i + 1];
+                if (!lattice.onScreen(a[0], a[1], scrollY) && !lattice.onScreen(b[0], b[1], scrollY)) continue;
+                const [ax, ay] = lattice.project(a[0], a[1], scrollY);
+                const [bx, by] = lattice.project(b[0], b[1], scrollY);
+                const hit = toSegment(px, py, ax, ay, bx, by);
+                if (!best || hit.d < best.d) {
+                    best = { d: hit.d, channel, at: i + Math.round(hit.s) };
+                }
             }
         }
-        return best && best.d <= lattice.cell() * 1.2 ? best : null;
+        if (!best || best.d > reach) return null;
+
+        // If that spot is too close to a bridge already standing, step along the
+        // channel to the nearest place that will take one. Falling through to a
+        // splash instead made a refused placement indistinguishable from a miss,
+        // which is most of why this read as needing precision.
+        const last = best.channel.pts.length - 2;
+        if (blocked(best.channel, best.at)) {
+            for (let step = 1; step <= MIN_GAP + 2; step += 1) {
+                if (best.at + step <= last && !blocked(best.channel, best.at + step)) {
+                    best.at += step;
+                    break;
+                }
+                if (best.at - step >= 1 && !blocked(best.channel, best.at - step)) {
+                    best.at -= step;
+                    break;
+                }
+            }
+        }
+        return best;
     }
 
     return { add, frame, pick, count: () => placed.length };

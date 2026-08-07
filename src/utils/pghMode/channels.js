@@ -3,10 +3,7 @@
 // page.
 
 import { rgba, hash, clamp } from './palette';
-
-// Three times the earlier width. These are the subject of the backdrop now that
-// nothing branches, so they carry it.
-const WIDTH = 1.86;
+import { CHANNEL_WIDTH } from './lattice';
 
 export function createChannels(ctx, palette, lattice, { reduceMotion = false } = {}) {
     function screenPoints(channel, scrollY) {
@@ -148,7 +145,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
     // `reveal` per kind: the molten is scrubbed by the crucible's pour, the rest
     // simply arrives.
     function frame(network, scrollY, t, g, reveal) {
-        const wide = lattice.cell() * WIDTH;
+        const wide = lattice.cell() * CHANNEL_WIDTH;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
         const projected = new Map();

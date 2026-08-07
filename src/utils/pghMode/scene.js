@@ -43,6 +43,16 @@ const SOURCE_MIN_INTO = 700;
 const HERO_FOOT = 700;
 const HERO_FADE = 260;
 
+// No bridges in the hero. The rule follows from the wash that hides the rivers
+// up there: you can build where you can see water, and not where you cannot. The
+// hero section's own height is the honest boundary, with the end of the wash as
+// the fallback if that section is not on the page.
+function heroFootDocumentY() {
+    const hero = document.querySelector('.hero-shell');
+    if (!hero) return HERO_FOOT + HERO_FADE;
+    return Math.max(HERO_FOOT + HERO_FADE, hero.offsetTop + hero.offsetHeight);
+}
+
 function sourceDocumentY() {
     const skills = document.getElementById('skills');
     if (!skills) return SOURCE_FALLBACK_Y;
@@ -202,9 +212,15 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         cableBand.frame(scrollY, arrival, t);
     }
 
-    // A click on a river throws a bridge across it. A miss throws iron.
+    // A click on a river throws a bridge across it. A miss throws iron. In the
+    // hero, only ever iron: the rivers are washed out up there, so a bridge would
+    // arrive out of nothing.
     function tap(x, y, scrollY) {
         if (lattice.width() <= 0 || !network) return false;
+        if (y + scrollY < heroFootDocumentY()) {
+            splash.burst(x, y);
+            return false;
+        }
         const hit = bridges.pick(x, y, scrollY, network.channels);
         if (hit && bridges.add(hit.channel, hit.at, false)) return true;
         splash.burst(x, y);

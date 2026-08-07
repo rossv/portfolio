@@ -13,6 +13,11 @@
 export const CELL = 38;        // px between neighbouring lattice nodes
 export const PARALLAX = 0.45;  // ground-plane travel per pixel of page scroll
 
+// Channel width, in cells. Lives here rather than in channels.js because the hit
+// test needs the same number the channel is drawn with: when they disagree, the
+// clickable strip stops matching the thing on screen.
+export const CHANNEL_WIDTH = 1.86;
+
 // Rivers run on the lattice axes only, which is the whole routing vocabulary:
 // every turn between them is 90 degrees, and because the axes project to the
 // screen's two 30-degree diagonals, a channel never runs straight up, down, or
