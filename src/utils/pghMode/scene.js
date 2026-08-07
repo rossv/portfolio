@@ -20,7 +20,7 @@ import { createChannels } from './channels';
 import { createBridges } from './bridges';
 import { createClouds } from './clouds';
 import { createCableBand } from './cableBand';
-import { createCrucible, POUR_SCROLL } from './crucible';
+import { createCrucible, tipFor } from './crucible';
 import { createFountain } from './fountain';
 import { createSplash } from './splash';
 
@@ -28,9 +28,21 @@ export { paletteFor };
 
 const ARRIVE_MS = 1700;
 
-// Where the crucible stands, as a screen height at the top of the page. Below
-// the hero band, which ends at 700.
-const SOURCE_Y = 880;
+// The crucible stands in the expertise section, a little past its top edge, and
+// in the same place every visit — only the shape of the reaches is seeded. If
+// that section is not on the page, it falls back to a fixed document height.
+const SOURCE_FALLBACK_Y = 1500;
+const SOURCE_INTO_SECTION = 320;
+
+// The hero band's foot, and how far below it the rivers finish emerging.
+const HERO_FOOT = 700;
+const HERO_FADE = 260;
+
+function sourceDocumentY() {
+    const skills = document.getElementById('skills');
+    if (!skills) return SOURCE_FALLBACK_Y;
+    return skills.offsetTop + SOURCE_INTO_SECTION;
+}
 
 // A different valley every visit, held for the life of the mount so the layout
 // never shifts under the reader — including across a theme flip.
@@ -67,7 +79,11 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         const changed = lattice.resize(lattice.width(), lattice.height(), documentScroll());
         pendingRebuild = false;
         if (!changed && network) return;
-        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(SOURCE_Y, 0));
+        // Pin the ladle to a document position: the depth that puts it mid
+        // viewport when the reader has that part of the page in front of them.
+        const docY = sourceDocumentY();
+        const half = lattice.height() / 2;
+        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half));
         placed.length = 0;
     }
 
@@ -89,8 +105,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     // than starting at a hard edge. This lays the ground colour back over them,
     // opaque under the band and clearing by the time the crucible appears.
     function heroFade(scrollY, width) {
-        const bandFoot = 700 - scrollY;
-        const clearBy = SOURCE_Y - 120 - scrollY;
+        // Tied to the hero band, not to the ladle: the ladle is far down the
+        // page now, and the fade only has the hero to hide behind.
+        const bandFoot = HERO_FOOT - scrollY;
+        const clearBy = HERO_FOOT + HERO_FADE - scrollY;
         if (clearBy <= 0) return;
         const wash = ctx.createLinearGradient(0, bandFoot - 220, 0, clearBy);
         wash.addColorStop(0, rgba(palette.ground, 1));
@@ -114,30 +132,31 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         ctx.fillStyle = palette.ground;
         ctx.fillRect(0, 0, width, height);
 
-        // The pour is scrubbed by scroll: it is the reader who tips the ladle.
-        const pour = smooth(clamp(scrollY / POUR_SCROLL, 0, 1));
+        // The pour is scrubbed by scroll: the ladle tips as the reader carries it
+        // up the viewport, and the iron only runs as far as it has been poured.
+        const src = lattice.project(network.source[0], network.source[1], scrollY);
+        const pour = tipFor(src[1], height);
         const reveal = {
             molten: pour,
             water: smooth(arrival),
-            combined: pour * smooth(arrival),
+            combined: smooth(arrival),
         };
         channels.frame(network, scrollY, t, 1, reveal);
 
         // Ground back over the top, so the rivers emerge from behind the hero.
         heroFade(scrollY, width);
 
-        // The fountain stands in the confluence, once there is iron reaching it.
+        // The fountain stands at the Point, where the two water rivers meet.
         const conf = lattice.project(network.confluence[0], network.confluence[1], scrollY);
-        if (conf[1] > -lattice.cell() * 6 && conf[1] < height + lattice.cell() * 6) {
-            fountain.frame(conf, t, clamp(pour * 1.4, 0, 1) * smooth(arrival), reduceMotion);
+        if (conf[1] > -lattice.cell() * 8 && conf[1] < height + lattice.cell() * 8) {
+            fountain.frame(conf, t, smooth(arrival), reduceMotion);
         }
 
         if (arrival > 0.55) bridges.frame(scrollY, t, clamp((arrival - 0.55) / 0.45, 0, 1));
 
-        // The crucible sits at the head of the molten, above the fade.
-        const src = lattice.project(network.source[0], network.source[1], scrollY);
-        if (src[1] > -lattice.cell() * 8 && src[1] < height + lattice.cell() * 8) {
-            crucible.frame(src, scrollY, t, reduceMotion);
+        // The ladle, at the head of the iron.
+        if (src[1] > -lattice.cell() * 10 && src[1] < height + lattice.cell() * 10) {
+            crucible.frame(src, t, pour, reduceMotion);
         }
 
         splash.frame();
