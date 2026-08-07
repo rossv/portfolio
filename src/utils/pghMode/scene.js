@@ -31,8 +31,12 @@ const ARRIVE_MS = 1700;
 // The crucible stands in the expertise section, a little past its top edge, and
 // in the same place every visit — only the shape of the reaches is seeded. If
 // that section is not on the page, it falls back to a fixed document height.
-const SOURCE_FALLBACK_Y = 1500;
-const SOURCE_INTO_SECTION = 320;
+const SOURCE_FALLBACK_Y = 2400;
+// How far into the expertise section the ladle stands, as a fraction of that
+// section's own height with a floor — a fraction rather than a fixed offset so
+// it stays well down the section whatever the section grows to.
+const SOURCE_INTO_SECTION = 0.62;
+const SOURCE_MIN_INTO = 700;
 
 // The hero band's foot, and how far below it the rivers finish emerging.
 const HERO_FOOT = 700;
@@ -41,7 +45,8 @@ const HERO_FADE = 260;
 function sourceDocumentY() {
     const skills = document.getElementById('skills');
     if (!skills) return SOURCE_FALLBACK_Y;
-    return skills.offsetTop + SOURCE_INTO_SECTION;
+    return skills.offsetTop
+        + Math.max(SOURCE_MIN_INTO, skills.offsetHeight * SOURCE_INTO_SECTION);
 }
 
 // A different valley every visit, held for the life of the mount so the layout
@@ -139,7 +144,6 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         const reveal = {
             molten: pour,
             water: smooth(arrival),
-            combined: smooth(arrival),
         };
         channels.frame(network, scrollY, t, 1, reveal);
 

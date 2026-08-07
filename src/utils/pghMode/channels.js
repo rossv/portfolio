@@ -66,41 +66,6 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         trace(pts);
     }
 
-    // The combined river: iron at the confluence, water by the time it leaves.
-    function combined(pts, wide, g, t) {
-        const [x0, y0] = pts[0];
-        const [x1, y1] = pts[pts.length - 1];
-        const cool = ctx.createLinearGradient(x0, y0, x1, y1);
-        cool.addColorStop(0, rgba(palette.hot, 0.95 * g));
-        cool.addColorStop(0.22, rgba(palette.hot, 0.8 * g));
-        cool.addColorStop(0.55, rgba(palette.water, 0.96 * g));
-        cool.addColorStop(1, rgba(palette.water, 0.98 * g));
-        ctx.strokeStyle = cool;
-        ctx.lineWidth = wide;
-        trace(pts);
-
-        const core = ctx.createLinearGradient(x0, y0, x1, y1);
-        core.addColorStop(0, rgba(palette.hotter, 0.8 * g));
-        core.addColorStop(0.3, rgba(palette.hot, 0.35 * g));
-        core.addColorStop(0.55, rgba(palette.waterLit, 0.4 * g));
-        core.addColorStop(1, rgba(palette.waterLit, 0.42 * g));
-        ctx.strokeStyle = core;
-        ctx.lineWidth = wide * 0.5;
-        trace(pts);
-
-        ctx.strokeStyle = rgba(palette.surf, 0.34 * g);
-        ctx.lineWidth = 1.5;
-        const count = Math.min(12, Math.floor(pts.length / 7));
-        for (let i = 0; i < count; i += 1) {
-            const k = 0.4 + 0.6 * ((hash(i * 5 + 2) + (reduceMotion ? 0 : t * 0.00008)) % 1);
-            const a = Math.floor(k * (pts.length - 3));
-            ctx.beginPath();
-            ctx.moveTo(pts[a][0], pts[a][1]);
-            ctx.lineTo(pts[a + 2][0], pts[a + 2][1]);
-            ctx.stroke();
-        }
-    }
-
     // `reveal` per kind: the molten is scrubbed by the crucible's pour, the rest
     // simply arrives.
     function frame(network, scrollY, t, g, reveal) {
@@ -126,14 +91,12 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
             trace(pts);
         }
 
-        // Water, then the combined river, then molten on top: the hot channel
-        // reads as the nearest thing, and it crosses the water rather than
-        // being interrupted by it.
-        for (const pass of ['water', 'combined', 'molten']) {
+        // Water first, then molten on top: the hot channel reads as the nearest
+        // thing, and it crosses the water rather than being interrupted by it.
+        for (const pass of ['water', 'molten']) {
             for (const [channel, pts] of projected) {
                 if (channel.kind !== pass) continue;
                 if (pass === 'water') water(pts, wide, g, t);
-                else if (pass === 'combined') combined(pts, wide, g, t);
                 else molten(pts, wide, g);
             }
         }

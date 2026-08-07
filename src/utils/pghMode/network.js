@@ -84,7 +84,9 @@ export function buildNetwork(lattice, seed, sourceDepth) {
     const channels = [
         { kind: 'water', name: 'allegheny', pts: staircase(rnd, alleghenyStart, confluence) },
         { kind: 'water', name: 'monongahela', pts: staircase(rnd, monStart, confluence) },
-        { kind: 'combined', name: 'ohio', pts: staircase(rnd, confluence, ohio) },
+        // The Ohio is water. It leaves the Point as a river, not as iron: the
+        // iron never reaches the confluence, it runs its own course down the left.
+        { kind: 'water', name: 'ohio', pts: staircase(rnd, confluence, ohio) },
         { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut) },
     ];
 
