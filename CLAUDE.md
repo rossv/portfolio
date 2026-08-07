@@ -47,6 +47,7 @@ portfolio/
 │   │   ├── badges/      # Recognition badges (SVG)
 │   │   ├── icons/       # Tool/skill icons (coding, data, eng-viz, gis, hero, hh)
 │   │   ├── logos/       # Company logos
+│   │   ├── pgh/         # Isometric landmark tiles for the Pittsburgh backdrop
 │   │   ├── projects/    # Project images (WebP preferred)
 │   │   ├── recognition/ # Award/recognition photos (WebP)
 │   │   ├── skylines/    # City skyline images
@@ -78,7 +79,8 @@ portfolio/
 ├── public/                   # Static assets served as-is (favicons, manifest, og-image, assets/news/)
 ├── scripts/                  # Node maintenance scripts (not run in CI)
 │   ├── generate-og.mjs        # Regenerate public/og-image.png
-│   └── optimize-images.mjs    # Batch image compression helper
+│   ├── optimize-images.mjs    # Batch image compression helper
+│   └── prepare-landmarks.mjs  # Cleans isometric landmark art → src/assets/pgh/
 ├── astro.config.mjs          # Astro + Vite configuration
 ├── tailwind.config.mjs       # Tailwind theme (colors, fonts, patterns)
 ├── .env.example              # Environment variable template

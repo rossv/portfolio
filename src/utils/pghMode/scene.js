@@ -22,6 +22,7 @@ import { createClouds } from './clouds';
 import { createCableBand } from './cableBand';
 import { createCrucible } from './crucible';
 import { createMillHall } from './millHall';
+import { createLandmarks } from './landmarks';
 import { createFountain } from './fountain';
 import { createSplash } from './splash';
 
@@ -72,6 +73,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
     const cableBand = createCableBand(ctx, palette, lattice, { clouds });
     const crucible = createCrucible(ctx, palette, lattice);
     const millHall = createMillHall(ctx, palette, lattice);
+    const landmarks = createLandmarks(ctx, palette, lattice);
+    // A tile's height is unknown until its art decodes, and the height decides
+    // whether a spot is clear, so the positions are solved again once it lands.
+    landmarks.decoded().then(() => placeLandmarks());
     const fountain = createFountain(ctx, palette, lattice);
     const splash = createSplash(ctx, palette, { reduceMotion });
 
@@ -118,6 +123,22 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         const half = lattice.height() / 2;
         network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half));
         placed.length = 0;
+        placeLandmarks();
+    }
+
+    // The landmarks keep clear of the rivers, and of the two fixtures already
+    // standing on the plane: the fountain at the Point and the mill bay around
+    // the ladle. Solved at zero scroll, which holds for every scroll position
+    // because the whole plane drifts at one rate.
+    function placeLandmarks() {
+        if (!network) return;
+        const cell = lattice.cell();
+        const conf = lattice.project(network.confluence[0], network.confluence[1], 0);
+        const src = lattice.project(network.source[0], network.source[1], 0);
+        landmarks.place(network, [
+            { x: conf[0], y: conf[1], r: cell * 4 },
+            { x: src[0], y: src[1], r: cell * 13 },
+        ]);
     }
 
     function resize(width, height) {
@@ -191,6 +212,9 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
 
         // Ground back over the top, so the rivers emerge from behind the hero.
         heroFade(scrollY, width);
+
+        // Landmarks stand on the plane between the rivers.
+        landmarks.frame(scrollY, smooth(arrival));
 
         // The fountain stands at the Point, where the two water rivers meet.
         const conf = lattice.project(network.confluence[0], network.confluence[1], scrollY);
