@@ -2,9 +2,21 @@
 
 Date: 2026-08-06
 Branch: `claude/pittsburgh-hero-theme-qaop7e`
-Status: built. See `docs/superpowers/plans/2026-08-06-pittsburgh-site-mode.md` for the
-plan, and "As built" at the foot of this document for where the implementation
-departed from this design.
+
+> **Status: superseded.** This document designs the mode as an *elevation* — a
+> plan-view valley seen from the side, with landmarks standing on riverbanks. That
+> was built, reviewed, and then retired: the buildings and the incline were the
+> part that never worked. What shipped is an **isometric** valley instead, and the
+> only pieces of this design that survive into it are the mode registration, the
+> hero cable band, the two badges and the two-ground palette.
+>
+> The design is kept because the reasoning in it still holds — why the mode exists,
+> why the palette needs two grounds, why the hero band sits in the slot it does —
+> and because the "As built" section at the foot records decisions that carried
+> over. For what actually ships, read `src/utils/pghMode/`: `lattice.js` and
+> `network.js` for the geometry, `channels.js`, `bridges.js`, `crucible.js`,
+> `millHall.js`, `fountain.js`, `landmarks.js` and `splash.js` for the contents,
+> and `scene.js` for how they compose.
 
 ## Problem
 

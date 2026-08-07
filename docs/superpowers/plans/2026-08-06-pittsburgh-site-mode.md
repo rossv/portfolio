@@ -1,5 +1,11 @@
 # Pittsburgh Site Mode Implementation Plan
 
+> **Status: superseded.** This plan executed the elevation design in
+> `../specs/2026-08-06-pittsburgh-site-mode-design.md`, which was then retired in
+> favour of an isometric valley. Tasks 1 to 7 and 12 describe modules that no
+> longer exist. Tasks 8 to 11 — registering the mode, the `FluidBackground` branch,
+> the icon carriers and the badges — are still live and still accurate.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Wire the hero's `Pittsburgh` word to a fifth site backdrop that runs the full parallax scene from `docs/prototypes/pittsburgh-parallax.html`.
