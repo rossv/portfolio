@@ -16,10 +16,10 @@ export const PALETTES = {
         water: '#11242D',
         waterLit: '#244A56',
         surf: '#3B6472',        // tracers on the surface
-        hot: '#8C3A10',
-        hotter: '#B95518',
-        molten: '#D9A469',      // the hot centre of the channel
-        glow: '#9C6A2E',        // the bloom around a molten channel
+        hot: '#A51F0B',         // red-orange crust at the channel edges
+        hotter: '#E23B12',      // exposed, fast-moving iron
+        molten: '#FF7440',      // the white-hot centre of the channel
+        glow: '#E32612',        // red bloom around a molten channel
         steel: '#8FA1AE',       // truss members, piers
         structure: '#C9D4DC',
         deck: '#9FADB7',
@@ -43,10 +43,10 @@ export const PALETTES = {
         water: '#C2D2DA',
         waterLit: '#9BB4BF',
         surf: '#5C7B86',
-        hot: '#8A4A22',
-        hotter: '#A9612C',
-        molten: '#D8B98C',
-        glow: '#B3915F',
+        hot: '#A82C18',
+        hotter: '#D94A24',
+        molten: '#F47A45',
+        glow: '#D83A20',
         steel: '#52646F',
         structure: '#2C3A45',
         deck: '#41525F',
