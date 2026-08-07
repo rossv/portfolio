@@ -36,9 +36,12 @@ const RUN_SPREAD = 13;
 // in depth â€” sideways it is free, so it can pass a box on either hand and still
 // arrive exactly where it has to. If both axes are blocked it takes whichever has
 // budget and accepts the crossing, which beats looping.
-function staircase(rnd, from, to, blocked) {
+function staircase(rnd, from, to, blocked, corridor = null) {
     let dx = to[0] - from[0];
     let dy = to[1] - from[1];
+    const total = dx + dy;
+    const fromAcross = from[0] - from[1];
+    const toAcross = to[0] - to[1];
     let [x, y] = from;
     const pts = [[x, y]];
     let axis = -1;
@@ -48,6 +51,24 @@ function staircase(rnd, from, to, blocked) {
     while ((dx > 0 || dy > 0) && guard++ < 6000) {
         const canX = dx > 0;
         const canY = dy > 0;
+
+        // On a narrow screen a long, unconstrained random walk can spend most
+        // of the page several viewport-widths away from its endpoints. Keep
+        // mobile reaches in a loose corridor around the straight line joining
+        // their endpoints. The reach still meanders inside that corridor, but
+        // the river cannot disappear off one side for the rest of the page.
+        if (corridor && canX && canY) {
+            const progress = (total - dx - dy) / total;
+            const guide = fromAcross + (toAcross - fromAcross) * progress;
+            const across = x - y;
+            if (across >= guide + corridor) {
+                axis = 1;
+                run = Math.max(run, 1);
+            } else if (across <= guide - corridor) {
+                axis = 0;
+                run = Math.max(run, 1);
+            }
+        }
 
         // Keep the current reach going where possible; long reaches are what make
         // these read as rivers rather than as a sawtooth.
@@ -132,6 +153,10 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
     const rnd = mulberry(seed);
     const u = lattice.halfWidth();
     const v = lattice.depth();
+    // Desktop has room for the broad, naturally wandering routes. On phones,
+    // bound that wandering to a few cells so both the water and molten-iron
+    // streams remain part of the on-screen composition throughout the page.
+    const mobileCorridor = u <= 12 ? Math.max(2, Math.floor(u * 0.3)) : null;
 
     // The Point: right of centre, about a third of the way down.
     const confA = Math.round(u * 0.34);
@@ -176,9 +201,9 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
     const source = lattice.cellAt(Math.round(-u * 0.46), sourceDepth);
     const ironOut = clearTarget(Math.round(-u * (0.6 + rnd() * 0.25)), v);
 
-    const alleghenyPts = staircase(rnd, alleghenyStart, alleghenyGate, blocked)
+    const alleghenyPts = staircase(rnd, alleghenyStart, alleghenyGate, blocked, mobileCorridor)
         .concat(straight(alleghenyGate, AXES[0], APPROACH));
-    const monPts = staircase(rnd, monStart, monGate, blocked)
+    const monPts = staircase(rnd, monStart, monGate, blocked, mobileCorridor)
         .concat(straight(monGate, AXES[1], APPROACH));
 
     const channels = [
@@ -186,8 +211,8 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
         { kind: 'water', name: 'monongahela', pts: monPts },
         // The Ohio is water. It leaves the Point as a river, not as iron: the
         // iron never reaches the confluence, it runs its own course down the left.
-        { kind: 'water', name: 'ohio', pts: staircase(rnd, confluence, ohio, blocked) },
-        { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut, blocked) },
+        { kind: 'water', name: 'ohio', pts: staircase(rnd, confluence, ohio, blocked, mobileCorridor) },
+        { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut, blocked, mobileCorridor) },
     ];
 
     return {
