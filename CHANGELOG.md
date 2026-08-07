@@ -3,7 +3,7 @@
 ## Week of 2026-08-03
 
 ### Highlights
-- Added Pittsburgh as a fifth site backdrop, reachable from the `Pittsburgh` word in the hero, which was the one descriptor in that line that switched nothing. It is an isometric valley behind the whole page: the Allegheny runs out from behind the hero, the Monongahela enters from the right, they meet at a fountain about a third of the way down, and the Ohio carries on down the right. Rivers turn only 90°, on the lattice axes, so none of them ever runs straight up, down or across.
+- Added Pittsburgh as a fifth site backdrop, reachable from the `Pittsburgh` word in the hero, which was the one descriptor in that line that switched nothing. It is an isometric valley behind the whole page: the Allegheny runs out from behind the hero, the Monongahela enters from the right, they meet at a fountain about a third of the way down, and the Ohio carries on down the right. Rivers turn only 90°, on the lattice axes, so none of them ever runs straight up, down or across ([#240](https://github.com/rossv/portfolio/pull/240)).
 - A ladle hangs in a mill bay in the expertise section — crane girder, hoist chains, sheave block, lattice columns, walkway, refractory trough. The crane traverses it into position and tips it, and the iron it pours runs down the left of the page on its own clock rather than being scrubbed by scroll.
 - Clicking a river throws a bridge across it, in one of four Pittsburgh silhouettes: the Three Sisters suspension, the Smithfield lenticular truss, a tied arch, and the Hot Metal through-truss, which the molten always gets. Clicking anywhere else throws molten iron at the ground. Bridges are refused in the hero, where the rivers are washed out.
 - Three isometric landmark tiles stand in the margins below the timeline — a Mon Valley works, the Cathedral of Learning, Phipps Conservatory. Their positions are fixed and the rivers are routed around them.
@@ -16,6 +16,7 @@
 - Held the star replay list to the starfield's placed cap, so it no longer grows past the field it rebuilds on a theme change ([#232](https://github.com/rossv/portfolio/pull/232)).
 
 ### Key PR Links
+- [#240](https://github.com/rossv/portfolio/pull/240): Add Pittsburgh as a fifth site backdrop.
 - [#230](https://github.com/rossv/portfolio/pull/230): Carve a stream valley into the geospatial contour field.
 - [#232](https://github.com/rossv/portfolio/pull/232): Wait for a real tap before the canvas backdrops spawn on touch.
 
