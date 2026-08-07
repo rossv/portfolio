@@ -4,6 +4,28 @@ export default {
     darkMode: 'class',
     theme: {
         extend: {
+            // The width at which the hero can hold its two-column composition.
+            // It is not a device size, it is the hero's own arithmetic: the
+            // wordmark is set at text-9xl there and "VOLKWEIN" will not break,
+            // so the text column takes a fixed ~1142px whatever the viewport
+            // does, and the portrait only ever gets the remainder. Below this
+            // the remainder is too thin to put a face in, so the hero stacks
+            // and the portrait moves under the copy at its own full size.
+            screens: {
+                hero: '1620px',
+            },
+            // A new screen would otherwise give .container another step and
+            // widen it by 84px on large monitors. The hero breakpoint is for
+            // the hero, so the container keeps the set it already had.
+            container: {
+                screens: {
+                    sm: '640px',
+                    md: '768px',
+                    lg: '1024px',
+                    xl: '1280px',
+                    '2xl': '1536px',
+                },
+            },
             colors: {
                 slate: {
                     50: '#f8fafc',

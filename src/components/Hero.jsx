@@ -90,17 +90,17 @@ export default function Hero() {
     ];
 
     return (
-        <section ref={targetRef} className="hero-shell relative min-h-screen flex flex-col xl:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
+        <section ref={targetRef} className="hero-shell relative min-h-screen flex flex-col hero:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
 
 
             {/* Text Content - Left/Top */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center xl:items-start z-20 text-center xl:text-left pt-52 xl:pt-40"
+                className="flex-1 flex flex-col items-center hero:items-start z-20 text-center hero:text-left pt-52 hero:pt-40"
             >
 
 
-                <h1 className="text-6xl sm:text-7xl md:text-8xl xl:text-9xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tighter leading-[0.9]">
+                <h1 className="text-6xl sm:text-7xl md:text-8xl hero:text-9xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tighter leading-[0.9]">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -122,7 +122,7 @@ export default function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-wrap justify-center xl:justify-start gap-4 mb-8"
+                    className="flex flex-wrap justify-center hero:justify-start gap-4 mb-8"
                 >
                     <LicenseBadge
                         label="PE"
@@ -160,7 +160,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.95 }}
-                    className="mt-6 flex flex-wrap justify-center xl:justify-start gap-3"
+                    className="mt-6 flex flex-wrap justify-center hero:justify-start gap-3"
                 >
                     {sectionLinks.map((section) => (
                         <motion.button
@@ -198,7 +198,7 @@ export default function Hero() {
             {/* Image Content - Right/Bottom */}
             <motion.div
                 style={{ y: yImage, opacity }}
-                className="flex-1 w-full max-w-[500px] xl:max-w-none relative mt-16 xl:mt-20 flex justify-center xl:justify-end"
+                className="flex-1 w-full max-w-[500px] hero:max-w-none relative mt-16 hero:mt-20 flex justify-center hero:justify-end"
             >
                 <div
                     aria-hidden="true"
@@ -210,11 +210,11 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1, delay: 0.4 }}
-                    className="relative z-10 w-[80%] md:w-[90%] xl:w-[80%]"
+                    className="relative z-10 w-[80%] md:w-[90%] hero:w-[80%]"
                 >
                     {/* Decorative Elements around image */}
-                    <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden xl:block opacity-50"></div>
-                    <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden xl:block opacity-50"></div>
+                    <div className="absolute -top-6 -right-6 w-full h-full border-2 border-slate-900 dark:border-slate-500 rounded-2xl z-0 hidden hero:block opacity-50"></div>
+                    <div className="absolute -bottom-6 -left-6 w-full h-full bg-slate-200 dark:bg-slate-900 rounded-2xl z-0 hidden hero:block opacity-50"></div>
 
                     <div
                         className="relative overflow-hidden rounded-2xl shadow-2xl shadow-indigo-500/20 group aspect-[4/5]"
@@ -233,28 +233,28 @@ export default function Hero() {
                     {/* The icons around the portrait belong to the portrait, not
                         to a mode — they stay the same in every backdrop. Only the
                         section motes in FloatingIcons swap carrier per mode. */}
-                    <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden xl:block">
-                        <img src={aiChipIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={0} className="absolute -left-12 top-1/4 hidden hero:block">
+                        <img src={aiChipIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={1} className="absolute -right-8 top-10 hidden xl:block">
-                        <img src={gisMapIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={1} className="absolute -right-8 top-10 hidden hero:block">
+                        <img src={gisMapIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden xl:block">
-                        <img src={codingLaptopIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={2} className="absolute -bottom-4 right-1/4 hidden hero:block">
+                        <img src={codingLaptopIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden xl:block">
-                        <img src={webUiIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={1.5} className="absolute -right-12 bottom-1/3 hidden hero:block">
+                        <img src={webUiIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden xl:block">
-                        <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={0.5} className="absolute left-0 -top-8 hidden hero:block">
+                        <img src={waterNetworkIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
-                    <FloatingElement delay={2.5} className="absolute -left-10 bottom-12 hidden xl:block">
-                        <img src={waterMoleculeIcon.src} alt="" aria-hidden="true" className="w-16 h-16 xl:w-20 xl:h-20 object-contain drop-shadow-2xl" />
+                    <FloatingElement delay={2.5} className="absolute -left-10 bottom-12 hidden hero:block">
+                        <img src={waterMoleculeIcon.src} alt="" aria-hidden="true" className="w-16 h-16 hero:w-20 hero:h-20 object-contain drop-shadow-2xl" />
                     </FloatingElement>
 
                 </motion.div>
