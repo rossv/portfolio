@@ -2148,7 +2148,7 @@
     },
     {
         "name": "Zoning Map",
-        "client": "Township of South Strabane",
+        "client": "South Strabane Township",
         "company": "KLH Engineers",
         "location": "South Strabane",
         "category": "GIS",
@@ -2165,7 +2165,7 @@
         "image": "/src/assets/projects/zoning-map.webp",
         "start_date": "12/16/2019",
         "end_date": "12/16/2019",
-        "client_sort": "South Strabane, Township of",
+        "client_sort": "South Strabane Township",
         "coords": [
             -80.211724,
             40.191009
@@ -2238,7 +2238,7 @@
     },
     {
         "name": "South Strabane Gas Well Mapping",
-        "client": "Township of South Strabane",
+        "client": "South Strabane Township",
         "company": "KLH Engineers",
         "location": "South Strabane",
         "category": "GIS",
@@ -2254,7 +2254,7 @@
         "image": "/src/assets/projects/south-strabane-gas-well-mapping.webp",
         "start_date": "5/23/2017",
         "end_date": "9/7/2017",
-        "client_sort": "South Strabane, Township of",
+        "client_sort": "South Strabane Township",
         "coords": [
             -80.211724,
             40.191009
@@ -2630,7 +2630,7 @@
     },
     {
         "name": "Zoning Violation Program",
-        "client": "Township of South Strabane",
+        "client": "South Strabane Township",
         "company": "KLH Engineers",
         "location": "South Strabane, PA",
         "category": "GIS",
@@ -2647,7 +2647,7 @@
         "image": "/src/assets/projects/zoning-violation-program.webp",
         "start_date": "8/7/2017",
         "end_date": "3/6/2018",
-        "client_sort": "South Strabane, Township of",
+        "client_sort": "South Strabane Township",
         "coords": [
             -80.211724,
             40.191009
