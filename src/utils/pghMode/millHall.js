@@ -123,7 +123,7 @@ export function createMillHall(ctx, palette, lattice) {
         /* ---- the trough the iron lands in ---- */
         // A refractory-lined runner, so the river has somewhere to start rather
         // than the iron simply arriving on bare ground.
-        const tw = S * 2.5;
+        const tw = S * 2.0;
         ctx.fillStyle = rgba(palette.steel, 0.34);
         ctx.beginPath();
         ctx.ellipse(ax, ay + S * 0.3, tw, tw * 0.4, 0, 0, Math.PI * 2);
