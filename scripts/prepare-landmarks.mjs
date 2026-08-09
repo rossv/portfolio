@@ -4,8 +4,9 @@
 // dropped straight onto the backdrop they show as a dark rectangle. A global
 // colour key cannot lift a gradient, so this floods inward from the border
 // instead: a pixel joins the background only if it is close in colour to a
-// neighbour already known to be background. That walks the vignette smoothly and
-// stops dead at the inked outlines the artwork is drawn with.
+// neighbour already known to be background, and only if it is locally smooth.
+// That walks the vignette however bright it gets and stops dead at the inked
+// outlines the artwork is drawn with.
 //
 // Then trim to content, cap the width, and write WebP with alpha into
 // src/assets/pgh/.
@@ -32,10 +33,18 @@ const TOL = 24;
 const SEED_LUMA = 72;
 const SEED_SAT = 16;
 
-// And it may only spread into pixels that still look like background, so it
-// cannot walk out of the gradient into bright stonework or saturated rust.
-const JOIN_LUMA = 172;
-const JOIN_SAT = 58;
+// And it may only spread into pixels that still look like background. What marks
+// a baked vignette is not its colour — one of these glows runs up to a bright
+// acid green, brighter and far more saturated than any stonework — but that it is
+// perfectly smooth. The artwork is inked, so every part of it disagrees sharply
+// with a neighbour somewhere. So the gate is local roughness: the largest
+// channel-sum difference to any of the eight neighbours, which stays near zero
+// across a gradient and jumps at the first drawn line.
+//
+// This matters at a silhouette where the art is itself dark — a shadowed deck
+// against a dark corner of the vignette. Colour alone cannot tell those apart and
+// the flood walks straight through the building; roughness stops it dead.
+const FLAT = 24;
 
 const MAX_WIDTH = 720;
 
@@ -63,7 +72,26 @@ async function ingest(slug, file) {
             + Math.abs(data[ia + 1] - data[ib + 1])
             + Math.abs(data[ia + 2] - data[ib + 2]) <= TOL;
     };
-    const joinable = (i) => luma(i) <= JOIN_LUMA && sat(i) <= JOIN_SAT;
+    const roughness = (i) => {
+        const x = i % W;
+        const y = (i - x) / W;
+        const ia = at(i);
+        let worst = 0;
+        for (let dy = -1; dy <= 1; dy += 1) {
+            for (let dx = -1; dx <= 1; dx += 1) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if ((!dx && !dy) || nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
+                const ib = at(ny * W + nx);
+                const d = Math.abs(data[ia] - data[ib])
+                    + Math.abs(data[ia + 1] - data[ib + 1])
+                    + Math.abs(data[ia + 2] - data[ib + 2]);
+                if (d > worst) worst = d;
+            }
+        }
+        return worst;
+    };
+    const joinable = (i) => roughness(i) <= FLAT;
 
     const border = [];
     for (let x = 0; x < W; x += 1) border.push(x, (H - 1) * W + x);
