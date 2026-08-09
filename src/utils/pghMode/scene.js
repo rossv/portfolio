@@ -136,14 +136,13 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
             lattice.depthAtScreenY(half, timelineFootDocumentY() - half),
             lattice.depthPerDocPx(),
         );
-        const boxes = landmarks.footprints();
-        const blocked = boxes.length === 0 ? null : (gx, gy) => {
-            const a = gx - gy;
-            const d = gx + gy;
-            return boxes.some((b) => a >= b.a0 && a <= b.a1 && d >= b.d0 && d <= b.d1);
-        };
-
-        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half), blocked);
+        // Water gives way to the plinths and runs behind the buildings above
+        // them. The iron is held off the whole silhouette, and off the fountain,
+        // which the water rivers obviously cannot be.
+        network = buildNetwork(lattice, SEED, lattice.depthAtScreenY(half, docY - half), {
+            water: landmarks.footprints(),
+            iron: landmarks.silhouettes(),
+        });
         placed.length = 0;
     }
 
