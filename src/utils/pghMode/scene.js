@@ -189,7 +189,10 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         const { x, y } = pointer;
         if (x < 0 || y < 0 || x > lattice.width() || y > lattice.height()) return null;
         if (y + scrollY < heroFootDocumentY()) return null;
-        return bridges.pick(x, y, scrollY, network.channels)?.channel ?? null;
+        const hit = bridges.pick(x, y, scrollY, network.channels);
+        // The pointer's own position, not the node it snapped to: the light is
+        // centred under the cursor, which is where a reader expects it.
+        return hit ? { channel: hit.channel, at: hit.at, x, y } : null;
     }
 
     function frame(t, scrollY, pointer = null) {

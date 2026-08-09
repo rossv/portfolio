@@ -15,6 +15,8 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
     // Keyed by name, not by the channel object: the network is rebuilt on every
     // resize and the objects are replaced, but the four rivers keep their names.
     const lift = new Map();
+    // Where the pointer last was on each river, held while its lift fades out.
+    const focused = new Map();
     let lastT = null;
 
     function liftFor(name, wanted, t) {
@@ -46,30 +48,56 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         ctx.stroke();
     };
 
-    function water(pts, wide, g, t, e) {
-        // Lit, the river carries a sheen off its own surface colour, laid under
-        // the water so it reads as light on the channel rather than a line
-        // beside it.
-        if (e > 0.01) {
-            ctx.strokeStyle = rgba(palette.surf, 0.34 * e * g);
-            ctx.lineWidth = wide * 1.58;
+    // How far the lift reaches along the river from the pointer, and how many
+    // points either side of the hit count as near it.
+    const REACH = 2.6;          // of the channel's own width
+    const NEAR_PTS = 9;
+
+    // A pool of light centred on the pointer, as a stroke style. Stroking the
+    // whole path with it paints the river only where the pointer is and nothing
+    // at all further along — which is the point: a river that lights end to end
+    // is a highlighted line, not water catching the light under your hand.
+    function pool(hex, alpha, focus, radius) {
+        const grad = ctx.createRadialGradient(focus.x, focus.y, 0, focus.x, focus.y, radius);
+        grad.addColorStop(0, rgba(hex, alpha));
+        grad.addColorStop(0.5, rgba(hex, alpha * 0.5));
+        grad.addColorStop(1, rgba(hex, 0));
+        return grad;
+    }
+
+    // 1 under the pointer, nothing at the edge of its reach.
+    const closeness = (p, focus, radius) =>
+        clamp(1 - Math.hypot(p[0] - focus.x, p[1] - focus.y) / radius, 0, 1);
+
+    function water(pts, wide, g, t, e, focus) {
+        const lit = e > 0.01 && focus;
+        const radius = wide * REACH;
+
+        // A sheen off the water's own surface colour, laid under the channel so
+        // it reads as light on the water rather than as a line beside it.
+        if (lit) {
+            ctx.strokeStyle = pool(palette.surf, 0.4 * e * g, focus, radius);
+            ctx.lineWidth = wide * 1.5;
             trace(pts);
         }
         ctx.strokeStyle = rgba(palette.water, 0.98 * g);
         ctx.lineWidth = wide;
         trace(pts);
-        ctx.strokeStyle = rgba(palette.waterLit, (0.42 + 0.38 * e) * g);
-        ctx.lineWidth = wide * (0.52 + 0.16 * e);
+        ctx.strokeStyle = rgba(palette.waterLit, 0.42 * g);
+        ctx.lineWidth = wide * 0.52;
         trace(pts);
+        if (lit) {
+            ctx.strokeStyle = pool(palette.waterLit, 0.5 * e * g, focus, radius);
+            ctx.lineWidth = wide * 0.7;
+            trace(pts);
+        }
 
-        // The tracers run denser and quicker under the pointer, which is what
-        // makes it read as the water moving rather than as a highlight.
-        ctx.strokeStyle = rgba(palette.surf, (0.42 + 0.3 * e) * g);
-        ctx.lineWidth = 1.6 + e;
-        const count = Math.min(16 + Math.round(12 * e), Math.floor(pts.length / (6 - 2 * e)));
-        const speed = 0.00009 * (1 + 1.1 * e);
+        // The river's own tracers, at their resting density everywhere.
+        ctx.strokeStyle = rgba(palette.surf, 0.42 * g);
+        ctx.lineWidth = 1.6;
+        const count = Math.min(16, Math.floor(pts.length / 6));
         for (let i = 0; i < count; i += 1) {
-            const k = (hash(i + pts.length) + (reduceMotion ? 0 : t * speed)) % 1;
+            const k = (hash(i + pts.length) + (reduceMotion ? 0 : t * 0.00009)) % 1;
             const a = Math.floor(k * (pts.length - 3));
             ctx.beginPath();
             ctx.moveTo(pts[a][0], pts[a][1]);
@@ -77,17 +105,20 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
             ctx.stroke();
         }
 
-        // Ripples: rings opening across the channel and dying as they widen.
-        // Only ever on hover — this is the answer to the pointer, so it should
-        // not be part of the river's resting state.
-        if (e <= 0.01 || reduceMotion) return;
-        const rings = 3;
-        for (let i = 0; i < rings; i += 1) {
+        if (!lit || reduceMotion) return;
+
+        // Ripples opening across the channel and dying as they widen, and only
+        // in the stretch the pointer is on.
+        for (let i = 0; i < 4; i += 1) {
             const life = (hash(i * 17 + 5) + t * 0.0005) % 1;
-            const a = Math.floor(hash(i * 31 + 2) * (pts.length - 2));
+            const a = clamp(
+                focus.at + Math.round((hash(i * 31 + 2) - 0.5) * 2 * NEAR_PTS),
+                1, pts.length - 2,
+            );
+            const near = closeness(pts[a], focus, radius);
+            if (near <= 0.02) continue;
             const n = normalAt(pts, a);
-            const fade = (1 - life) * e;
-            ctx.strokeStyle = rgba(palette.surf, 0.5 * fade * g);
+            ctx.strokeStyle = rgba(palette.surf, 0.55 * (1 - life) * near * e * g);
             ctx.lineWidth = 1.4;
             ctx.beginPath();
             ctx.ellipse(
@@ -109,14 +140,23 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         return [-dy / len, dx / len];
     }
 
-    function molten(pts, wide, g, t, e) {
+    function molten(pts, wide, g, t, e, focus) {
+        const lit = e > 0.01 && focus;
+        const radius = wide * REACH;
+
         // A broad red bloom separates the iron from the dark valley while the
         // narrow, hotter centre keeps it from becoming a flat neon stripe.
-        // Under the pointer the bloom opens up and the iron works harder — the
-        // same channel running hotter, not a different colour.
-        ctx.strokeStyle = rgba(palette.glow, ((palette.light ? 0.13 : 0.22) + 0.17 * e) * g);
-        ctx.lineWidth = wide * (1.9 + 0.55 * e);
+        ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.13 : 0.22) * g);
+        ctx.lineWidth = wide * 1.9;
         trace(pts);
+        // Under the pointer the bloom opens up — the same iron running hotter
+        // in that stretch, and cooling back to the rest of the channel within a
+        // couple of channel-widths either side.
+        if (lit) {
+            ctx.strokeStyle = pool(palette.glow, 0.2 * e * g, focus, radius);
+            ctx.lineWidth = wide * 2.7;
+            trace(pts);
+        }
         ctx.strokeStyle = rgba(palette.hot, 0.9 * g);
         ctx.lineWidth = wide;
         trace(pts);
@@ -136,7 +176,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         ctx.lineCap = 'round';
 
         // Streaks riding the surface at their own speeds, off the centreline.
-        const streaks = clamp(Math.floor(pts.length / 16), 2, 6) + Math.round(4 * e);
+        const streaks = clamp(Math.floor(pts.length / 16), 2, 6);
         for (let i = 0; i < streaks; i += 1) {
             const k = (hash(i * 7 + 1) + t * (0.00006 + hash(i + 3) * 0.00005)) % 1;
             const a = Math.floor(k * (pts.length - 4));
@@ -150,14 +190,13 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
             ctx.stroke();
         }
 
-        // Sparks lifting off and dying, a couple alive at any moment — several
-        // more, thrown higher, while the pointer is on the channel.
-        const sparks = clamp(Math.floor(pts.length / 22), 2, 5) + Math.round(7 * e);
+        // Sparks lifting off and dying, a couple alive at any moment.
+        const sparks = clamp(Math.floor(pts.length / 22), 2, 5);
         for (let i = 0; i < sparks; i += 1) {
-            const life = (hash(i * 13 + 5) + t * (0.0007 + 0.0003 * e)) % 1;
+            const life = (hash(i * 13 + 5) + t * 0.0007) % 1;
             const a = Math.floor(hash(i * 29 + 2) * (pts.length - 2));
             const n = normalAt(pts, a);
-            const lift = Math.sin(life * Math.PI) * wide * (0.7 + 0.5 * e);
+            const lift = Math.sin(life * Math.PI) * wide * 0.7;
             const drift = (hash(i + 17) - 0.5) * wide * 0.5 * life;
             ctx.fillStyle = rgba(life > 0.6 ? palette.hotter : palette.molten, (1 - life) * 0.75 * g);
             ctx.beginPath();
@@ -167,6 +206,36 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
                 wide * 0.045 * (1 - life) + 0.7, 0, Math.PI * 2,
             );
             ctx.fill();
+        }
+
+        // Under the pointer the iron works harder: more sparks, thrown higher,
+        // and only in the stretch the pointer is on. Placed around the hit
+        // rather than along the whole reach, so the bubbling travels with the
+        // pointer instead of the river coming to the boil end to end.
+        if (lit) {
+            for (let i = 0; i < 12; i += 1) {
+                const life = (hash(i * 19 + 3) + t * 0.0011) % 1;
+                const a = clamp(
+                    focus.at + Math.round((hash(i * 37 + 6) - 0.5) * 2 * NEAR_PTS),
+                    1, pts.length - 2,
+                );
+                const near = closeness(pts[a], focus, radius);
+                if (near <= 0.02) continue;
+                const n = normalAt(pts, a);
+                const rise = Math.sin(life * Math.PI) * wide * 1.25;
+                const drift = (hash(i + 23) - 0.5) * wide * 0.7 * life;
+                ctx.fillStyle = rgba(
+                    life > 0.6 ? palette.hotter : palette.molten,
+                    (1 - life) * 0.8 * near * e * g,
+                );
+                ctx.beginPath();
+                ctx.arc(
+                    pts[a][0] + n[0] * drift,
+                    pts[a][1] + n[1] * drift - rise,
+                    wide * 0.05 * (1 - life) + 0.7, 0, Math.PI * 2,
+                );
+                ctx.fill();
+            }
         }
 
         // The odd splash: a low crescent on the surface where the iron breaks.
@@ -199,7 +268,9 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
     }
 
     // `reveal` per kind: the molten is scrubbed by the crucible's pour, the rest
-    // simply arrives. `hovered` is the one channel the pointer is over, if any.
+    // simply arrives. `hovered` is where the pointer is on a river, if it is on
+    // one at all: the channel, the point of it nearest the pointer, and the
+    // pointer itself, which is what the light is centred on.
     function frame(network, scrollY, t, g, reveal, hovered = null) {
         const wide = lattice.cell() * CHANNEL_WIDTH;
         ctx.lineJoin = 'round';
@@ -228,9 +299,15 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         for (const pass of ['water', 'molten']) {
             for (const [channel, pts] of projected) {
                 if (channel.kind !== pass) continue;
-                const e = liftFor(channel.name, channel === hovered ? 1 : 0, t);
-                if (pass === 'water') water(pts, wide, g, t, e);
-                else molten(pts, wide, g, t, e);
+                const on = hovered?.channel === channel;
+                const e = liftFor(channel.name, on ? 1 : 0, t);
+                // The focus is kept while the lift fades, so a river settles
+                // where the pointer left it rather than snapping dark.
+                const focus = on ? hovered : (focused.get(channel.name) ?? null);
+                if (on) focused.set(channel.name, hovered);
+                else if (e <= 0.002) focused.delete(channel.name);
+                if (pass === 'water') water(pts, wide, g, t, e, focus);
+                else molten(pts, wide, g, t, e, focus);
             }
         }
         lastT = t;
