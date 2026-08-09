@@ -75,6 +75,28 @@ export function createLandmarks(ctx, palette, lattice) {
             const d = Math.round(baseDepth + tile.down * depthPerPx);
             return { tile, img: images[i], cell: lattice.cellAt(a, d), a, d, w, h };
         });
+
+        // On a narrow field the margins collapse. `limit` bottoms out at its
+        // floor of two cells whichever side a tile is asked for, so left and
+        // right stop meaning anything and the only thing still holding two
+        // tiles apart is the page distance between them — which on a phone is
+        // less than a tile is tall. Phipps and the Incline ended up stacked.
+        //
+        // Where two tiles overlap across, the lower one is pushed down until it
+        // clears the one above. Downward only, and only by what is missing, so
+        // a field wide enough to keep them apart on its own never moves a tile
+        // at all.
+        const downPx = cell * 0.5;
+        for (let i = 1; i < placed.length; i += 1) {
+            const above = placed[i - 1];
+            const below = placed[i];
+            const apart = Math.abs(below.a - above.a) * acrossPx;
+            if (apart >= (below.w + above.w) / 2) continue;
+            const need = Math.ceil((below.h + cell * 0.8) / downPx);
+            if (below.d - above.d >= need) continue;
+            below.d = above.d + need;
+            below.cell = lattice.cellAt(below.a, below.d);
+        }
         return placed.length;
     }
 
