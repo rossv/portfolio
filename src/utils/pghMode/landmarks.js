@@ -38,9 +38,9 @@ const TILES = [
 ];
 
 // The plinth, as a fraction of tile height. Only the ground a tile stands on
-// blocks a river. Anything higher is the building itself, and a channel passing
-// at a shallower depth is drawn before the tile, so the tile occludes it — which
-// is what should happen when a river runs behind a building.
+// blocks a water river. Anything higher is the building itself, and a channel
+// passing at a shallower depth is drawn before the tile, so the tile occludes it
+// — which is what should happen when a river runs behind a building.
 const PLINTH = 0.15;
 
 export function createLandmarks(ctx, palette, lattice) {
@@ -78,60 +78,35 @@ export function createLandmarks(ctx, palette, lattice) {
         return placed.length;
     }
 
-    // The ground each tile stands on, as boxes in (across, depth) so the router
-    // can steer a river clear of them.
-    function footprints() {
+    // Boxes in (across, depth), so the router can steer a river clear of them.
+    // `rise` is how much of the tile's height the box covers, as a fraction.
+    function boxes(rise) {
         const cell = lattice.cell();
         const acrossPx = cell * 0.866;
         const downPx = cell * 0.5;
         return placed.map(({ a, d, w, h }) => ({
             a0: a - (w / 2) / acrossPx - 1,
             a1: a + (w / 2) / acrossPx + 1,
-            d0: d - (h * PLINTH) / downPx - 1,
+            d0: d - (h * rise) / downPx - 1,
             d1: d + (h * PLINTH * 0.5) / downPx + 1,
         }));
     }
 
-    // A pool of the bank colour under a tile — lighter than the ground on
-    // near-black, darker on paper, because `plate` is one step off the ground in
-    // both palettes. It has no edge and reads as nothing in particular, which is
-    // the point: it settles the tile onto the plane without putting a second
-    // built object behind the art. Squashed to an ellipse, because the ground it
-    // pools on is seen at the lattice's angle rather than face on.
-    const HALO_RX = 1.05;   // of tile width
-    const HALO_RY = 0.62;   // of tile height
-    const HALO_RISE = 0.32; // centre, above the base, as a fraction of height
+    // The ground a tile stands on. Water may pass behind the building above it.
+    const footprints = () => boxes(PLINTH);
 
-    function halo(bx, by, w, h, g) {
-        const cy = by - h * HALO_RISE;
-        const rx = w * HALO_RX;
-        const ry = h * HALO_RY;
-        const pool = ctx.createRadialGradient(bx, cy, 0, bx, cy, rx);
-        pool.addColorStop(0, rgba(palette.plate, 0.95 * g));
-        pool.addColorStop(0.5, rgba(palette.plate, 0.6 * g));
-        pool.addColorStop(1, rgba(palette.plate, 0));
-        ctx.save();
-        ctx.translate(bx, cy);
-        ctx.scale(1, ry / rx);
-        ctx.translate(-bx, -cy);
-        ctx.fillStyle = pool;
-        ctx.beginPath();
-        ctx.arc(bx, cy, rx, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
+    // The whole ground the art covers. The molten iron is kept off all of it: a
+    // river of iron behind a building glows through it — the tiles are held at
+    // 0.70 — and its bloom is drawn nearly twice the channel's own width, so it
+    // licks out past the silhouette even where the art does cover it.
+    const silhouettes = () => boxes(1);
 
     function frame(scrollY, g) {
         const height = lattice.height();
         for (const { img, cell: at, w, h } of placed) {
             if (!img.complete || !img.naturalWidth) continue;
             const [bx, by] = lattice.project(at[0], at[1], scrollY);
-            // The halo reaches below the base as well as above it, so the foot of
-            // the cull has to clear the pool and not just the art. Culling on the
-            // art alone popped the pool off at the bottom edge of the viewport.
-            if (by < -h - 40 || by > height + h * (HALO_RY - HALO_RISE) + 40) continue;
-
-            halo(bx, by, w, h, g);
+            if (by < -h - 40 || by > height + 80) continue;
 
             // A soft contact shadow, so the tile sits on the plane rather than
             // floating over it.
@@ -148,5 +123,5 @@ export function createLandmarks(ctx, palette, lattice) {
         }
     }
 
-    return { place, footprints, frame, count: () => placed.length };
+    return { place, footprints, silhouettes, frame, count: () => placed.length };
 }

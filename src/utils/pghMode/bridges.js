@@ -28,6 +28,23 @@ const BRIDGE_TYPES = ['sisters', 'lenticular', 'arch', 'hotmetal'];
 // Nodes a new bridge must keep clear of an existing one, so two do not overlap.
 const MIN_GAP = 3;
 
+// How far a deck reaches either side of the channel's centreline, in cells along
+// its own axis, so that both abutments land on dry ground.
+//
+// Derived rather than chosen, because a deck that falls short reads as the river
+// running out from under its own bridge. Two things set it. The deck crosses on
+// the other lattice axis, and the two axes are 120 degrees apart on screen, not
+// 90 — so a deck one cell long only covers sin(120) of a cell measured square to
+// the river. And the thing to clear is not the channel but the widest stroke the
+// channel is drawn with: every one of them is banked at 1.28 of its width, and
+// the molten carries a bloom at 1.9 on top of that.
+const AXIS_SPREAD = Math.sin((2 * Math.PI) / 3);
+const WIDEST = { water: 1.28, molten: 1.9 };
+const ABUTMENT = 0.42;      // cells of dry ground under each abutment
+
+const spanFor = (kind) =>
+    ((WIDEST[kind] ?? WIDEST.water) * CHANNEL_WIDTH * 0.5 + ABUTMENT) / AXIS_SPREAD;
+
 // Distance from a point to a segment, and how far along it the foot fell.
 function toSegment(px, py, ax, ay, bx, by) {
     const dx = bx - ax;
@@ -247,7 +264,7 @@ export function createBridges(ctx, palette, lattice, placed = [], { reduceMotion
             const at = clamp(bridge.at, 1, pts.length - 2);
             if (!lattice.onScreen(pts[at][0], pts[at][1], scrollY)) continue;
 
-            const span = bridge.channel.order === 1 ? 1.6 : 1.2;
+            const span = spanFor(bridge.channel.kind);
             const P = frameFor(bridge.channel, at, scrollY, span);
             const grow = bridge.born < 0 ? 1 : smooth(clamp((t - bridge.born) / 560, 0, 1));
             const to = Math.max(0.04, grow);

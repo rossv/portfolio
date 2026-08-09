@@ -11,8 +11,8 @@
 // looking into rather than a fan pasted on top.
 
 import { rgba, clamp, smooth, hash } from './palette';
+import { FOUNTAIN_RADIUS, FOUNTAIN_RISE, SQUASH } from './lattice';
 
-const SQUASH = 0.42;   // the isometric foreshortening of the ground plane
 const JETS = 10;
 
 export function createFountain(ctx, palette, lattice) {
@@ -48,7 +48,7 @@ export function createFountain(ctx, palette, lattice) {
 
         /* ---- plaza and basin ---- */
         ctx.fillStyle = rgba(palette.plate, 0.55 * g);
-        disc(cx, cy, R * 1.5);
+        disc(cx, cy, S * FOUNTAIN_RADIUS);
         ctx.fill();
 
         // The rim has thickness: a lower ellipse, then the top face over it.
@@ -96,7 +96,7 @@ export function createFountain(ctx, palette, lattice) {
         }
 
         /* ---- the column ---- */
-        const jetH = S * 4.6 * pulse;
+        const jetH = S * FOUNTAIN_RISE * pulse;
         const col = ctx.createLinearGradient(cx, cy - jetH, cx, cy);
         col.addColorStop(0, rgba(palette.crown, 0));
         col.addColorStop(0.3, rgba(palette.crown, 0.3 * g));

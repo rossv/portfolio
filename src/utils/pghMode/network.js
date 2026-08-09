@@ -17,7 +17,33 @@
 //   AXES[0] = [1, 0]  moves right and down
 //   AXES[1] = [0, 1]  moves left and down
 
-import { AXES } from './lattice';
+import { AXES, CHANNEL_WIDTH, FOUNTAIN_RADIUS, FOUNTAIN_RISE, SQUASH } from './lattice';
+
+// Ground a river may not use, as a predicate over lattice cells.
+//
+// A box blocks more than itself: it also blocks the wedge upstream of it from
+// which a collision can no longer be avoided. Every step moves one cell across
+// and one cell down, so a river `n` cells above a box can move at most `n` cells
+// sideways before it arrives — and if it is deeper inside the box's width than
+// that, every remaining path leads in.
+//
+// Blocking that wedge rather than the box alone is what makes the dodge in
+// `staircase` work at all. The dodge only ever looks one step ahead, so against
+// a box wider than a couple of cells the river reaches the edge with both axes
+// leading in, and the only move left is to cross. Turning it away while it still
+// has the room to turn is the whole trick.
+export function blockedBy(boxes) {
+    if (!boxes || !boxes.length) return null;
+    return (gx, gy) => {
+        const a = gx - gy;
+        const d = gx + gy;
+        return boxes.some((b) => {
+            if (a < b.a0 || a > b.a1 || d > b.d1) return false;
+            if (d >= b.d0) return true;
+            return b.d0 - d <= Math.min(a - b.a0, b.a1 - a);
+        });
+    };
+}
 
 const mulberry = (a) => () => {
     a |= 0;
@@ -138,19 +164,23 @@ function closestApproach(a, b) {
     return min;
 }
 
-export function buildNetwork(lattice, seed, sourceDepth, blocked) {
+// `ground` carries two sets of boxes, because the two kinds of river are held to
+// different rules. Water gives way to a plinth and is content to run behind the
+// building above it. Iron is kept off the whole silhouette, and off the fountain
+// as well — which water cannot be, the Point being where two of them are going.
+export function buildNetwork(lattice, seed, sourceDepth, ground = {}) {
     // Rivers that run within two cells of each other read as one doubled channel
     // rather than as two rivers, so a layout that does that is thrown away and
     // re-rolled. Ten attempts is plenty; past that, take what we have.
     for (let attempt = 0; attempt < 10; attempt += 1) {
-        const built = attemptNetwork(lattice, seed + attempt * 7919, sourceDepth, blocked);
+        const built = attemptNetwork(lattice, seed + attempt * 7919, sourceDepth, ground);
         if (!built) continue;
         if (built.separation >= 3 || attempt === 9) return built;
     }
-    return attemptNetwork(lattice, seed, sourceDepth, blocked);
+    return attemptNetwork(lattice, seed, sourceDepth, ground);
 }
 
-function attemptNetwork(lattice, seed, sourceDepth, blocked) {
+function attemptNetwork(lattice, seed, sourceDepth, ground) {
     const rnd = mulberry(seed);
     const u = lattice.halfWidth();
     const v = lattice.depth();
@@ -164,6 +194,35 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
     const confA = Math.round(u * 0.34);
     const confD = Math.round(v * 0.30 + rnd() * v * 0.04);
     const confluence = lattice.cellAt(confA, confD);
+
+    const blocked = blockedBy(ground.water);
+
+    // The iron keeps off the fountain. The plaza is the widest of it and the most
+    // transparent — the iron would glow up through the paving — and the column
+    // stands well above the plane, so the keep-out reaches upstream far enough to
+    // cover the ground the column is drawn over. Widened by the molten's bloom,
+    // which is stroked at nearly twice the channel's own width and so reaches
+    // past wherever the centreline runs.
+    // Measured from the confluence cell rather than from confA and confD, which
+    // are what was asked for and not what was given: cellAt rounds a cell onto
+    // the parity of its own depth, so the across can come back a cell over. A
+    // keep-out centred on the request instead of the cell misses by that cell,
+    // and a river threading the edge of the box goes straight through the art.
+    const cA = confluence[0] - confluence[1];
+    const cD = confluence[0] + confluence[1];
+    const acrossPerCell = 0.866;
+    const downPerCell = 0.5;
+    const bloom = (1.9 * CHANNEL_WIDTH) / 2;
+    const plazaA = FOUNTAIN_RADIUS / acrossPerCell + bloom + 1;
+    const plazaD = (FOUNTAIN_RADIUS * SQUASH) / downPerCell + bloom + 1;
+    const riseD = FOUNTAIN_RISE / downPerCell;
+    const fountainBox = {
+        a0: cA - plazaA,
+        a1: cA + plazaA,
+        d0: cD - plazaD - riseD,
+        d1: cD + plazaD,
+    };
+    const blockedIron = blockedBy([...(ground.iron || []), fountainBox]);
 
     // Each river runs straight into the Point over its last stretch, on its own
     // axis: the Allegheny down-right, the Monongahela down-left. That is what
@@ -186,22 +245,22 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
     // dodge a box on the way, but on its final approach only one axis has budget
     // left, so it has no freedom to steer — if the target is inside a landmark it
     // will walk in. Shift the target sideways until it is clear.
-    const clearTarget = (across, depth) => {
+    const clearTarget = (across, depth, avoid) => {
         for (let k = 0; k <= 24; k += 1) {
             for (const s of (k === 0 ? [0] : [-k, k])) {
                 const cell = lattice.cellAt(across + s, depth);
-                if (!blocked || !blocked(cell[0], cell[1])) return cell;
+                if (!avoid || !avoid(cell[0], cell[1])) return cell;
             }
         }
         return lattice.cellAt(across, depth);
     };
 
     // Ohio: away from the Point and down the right.
-    const ohio = clearTarget(Math.round(u * (0.62 + rnd() * 0.24)), v);
+    const ohio = clearTarget(Math.round(u * (0.62 + rnd() * 0.24)), v, blocked);
 
     // Iron: from the crucible, down the left, all the way off the foot.
     const source = lattice.cellAt(Math.round(-u * 0.46), sourceDepth);
-    const ironOut = clearTarget(Math.round(-u * (0.6 + rnd() * 0.25)), v);
+    const ironOut = clearTarget(Math.round(-u * (0.6 + rnd() * 0.25)), v, blockedIron);
 
     const alleghenyPts = staircase(rnd, alleghenyStart, alleghenyGate, blocked, mobileCorridor)
         .concat(straight(alleghenyGate, AXES[0], APPROACH));
@@ -214,7 +273,7 @@ function attemptNetwork(lattice, seed, sourceDepth, blocked) {
         // The Ohio is water. It leaves the Point as a river, not as iron: the
         // iron never reaches the confluence, it runs its own course down the left.
         { kind: 'water', name: 'ohio', pts: staircase(rnd, confluence, ohio, blocked, mobileCorridor) },
-        { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut, blocked, mobileCorridor) },
+        { kind: 'molten', name: 'iron', pts: staircase(rnd, source, ironOut, blockedIron, mobileCorridor) },
     ];
 
     return {

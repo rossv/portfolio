@@ -18,6 +18,17 @@ export const PARALLAX = 0.45;  // ground-plane travel per pixel of page scroll
 // clickable strip stops matching the thing on screen.
 export const CHANNEL_WIDTH = 1.86;
 
+// The fountain's plaza radius and the height of its column, in cells. Here for
+// the same reason as CHANNEL_WIDTH: the router keeps the molten iron off this
+// ground, and when the two numbers disagree the keep-out stops matching the
+// thing on screen.
+export const FOUNTAIN_RADIUS = 3.45;
+export const FOUNTAIN_RISE = 4.6;
+
+// The isometric foreshortening of the ground plane, which is what turns a circle
+// on the ground into an ellipse on screen.
+export const SQUASH = 0.42;
+
 // Rivers run on the lattice axes only, which is the whole routing vocabulary:
 // every turn between them is 90 degrees, and because the axes project to the
 // screen's two 30-degree diagonals, a channel never runs straight up, down, or
