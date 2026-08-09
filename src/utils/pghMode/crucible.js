@@ -19,6 +19,14 @@ export function createCrucible(ctx, palette, lattice) {
     // on a circle instead it lands beside the painted rim.
     const MOUTH = 0.42;
 
+    // The mouth's radius as a fraction of the shell's. Drawn at the full radius
+    // the rim is tangent to the shell at the trunnion line, which leaves no wall
+    // to see at the one place the vessel is widest — and because the shell starts
+    // tapering immediately below that line, the lower arc of the rim then crosses
+    // back over the outline it is supposed to sit inside. Holding it in gives the
+    // vessel a wall you can see the thickness of, all the way round.
+    const RIM = 0.94;
+
     const disc = (cx, cy, r, squash = MOUTH) => {
         ctx.beginPath();
         ctx.ellipse(cx, cy, r, r * squash, 0, 0, Math.PI * 2);
@@ -90,7 +98,8 @@ export function createCrucible(ctx, palette, lattice) {
     function frame(anchor, t, tip, travel, reduceMotion) {
         const [ax, ay] = anchor;
         const S = lattice.cell();
-        const R = S * 2.25;          // rim radius
+        const R = S * 2.25;          // shell radius at the trunnion line
+        const M = R * RIM;           // the mouth, held inside the shell
         const H = S * 2.85;          // barrel height
         const angle = tip * MAX_ANGLE;
 
@@ -116,8 +125,8 @@ export function createCrucible(ctx, palette, lattice) {
             const theta = Math.atan2(MOUTH * Math.cos(angle), Math.sin(angle));
             const cosA = Math.cos(angle);
             const sinA = Math.sin(angle);
-            const lx = Math.cos(theta) * R;
-            const ly = Math.sin(theta) * R * MOUTH;
+            const lx = Math.cos(theta) * M;
+            const ly = Math.sin(theta) * M * MOUTH;
             const ox = lx * cosA - ly * sinA;
             const oy = lx * sinA + ly * cosA;
             const olen = Math.hypot(ox, oy) || 1;
@@ -301,10 +310,10 @@ export function createCrucible(ctx, palette, lattice) {
 
         // rim and refractory lining
         ctx.fillStyle = rgba(palette.steel, 0.85);
-        disc(0, 0, R);
+        disc(0, 0, M);
         ctx.fill();
         ctx.fillStyle = rgba(palette.plate, 0.95);
-        disc(0, 0, R * 0.85);
+        disc(0, 0, M * 0.85);
         ctx.fill();
 
         // the bath, its surface level in the world as the vessel turns
@@ -312,14 +321,14 @@ export function createCrucible(ctx, palette, lattice) {
         if (left > 0.02) {
             ctx.save();
             ctx.beginPath();
-            ctx.ellipse(0, 0, R * 0.85, R * 0.85 * MOUTH, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, M * 0.85, M * 0.85 * MOUTH, 0, 0, Math.PI * 2);
             ctx.clip();
             ctx.rotate(-angle);
-            const bath = ctx.createLinearGradient(0, -R * 0.4, 0, R * 0.4);
+            const bath = ctx.createLinearGradient(0, -M * 0.4, 0, M * 0.4);
             bath.addColorStop(0, rgba(palette.molten, 0.98));
             bath.addColorStop(1, rgba(palette.hotter, 0.92));
             ctx.fillStyle = bath;
-            ctx.fillRect(-R * 1.6, R * 0.32 - R * 0.86 * left, R * 3.2, R * 2.4);
+            ctx.fillRect(-M * 1.6, M * 0.32 - M * 0.86 * left, M * 3.2, M * 2.4);
             ctx.restore();
         }
 
@@ -329,18 +338,18 @@ export function createCrucible(ctx, palette, lattice) {
         // outside. Without this there is nothing tying the bath to the fall,
         // and the stream reads as starting in mid air beside the vessel.
         if (pourGeom) {
-            const lx = Math.cos(pourGeom.theta) * R;
-            const ly = Math.sin(pourGeom.theta) * R * MOUTH;
+            const lx = Math.cos(pourGeom.theta) * M;
+            const ly = Math.sin(pourGeom.theta) * M * MOUTH;
             // the rim's local tangent at the lip, for the sheet's width
-            let tx = -Math.sin(pourGeom.theta) * R;
-            let ty = Math.cos(pourGeom.theta) * R * MOUTH;
+            let tx = -Math.sin(pourGeom.theta) * M;
+            let ty = Math.cos(pourGeom.theta) * M * MOUTH;
             const tl = Math.hypot(tx, ty) || 1;
             tx /= tl;
             ty /= tl;
-            const wBase = R * (0.2 + 0.42 * pourGeom.strength);
+            const wBase = M * (0.2 + 0.42 * pourGeom.strength);
             const wLip = pourGeom.wLip;
             ctx.save();
-            disc(0, 0, R);
+            disc(0, 0, M);
             ctx.clip();
             const sheet = ctx.createLinearGradient(lx * 0.12, ly * 0.12, lx, ly);
             sheet.addColorStop(0, rgba(palette.molten, 0.9));
@@ -363,11 +372,11 @@ export function createCrucible(ctx, palette, lattice) {
         }
 
         // glare off the mouth
-        const mouth = ctx.createRadialGradient(0, 0, 0, 0, 0, R * 1.7);
+        const mouth = ctx.createRadialGradient(0, 0, 0, 0, 0, M * 1.7);
         mouth.addColorStop(0, rgba(palette.glow, 0.34 * (0.3 + left * 0.7)));
         mouth.addColorStop(1, rgba(palette.glow, 0));
         ctx.fillStyle = mouth;
-        disc(0, 0, R * 1.7, 0.75);
+        disc(0, 0, M * 1.7, 0.75);
         ctx.fill();
 
         ctx.restore();
@@ -516,13 +525,16 @@ export function createCrucible(ctx, palette, lattice) {
                 }
             }
 
-            // the pool of light where it lands
-            const pool = ctx.createRadialGradient(ax, ay, 0, ax, ay, S * 3.4);
+            // The pool of light where it lands. Kept close to the trough it
+            // lights: thrown wider, it stops reading as light off the iron and
+            // starts reading as a painted ring on the floor.
+            const poolR = S * 2.6;
+            const pool = ctx.createRadialGradient(ax, ay, 0, ax, ay, poolR);
             pool.addColorStop(0, rgba(palette.molten, 0.34 * strength));
             pool.addColorStop(0.35, rgba(palette.glow, 0.26 * strength));
             pool.addColorStop(1, rgba(palette.glow, 0));
             ctx.fillStyle = pool;
-            disc(ax, ay, S * 3.4, 0.62);
+            disc(ax, ay, poolR, 0.55);
             ctx.fill();
 
             // iron thrown back out of the impact, continuously
