@@ -470,7 +470,10 @@ export default function FluidBackground() {
                 waveform.dim(currentScroll);
                 waveform.frame(now, currentScroll);
             } else if (isPgh) {
-                pgh.frame(now, currentScroll);
+                // The pointer goes in so a river can light up under it. On a
+                // coarse pointer it is parked off-canvas and nothing ever
+                // lights, which is right — there is no hover to answer.
+                pgh.frame(now, currentScroll, mouseRef.current);
             } else {
                 particles.forEach(p => {
                     p.update(mouseRef.current.x, mouseRef.current.y, scrollDelta);

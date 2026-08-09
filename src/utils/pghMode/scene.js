@@ -176,7 +176,23 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         ctx.fillRect(0, Math.min(0, bandFoot - 220), width, Math.max(0, clearBy) + 4);
     }
 
-    function frame(t, scrollY) {
+    // Which river the pointer is over, if any.
+    //
+    // Deliberately the same test a click uses, not one of its own: the thing
+    // that lights up under the pointer is then exactly the thing a click will
+    // build on, so the hover teaches the target rather than hinting at a
+    // different one. Nothing lights in the hero, for the same reason no bridge
+    // may be built there — the rivers are washed out and a glow would arrive
+    // out of nothing.
+    function hoveredChannel(pointer, scrollY) {
+        if (!pointer || !network || reduceMotion) return null;
+        const { x, y } = pointer;
+        if (x < 0 || y < 0 || x > lattice.width() || y > lattice.height()) return null;
+        if (y + scrollY < heroFootDocumentY()) return null;
+        return bridges.pick(x, y, scrollY, network.channels)?.channel ?? null;
+    }
+
+    function frame(t, scrollY, pointer = null) {
         if (pendingRebuild) rebuildIfNeeded();
         const width = lattice.width();
         const height = lattice.height();
@@ -213,12 +229,18 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
             molten: flow,
             water: smooth(arrival),
         };
-        channels.frame(network, scrollY, t, 1, reveal);
+        channels.frame(network, scrollY, t, 1, reveal, hoveredChannel(pointer, scrollY));
 
         // Ground back over the top, so the rivers emerge from behind the hero.
         heroFade(scrollY, width);
 
-        // Landmarks stand on the plane between the rivers.
+        // Bridges belong to the water they cross, so they go down with it —
+        // before the landmarks, never after. A bridge drawn last stood in front
+        // of a building it is nowhere near, which reads as a bridge growing out
+        // of the roof rather than as one crossing the river behind it.
+        if (arrival > 0.55) bridges.frame(scrollY, t, clamp((arrival - 0.55) / 0.45, 0, 1));
+
+        // Landmarks stand on the plane between the rivers, over anything on it.
         landmarks.frame(scrollY, smooth(arrival));
 
         // The fountain stands at the Point, where the two water rivers meet.
@@ -226,8 +248,6 @@ export function createScene(ctx, palette, placed = [], { reduceMotion = false } 
         if (conf[1] > -lattice.cell() * 8 && conf[1] < height + lattice.cell() * 8) {
             fountain.frame(conf, t, smooth(arrival), reduceMotion);
         }
-
-        if (arrival > 0.55) bridges.frame(scrollY, t, clamp((arrival - 0.55) / 0.45, 0, 1));
 
         // The mill bay, then the crane and the ladle standing inside it.
         if (src[1] > -lattice.cell() * 16 && src[1] < height + lattice.cell() * 12) {

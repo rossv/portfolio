@@ -254,16 +254,39 @@ export function createCrucible(ctx, palette, lattice) {
         ctx.lineWidth = 1.8;
         ctx.stroke();
 
-        // a heavy top collar, the thickest band on the vessel
+        // The heavy top collar, the thickest band on the vessel — and a ring
+        // around the mouth rather than a bar across it. Drawn as a rectangle it
+        // was a straight edge lying wholly inside the mouth's ellipse, so the
+        // mouth punched a curved bite out of it and the two read as separate
+        // objects arguing over the same ground. Two ellipses instead: the outer
+        // face dropped, the top face over it, and the mouth painted inside them
+        // afterwards leaves a ring of even width all the way round.
+        const collarR = R * 1.06;
+        ctx.fillStyle = rgba(palette.steel, 0.5);
+        disc(0, S * 0.44, collarR);
+        ctx.fill();
         ctx.fillStyle = rgba(palette.steel, 0.72);
-        ctx.fillRect(-R * 1.03, -S * 0.06, R * 2.06, S * 0.5);
+        disc(0, 0, collarR);
+        ctx.fill();
         ctx.strokeStyle = rgba(palette.ground, 0.4);
         ctx.lineWidth = 1.2;
-        ctx.strokeRect(-R * 1.03, -S * 0.06, R * 2.06, S * 0.5);
+        disc(0, 0, collarR);
+        ctx.stroke();
 
-        // banding, riveted
-        for (const f of [0.26, 0.5, 0.74]) {
-            const halfW = R + (bottomR - R) * f;
+        // Banding, riveted. Two rules, both of which it used to break.
+        //
+        // All of it stays below the mouth's near edge. A straight band reaching
+        // up inside the ellipse gets an arc cut across it, which is the same
+        // fight the collar was picking, and the top band was doing it.
+        //
+        // And the half-width follows the shell's own taper, which reaches
+        // bottomR at 0.8H rather than at H. Keying it to f alone hung every band
+        // past the outline — 1px at the top, 3px by the bottom, all of it on the
+        // silhouette where it shows most.
+        const bandTop = (M * MOUTH) / H + 0.05;
+        for (const k of [0, 0.5, 1]) {
+            const f = bandTop + (0.78 - bandTop) * k;
+            const halfW = (R + (bottomR - R) * clamp(f / 0.8, 0, 1)) * 0.995;
             ctx.fillStyle = rgba(palette.steel, 0.55);
             ctx.fillRect(-halfW, H * f, halfW * 2, S * 0.3);
             ctx.strokeStyle = rgba(palette.ground, 0.35);
