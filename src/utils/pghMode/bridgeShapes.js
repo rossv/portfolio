@@ -99,16 +99,20 @@ const arc = (from, to, s, base, crown, steps = 22) => {
 // `camel` lifts the top chord over the middle of the span, which is the whole
 // difference between the Hot Metal's flat run and Liberty's hump.
 function throughTruss(K, from, to, height, panels, { camel = 0, chordKey = 'chord' } = {}) {
-    const { P, p, thick, ink, side, bar, ribbon, hue, m } = K;
+    const { p, thick, ink, side, bar, ribbon, hue, m } = K;
     const at = (i) => from + ((to - from) * i) / panels;
-    // Polygonal top chord. The end posts are shorter than the crown on a
-    // camelback, and the rise is stepped rather than curved because a riveted
-    // top chord is straight between panel points.
+    // Polygonal top chord.
+    //
+    // A camelback climbs off short end posts, runs flat over midstream, and
+    // falls away again — three straight runs, because a riveted top chord is
+    // straight between panel points. A smooth curve here is what made Liberty
+    // read as a bowstring arch rather than as a truss.
+    const SHOULDER = 0.3;
     const topZ = (i) => {
+        if (!camel) return thick + height;
         const f = i / panels;
-        const hump = camel ? Math.sin(Math.PI * f) ** 0.7 : 1;
-        const ends = camel ? 1 - camel : 1;
-        return thick + height * (ends + (1 - ends) * hump);
+        const ramp = Math.min(1, f / SHOULDER, (1 - f) / SHOULDER);
+        return thick + height * (1 - camel + camel * ramp);
     };
 
     for (const s of [-1, 1]) {
@@ -148,7 +152,6 @@ function throughTruss(K, from, to, height, panels, { camel = 0, chordKey = 'chor
         K.stroke([at(i), -1, topZ(i)], [at(i + 1), 1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
         K.stroke([at(i), 1, topZ(i)], [at(i + 1), -1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
     }
-    void P;
 }
 
 // A tied arch: rib over the deck, hangers down to it, tie along the deck, and
@@ -160,6 +163,10 @@ function tiedArch(K, from, to, rise, {
     braced = false,     // two chords and a lattice web, as at the West End
     deckZ = null,       // where the hangers land; the deck top by default
     laterals = [0.3, 0.5, 0.7],
+    // Drawn after the far rib and before the near one. Fort Pitt's upper deck
+    // has to go here: drawn after both ribs it paints over the near one, and
+    // drawn before both it hides the far one's springings.
+    between = null,
 } = {}) {
     const { p, thick, ink, side, bar, ribbon, hue, m } = K;
     const base = thick + springs;
@@ -167,30 +174,37 @@ function tiedArch(K, from, to, rise, {
     const land = deckZ === null ? thick : deckZ;
     const ribZ = (t) => base + (crown - base) * Math.sin(((t - from) / (to - from)) * Math.PI);
 
-    for (const s of [-1, 1]) {
+    const drawSide = (s) => {
         const sd = side(s);
         if (braced) {
             // The braced rib: an outer and an inner chord that converge at the
             // springings, with a zig-zag web between them. This is the West End's
             // signature and it is worth the extra members — a single rib that
             // heavy just looks like a fat line.
-            const gap = rise * 0.16;
-            const inner = arc(from, to, s, base, crown - gap).map(([t, ss, z], i, all) => {
-                const f = i / (all.length - 1);
-                return [t, ss, z - gap * Math.sin(f * Math.PI) * 0.4];
-            });
-            ribbon(arc(from, to, s, base, crown), m('rib') * sd.w * 0.8,
+            // The two chords have to be far enough apart for the web between them
+            // to be legible. At a tenth of the rise they merged into one fat rib
+            // and the lattice was invisible, which threw away the point of it.
+            const gap = rise * 0.26;
+            const outerZ = (f) => base + (crown - base) * Math.sin(f * Math.PI);
+            const innerZ = (f) => outerZ(f) - gap * Math.sin(f * Math.PI);
+            const sample = (fn) => {
+                const out = [];
+                for (let i = 0; i <= 22; i += 1) out.push([from + (to - from) * (i / 22), s, fn(i / 22)]);
+                return out;
+            };
+            ribbon(sample(outerZ), m('rib') * sd.w * 0.85,
                 ink(hue, 0.95 * sd.a), ink(p.structure, 0.32 * sd.a));
-            ribbon(inner, m('chord') * sd.w * 0.8, ink(hue, 0.8 * sd.a));
-            for (let i = 0; i < 12; i += 1) {
-                const f0 = i / 12;
-                const f1 = (i + 1) / 12;
+            ribbon(sample(innerZ), m('chord') * sd.w * 0.85, ink(hue, 0.82 * sd.a));
+            // Eight bays rather than twelve, at full web weight: fewer, heavier
+            // diagonals read as a lattice; more, lighter ones read as noise.
+            for (let i = 0; i < 8; i += 1) {
+                const f0 = i / 8;
+                const f1 = (i + 1) / 8;
                 const t0 = from + (to - from) * f0;
                 const t1 = from + (to - from) * f1;
-                const outer0 = base + (crown - base) * Math.sin(f0 * Math.PI);
-                const inner1 = base + (crown - gap - base) * Math.sin(f1 * Math.PI)
-                    - gap * Math.sin(f1 * Math.PI) * 0.4;
-                bar([t0, s, outer0], [t1, s, inner1], m('web') * sd.w * 0.9, ink(p.steel, 0.6 * sd.a));
+                bar([t0, s, outerZ(f0)], [t1, s, innerZ(f1)], m('web') * sd.w, ink(p.steel, 0.68 * sd.a));
+                bar([t0, s, innerZ(f0)], [t1, s, outerZ(f1)], m('web') * sd.w * 0.8,
+                    ink(p.steel, 0.5 * sd.a));
             }
         } else {
             ribbon(arc(from, to, s, base, crown), m('rib') * sd.w,
@@ -203,7 +217,12 @@ function tiedArch(K, from, to, rise, {
         }
         // the tie, which is the reason the thing needs no thrust block
         bar([from, s, land], [to, s, land], m('chord') * sd.w, ink(hue, 0.7 * sd.a));
-    }
+    };
+
+    drawSide(-1);
+    if (between) between();
+    drawSide(1);
+
     for (const f of laterals) {
         const t = from + (to - from) * f;
         bar([t, -1, ribZ(t)], [t, 1, ribZ(t)], m('lateral'), ink(p.steel, 0.34));
@@ -213,21 +232,34 @@ function tiedArch(K, from, to, rise, {
 // An open-spandrel deck arch: the arch sits *under* the deck, springing low at
 // the piers and rising to just beneath the deck at midspan, with spandrel
 // columns carrying the deck down onto it. Sixteenth Street, three times over.
+// The crown has to touch the underside of the deck and the springings have to
+// land on top of the piers. Miss either and the ribs read as a wave hung off the
+// side of the roadway rather than as the thing holding it up — which is exactly
+// what the first pass at Sixteenth Street looked like.
 function deckArch(K, from, to, drop, posts) {
-    const { p, ink, side, bar, ribbon, hue, m, cell } = K;
+    const { p, ink, side, bar, ribbon, hue, m } = K;
     const spring = -drop;
-    const crown = -cell * 0.05;
-    const ribZ = (t) => spring + (crown - spring) * Math.sin(((t - from) / (to - from)) * Math.PI);
+    const ribZ = (t) => spring - spring * Math.sin(((t - from) / (to - from)) * Math.PI);
     for (const s of [-1, 1]) {
         const sd = side(s);
-        ribbon(arc(from, to, s, spring, crown), m('rib') * sd.w,
+        ribbon(arc(from, to, s, spring, 0), m('rib') * sd.w,
             ink(hue, 0.95 * sd.a), ink(p.structure, 0.3 * sd.a));
+        // Spandrel columns. Heavier than a hanger, because they are in
+        // compression and because the open spandrel is the whole look — the
+        // daylight between the columns is what names this bridge.
         for (let i = 1; i < posts; i += 1) {
             const t = from + ((to - from) * i) / posts;
-            bar([t, s, ribZ(t)], [t, s, 0], m('post') * sd.w * 0.8, ink(hue, 0.72 * sd.a));
+            if (ribZ(t) > -drop * 0.05) continue;   // too short to read at the crown
+            bar([t, s, ribZ(t)], [t, s, 0], m('post') * sd.w, ink(hue, 0.85 * sd.a));
+        }
+        // A skewback at each springing, so the rib visibly lands on the pier
+        // rather than running out of the picture into the water.
+        for (const t of [from, to]) {
+            bar([t, s, spring], [t, s, spring + drop * 0.16], m('post') * sd.w * 1.5,
+                ink(p.plate, 0.9 * sd.a));
         }
     }
-    for (const f of [0.34, 0.66]) {
+    for (const f of [0.3, 0.7]) {
         const t = from + (to - from) * f;
         bar([t, -1, ribZ(t)], [t, 1, ribZ(t)], m('lateral'), ink(p.steel, 0.3));
     }
@@ -293,13 +325,17 @@ function tower(K, t, height, { braced = false, saddle = true } = {}) {
 // plain, and what actually carries the deck onto the bank at Birmingham and
 // Liberty. Drawn below the deck rather than beside it, because a girder that
 // stops at deck level is indistinguishable from the deck's own edge.
+// Kept shallow and dark. Deeper and lighter it stops reading as a beam under the
+// road and starts reading as an abutment wall, which is what the first pass at
+// Liberty and Birmingham looked like at each end.
 function girderSpan(K, from, to, depth) {
     const { thick, ink, side, quad, bar, hue, p, m } = K;
     for (const s of [-1, 1]) {
         const sd = side(s);
-        quad([from, s, 0], [to, s, 0], [to, s, -depth], [from, s, -depth], ink(hue, 0.45 * sd.a));
-        bar([from, s, thick], [to, s, thick], m('chord') * sd.w * 0.8, ink(hue, 0.85 * sd.a));
-        bar([from, s, -depth], [to, s, -depth], m('trim') * sd.w, ink(p.steel, 0.6 * sd.a));
+        quad([from, s, 0], [to, s, 0], [to, s, -depth], [from, s, -depth],
+            ink(p.steel, 0.34 * sd.a));
+        bar([from, s, thick], [to, s, thick], m('chord') * sd.w * 0.9, ink(hue, 0.85 * sd.a));
+        bar([from, s, -depth], [to, s, -depth], m('trim') * sd.w, ink(p.steel, 0.55 * sd.a));
     }
 }
 
@@ -353,8 +389,12 @@ export const BRIDGES = {
             const sag = (t) => {
                 if (t <= tA) return thick + rise * (t / tA);
                 if (t >= tB) return thick + rise * ((1 - t) / (1 - tB));
+                // Highest at the towers, lowest at midstream. Stated as a sag off
+                // the tower tops rather than as a raised cosine, which is how this
+                // came to be drawn upside down — an arch between the towers rather
+                // than a chain hanging between them.
                 const f = (t - tA) / (tB - tA);
-                return thick + rise * (0.55 + 0.45 * Math.cos((f - 0.5) * Math.PI * 1.7));
+                return thick + rise * (1 - 0.44 * Math.sin(f * Math.PI));
             };
             const pins = [0];
             for (let i = 1; i <= 3; i += 1) pins.push((tA * i) / 3);
@@ -402,8 +442,10 @@ export const BRIDGES = {
             const sag = (t) => {
                 if (t <= tA) return thick + rise * (t / tA) ** 1.1;
                 if (t >= tB) return thick + rise * ((1 - t) / (1 - tB)) ** 1.1;
+                // A true catenary, and deep enough to be seen as one — at a
+                // shallower sag the cable read as a flat bar over the towers.
                 const f = (t - tA) / (tB - tA);
-                return thick + rise * (0.34 + 0.66 * Math.cosh((f - 0.5) * 2.4) / Math.cosh(1.2));
+                return thick + rise * (0.14 + 0.86 * Math.cosh((f - 0.5) * 2.8) / Math.cosh(1.4));
             };
             for (const s of [-1, 1]) {
                 const sd = side(s);
@@ -482,8 +524,13 @@ export const BRIDGES = {
                     bar([t, s, thick], [t, s, upper], m('post') * sd.w, ink(hue, 0.75 * sd.a));
                 }
             }
-            tiedArch(K, 0, 1, cell * 1.3 * k, { springs: 0, hangers: 9, deckZ: upper });
-            slab(0, 1, upper, -1, 1, thick * 0.85, ink(p.deck, 0.95), ink(p.steel, 0.5));
+            tiedArch(K, 0, 1, cell * 1.3 * k, {
+                springs: 0,
+                hangers: 9,
+                deckZ: upper,
+                between: () => slab(0, 1, upper, -1, 1, thick * 0.85,
+                    ink(p.deck, 0.82), ink(p.steel, 0.46)),
+            });
             railing(K, 0, 1, cell * 0.1, upper);
             // The lower deck's own kerb line, read against the underside of the
             // upper one — the sliver of open air between the two roadways is
@@ -554,14 +601,18 @@ export const BRIDGES = {
         note: 'A steep tied arch over the channel with plain girder approaches'
             + ' either side, standing on tall slim piers in the water.',
         hue: 'birmingham',
-        piers: [0, 0.2, 0.8, 1],
-        pierDepth: 1.35,
+        piers: [0, 0.22, 0.78, 1],
+        // Very tall and narrow, which is the approach viaduct's own look and the
+        // clearest thing separating this from the McKees Rocks arch beside it.
+        pierDepth: 1.9,
         deckWidth: 1.15,
         draw(K) {
             const { cell, k } = K;
-            girderSpan(K, 0, 0.2, cell * 0.16);
-            girderSpan(K, 0.8, 1, cell * 0.16);
-            tiedArch(K, 0.2, 0.8, cell * 1.35 * k, { hangers: 8, laterals: [0.3, 0.5, 0.7] });
+            girderSpan(K, 0, 0.22, cell * 0.13);
+            girderSpan(K, 0.78, 1, cell * 0.13);
+            // Steeper than the others: the rise is most of the span's own length,
+            // and the springings are nearly vertical because of it.
+            tiedArch(K, 0.22, 0.78, cell * 1.5 * k, { hangers: 7, laterals: [0.32, 0.5, 0.68] });
             railing(K, 0, 1, cell * 0.1);
         },
     },
@@ -611,29 +662,33 @@ export const BRIDGES = {
             + ' sculpture pylon at each corner.',
         hue: 'gold',
         piers: [0, 0.333, 0.667, 1],
-        pierDepth: 1.15,
+        // Deep enough that the arch springings land on top of the piers. This
+        // number and the drop below are the same number twice on purpose.
+        pierDepth: 1.95,
         draw(K) {
-            const { cell, k, thick, ink, p, quad, bar, side, m, hue } = K;
-            const drop = cell * 0.62 * k;
-            deckArch(K, 0, 0.333, drop, 4);
-            deckArch(K, 0.333, 0.667, drop, 4);
-            deckArch(K, 0.667, 1, drop, 4);
-            // The pylons. Tapered stone piers above the deck with the armoured
-            // sea-horses on top — reduced here to a mass and a rider, which at
-            // this size is all that survives anyway.
-            const h = cell * 0.66 * k;
+            const { cell, k, thick, ink, p, quad, side, hue } = K;
+            // Deep, because the whole bridge is what happens below the roadway.
+            // Shallower than this and the three ribs read as a scalloped skirt
+            // hung off the deck edge rather than as the arches carrying it.
+            const drop = cell * 0.34 * 1.95 * k;
+            deckArch(K, 0, 0.333, drop, 7);
+            deckArch(K, 0.333, 0.667, drop, 7);
+            deckArch(K, 0.667, 1, drop, 7);
+            // The pylons. Squat stone masses with the armoured sea-horses on top,
+            // reduced to a body, a cap and a rider. Wide and short on purpose: at
+            // pylon proportions they read as stone, at mast proportions as aerials.
+            const h = cell * 0.5 * k;
             for (const t of [0, 1]) {
                 for (const s of [-1, 1]) {
                     const sd = side(s);
-                    quad([t, s * 1.02, thick], [t, s * 0.6, thick],
-                        [t, s * 0.66, thick + h], [t, s * 0.96, thick + h],
+                    quad([t, s * 1.14, thick], [t, s * 0.44, thick],
+                        [t, s * 0.52, thick + h], [t, s * 1.04, thick + h],
                         ink(p.plate, 0.95 * sd.a));
-                    bar([t, s * 0.8, thick + h], [t, s * 0.8, thick + h * 1.02],
-                        m('post') * 1.5 * sd.w, ink(hue, 0.85 * sd.a));
-                    K.dot([t, s * 0.8, thick + h + cell * 0.09], cell * 0.075,
-                        ink(hue, 0.9 * sd.a));
-                    K.dot([t, s * 0.8, thick + h + cell * 0.17], cell * 0.045,
-                        ink(hue, 0.8 * sd.a));
+                    quad([t, s * 1.1, thick + h], [t, s * 0.48, thick + h],
+                        [t, s * 0.5, thick + h * 1.14], [t, s * 1.06, thick + h * 1.14],
+                        ink(p.structure, 0.42 * sd.a));
+                    K.dot([t, s * 0.78, thick + h * 1.14 + cell * 0.075], cell * 0.09,
+                        ink(hue, 0.92 * sd.a));
                 }
             }
             railing(K, 0, 1, cell * 0.1);

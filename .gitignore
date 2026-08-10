@@ -13,6 +13,11 @@ coverage
 .DS_Store
 Thumbs.db
 
+# Generated review pages. `scripts/preview-bridges.mjs` builds preview/bridges.html
+# out of the pghMode source on demand, so committing it would only ever be a
+# second copy of src/ waiting to fall behind it.
+preview/
+
 # Local AI-assistant scratch: session settings and git worktrees. A worktree
 # here is a second checkout inside the repo, so leaving it untracked still
 # leaves it in `git status`. To share a settings file with the team later, add

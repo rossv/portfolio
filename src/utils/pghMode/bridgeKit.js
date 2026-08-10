@@ -155,9 +155,14 @@ export function createKit(ctx, {
         },
 
         // The roadway, as far along as it has been built.
+        //
+        // Held back from the near-white it used to be. With the members at stroke
+        // weight the deck could be the brightest thing on the model and still
+        // read as its floor; against bands it became the only thing you saw, and
+        // the structure — the part that says which bridge this is — sat behind it.
         deck: (to) => {
             kit.slab(0, to, thick, -1, 1, thick,
-                ink(palette.deck, 0.95), ink(palette.steel, 0.55));
+                ink(palette.deck, 0.82), ink(palette.steel, 0.44));
             ctx.strokeStyle = ink(palette.structure, 0.35);
             ctx.lineWidth = 1;
             for (const s of [-1, 1]) {
