@@ -17,7 +17,15 @@
 //   AXES[0] = [1, 0]  moves right and down
 //   AXES[1] = [0, 1]  moves left and down
 
-import { AXES, CHANNEL_WIDTH, FOUNTAIN_RADIUS, FOUNTAIN_RISE, SQUASH } from './lattice';
+import {
+    AXES,
+    CHANNEL_WIDTH,
+    FOUNTAIN_RADIUS,
+    FOUNTAIN_RISE,
+    SQUASH,
+    LADLE_RADIUS,
+    LADLE_OFFSET_TIGHT,
+} from './lattice';
 
 // Ground a river may not use, as a predicate over lattice cells.
 //
@@ -145,6 +153,10 @@ function straight(from, axis, n) {
 // converging along the same line.
 const APPROACH = 9;
 
+// Cells of clearance kept between the ladle's left edge and the edge of a narrow
+// screen, so the shell sits comfortably inside it rather than flush against it.
+const IRON_EDGE_MARGIN = 1;
+
 // Chebyshev distance between two lattice cells.
 const gap = (a, b) => Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]));
 
@@ -188,7 +200,8 @@ function attemptNetwork(lattice, seed, sourceDepth, ground) {
     // corridor wider than the viewport's usable half-width (u includes three
     // cells of field padding). This restores occasional off-screen wandering
     // without allowing a stream to disappear for the whole page.
-    const mobileCorridor = u <= 12 ? Math.max(5, u - 2) : null;
+    const narrow = lattice.narrow();
+    const mobileCorridor = narrow ? Math.max(5, u - 2) : null;
 
     // The Point: right of centre, about a third of the way down.
     const confA = Math.round(u * 0.34);
@@ -259,7 +272,21 @@ function attemptNetwork(lattice, seed, sourceDepth, ground) {
     const ohio = clearTarget(Math.round(u * (0.62 + rnd() * 0.24)), v, blocked);
 
     // Iron: from the crucible, down the left, all the way off the foot.
-    const source = lattice.cellAt(Math.round(-u * 0.46), sourceDepth);
+    //
+    // How far out the head sits is a fraction of the field, which is what keeps
+    // the iron down the left of a wide screen. On a phone the fraction is not
+    // enough to go on: the ladle above the head is a fixed four cells and a half
+    // across, on a field only six cells wide, so the fraction puts the head far
+    // enough out that the vessel pouring into it hangs off the left edge. There,
+    // hold the head in as far as the vessel needs — measured with the tight offset
+    // it will be drawn at, and IRON_EDGE_MARGIN in hand.
+    const ironLimit = narrow
+        ? -Math.max(0, lattice.room() - LADLE_OFFSET_TIGHT - LADLE_RADIUS - IRON_EDGE_MARGIN)
+        : -Infinity;
+    const source = lattice.cellAt(
+        Math.max(Math.round(-u * 0.46), Math.ceil(ironLimit)),
+        sourceDepth,
+    );
     const ironOut = clearTarget(Math.round(-u * (0.6 + rnd() * 0.25)), v, blockedIron);
 
     const alleghenyPts = staircase(rnd, alleghenyStart, alleghenyGate, blocked, mobileCorridor)

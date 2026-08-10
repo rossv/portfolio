@@ -29,6 +29,26 @@ export const FOUNTAIN_RISE = 4.6;
 // on the ground into an ellipse on screen.
 export const SQUASH = 0.42;
 
+// The ladle, in cells: how far left of the landing the vessel hangs, and its own
+// radius. Here rather than in crucible.js for the same reason as CHANNEL_WIDTH —
+// the router needs the same numbers the vessel is drawn with. The overhang is a
+// fixed count of cells however narrow the screen is, while where the iron may
+// start is a fraction of the field, so on a phone the fraction alone hangs the
+// ladle off the left edge. Held apart, the two numbers cannot agree.
+export const LADLE_RADIUS = 2.25;
+export const LADLE_OFFSET = 2.6;
+export const LADLE_OFFSET_TIGHT = 1.2;
+
+// Cells of field beyond the visible half-width, so a river may wander out of the
+// composition without wandering out of the field it is routed in.
+const FIELD_PAD = 3;
+
+// A half-width at or below which the field is a phone's. Both the router and the
+// ladle key off it, because holding the iron's head in and bringing the vessel
+// closer to it are one decision made in two places: do either alone and the
+// stream leaves from somewhere the vessel is not.
+const NARROW_FIELD = 12;
+
 // Rivers run on the lattice axes only, which is the whole routing vocabulary:
 // every turn between them is 90 degrees, and because the axes project to the
 // screen's two 30-degree diagonals, a channel never runs straight up, down, or
@@ -60,7 +80,7 @@ export function createLattice() {
     // bounded by them, so the scene uses this to avoid re-routing the network
     // every time something on the page nudges the body height.
     function resize(w, h, documentScroll) {
-        const nextU = Math.ceil(w / (2 * W2)) + 3;
+        const nextU = Math.ceil(w / (2 * W2)) + FIELD_PAD;
         // The plane travels scroll * PARALLAX, so the band has to be deep
         // enough to still be under the page when the reader reaches the bottom.
         //
@@ -123,6 +143,14 @@ export function createLattice() {
         depthPerDocPx: () => PARALLAX / H2,
         cell: () => CELL,
         halfWidth: () => u,
+        // Cells from the centre of the screen to its edge: the room anything
+        // pinned to the field actually has. Not halfWidth, which is padded and
+        // rounded up — a limit computed from that is a cell and a half too
+        // generous, which is the whole margin something the size of the ladle
+        // has to play with.
+        room: () => width / 2 / W2,
+        // Too narrow to carry the full composition.
+        narrow: () => u <= NARROW_FIELD,
         depth: () => v,
         width: () => width,
         height: () => height,
