@@ -12,6 +12,7 @@
 // down. Nothing here is tied to scroll.
 
 import { rgba, clamp, hash } from './palette';
+import { LADLE_RADIUS, LADLE_OFFSET, LADLE_OFFSET_TIGHT } from './lattice';
 
 export function createCrucible(ctx, palette, lattice) {
     // The mouth's isometric squash. The pour geometry has to key off the same
@@ -95,10 +96,18 @@ export function createCrucible(ctx, palette, lattice) {
     // the ground is.
     const MAX_ANGLE = 1.32;
 
+    // Where the ladle waits before the crane fetches it, in cells left of the
+    // pour. It is off the near edge of a wide screen already, which is the point:
+    // it should arrive from somewhere. On a phone it cannot be fourteen cells out
+    // — the whole travel would then happen past the left edge and the vessel
+    // would simply be there at the end of it, with nothing fetched.
+    const PARK = 14;
+    const PARK_TIGHT = 9;
+
     function frame(anchor, t, tip, travel, reduceMotion) {
         const [ax, ay] = anchor;
         const S = lattice.cell();
-        const R = S * 2.25;          // shell radius at the trunnion line
+        const R = S * LADLE_RADIUS;  // shell radius at the trunnion line
         const M = R * RIM;           // the mouth, held inside the shell
         const H = S * 2.85;          // barrel height
         const angle = tip * MAX_ANGLE;
@@ -106,10 +115,18 @@ export function createCrucible(ctx, palette, lattice) {
         // Pivot: the trunnion line. The ladle travels along the girder before it
         // tips, from a parking spot at the far end of the bay to the pour, so the
         // crane reads as having fetched it rather than as having always been here.
+        //
+        // On a phone the vessel hangs closer to the pour than it does on a wide
+        // screen. Standing well clear of the landing is what a bay full of gear
+        // looks like, and there is no room for it here: the ladle is four cells
+        // and a half across on a field of six. Brought in, the stream leaves the
+        // lip steeper, which is the honest thing for a shorter drop. The router
+        // holds the head in to match — see the iron in network.js.
+        const tight = lattice.narrow();
         const py = ay - H * 1.5;
         const beamY = py - H * 1.5;
-        const parkX = ax - S * 14;
-        const pourX = ax - S * 2.6;
+        const parkX = ax - S * (tight ? PARK_TIGHT : PARK);
+        const pourX = ax - S * (tight ? LADLE_OFFSET_TIGHT : LADLE_OFFSET);
         const px = parkX + (pourX - parkX) * travel;
 
         // Everything the pour draws, in three layers that must agree with one
