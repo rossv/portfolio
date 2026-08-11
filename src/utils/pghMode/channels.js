@@ -3,7 +3,7 @@
 // page.
 
 import { rgba, hash, clamp } from './palette';
-import { CHANNEL_WIDTH } from './lattice';
+import { CHANNEL_WIDTH, CHANNEL_EDGE } from './lattice';
 
 // A hovered river lifts, and settles again when the pointer leaves. Quick up so
 // it feels answered, slow down so a pointer crossing several channels does not
@@ -147,7 +147,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         // A broad red bloom separates the iron from the dark valley while the
         // narrow, hotter centre keeps it from becoming a flat neon stripe.
         ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.13 : 0.22) * g);
-        ctx.lineWidth = wide * 1.9;
+        ctx.lineWidth = wide * CHANNEL_EDGE;
         trace(pts);
         // Under the pointer the bloom opens up — the same iron running hotter
         // in that stretch, and cooling back to the rest of the channel within a
@@ -290,7 +290,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         // behind it.
         for (const [, pts] of projected) {
             ctx.strokeStyle = rgba(palette.plate, 0.95 * g);
-            ctx.lineWidth = wide * 1.28;
+            ctx.lineWidth = wide * CHANNEL_EDGE;
             trace(pts);
         }
 

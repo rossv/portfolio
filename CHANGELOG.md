@@ -1,5 +1,17 @@
 # Changelog
 
+## Week of 2026-08-10
+
+### Highlights
+- Clicking a river now raises one of eleven named Pittsburgh crossings rather than one of four generic silhouettes, each drawn as the structure it actually is: the Three Sisters and Tenth Street self-anchored suspensions, which differ in eyebars against wire rope; Smithfield's two lenticular spans on a mid-river pier; the tied arches at Fort Pitt, Fort Duquesne, the West End, Birmingham, McKees Rocks and Sixteenth Street; the Hot Metal's three bowstring through trusses; and Liberty, the one bridge with its whole structure below the roadway. Repeat clicks on one river cycle the set ([#258](https://github.com/rossv/portfolio/pull/258)).
+- Bridge members are volumes rather than strokes. A chord is a filled band with a lit upper edge, offset perpendicular in screen space, which is what lets a three-pixel member read against the ground - a stroked path has no top edge to light. Thicknesses live in one table as fractions of a lattice cell, behind a single dial, and the roadway has a dial of its own because it is the one surface wide enough to hide the structure behind it ([#258](https://github.com/rossv/portfolio/pull/258)).
+- Multi-span bridges divide the footprint they already had and land their intermediate piers in the water, as the real Smithfield, Sixteenth Street and Hot Metal do. The footprint itself is unchanged ([#258](https://github.com/rossv/portfolio/pull/258)).
+- Water and molten channels are drawn to one edge now, the midpoint of the two they used. The iron used to look like a wider river than the water beside it, and because the bridge span was derived from that number, the same bridge came out a third longer over iron than over water ([#258](https://github.com/rossv/portfolio/pull/258)).
+- Split the bridge code along the seam that was already there: `bridgeShapes.js` holds the eleven and imports nothing, `bridgeKit.js` is where the volumes meet the canvas and owns the deck, piers and shadow, and `bridges.js` keeps placement. `scripts/preview-bridges.mjs` generates a review page out of that source, so the gallery cannot drift from the site ([#258](https://github.com/rossv/portfolio/pull/258)).
+
+### Key PR Links
+- [#258](https://github.com/rossv/portfolio/pull/258): Draw the placed bridges as eleven real Pittsburgh crossings.
+
 ## Week of 2026-08-03
 
 ### Highlights

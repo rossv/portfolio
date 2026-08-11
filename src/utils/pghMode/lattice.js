@@ -18,6 +18,16 @@ export const PARALLAX = 0.45;  // ground-plane travel per pixel of page scroll
 // clickable strip stops matching the thing on screen.
 export const CHANNEL_WIDTH = 1.86;
 
+// How far past that width a channel is actually drawn, as a multiple of it.
+//
+// One number for both kinds, so a water channel and a molten one occupy exactly
+// the same footprint. They used not to: the water was banked at 1.28 and the
+// molten carried a bloom out to 1.9, which made the iron look like a wider river
+// than the water beside it and forced every bridge over molten to be built longer
+// than the same bridge over water. This is the midpoint of the two — the banks
+// widened to meet the bloom, the bloom pulled in to meet the banks.
+export const CHANNEL_EDGE = 1.59;
+
 // The fountain's plaza radius and the height of its column, in cells. Here for
 // the same reason as CHANNEL_WIDTH: the router keeps the molten iron off this
 // ground, and when the two numbers disagree the keep-out stops matching the
