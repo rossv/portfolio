@@ -3,7 +3,7 @@
 // page.
 
 import { rgba, hash, clamp } from './palette';
-import { CHANNEL_WIDTH } from './lattice';
+import { CHANNEL_WIDTH, CHANNEL_EDGE } from './lattice';
 
 export function createChannels(ctx, palette, lattice, { reduceMotion = false } = {}) {
     function screenPoints(channel, scrollY) {
@@ -59,7 +59,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         // A broad red bloom separates the iron from the dark valley while the
         // narrow, hotter centre keeps it from becoming a flat neon stripe.
         ctx.strokeStyle = rgba(palette.glow, (palette.light ? 0.13 : 0.22) * g);
-        ctx.lineWidth = wide * 1.9;
+        ctx.lineWidth = wide * CHANNEL_EDGE;
         trace(pts);
         ctx.strokeStyle = rgba(palette.hot, 0.9 * g);
         ctx.lineWidth = wide;
@@ -162,7 +162,7 @@ export function createChannels(ctx, palette, lattice, { reduceMotion = false } =
         // behind it.
         for (const [, pts] of projected) {
             ctx.strokeStyle = rgba(palette.plate, 0.95 * g);
-            ctx.lineWidth = wide * 1.28;
+            ctx.lineWidth = wide * CHANNEL_EDGE;
             trace(pts);
         }
 

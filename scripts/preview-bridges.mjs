@@ -34,13 +34,18 @@ const plain = (src) => src
     .replace(/^export function /gm, 'function ')
     .replace(/^export \{[^}]*\};?\s*$/gm, '');
 
-const [palette, shapes, kit] = await Promise.all([
+// lattice.js comes in too, so the harness uses the real CHANNEL_WIDTH,
+// CHANNEL_EDGE and AXES rather than its own copies of them. Its createLattice is
+// not used — the cards each build their own small projection — but every number
+// the channel and the bridge span are derived from is the site's.
+const [palette, lattice, shapes, kit] = await Promise.all([
     readFile(join(mode, 'palette.js'), 'utf8'),
+    readFile(join(mode, 'lattice.js'), 'utf8'),
     readFile(join(mode, 'bridgeShapes.js'), 'utf8'),
     readFile(join(mode, 'bridgeKit.js'), 'utf8'),
 ]);
 
-const source = [plain(palette), plain(shapes), plain(kit)].join('\n\n');
+const source = [plain(palette), plain(lattice), plain(shapes), plain(kit)].join('\n\n');
 
 // The source goes in through a placeholder rather than an interpolation, because
 // `palette.js` is full of template literals of its own and interpolating the file
@@ -232,8 +237,13 @@ footer p { margin: 0; font-size: 13px; color: var(--muted); max-width: 76ch; }
 <div class="controls">
     <div class="ctl">
         <label class="tag" for="chunk">Weight</label>
-        <input id="chunk" type="range" min="0.6" max="2" step="0.05" value="1.25">
-        <output id="chunkOut">1.25×</output>
+        <input id="chunk" type="range" min="0.5" max="2" step="0.05" value="0.75">
+        <output id="chunkOut">0.75×</output>
+    </div>
+    <div class="ctl">
+        <label class="tag" for="deck">Deck</label>
+        <input id="deck" type="range" min="0.2" max="1" step="0.02" value="0.82">
+        <output id="deckOut">82%</output>
     </div>
     <div class="ctl">
         <label class="tag" for="cell">Cell</label>
@@ -281,18 +291,23 @@ ${PLACEHOLDER}
 // Everything above this line is the site's own source, inlined.
 // ---------------------------------------------------------------------------
 
-const CHANNEL_WIDTH = 1.86;
-const AXES = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+// The three numbers bridges.js derives its span from. CHANNEL_WIDTH and
+// CHANNEL_EDGE come from the inlined lattice.js above.
 const AXIS_SPREAD = Math.sin((2 * Math.PI) / 3);
-const WIDEST = { water: 1.28, molten: 1.9 };
 const ABUTMENT = 0.42;
 const DECK_HALF = 0.34;
-const spanFor = (kind) =>
-    ((WIDEST[kind] ?? WIDEST.water) * CHANNEL_WIDTH * 0.5 + ABUTMENT) / AXIS_SPREAD;
+const SPAN = (CHANNEL_EDGE * CHANNEL_WIDTH * 0.5 + ABUTMENT) / AXIS_SPREAD;
 
 const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const state = { chunk: 1.25, cell: 38, theme: 'dark', kind: 'water', twin: true };
+const state = {
+    chunk: CHUNK,
+    deckAlpha: DECK_ALPHA,
+    cell: 38,
+    theme: 'dark',
+    kind: 'water',
+    twin: true,
+};
 const cards = [];
 const dpr = Math.min(2, window.devicePixelRatio || 1);
 
@@ -322,17 +337,18 @@ function drawChannel(ctx, project, p, kind, cell) {
         pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
         ctx.stroke();
     };
+    // Both kinds reach exactly CHANNEL_EDGE, which is the point of that constant.
     const w = CHANNEL_WIDTH * cell;
+    run(w * CHANNEL_EDGE, p.plate, 0.95);
     if (kind === 'molten') {
-        run(w * 1.9, p.glow, 0.13);
-        run(w * 1.28, p.hot, 0.88);
-        run(w, p.hotter, 0.9);
-        run(w * 0.5, p.molten, 0.95);
+        run(w * CHANNEL_EDGE, p.glow, p.light ? 0.13 : 0.22);
+        run(w, p.hot, 0.9);
+        run(w * 0.46, p.hotter, 0.72);
+        run(w * 0.14, p.molten, 0.72);
     } else {
-        run(w * 1.28, p.plate, 1);
-        run(w, p.water, 1);
-        run(w * 0.46, p.waterLit, 0.55);
-        run(w * 0.13, p.surf, 0.5);
+        run(w, p.water, 0.98);
+        run(w * 0.52, p.waterLit, 0.42);
+        run(w * 0.14, p.surf, 0.42);
     }
 }
 
@@ -382,7 +398,7 @@ function paint(card, now) {
     drawGround(ctx, project, p, w, h);
     drawChannel(ctx, project, p, state.kind, cell);
 
-    const P = frameFor(project, spanFor(state.kind), DECK_HALF * (spec.deckWidth ?? 1));
+    const P = frameFor(project, SPAN, DECK_HALF * (spec.deckWidth ?? 1));
     const thick = cell * 0.16;
     const grow = card.born === null ? 1 : smooth(clamp((now - card.born) / 560, 0, 1));
     const to = Math.max(0.04, grow);
@@ -406,6 +422,7 @@ function paint(card, now) {
         trim: spec.trim ? hueFor(spec.trim) : null,
         twin: spec.twin === true && state.twin,
         chunk: state.chunk,
+        deckAlpha: state.deckAlpha,
     });
 
     const [sLo, sHi] = spec.shadow ?? [-1.5, 1.5];
@@ -439,22 +456,22 @@ const FAMILIES = [
     },
     {
         title: 'Tied arch',
-        note: 'The crowded family, and the one to judge hardest. Fort Pitt carries two decks,'
-            + ' Fort Duquesne is wide and flat, the West End rib is braced and tall, Birmingham'
-            + ' is steep on tall piers, and McKees Rocks flanks its arch with deck trusses.',
-        keys: ['fortpitt', 'fortduquesne', 'westend', 'birmingham', 'mckeesrocks'],
-    },
-    {
-        title: 'Open-spandrel deck arch',
-        note: 'The only arches that sit under their deck instead of over it, on columns, in'
-            + ' three equal spans.',
-        keys: ['sixteenth'],
+        note: 'The crowded family, and the one to judge hardest. Fort Pitt and Fort Duquesne both'
+            + ' carry two decks and separate on rise and width; the West End rib is braced and'
+            + ' white; Birmingham braces overhead in Xs; McKees Rocks flanks its arch with deck'
+            + ' trusses; and Sixteenth Street does the arch three times at two different rises.',
+        keys: ['fortpitt', 'fortduquesne', 'westend', 'birmingham', 'mckeesrocks', 'sixteenth'],
     },
     {
         title: 'Through truss',
-        note: 'Same builder twice. The Hot Metal chords run parallel the whole way; Liberty'
-            + ' climbs off short end posts to a flat crown and back down.',
-        keys: ['hotmetal', 'liberty'],
+        note: 'Three bowstring spans of unequal size, with the road bridge alongside carrying'
+            + ' no truss at all.',
+        keys: ['hotmetal'],
+    },
+    {
+        title: 'Deck truss',
+        note: 'The odd one out: everything below the roadway and nothing above it.',
+        keys: ['liberty'],
     },
 ];
 
@@ -566,6 +583,13 @@ chunk.addEventListener('input', () => {
     chunkOut.textContent = state.chunk.toFixed(2) + '×';
     fillWeights();
     resetTiming();
+    schedule();
+});
+const deckIn = document.getElementById('deck');
+const deckOut = document.getElementById('deckOut');
+deckIn.addEventListener('input', () => {
+    state.deckAlpha = Number(deckIn.value);
+    deckOut.textContent = Math.round(state.deckAlpha * 100) + '%';
     schedule();
 });
 const cellIn = document.getElementById('cell');

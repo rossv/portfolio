@@ -12,7 +12,7 @@
 // has no top edge to light.
 
 import { rgba } from './palette';
-import { MEMBERS, CHUNK } from './bridgeShapes';
+import { MEMBERS, CHUNK, DECK_ALPHA, DECK_FACE } from './bridgeShapes';
 
 // The two offset edges of a band through `pts`, in screen space.
 //
@@ -52,6 +52,7 @@ export function createKit(ctx, {
     trim = null,
     twin = true,
     chunk = CHUNK,
+    deckAlpha = DECK_ALPHA,
 }) {
     const ink = (hex, a) => rgba(hex, Math.min(1, Math.max(0, a * g)));
     const m = (key) => (MEMBERS[key] ?? MEMBERS.web) * cell * chunk;
@@ -92,6 +93,7 @@ export function createKit(ctx, {
         hue,
         trim: trim ?? hue,
         twin,
+        deckAlpha,
         ink,
         m,
         side,
@@ -162,7 +164,7 @@ export function createKit(ctx, {
         // the structure — the part that says which bridge this is — sat behind it.
         deck: (to) => {
             kit.slab(0, to, thick, -1, 1, thick,
-                ink(palette.deck, 0.82), ink(palette.steel, 0.44));
+                ink(palette.deck, deckAlpha), ink(palette.steel, deckAlpha * DECK_FACE));
             ctx.strokeStyle = ink(palette.structure, 0.35);
             ctx.lineWidth = 1;
             for (const s of [-1, 1]) {

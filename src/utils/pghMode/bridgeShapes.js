@@ -40,38 +40,53 @@ export const MEMBERS = {
     trim: 0.032,       // handrails, finial stems, kerb lines
 };
 
-// A single dial over every member above. Left at one the members are already
-// heavier than the old strokes; the gallery slides this so the weight can be
-// judged against the real backdrop rather than guessed at.
-export const CHUNK = 1;
+// A single dial over every member above.
+export const CHUNK = 0.75;
 
-// What each bridge is painted.
+// How opaque the roadway is.
 //
-// The four that are famously Aztec gold take the palette's accent outright. The
-// rest carry their own steel: Smithfield's pale blue with cream portals, the Hot
-// Metal's rust, and a cooler grey for the arch group. Each is a shade off the
-// palette's own steel rather than a free colour, so no bridge competes with the
-// hero cable — and each is listed here, one line apiece, so it can be moved.
+// Its own dial because it trades off against everything else here: the deck is
+// the one surface wide enough to hide the structure behind it, and on the
+// double-deckers and the deck trusses it hides the part that names the bridge.
+// Lower lets the far truss and the far arch rib read through it.
+export const DECK_ALPHA = 0.82;
+
+// The near face of a deck, as a fraction of its top. One ratio for every deck in
+// the set, so a change to DECK_ALPHA keeps the slab reading as a solid.
+export const DECK_FACE = 0.54;
+
+// What each bridge is painted, taken off photographs of the real thing.
+//
+// The gold ones take the palette's accent outright. The rest carry their own
+// paint: Smithfield's pale blue with cream ironwork, the West End's white, the
+// pale blue-green shared by Birmingham and McKees Rocks, Liberty's concrete
+// grey, and the Hot Metal's near-black.
+//
+// One compromise, and it is the Hot Metal's. The real bridge is very nearly
+// black, and black on the dark ground is nothing at all — so on that ground it
+// goes only as dark as stays legible, and on paper it goes where it belongs.
 export const TINTS = {
     dark: {
         tenth: '#7E97AA',           // 10th Street — pale blue steel
         smithfield: '#9FB6C4',      // Smithfield — light blue-grey
         smithfieldTrim: '#D8CDB4',  // its cast-iron portals, in cream
-        westend: '#8AA096',
-        birmingham: '#8494A0',
-        mckeesrocks: '#7C8C98',
-        liberty: '#8A9A8E',
-        hotmetal: '#A5643C',        // rust, the one warm bridge besides the gold
+        westend: '#E4EBEF',         // white
+        birmingham: '#A2CFBD',      // pale blue-green
+        mckeesrocks: '#8FC3B2',     // the same family, a shade cooler
+        liberty: '#B0AFA6',         // concrete grey, faintly warm
+        hotmetal: '#49525A',        // as near black as the dark ground allows
+        copper: '#6E9B84',          // the Sixteenth Street pylon caps, patinated
     },
     light: {
         tenth: '#4A6270',
         smithfield: '#41606F',
         smithfieldTrim: '#7A6A48',
-        westend: '#47605A',
-        birmingham: '#4C5C68',
-        mckeesrocks: '#455460',
-        liberty: '#4A5A50',
-        hotmetal: '#7A4526',
+        westend: '#8B99A1',
+        birmingham: '#5E7D73',
+        mckeesrocks: '#54746B',
+        liberty: '#6E6C62',
+        hotmetal: '#2E3439',
+        copper: '#41705A',
     },
 };
 
@@ -80,7 +95,8 @@ export const TINTS = {
 //
 // Six builders cover the eleven. Keeping them here rather than inlining each
 // bridge's own truss is what makes the differences between the bridges legible:
-// Liberty and the Hot Metal are the same builder with a different top chord.
+// Sixteenth Street is the tied arch three times at two rises, and the Hot Metal
+// is the through truss three times with a bowed top chord.
 // ---------------------------------------------------------------------------
 
 // Sample a curve at fixed s into ribbon samples.
@@ -98,19 +114,28 @@ const arc = (from, to, s, base, crown, steps = 22) => {
 //
 // `camel` lifts the top chord over the middle of the span, which is the whole
 // difference between the Hot Metal's flat run and Liberty's hump.
-function throughTruss(K, from, to, height, panels, { camel = 0, chordKey = 'chord' } = {}) {
+function throughTruss(K, from, to, height, panels, {
+    camel = 0,
+    bow = false,        // top chord curves down into the deck at both ends
+    chordKey = 'chord',
+} = {}) {
     const { p, thick, ink, side, bar, ribbon, hue, m } = K;
     const at = (i) => from + ((to - from) * i) / panels;
     // Polygonal top chord.
     //
     // A camelback climbs off short end posts, runs flat over midstream, and
     // falls away again — three straight runs, because a riveted top chord is
-    // straight between panel points. A smooth curve here is what made Liberty
-    // read as a bowstring arch rather than as a truss.
+    // straight between panel points. A smooth curve there reads as a bowstring
+    // arch rather than as a truss.
+    //
+    // A bowstring is the other case, and it is the Hot Metal's: the top chord
+    // curves the whole way and dies into the bottom chord at each end, so the
+    // span has no end posts at all.
     const SHOULDER = 0.3;
     const topZ = (i) => {
-        if (!camel) return thick + height;
         const f = i / panels;
+        if (bow) return thick + height * Math.sin(f * Math.PI) ** 0.72;
+        if (!camel) return thick + height;
         const ramp = Math.min(1, f / SHOULDER, (1 - f) / SHOULDER);
         return thick + height * (1 - camel + camel * ramp);
     };
@@ -138,19 +163,59 @@ function throughTruss(K, from, to, height, panels, { camel = 0, chordKey = 'chor
         }
     }
     // Portal bracing at each end — a header with knee braces, which is the frame
-    // you drive through and the detail that stops a truss reading as a fence.
-    for (const i of [0, panels]) {
-        const z = topZ(i);
-        const tt = at(i);
-        bar([tt, -1, z], [tt, 1, z], m('chord'), ink(hue, 0.85));
-        for (const s of [-1, 1]) {
-            bar([tt, s, z], [tt, s * 0.35, z - height * 0.26], m('web'), ink(p.steel, 0.7));
+    // you drive through and the detail that stops a truss reading as a fence. A
+    // bowstring has no end posts to brace, so it gets none.
+    if (!bow) {
+        for (const i of [0, panels]) {
+            const z = topZ(i);
+            const tt = at(i);
+            bar([tt, -1, z], [tt, 1, z], m('chord'), ink(hue, 0.85));
+            for (const s of [-1, 1]) {
+                bar([tt, s, z], [tt, s * 0.35, z - height * 0.26], m('web'), ink(p.steel, 0.7));
+            }
         }
     }
-    // Sway bracing overhead: an X per bay between the two top chords.
-    for (let i = 1; i < panels; i += 1) {
-        K.stroke([at(i), -1, topZ(i)], [at(i + 1), 1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
-        K.stroke([at(i), 1, topZ(i)], [at(i + 1), -1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
+    // Overhead bracing between the two top chords. A bowstring gets a strut at
+    // every panel point — on the Hot Metal that ladder of cross members over the
+    // arch is as recognisable as the arch itself. A flat truss gets an X per bay,
+    // drawn thin so it sits behind the chords rather than fighting them.
+    if (bow) {
+        for (let i = 1; i < panels; i += 1) {
+            bar([at(i), -1, topZ(i)], [at(i), 1, topZ(i)], m('lateral'), ink(hue, 0.6));
+        }
+    } else {
+        for (let i = 1; i < panels; i += 1) {
+            K.stroke([at(i), -1, topZ(i)], [at(i + 1), 1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
+            K.stroke([at(i), 1, topZ(i)], [at(i + 1), -1, topZ(i + 1)], ink(p.steel, 0.26), m('lateral'));
+        }
+    }
+}
+
+// A deck truss: the whole structure below the roadway, with the deck itself
+// acting as the top chord and a curved bottom chord under it. Liberty, and the
+// only bridge in the set with nothing above its own deck.
+function deckTruss(K, from, to, depth, panels) {
+    const { thick, ink, side, bar, ribbon, hue, p, m } = K;
+    const at = (i) => from + ((to - from) * i) / panels;
+    // Deepest between the pier and the abutment, shallow at both — which is what
+    // the photograph shows, and the opposite of a haunched continuous truss.
+    const lowZ = (i) => {
+        const f = i / panels;
+        return -depth * Math.sin(f * Math.PI) ** 0.8;
+    };
+    for (const s of [-1, 1]) {
+        const sd = side(s);
+        const samples = [];
+        for (let i = 0; i <= panels; i += 1) samples.push([at(i), s, lowZ(i)]);
+        ribbon(samples, m('chord') * sd.w, ink(hue, 0.92 * sd.a));
+        bar([from, s, thick], [to, s, thick], m('chord') * sd.w, ink(hue, 0.88 * sd.a),
+            ink(p.structure, 0.3 * sd.a));
+        for (let i = 0; i <= panels; i += 1) {
+            bar([at(i), s, 0], [at(i), s, lowZ(i)], m('web') * sd.w, ink(p.steel, 0.66 * sd.a));
+            if (i === panels) continue;
+            bar([at(i), s, lowZ(i)], [at(i + 1), s, 0], m('web') * sd.w * 0.85,
+                ink(p.steel, 0.48 * sd.a));
+        }
     }
 }
 
@@ -163,6 +228,9 @@ function tiedArch(K, from, to, rise, {
     braced = false,     // two chords and a lattice web, as at the West End
     deckZ = null,       // where the hangers land; the deck top by default
     laterals = [0.3, 0.5, 0.7],
+    // Cross bracing between the two ribs instead of plain struts. Birmingham's
+    // overhead Xs are as much of its silhouette as the rib is.
+    xBrace = false,
     // Drawn after the far rib and before the near one. Fort Pitt's upper deck
     // has to go here: drawn after both ribs it paints over the near one, and
     // drawn before both it hides the far one's springings.
@@ -227,44 +295,18 @@ function tiedArch(K, from, to, rise, {
         const t = from + (to - from) * f;
         bar([t, -1, ribZ(t)], [t, 1, ribZ(t)], m('lateral'), ink(p.steel, 0.34));
     }
+    if (!xBrace) return;
+    for (let i = 0; i < laterals.length - 1; i += 1) {
+        const t0 = from + (to - from) * laterals[i];
+        const t1 = from + (to - from) * laterals[i + 1];
+        bar([t0, -1, ribZ(t0)], [t1, 1, ribZ(t1)], m('lateral') * 0.9, ink(p.steel, 0.4));
+        bar([t0, 1, ribZ(t0)], [t1, -1, ribZ(t1)], m('lateral') * 0.9, ink(p.steel, 0.28));
+    }
 }
 
 // An open-spandrel deck arch: the arch sits *under* the deck, springing low at
 // the piers and rising to just beneath the deck at midspan, with spandrel
 // columns carrying the deck down onto it. Sixteenth Street, three times over.
-// The crown has to touch the underside of the deck and the springings have to
-// land on top of the piers. Miss either and the ribs read as a wave hung off the
-// side of the roadway rather than as the thing holding it up — which is exactly
-// what the first pass at Sixteenth Street looked like.
-function deckArch(K, from, to, drop, posts) {
-    const { p, ink, side, bar, ribbon, hue, m } = K;
-    const spring = -drop;
-    const ribZ = (t) => spring - spring * Math.sin(((t - from) / (to - from)) * Math.PI);
-    for (const s of [-1, 1]) {
-        const sd = side(s);
-        ribbon(arc(from, to, s, spring, 0), m('rib') * sd.w,
-            ink(hue, 0.95 * sd.a), ink(p.structure, 0.3 * sd.a));
-        // Spandrel columns. Heavier than a hanger, because they are in
-        // compression and because the open spandrel is the whole look — the
-        // daylight between the columns is what names this bridge.
-        for (let i = 1; i < posts; i += 1) {
-            const t = from + ((to - from) * i) / posts;
-            if (ribZ(t) > -drop * 0.05) continue;   // too short to read at the crown
-            bar([t, s, ribZ(t)], [t, s, 0], m('post') * sd.w, ink(hue, 0.85 * sd.a));
-        }
-        // A skewback at each springing, so the rib visibly lands on the pier
-        // rather than running out of the picture into the water.
-        for (const t of [from, to]) {
-            bar([t, s, spring], [t, s, spring + drop * 0.16], m('post') * sd.w * 1.5,
-                ink(p.plate, 0.9 * sd.a));
-        }
-    }
-    for (const f of [0.3, 0.7]) {
-        const t = from + (to - from) * f;
-        bar([t, -1, ribZ(t)], [t, 1, ribZ(t)], m('lateral'), ink(p.steel, 0.3));
-    }
-}
-
 // A lens: top chord bowing up, bottom chord bowing down, meeting at the ends,
 // with a web between them. The Smithfield, and the only one of these in the city.
 function lens(K, from, to, rise, sag, panels) {
@@ -514,7 +556,7 @@ export const BRIDGES = {
         piers: [0, 1],
         deckWidth: 1.1,
         draw(K) {
-            const { thick, cell, k, ink, hue, p, bar, side, m, slab } = K;
+            const { thick, cell, k, ink, hue, p, bar, side, m, slab, deckAlpha } = K;
             const gap = cell * 0.44 * k;
             const upper = thick + gap;
             // posts carrying the upper deck off the lower one at the ends
@@ -529,7 +571,7 @@ export const BRIDGES = {
                 hangers: 9,
                 deckZ: upper,
                 between: () => slab(0, 1, upper, -1, 1, thick * 0.85,
-                    ink(p.deck, 0.82), ink(p.steel, 0.46)),
+                    ink(p.deck, deckAlpha), ink(p.steel, deckAlpha * DECK_FACE)),
             });
             railing(K, 0, 1, cell * 0.1, upper);
             // The lower deck's own kerb line, read against the underside of the
@@ -545,30 +587,42 @@ export const BRIDGES = {
     fortduquesne: {
         label: 'Fort Duquesne',
         real: 'Fort Duquesne Bridge, 1969',
-        note: 'The wide one. A single broad deck, a flatter crown than Fort Pitt,'
-            + ' and a heavy tie girder along each kerb.',
+        note: 'The other double-decker, and the wide one. Two decks like Fort Pitt,'
+            + ' but a broader roadway and a much flatter crown over it.',
         hue: 'gold',
         piers: [0, 1],
-        deckWidth: 1.25,
+        deckWidth: 1.3,
         draw(K) {
-            const { cell, k, thick, ink, p, bar, side, m, hue } = K;
-            tiedArch(K, 0, 1, cell * 0.98 * k, { hangers: 10, laterals: [0.26, 0.42, 0.58, 0.74] });
-            // The tie doubled in weight. On a span this wide and this shallow the
-            // tie girder is the deepest thing on the bridge, and leaving it at
-            // truss weight is what made this read as Fort Pitt without a deck.
+            const { cell, k, thick, ink, p, bar, side, m, hue, slab, deckAlpha } = K;
+            const gap = cell * 0.4 * k;
+            const upper = thick + gap;
             for (const s of [-1, 1]) {
                 const sd = side(s);
-                bar([0, s, thick], [1, s, thick], m('chord') * 1.35 * sd.w,
-                    ink(hue, 0.82 * sd.a), ink(p.structure, 0.28 * sd.a));
+                for (const t of [0, 0.1, 0.9, 1]) {
+                    bar([t, s, thick], [t, s, upper], m('post') * sd.w, ink(hue, 0.75 * sd.a));
+                }
             }
-            railing(K, 0, 1, cell * 0.1);
+            // Flatter than Fort Pitt by a third, over a deck a fifth wider. Those
+            // two together are the whole difference between the pair of them.
+            tiedArch(K, 0, 1, cell * 0.92 * k, {
+                hangers: 11,
+                deckZ: upper,
+                laterals: [0.26, 0.42, 0.58, 0.74],
+                between: () => slab(0, 1, upper, -1, 1, thick * 0.85,
+                    ink(p.deck, deckAlpha), ink(p.steel, deckAlpha * DECK_FACE)),
+            });
+            railing(K, 0, 1, cell * 0.1, upper);
+            for (const s of [-1, 1]) {
+                bar([0, s, thick + cell * 0.05], [1, s, thick + cell * 0.05],
+                    m('trim') * side(s).w, ink(p.steel, 0.4 * side(s).a));
+            }
         },
     },
 
     westend: {
         label: 'West End',
         real: 'West End Bridge, 1932',
-        note: 'The tall one. A braced rib — two chords with a lattice web between'
+        note: 'White, and a braced rib — two chords with a lattice web between'
             + ' them — springing from below deck level, with the roadway hung low'
             + ' inside the arch.',
         hue: 'westend',
@@ -576,8 +630,8 @@ export const BRIDGES = {
         pierDepth: 1.2,
         draw(K) {
             const { cell, k, ink, p, bar, side, m, thick } = K;
-            tiedArch(K, 0, 1, cell * 1.62 * k, {
-                springs: -cell * 0.3 * k,
+            tiedArch(K, 0, 1, cell * 1.15 * k, {
+                springs: -cell * 0.26 * k,
                 hangers: 11,
                 braced: true,
                 laterals: [0.24, 0.38, 0.5, 0.62, 0.76],
@@ -610,9 +664,13 @@ export const BRIDGES = {
             const { cell, k } = K;
             girderSpan(K, 0, 0.22, cell * 0.13);
             girderSpan(K, 0.78, 1, cell * 0.13);
-            // Steeper than the others: the rise is most of the span's own length,
-            // and the springings are nearly vertical because of it.
-            tiedArch(K, 0.22, 0.78, cell * 1.5 * k, { hangers: 7, laterals: [0.32, 0.5, 0.68] });
+            // A plain solid rib, many close thin hangers, and Xs overhead between
+            // the two ribs. The bracing is the recognisable part.
+            tiedArch(K, 0.22, 0.78, cell * 1.06 * k, {
+                hangers: 12,
+                laterals: [0.2, 0.36, 0.5, 0.64, 0.8],
+                xBrace: true,
+            });
             railing(K, 0, 1, cell * 0.1);
         },
     },
@@ -645,50 +703,51 @@ export const BRIDGES = {
                     }
                 }
             }
-            tiedArch(K, 0.26, 0.74, cell * 1.42 * k, {
+            tiedArch(K, 0.26, 0.74, cell * 1.05 * k, {
                 hangers: 8,
                 laterals: [0.28, 0.5, 0.72],
+                xBrace: true,
             });
             railing(K, 0, 1, cell * 0.09);
         },
     },
 
-    // --- deck arch -------------------------------------------------------
     sixteenth: {
         label: 'Sixteenth Street',
-        real: 'David McCullough Bridge, 1923',
-        note: 'The only arches in the set that sit under their deck: three equal'
-            + ' open-spandrel ribs carrying the roadway on columns, with a'
-            + ' sculpture pylon at each corner.',
+        real: 'David McCullough Bridge, 1922',
+        note: 'Three latticed arches over the deck — one big one over midstream'
+            + ' with a smaller one either side — and a stone pylon at each corner'
+            + ' capped in patinated copper.',
         hue: 'gold',
-        piers: [0, 0.333, 0.667, 1],
-        // Deep enough that the arch springings land on top of the piers. This
-        // number and the drop below are the same number twice on purpose.
-        pierDepth: 1.95,
+        trim: 'copper',
+        piers: [0, 0.28, 0.72, 1],
         draw(K) {
-            const { cell, k, thick, ink, p, quad, side, hue } = K;
-            // Deep, because the whole bridge is what happens below the roadway.
-            // Shallower than this and the three ribs read as a scalloped skirt
-            // hung off the deck edge rather than as the arches carrying it.
-            const drop = cell * 0.34 * 1.95 * k;
-            deckArch(K, 0, 0.333, drop, 7);
-            deckArch(K, 0.333, 0.667, drop, 7);
-            deckArch(K, 0.667, 1, drop, 7);
-            // The pylons. Squat stone masses with the armoured sea-horses on top,
-            // reduced to a body, a cap and a rider. Wide and short on purpose: at
-            // pylon proportions they read as stone, at mast proportions as aerials.
-            const h = cell * 0.5 * k;
+            const { cell, k, thick, ink, p, quad, side, trim } = K;
+            // Small, large, small. The centre arch is the bridge; the flanking
+            // pair are shorter in both span and rise, which is the proportion
+            // that names it from a distance.
+            tiedArch(K, 0, 0.28, cell * 0.6 * k, { hangers: 4, braced: true, laterals: [0.4, 0.6] });
+            tiedArch(K, 0.28, 0.72, cell * 1.08 * k, {
+                hangers: 9,
+                braced: true,
+                laterals: [0.26, 0.42, 0.58, 0.74],
+            });
+            tiedArch(K, 0.72, 1, cell * 0.6 * k, { hangers: 4, braced: true, laterals: [0.4, 0.6] });
+            // The pylons: a stone mass, a cap, and the patinated copper on top.
+            // Wide and short on purpose — at pylon proportions they read as
+            // masonry, at mast proportions as aerials.
+            const h = cell * 0.46 * k;
             for (const t of [0, 1]) {
                 for (const s of [-1, 1]) {
                     const sd = side(s);
                     quad([t, s * 1.14, thick], [t, s * 0.44, thick],
                         [t, s * 0.52, thick + h], [t, s * 1.04, thick + h],
                         ink(p.plate, 0.95 * sd.a));
-                    quad([t, s * 1.1, thick + h], [t, s * 0.48, thick + h],
-                        [t, s * 0.5, thick + h * 1.14], [t, s * 1.06, thick + h * 1.14],
-                        ink(p.structure, 0.42 * sd.a));
-                    K.dot([t, s * 0.78, thick + h * 1.14 + cell * 0.075], cell * 0.09,
-                        ink(hue, 0.92 * sd.a));
+                    quad([t, s * 1.08, thick + h], [t, s * 0.48, thick + h],
+                        [t, s * 0.56, thick + h * 1.3], [t, s * 1.0, thick + h * 1.3],
+                        ink(trim, 0.9 * sd.a));
+                    K.dot([t, s * 0.78, thick + h * 1.3 + cell * 0.05], cell * 0.055,
+                        ink(trim, 0.95 * sd.a));
                 }
             }
             railing(K, 0, 1, cell * 0.1);
@@ -699,60 +758,64 @@ export const BRIDGES = {
     hotmetal: {
         label: 'Hot Metal',
         real: 'Monongahela Connecting Railroad bridges',
-        note: 'A pair, side by side: the rail crossing that carried crucibles of'
-            + ' iron and the road bridge beside it. Parallel-chord Pratt through'
-            + ' trusses, painted the rust they weathered to.',
+        note: 'Three bowstring through trusses of unequal size, near-black, and a'
+            + ' plain girder road deck alongside — the rail crossing that carried'
+            + ' crucibles of iron, and the bridge that took its place.',
         hue: 'hotmetal',
-        piers: [0, 1],
-        deckWidth: 0.8,
+        piers: [0, 0.24, 0.62, 1],
+        deckWidth: 0.78,
         twin: true,
-        // The second crossing sits downstream of the first, so its shadow has to
+        // The road deck sits downstream of the trusses, so the shadow has to
         // reach out past the near kerb with it.
-        shadow: [-1.5, 2.9],
+        shadow: [-1.5, 3.4],
         draw(K) {
-            const { cell, k, thick, ink, p, m, side, bar, hue, slab, twin } = K;
-            throughTruss(K, 0, 1, cell * 0.78 * k, 7);
-            railing(K, 0, 1, cell * 0.08);
+            const { cell, k, thick, ink, p, m, side, bar, hue, slab, twin, deckAlpha } = K;
+            // Unequal spans, descending toward the bank, with the top chord
+            // curving into the deck at each pier rather than standing on end
+            // posts. Both of those are what the photograph shows and neither is
+            // what a parallel-chord Pratt truss looks like.
+            throughTruss(K, 0, 0.24, cell * 0.4 * k, 3, { bow: true });
+            throughTruss(K, 0.24, 0.62, cell * 0.82 * k, 6, { bow: true });
+            throughTruss(K, 0.62, 1, cell * 0.78 * k, 6, { bow: true });
+            railing(K, 0, 1, cell * 0.07);
             if (!twin) return;
-            // The second crossing, downstream of the first. Narrower, and drawn
-            // in the same frame simply by pushing s past the near kerb.
-            const s0 = 1.35;
-            const s1 = 2.5;
-            slab(0, 1, thick, s0, s1, thick * 0.8, ink(p.deck, 0.9), ink(p.steel, 0.45));
-            const h = cell * 0.6 * k;
+            // The road bridge beside it: a plain concrete deck on plate girders,
+            // no truss at all. Drawn in the same frame simply by pushing s out
+            // past the near kerb — far enough out that open water shows between
+            // the two, because otherwise they read as one wide platform.
+            const s0 = 1.75;
+            const s1 = 3.2;
+            const drop = cell * 0.2;
             for (const s of [s0, s1]) {
-                const sd = side(s > 1.9 ? 1 : -1);
-                bar([0, s, thick + h], [1, s, thick + h], m('chord') * sd.w, ink(hue, 0.9 * sd.a));
-                bar([0, s, thick], [1, s, thick], m('chord') * sd.w * 0.9, ink(hue, 0.75 * sd.a));
-                for (let i = 0; i <= 5; i += 1) {
-                    const t = i / 5;
-                    bar([t, s, thick], [t, s, thick + h], m('web') * sd.w, ink(p.steel, 0.62 * sd.a));
-                    if (i === 5) continue;
-                    const t2 = (i + 1) / 5;
-                    const downhill = t + 0.1 < 0.5;
-                    bar([t, s, downhill ? thick + h : thick], [t2, s, downhill ? thick : thick + h],
-                        m('web') * sd.w * 0.85, ink(p.steel, 0.5 * sd.a));
-                }
+                const sd = side(s > 2.4 ? 1 : -1);
+                K.quad([0, s, 0], [1, s, 0], [1, s, -drop], [0, s, -drop],
+                    ink(p.steel, 0.34 * sd.a));
+                bar([0, s, -drop], [1, s, -drop], m('trim') * sd.w, ink(hue, 0.6 * sd.a));
             }
-            for (const t of [0, 1]) bar([t, s0, thick + h], [t, s1, thick + h], m('chord'), ink(hue, 0.82));
+            slab(0, 1, thick, s0, s1, thick * 0.9,
+                ink(p.deck, deckAlpha), ink(p.steel, deckAlpha * DECK_FACE));
+            for (const s of [s0, s1]) {
+                bar([0, s, thick + cell * 0.06 * k], [1, s, thick + cell * 0.06 * k],
+                    m('trim'), ink(p.structure, 0.4));
+            }
         },
     },
 
     liberty: {
         label: 'Liberty',
         real: 'Liberty Bridge, 1928',
-        note: 'A camelback: the top chord climbs from short end posts to a flat'
-            + ' crown over midstream and falls away again, with plain girder'
-            + ' approaches onto each bank.',
+        note: 'The whole structure is under the roadway — two shallow deck-truss'
+            + ' spans on one mid-river pier, deepest between pier and bank. The'
+            + ' only bridge here with nothing at all above its deck.',
         hue: 'liberty',
-        piers: [0, 0.14, 0.86, 1],
-        pierDepth: 1.15,
+        piers: [0, 0.5, 1],
+        pierDepth: 1.5,
+        deckWidth: 1.1,
         draw(K) {
             const { cell, k } = K;
-            girderSpan(K, 0, 0.14, cell * 0.15);
-            girderSpan(K, 0.86, 1, cell * 0.15);
-            throughTruss(K, 0.14, 0.86, cell * 0.92 * k, 8, { camel: 0.52 });
-            railing(K, 0, 1, cell * 0.09);
+            deckTruss(K, 0, 0.5, cell * 0.44 * k, 6);
+            deckTruss(K, 0.5, 1, cell * 0.44 * k, 6);
+            railing(K, 0, 1, cell * 0.08);
         },
     },
 };

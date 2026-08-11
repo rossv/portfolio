@@ -17,7 +17,7 @@
 // it is why these read as objects rather than as flat symbols.
 
 import { clamp, smooth } from './palette';
-import { AXES, CHANNEL_WIDTH } from './lattice';
+import { AXES, CHANNEL_WIDTH, CHANNEL_EDGE } from './lattice';
 import { BRIDGES, BRIDGE_ORDER, TINTS } from './bridgeShapes';
 import { createKit } from './bridgeKit';
 
@@ -32,18 +32,19 @@ const MIN_GAP = 3;
 // the other lattice axis, and the two axes are 120 degrees apart on screen, not
 // 90 — so a deck one cell long only covers sin(120) of a cell measured square to
 // the river. And the thing to clear is not the channel but the widest stroke the
-// channel is drawn with: every one of them is banked at 1.28 of its width, and
-// the molten carries a bloom at 1.9 on top of that.
+// channel is drawn with, which is CHANNEL_EDGE.
+//
+// One span for both kinds, because both kinds are now drawn to the same edge. It
+// used to depend on the kind, so the same bridge came out a third longer over
+// molten iron than over water.
 //
 // The multi-span bridges do not lengthen this. They divide it, and land their
-// intermediate piers in the water — which is what the real Smithfield and the
-// real Sixteenth Street do.
+// intermediate piers in the water — which is what the real Smithfield, the real
+// Sixteenth Street and the real Hot Metal do.
 const AXIS_SPREAD = Math.sin((2 * Math.PI) / 3);
-const WIDEST = { water: 1.28, molten: 1.9 };
 const ABUTMENT = 0.42;      // cells of dry ground under each abutment
 
-const spanFor = (kind) =>
-    ((WIDEST[kind] ?? WIDEST.water) * CHANNEL_WIDTH * 0.5 + ABUTMENT) / AXIS_SPREAD;
+const SPAN = (CHANNEL_EDGE * CHANNEL_WIDTH * 0.5 + ABUTMENT) / AXIS_SPREAD;
 
 // Half the deck's width as a fraction of a cell, before a bridge's own multiplier.
 const DECK_HALF = 0.34;
@@ -124,9 +125,8 @@ export function createBridges(ctx, palette, lattice, placed = [], {
             const at = clamp(bridge.at, 1, pts.length - 2);
             if (!lattice.onScreen(pts[at][0], pts[at][1], scrollY)) continue;
 
-            const span = spanFor(bridge.channel.kind);
             const half = DECK_HALF * (spec.deckWidth ?? 1);
-            const P = frameFor(bridge.channel, at, scrollY, span, half);
+            const P = frameFor(bridge.channel, at, scrollY, SPAN, half);
             const grow = bridge.born < 0 ? 1 : smooth(clamp((t - bridge.born) / 560, 0, 1));
             const to = Math.max(0.04, grow);
 
