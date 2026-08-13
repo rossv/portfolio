@@ -1,23 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 
-// One shared easing curve for the whole unfold — the same cubic-bezier the
-// badge chips elsewhere on the site use. Deliberately a tween, not a spring:
-// the box eases to its final width and stops, with no overshoot. The previous
-// spring (stiffness 300 / damping 30) was underdamped, so the width sprang
-// past its target and settled back — which read as the box "jumping a little
-// bigger" at the end of the expansion, especially on touch.
-const UNFOLD = { duration: 0.42, ease: [0.22, 0.61, 0.36, 1] };
-
 export default function LicenseBadge({ label, number, since, location, bgColor }) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
         // onHoverStart/End are pointer-aware and ignore touch, so tapping on
-        // mobile toggles via onClick alone (no double-fire). No `layout` here:
-        // the pill's width follows its animating content frame-by-frame, so a
-        // second, transform-based layout animation would only fight the width
-        // tween and cause the end-of-expansion snap.
+        // mobile toggles via onClick alone (no double-fire).
         <motion.div
             role="button"
             tabIndex={0}
@@ -44,40 +33,27 @@ export default function LicenseBadge({ label, number, since, location, bgColor }
                     </span>
                 </div>
 
-                <AnimatePresence initial={false}>
-                    {isHovered && (
-                        <motion.div
-                            initial={{ opacity: 0, width: 0, paddingRight: 0 }}
-                            animate={{
-                                opacity: 1,
-                                width: 'auto',
-                                paddingRight: 16,
-                                transition: {
-                                    ...UNFOLD,
-                                    opacity: { duration: 0.25, delay: 0.08 },
-                                },
-                            }}
-                            exit={{
-                                opacity: 0,
-                                width: 0,
-                                paddingRight: 0,
-                                transition: { ...UNFOLD, opacity: { duration: 0.15 } },
-                            }}
-                            className="relative z-10 flex flex-col justify-center overflow-hidden whitespace-nowrap -ml-2"
-                        >
-                            <span className="font-mono font-bold text-sm">{number}</span>
-                            <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider opacity-90 font-mono">
-                                <span>Est. {since}</span>
-                                {location && (
-                                    <>
-                                        <span>•</span>
-                                        <span>{location}</span>
-                                    </>
-                                )}
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                {/* The detail stays mounted and reveals by animating a grid
+                    track from 0fr to 1fr (see .license-reveal in global.css).
+                    This grows to the content's exact width with no measured
+                    pixel value and no auto handoff, so the box eases to a stop
+                    cleanly — the width:auto tween it replaced snapped to a
+                    slightly different final width on the last frame, which is
+                    what still read as a jump at the end of the expansion. */}
+                <div className={`license-reveal relative z-10 -ml-2 ${isHovered ? 'is-open' : ''}`}>
+                    <div className="license-reveal__inner flex flex-col justify-center whitespace-nowrap">
+                        <span className="font-mono font-bold text-sm">{number}</span>
+                        <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider opacity-90 font-mono">
+                            <span>Est. {since}</span>
+                            {location && (
+                                <>
+                                    <span>•</span>
+                                    <span>{location}</span>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
 
                 {/* A soft highlight that chases around the outline once the chip
                     is fully open. Faded in after the unfold finishes (delay ≈
