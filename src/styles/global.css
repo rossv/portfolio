@@ -85,6 +85,48 @@ html:not(.dark):root[data-site-mode="pgh"] .space-accent-text {
   background-image: linear-gradient(to right, #9a6a00, #6e4b00);
 }
 
+/* PE / GISP licence chips: once a chip has finished unfolding, a soft
+   highlight chases around its outline. It's a conic-gradient ring masked down
+   to just the border, rotated by animating its sweep angle. Registering the
+   angle as an <angle> custom property is what lets it interpolate — without
+   the @property rule (older engines) the ring simply sits still, which still
+   reads as a faint edge highlight. Reduced-motion users get that same static
+   ring via the global motion-reduce rule further down. */
+@property --badge-glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.badge-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--badge-glow-angle),
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0) 200deg,
+    rgba(255, 255, 255, 0.35) 285deg,
+    rgba(255, 255, 255, 0.95) 320deg,
+    rgba(255, 255, 255, 0.35) 350deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: badge-glow-spin 2.6s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes badge-glow-spin {
+  to {
+    --badge-glow-angle: 360deg;
+  }
+}
+
 .vignette-layer {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(248, 250, 252, 1) 100%);
 }
