@@ -44,6 +44,7 @@ export default function ExperienceMap({ projects = [], className = "", onProject
   const mapRef = useRef(null);
   const [popupInfo, setPopupInfo] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
     // Function to check if dark mode is active
@@ -64,6 +65,21 @@ export default function ExperienceMap({ projects = [], className = "", onProject
     });
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // Detect touch-primary (mobile) devices. On these, we require two fingers
+    // to pan the map so a one-finger swipe scrolls the page instead of
+    // accidentally dragging the map.
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    const query = window.matchMedia('(pointer: coarse)');
+    const update = () => setIsTouchDevice(query.matches);
+
+    update();
+    query.addEventListener('change', update);
+
+    return () => query.removeEventListener('change', update);
   }, []);
 
   const geojsonData = useMemo(() => {
@@ -248,6 +264,10 @@ export default function ExperienceMap({ projects = [], className = "", onProject
         dragRotate={true}
         touchZoomRotate={true}
         scrollZoom={true}
+        // On mobile/touch devices, require two fingers to pan the map so a
+        // one-finger swipe scrolls the page instead of moving the map. Left
+        // off on desktop so plain scroll-to-zoom and click-drag keep working.
+        cooperativeGestures={isTouchDevice}
       >
         <Source
           id="projects"
