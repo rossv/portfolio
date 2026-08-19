@@ -2859,7 +2859,7 @@
     },
     {
         "name": "Model Review Support - 2021",
-        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client": "Metropolitan Sewer District of Greater Cincinnati",
         "company": "Wade Trim",
         "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
@@ -2871,13 +2871,13 @@
             "SWMM",
             "Sanitary Sewer"
         ],
-        "description": "Supported SWMM model calibration for the Metropolitan Sewer District of Cincinnati across multiple sanitary flow meter locations, including calibration of several independent sanitary basins. Developed custom Python scripts to revise and redistribute tributary drainage area and allocate RDII along interceptor alignments, improving representation of contributing areas within the model. Produced calibration results, figures, and a final calibration report for the Wade Trim scope of work, and provided independent technical review of other consultant model submissions as part of a broader model review support contract.",
+        "description": "Supported SWMM model calibration for the Metropolitan Sewer District of Greater Cincinnati across multiple sanitary flow meter locations, including calibration of several independent sanitary basins. Developed custom Python scripts to revise and redistribute tributary drainage area and allocate RDII along interceptor alignments, improving representation of contributing areas within the model. Produced calibration results, figures, and a final calibration report for the Wade Trim scope of work, and provided independent technical review of other consultant model submissions as part of a broader model review support contract.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/msdgc_model_calibration.webp",
         "start_date": "4/6/2021",
         "end_date": "7/1/2021",
-        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
         "coords": [
             -84.512,
             39.1031
@@ -2888,7 +2888,7 @@
     },
     {
         "name": "Recalibration of PCMP CSOs 006, 007, 008, 009, 010, 011, 013, 014, and 015",
-        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client": "Metropolitan Sewer District of Greater Cincinnati",
         "company": "Wade Trim",
         "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
@@ -2906,7 +2906,7 @@
         "image": "",
         "start_date": "4/9/2021",
         "end_date": "9/24/2021",
-        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
         "coords": [
             -84.512,
             39.1031
@@ -2917,7 +2917,7 @@
     },
     {
         "name": "Recalibration of MC-US-045, MC-US-003, MC-US-044, MC-US-023",
-        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client": "Metropolitan Sewer District of Greater Cincinnati",
         "company": "Wade Trim",
         "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
@@ -2935,7 +2935,7 @@
         "image": "",
         "start_date": "4/12/2021",
         "end_date": "10/13/2021",
-        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
         "coords": [
             -84.512,
             39.1031
@@ -2945,8 +2945,8 @@
         ]
     },
     {
-        "name": "Metropolitan Sewer Authority of Greater Cincinnati - Calibration Reviews",
-        "client": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "name": "Metropolitan Sewer District of Greater Cincinnati - Calibration Reviews",
+        "client": "Metropolitan Sewer District of Greater Cincinnati",
         "company": "Wade Trim",
         "location": "Cincinnati, OH",
         "category": "Hydrologic & Hydraulic Modeling",
@@ -2956,13 +2956,13 @@
             "Model Review",
             "PCSWMM"
         ],
-        "description": "Supported calibration reviews for the Metropolitan Sewer Authority of Greater Cincinnati, including a 2020 model assessment and TSF tool work. Key focus areas: Calibration, Hydraulic Modeling, Metropolitan Sewer Authority of Greater Cincinnati.",
+        "description": "Supported calibration reviews for the Metropolitan Sewer District of Greater Cincinnati, including a 2020 model assessment and TSF tool work. Key focus areas: Calibration, Hydraulic Modeling, Metropolitan Sewer District of Greater Cincinnati.",
         "title": "Professional Engineer",
         "project_role": "Modeler",
         "image": "/src/assets/projects/msdgc_model_calibration.webp",
         "start_date": "6/10/2025",
         "end_date": "6/10/2025",
-        "client_sort": "Metropolitan Sewer Authority of Greater Cincinnati",
+        "client_sort": "Metropolitan Sewer District of Greater Cincinnati",
         "coords": [
             -84.51246,
             39.101454
