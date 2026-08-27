@@ -4555,5 +4555,165 @@
             -80.2117033257216,
             40.19104241356
         ]
+    },
+    {
+        "name": "Ruffs Dale Dollar General",
+        "client": "PennTex Ventures LLC",
+        "company": "Civil & Environmental Consultants, Inc.",
+        "location": "Ruffs Dale",
+        "category": "Erosion & Sedimentation Control, Permitting, Stormwater",
+        "tags": [
+            "NPDES",
+            "E&S",
+            "Permitting",
+            "Civil 3D"
+        ],
+        "description": "I worked on the Ruffsdale Dollar General project, focusing on environmental and sedimentation details to meet compliance. My efforts involved calculations and modifications to ensure adherence to regulatory standards.",
+        "title": "Project Consultant",
+        "project_role": "Engineer",
+        "image": "",
+        "start_date": "4/22/2015",
+        "end_date": "5/5/2015",
+        "client_sort": "PennTex Ventures LLC",
+        "gsd_codes": [
+            "144-180"
+        ],
+        "coords": [
+            -79.5867572118506,
+            40.1688869342642
+        ]
+    },
+    {
+        "name": "PA American Interconnect and Water Tank",
+        "client": "Findlay Township Municipal Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Findlay Township, PA",
+        "category": "Hydrologic & Hydraulic Modeling, Engineering",
+        "tags": [
+            "Water Distribution",
+            "EPANET",
+            "InfoWater Pro",
+            "Water Tanks",
+            "ArcGIS Pro"
+        ],
+        "description": "I worked on water age modeling and tank sizing for the PA American Interconnect and Water Tank project. This involved extensive data analysis to support the needs of the Findlay Township Municipal Authority.",
+        "title": "Senior Project Engineer",
+        "project_role": "Modeler, Engineer",
+        "image": "",
+        "start_date": "3/25/2019",
+        "end_date": "5/23/2019",
+        "client_sort": "Findlay Township Municipal Authority",
+        "gsd_codes": [
+            "544-33"
+        ],
+        "coords": [
+            -80.310567144089,
+            40.4356519951008
+        ]
+    },
+    {
+        "name": "Mountain Creek Regional Wastewater System - Gifco Lift Station, Force Main, and Gravity Improvements",
+        "client": "Trinity River Authority",
+        "company": "Wade Trim",
+        "location": "",
+        "category": "",
+        "tags": [],
+        "description": "",
+        "title": "",
+        "project_role": "",
+        "image": "",
+        "start_date": "3/18/2026",
+        "end_date": "Present",
+        "client_sort": "Trinity River Authority",
+        "gsd_codes": [
+            "TRA200201X"
+        ],
+        "draft": true
+    },
+    {
+        "name": "Homeville Pump Station Improvements",
+        "client": "West Mifflin Sanitary Sewer Municipal Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "West Mifflin, PA",
+        "category": "Hydrologic & Hydraulic Modeling, GIS",
+        "tags": [
+            "Sanitary Sewer",
+            "Pump Station",
+            "Flow Monitoring",
+            "Calibration",
+            "Hydraulics",
+            "Hydrology",
+            "InfoSWMM",
+            "Pumps/Storage",
+            "ArcGIS Pro"
+        ],
+        "description": "I worked on improvements for the Homeville Pump Station for the West Mifflin Sanitary Sewer Municipal Authority. This involved mapping and modeling to enhance the facility's operations.",
+        "title": "Senior Project Engineer",
+        "project_role": "Modeler, Engineer",
+        "image": "",
+        "start_date": "2/24/2021",
+        "end_date": "3/19/2021",
+        "client_sort": "West Mifflin Sanitary Sewer Municipal Authority",
+        "gsd_codes": [
+            "557-33"
+        ],
+        "coords": [
+            -79.8727800296641,
+            40.3739353848826
+        ]
+    },
+    {
+        "name": "Cherry Street Pumping Station Improvements",
+        "client": "Erie Water Works",
+        "company": "KLH Engineers, Inc.",
+        "location": "Erie, PA",
+        "category": "Hydrologic & Hydraulic Modeling",
+        "tags": [
+            "EPANET",
+            "Water Distribution",
+            "Pump Station",
+            "InfoWater Pro"
+        ],
+        "description": "I worked on the Cherry Street Pumping Station Improvements project for Erie Water Works, focusing on water modeling efforts. My contributions primarily involved modeling tasks related to the South booster.",
+        "title": "Senior Project Engineer",
+        "project_role": "Modeler, Engineer",
+        "image": "",
+        "start_date": "12/2/2016",
+        "end_date": "11/20/2020",
+        "client_sort": "Erie Water Works",
+        "gsd_codes": [
+            "126-246"
+        ],
+        "coords": [
+            -80.0780434802266,
+            42.0894036840847
+        ]
+    },
+    {
+        "name": "Mt. Pleasant Facilities PCSM Design",
+        "client": "Mt. Pleasant Township Municipal Authority",
+        "company": "KLH Engineers, Inc.",
+        "location": "Mt. Pleasant, PA",
+        "category": "Hydrologic & Hydraulic Modeling, Land Development, Engineering, Permitting",
+        "tags": [
+            "Hydrology",
+            "PCSM",
+            "HydroCAD",
+            "Civil 3D"
+        ],
+        "description": "I worked on the Sewer Project for Mt. Pleasant Township Municipal Authority, focusing on creating necessary hydrology and PCSM drawings. My efforts contributed to the development of essential technical documentation for the project.",
+        "title": "Senior Project Engineer",
+        "project_role": "Engineer",
+        "image": "",
+        "start_date": "5/30/2019",
+        "end_date": "6/13/2019",
+        "client_sort": "Mt. Pleasant Township Municipal Authority",
+        "gsd_codes": [
+            "495-07"
+        ],
+        "coords": [
+            -80.3147820719713,
+            40.2947838915953
+        ]
     }
 ]
