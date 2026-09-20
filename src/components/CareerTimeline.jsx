@@ -176,7 +176,7 @@ export default function CareerTimeline() {
                 Professional Journey
             </motion.h2>
 
-            <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,48rem)_minmax(0,64rem)] lg:justify-start gap-8">
+            <div className="mx-auto flex w-full max-w-[114rem] flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,48rem)_minmax(0,64rem)] lg:justify-center">
                 {/* Left Column: Timeline List */}
                 <div className="w-full max-w-3xl relative pr-4 lg:max-h-full h-auto">
                     <div className="space-y-6 lg:space-y-12 pb-12">
