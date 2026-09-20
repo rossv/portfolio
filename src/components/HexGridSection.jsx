@@ -255,13 +255,6 @@ export default function HexGridSection() {
     return (
         <section ref={sectionRef} className="py-8 md:py-24 relative z-10 w-full overflow-hidden">
             <FloatingIcons variant="toolkit" />
-            {/* A soft wash behind the section so the heading and copy hold up
-                over a busy canvas. Radial and edge-to-transparent, so it never
-                reads as a panel sitting on the page. */}
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(248,250,252,0.82),rgba(248,250,252,0)_70%)] dark:bg-[radial-gradient(ellipse_60%_55%_at_50%_45%,rgba(2,6,23,0.8),rgba(2,6,23,0)_70%)]"
-            />
             <div className="container mx-auto px-2 text-center relative z-10">
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}

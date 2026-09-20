@@ -287,11 +287,6 @@ export default function Achievements() {
     return (
         <section id="achievements" className="section-shell bg-transparent relative">
             <FloatingIcons variant="recognition" />
-            {/* Background Decoration */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-            </div>
 
             <div className="container mx-auto px-6 relative z-10 max-w-7xl">
                 <motion.div
