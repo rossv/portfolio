@@ -90,13 +90,14 @@ export default function Hero() {
     ];
 
     return (
-        <section ref={targetRef} className="hero-shell relative min-h-screen flex flex-col hero:flex-row items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
+        <section ref={targetRef} className="hero-shell relative min-h-screen flex flex-col items-center justify-center p-6 sm:p-12 overflow-hidden z-10 font-sans">
 
+            <div className="flex w-full max-w-[1800px] flex-col items-center justify-center hero:flex-row hero:gap-8">
 
-            {/* Text Content - Left/Top */}
+            {/* Text Content - Right/Top on wide screens */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center hero:items-start z-20 text-center hero:text-left pt-52 hero:pt-40"
+                className="flex-1 flex flex-col items-center hero:order-2 hero:items-end z-20 text-center hero:text-right pt-52 hero:pt-40"
             >
 
 
@@ -122,7 +123,7 @@ export default function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-wrap justify-center hero:justify-start gap-4 mb-8"
+                    className="flex flex-wrap justify-center hero:justify-end gap-4 mb-8"
                 >
                     <LicenseBadge
                         label="PE"
@@ -160,7 +161,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.95 }}
-                    className="mt-6 flex flex-wrap justify-center hero:justify-start gap-3"
+                    className="mt-6 flex flex-wrap justify-center hero:justify-end gap-3"
                 >
                     {sectionLinks.map((section) => (
                         <motion.button
@@ -195,10 +196,10 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Image Content - Right/Bottom */}
+            {/* Image Content - Left/Bottom */}
             <motion.div
                 style={{ y: yImage, opacity }}
-                className="flex-1 w-full max-w-[500px] hero:max-w-none relative mt-16 hero:mt-20 flex justify-center hero:justify-end"
+                className="flex-1 w-full max-w-[500px] hero:order-1 hero:max-w-none relative mt-16 hero:mt-20 flex justify-center hero:justify-end"
             >
                 <div
                     aria-hidden="true"
@@ -259,6 +260,7 @@ export default function Hero() {
 
                 </motion.div>
             </motion.div>
+            </div>
 
             <motion.div
                 initial={{ opacity: 0 }}
