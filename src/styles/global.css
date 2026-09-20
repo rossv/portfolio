@@ -85,6 +85,83 @@ html:not(.dark):root[data-site-mode="pgh"] .space-accent-text {
   background-image: linear-gradient(to right, #9a6a00, #6e4b00);
 }
 
+/* Project-card viewport rails. The horizontal mask keeps the boundary subtle
+   at either side, while the inward glow separates clipped cards from the
+   surrounding page without looking like a hard container border. */
+.project-scroll-edge {
+  --project-edge-rgb: 14, 165, 233;
+  position: absolute;
+  z-index: 15;
+  right: 1.5rem;
+  left: 1.5rem;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--project-edge-rgb), 0.16) 12%,
+    rgba(var(--project-edge-rgb), 0.5) 50%,
+    rgba(var(--project-edge-rgb), 0.16) 88%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 3px rgba(var(--project-edge-rgb), 0.26));
+}
+
+.project-scroll-edge::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 12px;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--project-edge-rgb), 0.09),
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.project-scroll-edge--top {
+  top: 0;
+}
+
+.project-scroll-edge--top::after {
+  top: 0;
+}
+
+.project-scroll-edge--bottom {
+  bottom: 0;
+}
+
+.project-scroll-edge--bottom::after {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+:root[data-space-nerd="stars"] .project-scroll-edge {
+  --project-edge-rgb: 167, 139, 250;
+}
+
+:root[data-site-mode="geo"] .project-scroll-edge {
+  --project-edge-rgb: 163, 177, 138;
+}
+
+:root[data-site-mode="tech"] .project-scroll-edge {
+  --project-edge-rgb: 77, 171, 247;
+}
+
+:root[data-site-mode="pgh"] .project-scroll-edge {
+  --project-edge-rgb: 255, 182, 18;
+}
+
+html:not(.dark):root[data-site-mode="geo"] .project-scroll-edge {
+  --project-edge-rgb: 77, 124, 15;
+}
+
+html:not(.dark):root[data-site-mode="pgh"] .project-scroll-edge {
+  --project-edge-rgb: 154, 106, 0;
+}
+
 /* PE / GISP licence chips: once a chip has finished unfolding, a soft
    highlight chases around its outline. It's a conic-gradient ring masked down
    to just the border, rotated by animating its sweep angle. Registering the
