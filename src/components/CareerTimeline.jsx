@@ -176,9 +176,9 @@ export default function CareerTimeline() {
                 Professional Journey
             </motion.h2>
 
-            <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,48rem)_minmax(0,64rem)] lg:justify-start gap-8">
                 {/* Left Column: Timeline List */}
-                <div className="lg:w-1/2 relative pr-4 lg:max-h-full h-auto">
+                <div className="w-full max-w-3xl relative pr-4 lg:max-h-full h-auto">
                     <div className="space-y-6 lg:space-y-12 pb-12">
                         {careerData.map((item, index) => (
                             <motion.div
@@ -261,7 +261,7 @@ export default function CareerTimeline() {
                 </div>
 
                 {/* Right Column: Sticky Details Panel (Desktop) */}
-                <div className="hidden lg:block lg:w-1/2 relative h-auto">
+                <div className="hidden lg:block w-full max-w-5xl relative h-auto">
                     <div
                         className="sticky top-24 h-fit bg-white/40 dark:bg-slate-900/50 backdrop-blur-md rounded-3xl border-2 overflow-hidden shadow-2xl flex flex-col transition-colors duration-300"
                         style={{ borderColor: selectedJob.color }}
