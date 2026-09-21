@@ -113,10 +113,10 @@ export default function Hero() {
 
             <div className="flex w-full max-w-[1800px] flex-col items-center justify-center hero:flex-row hero:gap-8">
 
-            {/* Text Content - Right/Top on wide screens */}
+            {/* Text Content - Left/Top on wide screens */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center hero:order-2 hero:items-end z-20 text-center hero:text-right pt-52 hero:pt-40"
+                className="flex-1 flex flex-col items-center hero:order-1 hero:items-end z-20 text-center hero:text-right pt-52 hero:pt-40"
             >
 
 
@@ -215,7 +215,7 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Image Content - Left/Bottom */}
+            {/* Image Content - Right/Bottom */}
             <motion.div
                 style={{ y: yImage, opacity: isMobile ? mobilePortraitOpacity : opacity }}
                 className="flex-1 w-full max-w-[500px] hero:order-1 hero:max-w-none relative mt-24 md:mt-16 hero:mt-20 flex justify-center hero:justify-end"
