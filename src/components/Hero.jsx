@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { readMode, reflectMode, writeMode, MODE_LABELS } from '../utils/siteMode';
 import portrait from '../assets/portrait.webp';
 import StatsCounter from './StatsCounter';
@@ -10,6 +10,21 @@ import codingLaptopIcon from '../assets/icons/hero/coding-laptop.png';
 import aiChipIcon from '../assets/icons/hero/ai-chip.png';
 import gisMapIcon from '../assets/icons/hero/gis-map.png';
 import waterMoleculeIcon from '../assets/icons/hero/water-molecule.png';
+
+function useMediaQuery(query) {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia(query);
+        const updateMatch = () => setMatches(mediaQuery.matches);
+
+        updateMatch();
+        mediaQuery.addEventListener('change', updateMatch);
+        return () => mediaQuery.removeEventListener('change', updateMatch);
+    }, [query]);
+
+    return matches;
+}
 
 function FloatingElement({ children, delay = 0, className = "" }) {
     const reduce = useReducedMotion();
@@ -48,6 +63,7 @@ function ModeWord({ mode, children, className = '' }) {
 
 export default function Hero() {
     const targetRef = useRef(null);
+    const isMobile = useMediaQuery('(max-width: 767px)');
     const { scrollYProgress } = useScroll({
         target: targetRef,
         offset: ["start start", "end start"]
@@ -57,6 +73,9 @@ export default function Hero() {
     const yText = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "50%"]);
     const yImage = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "20%"]);
     const opacity = useTransform(scrollYProgress, [0.2, 0.7], [1, 0]);
+    // The stacked mobile portrait starts much farther down the hero than the
+    // copy, so let it remain legible while it passes through the viewport.
+    const mobilePortraitOpacity = useTransform(scrollYProgress, [0.38, 0.9], [1, 0]);
     // Sync the stored mode onto <html> on mount, so the CSS that keys off it
     // matches what was left set. Nothing in the hero itself varies by mode;
     // writeMode reflects its own changes, so there is nothing to listen for.
@@ -198,8 +217,8 @@ export default function Hero() {
 
             {/* Image Content - Left/Bottom */}
             <motion.div
-                style={{ y: yImage, opacity }}
-                className="flex-1 w-full max-w-[500px] hero:order-1 hero:max-w-none relative mt-16 hero:mt-20 flex justify-center hero:justify-end"
+                style={{ y: yImage, opacity: isMobile ? mobilePortraitOpacity : opacity }}
+                className="flex-1 w-full max-w-[500px] hero:order-1 hero:max-w-none relative mt-24 md:mt-16 hero:mt-20 flex justify-center hero:justify-end"
             >
                 <div
                     aria-hidden="true"
