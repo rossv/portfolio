@@ -116,7 +116,7 @@ export default function Hero() {
             {/* Text Content - Left/Top on wide screens */}
             <motion.div
                 style={{ y: yText, opacity }}
-                className="flex-1 flex flex-col items-center hero:order-1 hero:items-end z-20 text-center hero:text-right pt-52 hero:pt-40"
+                className="flex-1 flex flex-col items-center hero:order-1 z-20 text-center pt-52 hero:pt-40"
             >
 
 
@@ -142,7 +142,7 @@ export default function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-wrap justify-center hero:justify-end gap-4 mb-8"
+                    className="flex flex-wrap justify-center gap-4 mb-8"
                 >
                     <LicenseBadge
                         label="PE"
@@ -180,7 +180,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.95 }}
-                    className="mt-6 flex flex-wrap justify-center hero:justify-end gap-3"
+                    className="mt-6 flex flex-wrap justify-center gap-3"
                 >
                     {sectionLinks.map((section) => (
                         <motion.button
