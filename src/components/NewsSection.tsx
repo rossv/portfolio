@@ -202,7 +202,7 @@ export default function NewsSection() {
         container.addEventListener('pointerdown', handlePause);
         container.addEventListener('pointerup', handleResume);
         container.addEventListener('pointercancel', handleResume);
-        if ('addEventListener' in mediaQuery) {
+        if (typeof mediaQuery.addEventListener === 'function') {
             mediaQuery.addEventListener('change', handlePreferenceChange);
         } else {
             mediaQuery.addListener(handlePreferenceChange);
@@ -220,7 +220,7 @@ export default function NewsSection() {
             container.removeEventListener('pointerdown', handlePause);
             container.removeEventListener('pointerup', handleResume);
             container.removeEventListener('pointercancel', handleResume);
-            if ('removeEventListener' in mediaQuery) {
+            if (typeof mediaQuery.removeEventListener === 'function') {
                 mediaQuery.removeEventListener('change', handlePreferenceChange);
             } else {
                 mediaQuery.removeListener(handlePreferenceChange);
