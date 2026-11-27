@@ -5,14 +5,14 @@ deployed to rossvolkwein.com
 
 ## Stack
 
-- Astro 4
+- Astro 7
 - React 18
 - Tailwind CSS 3
 - Mapbox GL / react-map-gl
 
 ## Prerequisites
 
-- Node.js 20+
+- Node.js 22.23.4+ (Node.js 24 LTS recommended and used in CI)
 - npm 10+
 
 ## Local Development
@@ -76,6 +76,7 @@ Deploys via GitHub Actions workflow:
 - Workflow file: [`/.github/workflows/deploy.yaml`](/.github/workflows/deploy.yaml)
 - Trigger: push to `main`
 - Build action: `withastro/action@v2`
+- Build runtime: Node.js 24
 - Publish action: `actions/deploy-pages@v4`
 
 The workflow sets `SITE_URL` and `BASE_PATH=/` and expects `PUBLIC_MAPBOX_ACCESS_TOKEN` from GitHub Secrets.

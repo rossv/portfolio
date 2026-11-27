@@ -4,11 +4,13 @@ This file provides context for AI assistants (Claude, Copilot, etc.) working in 
 
 ## Project Overview
 
-Personal engineering and geospatial portfolio for Ross Volkwein, PE, GISP. Built with Astro 4, React 18, and Tailwind CSS. Deployed to GitHub Pages at [www.rossvolkwein.com](https://www.rossvolkwein.com).
+Personal engineering and geospatial portfolio for Ross Volkwein, PE, GISP. Built with Astro 7, React 18, and Tailwind CSS 3 through PostCSS. Deployed to GitHub Pages at [www.rossvolkwein.com](https://www.rossvolkwein.com).
 
 ---
 
 ## Development Commands
+
+Requires Node.js 22.23.4+ (Node.js 24 LTS recommended; CI uses Node.js 24) and npm 10+.
 
 ```bash
 npm install          # Install dependencies
@@ -26,9 +28,9 @@ No lint, typecheck, or test scripts are currently configured in `package.json`. 
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Astro 4 (with React islands) |
+| Framework | Astro 7 (with React islands) |
 | UI Components | React 18 (JSX) |
-| Styling | Tailwind CSS 3 (dark mode via `class`) |
+| Styling | Tailwind CSS 3 through PostCSS (dark mode via `class`) |
 | Animation | Framer Motion |
 | Mapping | Mapbox GL / react-map-gl |
 | Charts | Recharts |
@@ -83,6 +85,8 @@ portfolio/
 │   └── prepare-landmarks.mjs  # Cleans isometric landmark art → src/assets/pgh/
 ├── astro.config.mjs          # Astro + Vite configuration
 ├── tailwind.config.mjs       # Tailwind theme (colors, fonts, patterns)
+├── postcss.config.mjs        # Tailwind 3 and Autoprefixer processing
+├── tsconfig.json             # Astro module resolution and React JSX types
 ├── .env.example              # Environment variable template
 ├── .github/workflows/deploy.yaml
 ├── AGENTS.md                 # Workflow reference (keep in sync with this file)
@@ -183,6 +187,7 @@ BASE_PATH=                    # Base path for deployment (default: /)
 - **Branch to deploy from:** `main`
 - **Trigger:** push to `main`
 - **Pipeline:** `.github/workflows/deploy.yaml` → `withastro/action@v2` build → `actions/deploy-pages@v4`
+- **Build runtime:** Node.js 24
 - **Required GitHub secret:** `PUBLIC_MAPBOX_ACCESS_TOKEN`
 - **Live URL:** https://www.rossvolkwein.com
 
