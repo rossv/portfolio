@@ -215,6 +215,8 @@ vite: { ssr: { noExternal: ['react-map-gl', 'mapbox-gl'] } }
 
 Components using these libraries must use a client directive (`client:load`) and guard against SSR with `typeof window !== 'undefined'` checks where needed.
 
+Import `Map` by name from `react-map-gl`. Its CommonJS default export resolves to a module object under Vite 8 during prerendering, which fails when a Mapbox token enables the map.
+
 ---
 
 ## Assets

@@ -1,4 +1,4 @@
-import Map, { Source, Layer, Popup } from 'react-map-gl';
+import { Map, Source, Layer, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useState, useRef, useMemo, useEffect } from 'react';
 
