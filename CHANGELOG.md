@@ -5,6 +5,7 @@
 ### Highlights
 - Upgrade Astro, its React and sitemap integrations, Sharp, and vulnerable transitive dependencies to patched versions. Replace the unsupported Astro Tailwind integration with PostCSS while retaining Tailwind CSS 3 and the existing theme.
 - Require Node.js 22.23.4+ for local development and use Node.js 24 for GitHub Pages builds.
+- Use named Map component imports so builds with a configured Mapbox token render correctly under Vite 8.
 
 ## Week of 2026-08-10
 
